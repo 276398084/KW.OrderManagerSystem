@@ -1,7 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeWeiOMS", "KeWeiOMS\KeWeiOMS.csproj", "{B1476D1D-D103-4CB3-8B8E-F0E08D761945}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0.Application(应用层)", "0.Application(应用层)", "{2F3445CD-1E88-4CC9-B124-8960D413E625}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.Infrastucture(基础应用层)", "2.Infrastucture(基础应用层)", "{3610C00B-E113-42B7-8E50-F17422E0123E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.Domain(业务领域层)", "1.Domain(业务领域层)", "{5CE98BDD-4199-4909-9002-BB9919B9BB13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeWeiOMS.Web", "KeWeiOMS.Web\KeWeiOMS.Web.csproj", "{4DBE3626-DEEA-4936-BEE0-09D7D918FA52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeWeiOMS.Domain", "KeWeiOMS.Domain\KeWeiOMS.Domain.csproj", "{E1C4C6AA-D235-4ECC-B922-F2B5DF84E255}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeWeiOMS.NhibernateHelper", "KeWeiOMS.NhibernateHelper\KeWeiOMS.NhibernateHelper.csproj", "{3A6ABBC6-D76B-4703-8EC9-EA30472B4382}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,12 +19,25 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B1476D1D-D103-4CB3-8B8E-F0E08D761945}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B1476D1D-D103-4CB3-8B8E-F0E08D761945}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B1476D1D-D103-4CB3-8B8E-F0E08D761945}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B1476D1D-D103-4CB3-8B8E-F0E08D761945}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DBE3626-DEEA-4936-BEE0-09D7D918FA52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DBE3626-DEEA-4936-BEE0-09D7D918FA52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DBE3626-DEEA-4936-BEE0-09D7D918FA52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DBE3626-DEEA-4936-BEE0-09D7D918FA52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1C4C6AA-D235-4ECC-B922-F2B5DF84E255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1C4C6AA-D235-4ECC-B922-F2B5DF84E255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1C4C6AA-D235-4ECC-B922-F2B5DF84E255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1C4C6AA-D235-4ECC-B922-F2B5DF84E255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A6ABBC6-D76B-4703-8EC9-EA30472B4382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A6ABBC6-D76B-4703-8EC9-EA30472B4382}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A6ABBC6-D76B-4703-8EC9-EA30472B4382}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A6ABBC6-D76B-4703-8EC9-EA30472B4382}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4DBE3626-DEEA-4936-BEE0-09D7D918FA52} = {2F3445CD-1E88-4CC9-B124-8960D413E625}
+		{3A6ABBC6-D76B-4703-8EC9-EA30472B4382} = {3610C00B-E113-42B7-8E50-F17422E0123E}
+		{E1C4C6AA-D235-4ECC-B922-F2B5DF84E255} = {5CE98BDD-4199-4909-9002-BB9919B9BB13}
 	EndGlobalSection
 EndGlobal
