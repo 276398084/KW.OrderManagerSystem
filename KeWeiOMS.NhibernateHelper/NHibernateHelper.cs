@@ -8,31 +8,14 @@ using FluentNHibernate.Cfg;
 using System.IO;
 using System.Reflection;
 using FluentNHibernate.Cfg.Db;
+using NHibernate.Tool.hbm2ddl;
 
 namespace KeWeiOMS.NhibernateHelper
 {
     public class NHibernateHelper
     {
-        private static Configuration configuration = null;
+
         private static ISessionFactory sessionFactory = null;
-
-        public static void CreateConfiguration()
-        {
-            //configuration = new Configuration().Configure();
-        }
-
-        public static Configuration Configuration
-        {
-            get
-            {
-                if (configuration == null)
-                {
-                    CreateConfiguration();
-                }
-                return configuration;
-            }
-            set { configuration = value; }
-        }
 
         public static ISessionFactory SessionFactory
         {
@@ -40,10 +23,7 @@ namespace KeWeiOMS.NhibernateHelper
             {
                 if (sessionFactory == null)
                 {
-                    if (Configuration == null)
-                    {
-                        CreateConfiguration();
-                    }
+
                     FluentConfiguration fluentConfiguration = Fluently.Configure().Database(
              MsSqlConfiguration.MsSql2008.ConnectionString(
              c => c.FromConnectionStringWithKey("db")));
@@ -55,7 +35,7 @@ namespace KeWeiOMS.NhibernateHelper
                         m.HbmMappings.AddFromAssembly(assembly);
                         m.FluentMappings.AddFromAssembly(assembly).Conventions.AddAssembly(assembly);
                     });
-                    return fluentConfiguration.BuildSessionFactory();
+                    return fluentConfiguration.ExposeConfiguration(BuildSchema).BuildSessionFactory();
                 }
                 else
                 {
@@ -67,6 +47,19 @@ namespace KeWeiOMS.NhibernateHelper
         public static ISession CreateSession()
         {
             return SessionFactory.OpenSession();
+        }
+
+
+        private static void BuildSchema(Configuration config)
+        {
+            // delete the existing db on each run
+            // if (File.Exists(DbFile))
+            //   File.Delete(DbFile);
+
+            // this NHibernate tool takes a configuration (with mapping info in)
+            // and exports a database schema from it
+            new SchemaExport(config)
+                .Create(false, true);
         }
 
     }

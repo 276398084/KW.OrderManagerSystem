@@ -26,6 +26,10 @@ namespace KeWeiOMS.Domain
     /// </summary>
     public class ModulesType
     {
+        public ModulesType()
+        {
+
+        }
         /// <summary>
         /// 主键
         /// </summary>
