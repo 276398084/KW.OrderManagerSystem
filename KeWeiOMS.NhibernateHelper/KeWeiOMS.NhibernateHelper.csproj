@@ -33,6 +33,9 @@
     <Reference Include="FluentNHibernate">
       <HintPath>..\Lib\FluentNHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\Lib\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate">
       <HintPath>..\Lib\NHibernate.dll</HintPath>
     </Reference>

@@ -7,6 +7,7 @@ using NHibernate;
 using FluentNHibernate.Cfg;
 using System.IO;
 using System.Reflection;
+using FluentNHibernate.Cfg.Db;
 
 namespace KeWeiOMS.NhibernateHelper
 {
@@ -17,7 +18,7 @@ namespace KeWeiOMS.NhibernateHelper
 
         public static void CreateConfiguration()
         {
-            configuration = new Configuration().Configure();
+            //configuration = new Configuration().Configure();
         }
 
         public static Configuration Configuration
@@ -43,9 +44,11 @@ namespace KeWeiOMS.NhibernateHelper
                     {
                         CreateConfiguration();
                     }
-                    FluentConfiguration fluentConfiguration = Fluently.Configure(Configuration);
+                    FluentConfiguration fluentConfiguration = Fluently.Configure().Database(
+             MsSqlConfiguration.MsSql2008.ConnectionString(
+             c => c.FromConnectionStringWithKey("db")));
                     string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-                    string assemblyFile = Path.Combine(path, "bin/NhibernateDemo.Data.dll");
+                    string assemblyFile = Path.Combine(path, "bin/KeWeiOMS.Domain.dll");
                     fluentConfiguration.Mappings(delegate(MappingConfiguration m)
                     {
                         Assembly assembly = Assembly.LoadFrom(assemblyFile);
@@ -65,6 +68,6 @@ namespace KeWeiOMS.NhibernateHelper
         {
             return SessionFactory.OpenSession();
         }
-        
+
     }
 }
