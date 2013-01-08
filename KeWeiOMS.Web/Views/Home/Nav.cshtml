@@ -1,0 +1,23 @@
+﻿@model List<KeWeiOMS.Web.MenuItem>
+@{
+    Layout = null;
+}
+<div id="nav" class="easyui-accordion" fit="true" border="false">
+@foreach(var menu in Model)
+{
+    <div title=" @menu.menuname" iconCls="menuItem @menu.icon" >
+            @if (menu.menus != null)
+            {
+                <ul>
+
+                    @foreach (var submenu in menu.menus)
+                    {
+                        string menuid = "menu"+submenu.menuid;
+                          <li><div><a ref="@menu.menuname" href="#" rel='@submenu.url' id="@menuid"><span class="@submenu.icon" >&nbsp;</span>&nbsp;&nbsp;<span class="nav">@submenu.menuname</span></a></div></li>
+                    }
+            
+                </ul>
+            }
+    </div>
+}
+    </div>

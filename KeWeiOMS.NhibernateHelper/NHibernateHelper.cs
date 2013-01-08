@@ -35,7 +35,7 @@ namespace KeWeiOMS.NhibernateHelper
                         m.HbmMappings.AddFromAssembly(assembly);
                         m.FluentMappings.AddFromAssembly(assembly).Conventions.AddAssembly(assembly);
                     });
-                    return fluentConfiguration.ExposeConfiguration(BuildSchema).BuildSessionFactory();
+                    return fluentConfiguration.BuildSessionFactory();
                 }
                 else
                 {
@@ -52,12 +52,7 @@ namespace KeWeiOMS.NhibernateHelper
 
         private static void BuildSchema(Configuration config)
         {
-            // delete the existing db on each run
-            // if (File.Exists(DbFile))
-            //   File.Delete(DbFile);
-
-            // this NHibernate tool takes a configuration (with mapping info in)
-            // and exports a database schema from it
+          
             new SchemaExport(config)
                 .Create(false, true);
         }

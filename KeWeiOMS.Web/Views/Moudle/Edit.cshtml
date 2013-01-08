@@ -1,0 +1,70 @@
+﻿@model  KeWeiOMS.Domain.ModulesType
+
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+         $('#e_Birth').datebox();
+
+        //表单校验
+        $("#e_form").validate({
+			submitHandler: function (form) {
+                        ajaxEdit();
+			}
+		});
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { id = "e_form" }))
+{
+
+		<table class="editForm">
+			@Html.HiddenFor(model => model.UserID)
+			 <tr>
+                <td>
+            @Html.LabelFor(model => model.UserName,"名称:")
+				</td>
+				<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="e_UserName"})
+				</td>
+			</tr>
+			 <tr>
+                <td>
+            @Html.LabelFor(model => model.Password,"密码:")
+				</td>
+				<td>
+            @Html.TextBoxFor(model => model.Password,new{@id="e_Password"})
+				</td>
+			</tr>
+			 <tr>
+                <td>
+            @Html.LabelFor(model => model.Age,"年龄:")
+				</td>
+				<td>
+            @Html.TextBoxFor(model => model.Age,new{@id="e_Age"})
+				</td>
+			</tr>
+			 <tr>
+                <td>
+            @Html.LabelFor(model => model.Enable,"是否启用:")
+				</td>
+				<td>
+            @Html.TextBoxFor(model => model.Enable,new{@id="e_Enable"})
+				</td>
+			</tr>
+			 <tr>
+                <td>
+            @Html.LabelFor(model => model.Birth,"生日:")
+				</td>
+				<td>
+			<input id="e_Birth" name="Birth" required="true"/>
+				</td>
+			</tr>
+		
+        </table>
+
+}
+

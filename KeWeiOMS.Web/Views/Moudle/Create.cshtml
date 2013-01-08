@@ -1,0 +1,69 @@
+﻿@model  KeWeiOMS.Domain.ModulesType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        //这里写新建时初始化控件的值
+        $('#c_Birth').datebox();
+
+        //入库表单校验
+        $("#c_form").validate({
+            submitHandler: function (form) {
+                ajaxAdd();
+            }
+        });
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "User", FormMethod.Post, new { id = "c_form" }))
+{
+    <table class="editForm">
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.UserName, "名称:")
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.UserName, new { @id = "c_UserName" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Password, "密码:")
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.Password, new { @id = "c_Password" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Age, "年龄:")
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.Age, new { @id = "c_Age" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Enable, "是否启用:")
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.Enable, new { @id = "c_Enable" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.Birth, "生日:")
+            </td>
+            <td>
+                <input id="c_Birth" name="Birth" required="true" />
+            </td>
+        </tr>
+
+    </table>
+	
+}

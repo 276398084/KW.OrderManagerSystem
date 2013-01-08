@@ -1,0 +1,51 @@
+﻿@model  KeWeiOMS.Domain.ModulesType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Delete</title>
+</head>
+<body>
+    <h3>Are you sure you want to delete this?</h3>
+    <fieldset>
+        <legend>User</legend>
+    
+        <div class="display-label">UserName</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.UserName)
+        </div>
+    
+        <div class="display-label">Password</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Password)
+        </div>
+    
+        <div class="display-label">Age</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Age)
+        </div>
+    
+        <div class="display-label">Enable</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Enable)
+        </div>
+    
+        <div class="display-label">Birth</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Birth)
+        </div>
+    </fieldset>
+    @using (Html.BeginForm()) {
+        <p>
+            <input type="submit" value="Delete" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+    }
+
+</body>
+</html>

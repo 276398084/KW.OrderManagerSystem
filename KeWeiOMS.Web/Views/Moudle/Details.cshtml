@@ -1,0 +1,47 @@
+﻿@model  KeWeiOMS.Domain.ModulesType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Details</title>
+</head>
+<body>
+    <fieldset>
+        <legend>User</legend>
+    
+        <div class="display-label">UserName</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.FullName)
+        </div>
+    
+        <div class="display-label">Password</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Password)
+        </div>
+    
+        <div class="display-label">Age</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Age)
+        </div>
+    
+        <div class="display-label">Enable</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Enable)
+        </div>
+    
+        <div class="display-label">Birth</div>
+        <div class="display-field">
+            @Html.DisplayFor(model => model.Birth)
+        </div>
+    </fieldset>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

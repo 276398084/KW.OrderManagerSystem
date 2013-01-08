@@ -1,1 +1,85 @@
-﻿
+﻿@using KeWeiOMS.Web
+<script type="text/javascript">
+    $(function () {
+        initLeftMenu();
+
+        addTab('主页', '@Url.Action("Default", "Home")', "false");
+        $('#mainframe').layout('collapse', 'east');
+    });
+
+    function initLeftMenu() {
+        $("#nav").accordion({ animate: true });
+        $('.easyui-accordion li a').click(function () {
+            var tabTitle = $(this).children('.nav').text();
+            var url = $(this).attr("rel");
+            var parentmenu = $(this).attr("ref");
+
+            addTab(parentmenu + '-' + tabTitle, url);
+            $('.easyui-accordion li div').removeClass("selected");
+            $(this).parent().addClass("selected");
+        }).hover(function () {
+            $(this).parent().addClass("hover");
+        }, function () {
+            $(this).parent().removeClass("hover");
+        });
+
+        var panels = $('#nav').accordion('panels');
+        var t = panels[0].panel('options').title;
+        $('#nav').accordion('select', t);
+    }
+
+    function addTab(subtitle, url, closable) {
+        if (!$('#tabs').tabs('exists', subtitle)) {
+            var cl = true;
+            if (closable == 'false')
+                cl = false;
+            $('#tabs').tabs('add', {
+                title: subtitle,
+                content: createFrame(url),
+                closable: cl
+            });
+        } else {
+            $('#tabs').tabs('select', subtitle);
+        }
+    }
+
+    function closeTab(subtitle) {
+        if ($('#tabs').tabs('exists', subtitle)) {
+            $('#tabs').tabs('close', subtitle);
+        }
+    }
+
+    function closeSelectedTab() {
+        var tab = $('#tabs').tabs('getSelected');
+        var title = tab.panel('options')['title'];
+
+        if (tab) {
+            $('#tabs').tabs('close', title);
+        }
+    }
+
+    function createFrame(url) {
+        var s = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:99.5%"></iframe>';
+        return s;
+    }
+
+</script>
+
+<body class="easyui-layout" id="mainframe">
+    <div region="north" style="height: 66px;background-color: #E0ECFF" split="true">
+       
+    </div>
+    <div region="east" iconcls="icon-inbox" title="" split="true" style="width: 280px;" >
+  
+    </div>
+    <div region="west" split="true" title="功能菜单" style="width: 200px; padding: 1px; overflow: hidden;">
+        @{
+            Html.RenderPartial("Nav", FunctionMenu.GetFunctionMenus());
+        }
+    </div>
+    <div region="center" title="" style="overflow: hidden; padding: 0px;" id="centerArea">
+        <div class="easyui-tabs" fit="true" border="false" id="tabs">
+        </div>
+    </div>
+</body>
+
