@@ -10,22 +10,19 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class MoudleController : Controller
+    public class MoudleController : BaseController
     {
         protected ISession Session = NHibernateHelper.CreateSession();
-
 
         public ViewResult Index()
         {
             return View();
         }
 
-
         public ActionResult Create()
         {
             return View();
         }
-
 
         [HttpPost]
         public JsonResult Create(ModulesType user)
@@ -39,7 +36,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { erroeMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "OK" });
+            return Json(new { IsSuccess = "true" });
         }
 
         /// <summary>
@@ -60,16 +57,12 @@ namespace KeWeiOMS.Web.Controllers
             }
         }
 
-
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(decimal id)
         {
-           
             ModulesType user = GetById(id.ToString());
             return View(user);
         }
-
-
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
@@ -83,15 +76,11 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                json.Data = ee.Message;
-                return json;
+                return Json(new { erroeMsg = "出错了" });
             }
-            json.Data = true;
-            return json;
+            return Json(new { IsSuccess = "true" });
+           
         }
-
-
-
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(decimal id)
@@ -106,48 +95,18 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                json.Data = ee.Message;
+                return Json(new { erroeMsg = "出错了" });
             }
-
-            return json;
+            return Json(new { IsSuccess = "true" });
         }
 
         public JsonResult List(int page, int rows)
         {
-
-
-            ////HQL查询
-            IList<ModulesType> customerList = Session.CreateQuery("from Customer")
-                .SetFirstResult(rows * page)
-                .SetMaxResults(page)
+            IList<ModulesType> customerList = Session.CreateQuery("from ModulesType")
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows * page)
                 .List<ModulesType>();
-
             return Json(new { total = customerList.Count, rows = customerList });
-            ////条件查询
-            //return Session.CreateCriteria(typeof(Customer))
-            //    .SetProjection(Projections.ProjectionList()
-            //    .Add(Projections.Property("Id"), "Id")
-            //    .Add(Projections.Property("Name"), "Name")
-            //    .Add(Projections.Property("Tel"), "Tel")
-            //    .Add(Projections.Property("Address"), "Address")
-            //    .Add(Projections.Property("Sex"), "Sex")
-            //    .Add(Projections.Property("CreateDate"), "CreateDate")
-            //    .Add(Projections.Property("Version"),"Version"))
-            //    .AddOrder(Order.Asc("Id"))
-            //    .SetFirstResult(pageStart * pageLimit)
-            //    .SetResultTransformer(Transformers.AliasToBean(typeof(Customer)))
-            //    .List<Customer>();
-
-            ///SQL查询
-            //IList<Customer> customerList = Session.CreateSQLQuery("SELECT * FROM Customer")
-            //    .SetFirstResult(pageStart*pageLimit)
-            //    .SetMaxResults(pageLimit)
-            //    .SetResultTransformer(Transformers.AliasToBean<Customer>()).List<Customer>(); 
-            //return customerList;
-
-
-
-
         }
 
     }

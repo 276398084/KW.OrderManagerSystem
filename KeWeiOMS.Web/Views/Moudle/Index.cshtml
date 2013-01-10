@@ -1,4 +1,4 @@
-﻿@model IEnumerable< KeWeiOMS.Domain.ModulesType>
+﻿@model IEnumerable<KeWeiOMS.Domain.ModulesType>
 @{
     ViewBag.Title = "Index";
 }
@@ -6,7 +6,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         $('#dg').datagrid({
-            url: '@Url.Action("List","User")',
+            url: '@Url.Action("List","Moudle")',
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
@@ -16,7 +16,7 @@
 
     //新建
     function c_dlg() {
-        var url_str = '@Url.Action("Create","User")';
+        var url_str = '@Url.Action("Create","Moudle")';
 		
         $('#c_dlg').load(url_str, function () {
             $(this).dialog({
@@ -43,7 +43,7 @@
     function e_dlg() {
         var id = getselectedRow();
         if (id != undefined) {
-            var url = '@Url.Action("Edit","User")/' + id;
+            var url = '@Url.Action("Edit","Default2")/' + id;
 
    
             $('#e_dlg').load(url, function () {
@@ -71,7 +71,7 @@
 //异步新建提交
     function ajaxAdd() {
         $('#c_form').ajaxSubmit({
-            url: '@Url.Action("Create","User")',
+            url: '@Url.Action("Create","Default2")',
             beforeSubmit: function () {
                 if ($('#c_form').form('validate') != true) {
                     return false;
@@ -107,7 +107,7 @@
     //异步编辑提交
     function ajaxEdit() {
         $('#e_form').ajaxSubmit({
-            url: '@Url.Action("Edit","User")',
+            url: '@Url.Action("Edit","Default2")',
             beforeSubmit: function () {
                 if ($('#e_form').form('validate') != true) {
                     return false;
@@ -149,7 +149,7 @@
         if (id != undefined) {
             $.messager.confirm('确认', '确定删除?', function (r) {
                 if (r) {
-                    var url = '@Url.Action("Delete","User")/' + id;
+                    var url = '@Url.Action("Delete","Default2")/' + id;
                     $.post(url, function () {
 
                     }).success(function (data) {
@@ -185,8 +185,8 @@
     function getselectedRow() {
         var row = $('#dg').datagrid('getSelected');
         if (row != undefined) {
-            if (row.hasOwnProperty('UserID')) {
-                var id = row['UserID'];
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
                 return id;
             }
         }
@@ -206,24 +206,81 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-		<th field="UserID" width="100" >
-                编号
-        </th>
-		<th field="UserName" width="100" >
-                名称
-        </th>
-		<th field="Password" width="100" >
-                密码
-        </th>
-		<th field="Age" width="100" >
-                年龄
-        </th>
-		<th field="Enable" width="100" >
-                是否启用
-        </th>
-		<th field="Birth" width="100" >
-                生日
-        </th>
+            <th field="ParentId" width="100">
+                ParentId
+            </th>
+            <th field="Code" width="100">
+                Code
+            </th>
+            <th field="FullName" width="100">
+                FullName
+            </th>
+            <th field="Category" width="100">
+                Category
+            </th>
+            <th field="ImageIndex" width="100">
+                ImageIndex
+            </th>
+            <th field="SelectedImageIndex" width="100">
+                SelectedImageIndex
+            </th>
+            <th field="NavigateUrl" width="100">
+                NavigateUrl
+            </th>
+            <th field="Target" width="100">
+                Target
+            </th>
+            <th field="IsPublic" width="100">
+                IsPublic
+            </th>
+            <th field="IsMenu" width="100">
+                IsMenu
+            </th>
+            <th field="Expand" width="100">
+                Expand
+            </th>
+            <th field="PermissionItemCode" width="100">
+                PermissionItemCode
+            </th>
+            <th field="PermissionScopeTables" width="100">
+                PermissionScopeTables
+            </th>
+            <th field="AllowEdit" width="100">
+                AllowEdit
+            </th>
+            <th field="AllowDelete" width="100">
+                AllowDelete
+            </th>
+            <th field="SortCode" width="100">
+                SortCode
+            </th>
+            <th field="DeletionStateCode" width="100">
+                DeletionStateCode
+            </th>
+            <th field="Enabled" width="100">
+                Enabled
+            </th>
+            <th field="Description" width="100">
+                Description
+            </th>
+            <th field="CreateOn" width="100">
+                CreateOn
+            </th>
+            <th field="CreateUserId" width="100">
+                CreateUserId
+            </th>
+            <th field="CreateBy" width="100">
+                CreateBy
+            </th>
+            <th field="ModifiedOn" width="100">
+                ModifiedOn
+            </th>
+            <th field="ModifiedUserId" width="100">
+                ModifiedUserId
+            </th>
+            <th field="ModifiedBy" width="100">
+                ModifiedBy
+            </th>
     	</tr>
 		</thead>
 		</table>
