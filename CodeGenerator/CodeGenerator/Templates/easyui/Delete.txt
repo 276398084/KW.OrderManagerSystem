@@ -1,0 +1,27 @@
+﻿@model <#ViewDataTypeName#>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title><#ViewDataTypeName#></title>
+</head>
+<body>
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend><#ViewDataTypeName#></legend>
+<#dhtml#>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("返回列表", "Index")
+    </p>
+}
+
+
+</body>
+</html>

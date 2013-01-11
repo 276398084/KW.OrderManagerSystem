@@ -1,0 +1,23 @@
+﻿@model <#ViewDataTypeName#>
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title><#ViewDataTypeName#></title>
+</head>
+<body>
+<fieldset>
+    <legend><#ViewDataTypeName#></legend>
+<#detailhtml#>
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

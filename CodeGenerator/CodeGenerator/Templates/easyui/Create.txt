@@ -1,0 +1,30 @@
+﻿@model <#ViewDataTypeName#>
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		<#cjs#>
+		
+        //入库表单校验
+        $("#c_form").validate({
+			submitHandler: function (form) {
+                        ajaxAdd();
+			}
+		});
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "<#ControllerRootName#>", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+<#chtml#>
+</table>
+</fieldset>
+}

@@ -1,0 +1,27 @@
+﻿@model <#ViewDataTypeName#>
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+<#ejs#>
+        //表单校验
+        $("#e_form").validate({
+			submitHandler: function (form) {
+                        ajaxEdit();
+			}
+		});
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "<#ControllerRootName#>", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+<#ehtml#>
+    
+</table>
+</fieldset>
+}

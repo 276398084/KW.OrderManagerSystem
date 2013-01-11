@@ -1,0 +1,214 @@
+﻿@model KeWeiOMS.Domain.RoleType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#e_ModifiedOn').datebox();
+
+        $('#e_ModifiedBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        //表单校验
+        $("#e_form").validate({
+			submitHandler: function (form) {
+                        ajaxEdit();
+			}
+		});
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Role", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrganizeId,"组织机构主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrganizeId,new{@id="e_OrganizeId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SystemId,"系统主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SystemId,new{@id="e_SystemId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"角色编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="e_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Realname,"角色名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Realname,new{@id="e_Realname"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Category,"角色分类:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Category,new{@id="e_Category"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllowEdit,"允许编辑:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllowEdit,new{@id="e_AllowEdit"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllowDelete,"允许删除:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllowDelete,new{@id="e_AllowDelete"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsVisible,"是否显示:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsVisible,new{@id="e_IsVisible"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SortCode,"排序码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SortCode,new{@id="e_SortCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DeletionStateCode,"删除标记:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DeletionStateCode,new{@id="e_DeletionStateCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Enabled,"有效标志:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Enabled,new{@id="e_Enabled"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Description,"描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Description,new{@id="e_Description"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateUserId,"创建用户主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateUserId,new{@id="e_CreateUserId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建用户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ModifiedOn,"修改日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ModifiedOn,new{@id="e_ModifiedOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ModifiedUserId,"修改用户主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ModifiedUserId,new{@id="e_ModifiedUserId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ModifiedBy,"修改用户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ModifiedBy,new{@id="e_ModifiedBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

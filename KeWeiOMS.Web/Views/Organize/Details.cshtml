@@ -1,0 +1,193 @@
+﻿@model KeWeiOMS.Domain.OrganizeType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.OrganizeType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.OrganizeType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">父级主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ParentId)
+    </div>
+
+    <div class="display-label">编号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Code)
+    </div>
+
+    <div class="display-label">简称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ShortName)
+    </div>
+
+    <div class="display-label">名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FullName)
+    </div>
+
+    <div class="display-label">分类</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Category)
+    </div>
+
+    <div class="display-label">层</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Layer)
+    </div>
+
+    <div class="display-label">外线电话</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OuterPhone)
+    </div>
+
+    <div class="display-label">内线电话</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.InnerPhone)
+    </div>
+
+    <div class="display-label">传真</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Fax)
+    </div>
+
+    <div class="display-label">邮编</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Postalcode)
+    </div>
+
+    <div class="display-label">地址</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Address)
+    </div>
+
+    <div class="display-label">网址</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Web)
+    </div>
+
+    <div class="display-label">领导</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LeadershipRoleId)
+    </div>
+
+    <div class="display-label">分管领导</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AssistantLeadershipRoleId)
+    </div>
+
+    <div class="display-label">主管</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ManagerRoleId)
+    </div>
+
+    <div class="display-label">副主管</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AssistantManagerRoleId)
+    </div>
+
+    <div class="display-label">财务主管</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FinancialRoleId)
+    </div>
+
+    <div class="display-label">会计</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AccountingRoleId)
+    </div>
+
+    <div class="display-label">出纳</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CashierRoleId)
+    </div>
+
+    <div class="display-label">系统管理员</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SystemManagerRoleId)
+    </div>
+
+    <div class="display-label">内部组织机构</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsInnerOrganize)
+    </div>
+
+    <div class="display-label">开户行</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Bank)
+    </div>
+
+    <div class="display-label">银行帐号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BankAccount)
+    </div>
+
+    <div class="display-label">删除标记</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DeletionStateCode)
+    </div>
+
+    <div class="display-label">有效</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Enabled)
+    </div>
+
+    <div class="display-label">排序码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SortCode)
+    </div>
+
+    <div class="display-label">备注</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">创建日期</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">创建用户主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateUserId)
+    </div>
+
+    <div class="display-label">创建用户</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">修改日期</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ModifiedOn)
+    </div>
+
+    <div class="display-label">修改用户主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ModifiedUserId)
+    </div>
+
+    <div class="display-label">修改用户</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ModifiedBy)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

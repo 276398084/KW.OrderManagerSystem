@@ -48,8 +48,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\ModulesType.cs" />
-    <Compile Include="Mappings\ModulesTypeMap.cs" />
+    <Compile Include="Entities\ModuleType.cs" />
+    <Compile Include="Entities\OrganizeType.cs" />
+    <Compile Include="Entities\PermissionItemType.cs" />
+    <Compile Include="Entities\PermissionScopeType.cs" />
+    <Compile Include="Entities\PermissionType.cs" />
+    <Compile Include="Entities\RoleType.cs" />
+    <Compile Include="Entities\UserRoleType.cs" />
+    <Compile Include="Entities\UserType.cs" />
+    <Compile Include="Mappings\ModuleTypeMap.cs" />
+    <Compile Include="Mappings\OrganizeTypeMap.cs" />
+    <Compile Include="Mappings\PermissionItemTypeMap.cs" />
+    <Compile Include="Mappings\PermissionScopeTypeMap.cs" />
+    <Compile Include="Mappings\PermissionTypeMap.cs" />
+    <Compile Include="Mappings\RoleTypeMap.cs" />
+    <Compile Include="Mappings\UserRoleTypeMap.cs" />
+    <Compile Include="Mappings\UserTypeMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

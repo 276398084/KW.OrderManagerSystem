@@ -1,0 +1,277 @@
+﻿@model KeWeiOMS.Domain.ModuleType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#e_ModifiedOn').datebox();
+
+        $('#e_ModifiedBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        //表单校验
+        $("#e_form").validate({
+			submitHandler: function (form) {
+                        ajaxEdit();
+			}
+		});
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Module", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ParentId,"父节点主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ParentId,new{@id="e_ParentId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="e_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FullName,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FullName,new{@id="e_FullName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Category,"菜单分类:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Category,new{@id="e_Category"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ImageIndex,"图标编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ImageIndex,new{@id="e_ImageIndex"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SelectedImageIndex,"选中状态图标编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SelectedImageIndex,new{@id="e_SelectedImageIndex"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NavigateUrl,"导航地址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NavigateUrl,new{@id="e_NavigateUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Target,"目标:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Target,new{@id="e_Target"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsPublic,"是公开:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsPublic,new{@id="e_IsPublic"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsMenu,"是菜单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsMenu,new{@id="e_IsMenu"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Expand,"展开状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Expand,new{@id="e_Expand"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PermissionItemCode,"操作权限编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PermissionItemCode,new{@id="e_PermissionItemCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PermissionScopeTables,"数据权限表:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PermissionScopeTables,new{@id="e_PermissionScopeTables"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllowEdit,"允许编辑:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllowEdit,new{@id="e_AllowEdit"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllowDelete,"允许删除:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllowDelete,new{@id="e_AllowDelete"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SortCode,"排序码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SortCode,new{@id="e_SortCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DeletionStateCode,"删除标志:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DeletionStateCode,new{@id="e_DeletionStateCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Enabled,"有效:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Enabled,new{@id="e_Enabled"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Description,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Description,new{@id="e_Description"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateUserId,"创建用户主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateUserId,new{@id="e_CreateUserId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建用户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ModifiedOn,"修改日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ModifiedOn,new{@id="e_ModifiedOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ModifiedUserId,"修改用户主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ModifiedUserId,new{@id="e_ModifiedUserId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ModifiedBy,"修改用户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ModifiedBy,new{@id="e_ModifiedBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

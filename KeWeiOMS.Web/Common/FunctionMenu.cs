@@ -22,12 +22,12 @@ namespace KeWeiOMS.Web
         {
             List<MenuItem> items = new List<MenuItem>();
             ISession Session = NHibernateHelper.CreateSession();
-            IList<ModulesType> customerList = Session.CreateQuery("from ModulesType").List<ModulesType>();
+            IList<ModuleType> customerList = Session.CreateQuery("from ModuleType").List<ModuleType>();
 
             //加载第一层
-            List<ModulesType> list = customerList.Where(p => p.ParentId == 0 && p.IsMenu == 1 && p.DeletionStateCode == 0).OrderBy(f => f.SortCode).ToList<ModulesType>();
+            List<ModuleType> list = customerList.Where(p => p.ParentId == 0 && p.IsMenu == 1 && p.DeletionStateCode == 0).OrderBy(f => f.SortCode).ToList<ModuleType>();
             //加载所有
-            List<ModulesType> all = customerList.Where(p =>  p.IsMenu == 1 && p.DeletionStateCode == 0).OrderBy(f => f.SortCode).ToList();
+            List<ModuleType> all = customerList.Where(p => p.IsMenu == 1 && p.DeletionStateCode == 0).OrderBy(f => f.SortCode).ToList();
 
             //循环加载第一层
             foreach (var functionType in list)
@@ -35,7 +35,7 @@ namespace KeWeiOMS.Web
                 MenuItem mi = new MenuItem() { icon = functionType.ImageIndex, menuid = functionType.Id, menuname = functionType.FullName, url = functionType.NavigateUrl };
 
                 //从all中加载自己的子菜单
-                List<ModulesType> subs = all.Where(p => p.ParentId == mi.menuid).OrderBy(f => f.SortCode).ToList();
+                List<ModuleType> subs = all.Where(p => p.ParentId == mi.menuid).OrderBy(f => f.SortCode).ToList();
 
                 //如果有
                 if (subs.Any())

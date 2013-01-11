@@ -36,6 +36,7 @@ namespace KeWeiOMS.NhibernateHelper
                         m.FluentMappings.AddFromAssembly(assembly).Conventions.AddAssembly(assembly);
                     });
                     return fluentConfiguration.BuildSessionFactory();
+                    //return fluentConfiguration.ExposeConfiguration(BuildSchema).BuildSessionFactory();
                 }
                 else
                 {
@@ -52,9 +53,9 @@ namespace KeWeiOMS.NhibernateHelper
 
         private static void BuildSchema(Configuration config)
         {
-          
+
             new SchemaExport(config)
-                .Create(false, true);
+                .Create(true, true);
         }
 
     }

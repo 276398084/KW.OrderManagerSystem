@@ -2,7 +2,6 @@
 <script type="text/javascript">
     $(function () {
         initLeftMenu();
-
         addTab('主页', '@Url.Action("Default", "Home")', "false");
         $('#mainframe').layout('collapse', 'east');
     });
@@ -66,12 +65,9 @@
 </script>
 
 <body class="easyui-layout" id="mainframe">
-    <div region="north" style="height: 66px;background-color: #E0ECFF" split="true">
-       
+    <div region="north" style="height: 66px; background-color: #E0ECFF" split="true">
     </div>
-    <div region="east" iconcls="icon-inbox" title="" split="true" style="width: 280px;" >
-  
-    </div>
+
     <div region="west" split="true" title="功能菜单" style="width: 200px; padding: 1px; overflow: hidden;">
         @{
             Html.RenderPartial("Nav", FunctionMenu.GetFunctionMenus());
