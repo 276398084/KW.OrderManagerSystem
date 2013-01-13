@@ -12,7 +12,7 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class ModuleController : BaseController
     {
-        protected ISession Session = NHibernateHelper.CreateSession();
+      
 
         public ViewResult Index()
         {
@@ -30,8 +30,8 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 obj = Set<ModuleType>(obj);
-                Session.SaveOrUpdate(obj);
-                Session.Flush();
+                Nsession.SaveOrUpdate(obj);
+                Nsession.Flush();
             }
             catch (Exception ee)
             {
@@ -47,7 +47,7 @@ namespace KeWeiOMS.Web.Controllers
         /// <returns></returns>
         public ModuleType GetById(int Id)
         {
-            ModuleType obj = Session.Get<ModuleType>(Id);
+            ModuleType obj = Nsession.Get<ModuleType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -72,8 +72,8 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
-                Session.Update(obj);
-                Session.Flush();
+                Nsession.Update(obj);
+                Nsession.Flush();
             }
             catch (Exception ee)
             {
@@ -90,8 +90,8 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 ModuleType obj = GetById(id);
-                Session.Delete(obj);
-                Session.Flush();
+                Nsession.Delete(obj);
+                Nsession.Flush();
             }
             catch (Exception ee)
             {
@@ -102,7 +102,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult ParentList()
         {
-            IList<ModuleType> objList = Session.CreateQuery("from ModuleType where ParentId=0").List<ModuleType>();
+            IList<ModuleType> objList = Nsession.CreateQuery("from ModuleType where ParentId=0").List<ModuleType>();
             objList.Insert(0, new ModuleType { FullName = "根菜单", Id = 0 });
             return Json(objList);
         }
@@ -110,11 +110,10 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<ModuleType> objList = Session.CreateQuery("from ModuleType")
+            IList<ModuleType> objList = Nsession.CreateQuery("from ModuleType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<ModuleType>();
-
             return Json(new { total = objList.Count, rows = objList });
         }
 
