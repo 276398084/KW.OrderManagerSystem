@@ -12,8 +12,6 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class PermissionItemController : BaseController
     {
-        protected ISession Session = NHibernateHelper.CreateSession();
-
         public ViewResult Index()
         {
             return View();
@@ -29,8 +27,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                Session.SaveOrUpdate(obj);
-                Session.Flush();
+                NSession.SaveOrUpdate(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -44,9 +42,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  PermissionItemType GetById(int Id)
+        public PermissionItemType GetById(int Id)
         {
-            PermissionItemType obj = Session.Get<PermissionItemType>(Id);
+            PermissionItemType obj = NSession.Get<PermissionItemType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -68,29 +66,29 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(PermissionItemType obj)
         {
-           
+
             try
             {
-                Session.Update(obj);
-                Session.Flush();
+                NSession.Update(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 PermissionItemType obj = GetById(id);
-                Session.Delete(obj);
-                Session.Flush();
+                NSession.Delete(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -99,14 +97,72 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List()
         {
-            IList<PermissionItemType> objList = Session.CreateQuery("from PermissionItemType")
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
-                .List<PermissionItemType>();
+            IList<PermissionItemType> objList = NSession.CreateQuery("from PermissionItemType").List<PermissionItemType>();
 
-            return Json(new { total = objList.Count, rows = objList });
+            IList<PermissionItemType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            foreach (PermissionItemType item in fristList)
+            {
+                List<PermissionItemType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                GetChildren(objList, item);
+
+            }
+        
+            return Json(new { total = fristList.Count, rows = fristList });
+        }
+
+        public JsonResult ParentList()
+        {
+            IList<PermissionItemType> objList = NSession.CreateQuery("from PermissionItemType").List<PermissionItemType>();
+            IList<PermissionItemType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            List<SystemTree> tree = new List<SystemTree>();
+            foreach (PermissionItemType item in fristList)
+            {
+                List<PermissionItemType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                List<SystemTree> tree2 = ConvertToTree(fooList);
+                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
+                GetChildren(objList, item, tree2);
+
+            }
+            tree.Insert(0, new SystemTree { id = "0", text = "root" });
+            return Json(tree);
+        }
+
+        public List<SystemTree> ConvertToTree(List<PermissionItemType> fooList)
+        {
+            List<SystemTree> tree = new List<SystemTree>();
+            foreach (PermissionItemType item in fooList)
+            {
+                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName });
+            }
+            return tree;
+
+        }
+
+        private void GetChildren(IList<PermissionItemType> objList, PermissionItemType item)
+        {
+            foreach (PermissionItemType k in item.children)
+            {
+                List<PermissionItemType> kList = objList.Where(p => p.ParentId == k.Id).OrderByDescending(p => p.SortCode).ToList();
+                k.children = kList;
+                GetChildren(objList, k);
+            }
+        }
+
+        private void GetChildren(IList<PermissionItemType> objList, PermissionItemType item, List<SystemTree> trees)
+        {
+            foreach (PermissionItemType k in item.children)
+            {
+                SystemTree tree = trees.Find(p => p.id == k.Id.ToString());
+                List<PermissionItemType> kList = objList.Where(p => p.ParentId == k.Id).OrderByDescending(p => p.SortCode).ToList();
+                k.children = kList;
+                List<SystemTree> mlist = ConvertToTree(kList);
+                tree.children = mlist;
+                GetChildren(objList, k, mlist);
+            }
         }
 
     }

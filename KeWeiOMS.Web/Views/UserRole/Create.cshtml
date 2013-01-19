@@ -17,21 +17,6 @@
       });
 
 
-        $('#c_ModifiedOn').datebox();
-
-        $('#c_ModifiedBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-		
-        //入库表单校验
-        $("#c_form").validate({
-			submitHandler: function (form) {
-                        ajaxAdd();
-			}
-		});
     });
     
 </script>
@@ -64,15 +49,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.RoleId,new{@id="c_RoleId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Enabled,"有效:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Enabled,new{@id="c_Enabled"})
 		</td>
 	</tr>
 
@@ -114,46 +90,10 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.CreateUserId,"创建用户主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateUserId,new{@id="c_CreateUserId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
             @Html.LabelFor(model => model.CreateBy,"创建用户:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedOn,"修改日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedOn,new{@id="c_ModifiedOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedUserId,"修改用户主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedUserId,new{@id="c_ModifiedUserId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedBy,"修改用户:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedBy,new{@id="c_ModifiedBy"})
 		</td>
 	</tr>
 

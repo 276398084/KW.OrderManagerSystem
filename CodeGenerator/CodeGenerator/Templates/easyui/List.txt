@@ -37,7 +37,7 @@
                     }
                 }]
             });
-        }).show();
+        }).dialog('open');;
     }
 
     //编辑框
@@ -63,11 +63,11 @@
                         }
                     }]
                 });
-            }).show();
+            }).dialog('open');
         }
     }
 
-//异步新建提交
+	//异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
                 url: '@Url.Action("Create","<#ControllerRootName#>")',
@@ -96,7 +96,7 @@
                 }
             });
         }
-   //异步修改提交
+		//异步修改提交
         function ajaxEdit() {
             $('#e_form').form('submit', {
                 url: '@Url.Action("Edit","<#ControllerRootName#>")',

@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class OrganizeTypeMap : ClassMap<OrganizeType> 
+    public class OrganizeTypeMap : ClassMap<OrganizeType>
     {
         public OrganizeTypeMap()
         {
@@ -34,35 +34,12 @@ namespace KeWeiOMS.Domain
             Map(x => x.Code);
             Map(x => x.ShortName);
             Map(x => x.FullName);
-            Map(x => x.Category);
-            Map(x => x.Layer);
-            Map(x => x.OuterPhone);
-            Map(x => x.InnerPhone);
-            Map(x => x.Fax);
-            Map(x => x.Postalcode);
-            Map(x => x.Address);
-            Map(x => x.Web);
-            Map(x => x.LeadershipRoleId);
-            Map(x => x.AssistantLeadershipRoleId);
-            Map(x => x.ManagerRoleId);
-            Map(x => x.AssistantManagerRoleId);
-            Map(x => x.FinancialRoleId);
-            Map(x => x.AccountingRoleId);
-            Map(x => x.CashierRoleId);
-            Map(x => x.SystemManagerRoleId);
-            Map(x => x.IsInnerOrganize);
-            Map(x => x.Bank);
-            Map(x => x.BankAccount);
             Map(x => x.DeletionStateCode);
-            Map(x => x.Enabled);
             Map(x => x.SortCode);
             Map(x => x.Description);
             Map(x => x.CreateOn);
-            Map(x => x.CreateUserId);
             Map(x => x.CreateBy);
-            Map(x => x.ModifiedOn);
-            Map(x => x.ModifiedUserId);
-            Map(x => x.ModifiedBy);
+            HasMany(x => x.children);
         }
     }
 }

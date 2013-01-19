@@ -12,8 +12,6 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class OrganizeController : BaseController
     {
-        protected ISession Session = NHibernateHelper.CreateSession();
-
         public ViewResult Index()
         {
             return View();
@@ -29,8 +27,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                Session.SaveOrUpdate(obj);
-                Session.Flush();
+                obj.CreateOn = DateTime.Now;
+                obj.CreateBy = CurrentUser.Realname;
+                NSession.SaveOrUpdate(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -44,9 +44,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  OrganizeType GetById(int Id)
+        public OrganizeType GetById(int Id)
         {
-            OrganizeType obj = Session.Get<OrganizeType>(Id);
+            OrganizeType obj = NSession.Get<OrganizeType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -68,29 +68,29 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(OrganizeType obj)
         {
-           
+
             try
             {
-                Session.Update(obj);
-                Session.Flush();
+                NSession.Update(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 OrganizeType obj = GetById(id);
-                Session.Delete(obj);
-                Session.Flush();
+                NSession.Delete(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -99,15 +99,75 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List()
         {
-            IList<OrganizeType> objList = Session.CreateQuery("from OrganizeType")
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
-                .List<OrganizeType>();
+            IList<OrganizeType> objList = NSession.CreateQuery("from OrganizeType").List<OrganizeType>();
+            IList<OrganizeType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            foreach (OrganizeType item in fristList)
+            {
+                List<OrganizeType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                GetChildren(objList, item);
 
-            return Json(new { total = objList.Count, rows = objList });
+            }
+            return Json(new { total = fristList.Count, rows = fristList });
         }
+
+        public JsonResult ParentList()
+        {
+            var root = new SystemTree { id = "0", text = "root" };
+            IList<OrganizeType> objList = NSession.CreateQuery("from OrganizeType").List<OrganizeType>();
+            IList<OrganizeType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            List<SystemTree> tree = new List<SystemTree>();
+            tree.Add(root);
+            foreach (OrganizeType item in fristList)
+            {
+                List<OrganizeType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                List<SystemTree> tree2 = ConvertToTree(fooList);
+
+                GetChildren(objList, item, tree2);
+                root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.ShortName, children = tree2 });
+
+            }
+            return Json(tree);
+        }
+
+        public List<SystemTree> ConvertToTree(List<OrganizeType> fooList)
+        {
+            List<SystemTree> tree = new List<SystemTree>();
+            foreach (OrganizeType item in fooList)
+            {
+                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.ShortName });
+            }
+            return tree;
+
+        }
+
+        private void GetChildren(IList<OrganizeType> objList, OrganizeType item)
+        {
+            foreach (OrganizeType k in item.children)
+            {
+                List<OrganizeType> kList = objList.Where(p => p.ParentId == k.Id).OrderByDescending(p => p.SortCode).ToList();
+                k.children = kList;
+                GetChildren(objList, k);
+            }
+        }
+
+        private void GetChildren(IList<OrganizeType> objList, OrganizeType item, List<SystemTree> trees)
+        {
+            foreach (OrganizeType k in item.children)
+            {
+                SystemTree tree = trees.Find(p => p.id == k.Id.ToString());
+                List<OrganizeType> kList = objList.Where(p => p.ParentId == k.Id).OrderByDescending(p => p.SortCode).ToList();
+                k.children = kList;
+                List<SystemTree> mlist = ConvertToTree(kList);
+                tree.children = mlist;
+                GetChildren(objList, k, mlist);
+            }
+        }
+
+
 
     }
 }

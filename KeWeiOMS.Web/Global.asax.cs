@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using KeWeiOMS.NhibernateHelper;
 
 namespace KeWeiOMS.Web
 {
@@ -35,7 +36,7 @@ namespace KeWeiOMS.Web
             AreaRegistration.RegisterAllAreas();
 
             // 默认情况下对 Entity Framework 使用 LocalDB
-           
+            NHibernateHelper.CreateDatabase();
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);

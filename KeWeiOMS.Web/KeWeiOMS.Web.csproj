@@ -106,6 +106,7 @@
     <Compile Include="Common\BaseController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\Easyui.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -179,9 +180,9 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\date.js" />
     <Content Include="Scripts\easyUI\themes\default\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\themes\gray\images\Thumbs.db" />
-    <None Include="Scripts\jquery-1.7.1.intellisense.js" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
     <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
     <Content Include="Scripts\easyUI\locale\easyui-lang-af.js" />
@@ -514,17 +515,7 @@
     <Content Include="Scripts\easyUI\themes\metro\tree.css" />
     <Content Include="Scripts\easyUI\themes\metro\validatebox.css" />
     <Content Include="Scripts\easyUI\themes\metro\window.css" />
-    <Content Include="Scripts\jquery-1.7.1.js" />
-    <Content Include="Scripts\jquery-1.7.1.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery-ui-1.8.20.js" />
-    <Content Include="Scripts\jquery-ui-1.8.20.min.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
-    <Content Include="Views\Home\Create.cshtml">
-      <SubType>Code</SubType>
-    </Content>
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
@@ -537,16 +528,25 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\MicrosoftAjax.js" />
-    <Content Include="Scripts\MicrosoftAjax.debug.js" />
-    <Content Include="Scripts\MicrosoftMvcAjax.js" />
-    <Content Include="Scripts\MicrosoftMvcAjax.debug.js" />
-    <Content Include="Scripts\MicrosoftMvcValidation.js" />
-    <Content Include="Scripts\MicrosoftMvcValidation.debug.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\KeWeiOMS.Domain\KeWeiOMS.Domain.csproj">
+      <Project>{e1c4c6aa-d235-4ecc-b922-f2b5df84e255}</Project>
+      <Name>KeWeiOMS.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\KeWeiOMS.NhibernateHelper\KeWeiOMS.NhibernateHelper.csproj">
+      <Project>{3a6abbc6-d76b-4703-8ec9-ea30472b4382}</Project>
+      <Name>KeWeiOMS.NhibernateHelper</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Views\Module\Create.cshtml" />
     <Content Include="Views\Module\Delete.cshtml" />
     <Content Include="Views\Module\Details.cshtml" />
@@ -587,25 +587,10 @@
     <Content Include="Views\User\Details.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\KeWeiOMS.Domain\KeWeiOMS.Domain.csproj">
-      <Project>{e1c4c6aa-d235-4ecc-b922-f2b5df84e255}</Project>
-      <Name>KeWeiOMS.Domain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\KeWeiOMS.NhibernateHelper\KeWeiOMS.NhibernateHelper.csproj">
-      <Project>{3a6abbc6-d76b-4703-8ec9-ea30472b4382}</Project>
-      <Name>KeWeiOMS.NhibernateHelper</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

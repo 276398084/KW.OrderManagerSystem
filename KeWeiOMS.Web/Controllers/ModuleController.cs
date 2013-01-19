@@ -12,8 +12,6 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class ModuleController : BaseController
     {
-      
-
         public ViewResult Index()
         {
             return View();
@@ -29,9 +27,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                obj = Set<ModuleType>(obj);
-                Nsession.SaveOrUpdate(obj);
-                Nsession.Flush();
+                obj.CreateBy = CurrentUser.Realname;
+                obj.CreateOn = DateTime.Now;
+                NSession.SaveOrUpdate(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -47,7 +46,7 @@ namespace KeWeiOMS.Web.Controllers
         /// <returns></returns>
         public ModuleType GetById(int Id)
         {
-            ModuleType obj = Nsession.Get<ModuleType>(Id);
+            ModuleType obj = NSession.Get<ModuleType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -72,8 +71,8 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
-                Nsession.Update(obj);
-                Nsession.Flush();
+                NSession.Update(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -90,8 +89,8 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 ModuleType obj = GetById(id);
-                Nsession.Delete(obj);
-                Nsession.Flush();
+                NSession.Delete(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -102,19 +101,70 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult ParentList()
         {
-            IList<ModuleType> objList = Nsession.CreateQuery("from ModuleType where ParentId=0").List<ModuleType>();
-            objList.Insert(0, new ModuleType { FullName = "根菜单", Id = 0 });
-            return Json(objList);
+            IList<ModuleType> objList = NSession.CreateQuery("from ModuleType").List<ModuleType>();
+            IList<ModuleType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            List<SystemTree> tree = new List<SystemTree>();
+            foreach (ModuleType item in fristList)
+            {
+                List<ModuleType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                List<SystemTree> tree2 = ConvertToTree(fooList);
+                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
+                GetChildren(objList, item, tree2);
+
+            }
+            return Json(tree);
         }
 
-
-        public JsonResult List(int page, int rows)
+        public JsonResult ALLList()
         {
-            IList<ModuleType> objList = Nsession.CreateQuery("from ModuleType")
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
-                .List<ModuleType>();
-            return Json(new { total = objList.Count, rows = objList });
+            IList<ModuleType> objList = NSession.CreateQuery("from ModuleType").List<ModuleType>();
+            IList<ModuleType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            List<SystemTree> tree = new List<SystemTree>();
+            foreach (ModuleType item in fristList)
+            {
+                List<ModuleType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                List<SystemTree> tree2 = ConvertToTree(fooList);
+                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
+                GetChildren(objList, item, tree2);
+
+            }
+            return Json(new { total = objList.Count, rows = fristList });
+        }
+
+        public List<SystemTree> ConvertToTree(List<ModuleType> fooList)
+        {
+            List<SystemTree> tree = new List<SystemTree>();
+            foreach (ModuleType item in fooList)
+            {
+                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName });
+            }
+            return tree;
+
+        }
+
+        private void GetChildren(IList<ModuleType> objList, ModuleType item)
+        {
+            foreach (ModuleType k in item.children)
+            {
+                List<ModuleType> kList = objList.Where(p => p.ParentId == k.Id).OrderByDescending(p => p.SortCode).ToList();
+                k.children = kList;
+                GetChildren(objList, k);
+            }
+        }
+
+        private void GetChildren(IList<ModuleType> objList, ModuleType item, List<SystemTree> trees)
+        {
+            foreach (ModuleType k in item.children)
+            {
+                SystemTree tree = trees.Find(p => p.id == k.Id.ToString());
+                List<ModuleType> kList = objList.Where(p => p.ParentId == k.Id).OrderByDescending(p => p.SortCode).ToList();
+                k.children = kList;
+                List<SystemTree> mlist = ConvertToTree(kList);
+                tree.children = mlist;
+                GetChildren(objList, k, mlist);
+            }
         }
 
     }

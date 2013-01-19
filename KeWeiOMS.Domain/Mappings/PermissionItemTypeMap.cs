@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class PermissionItemTypeMap : ClassMap<PermissionItemType> 
+    public class PermissionItemTypeMap : ClassMap<PermissionItemType>
     {
         public PermissionItemTypeMap()
         {
@@ -33,22 +33,9 @@ namespace KeWeiOMS.Domain
             Map(x => x.ParentId);
             Map(x => x.Code);
             Map(x => x.FullName);
-            Map(x => x.CategoryCode);
-            Map(x => x.IsScope);
-            Map(x => x.IsPublic);
-            Map(x => x.AllowEdit);
-            Map(x => x.AllowDelete);
-            Map(x => x.LastCall);
-            Map(x => x.Enabled);
-            Map(x => x.DeletionStateCode);
             Map(x => x.SortCode);
             Map(x => x.Description);
-            Map(x => x.CreateOn);
-            Map(x => x.CreateUserId);
-            Map(x => x.CreateBy);
-            Map(x => x.ModifiedOn);
-            Map(x => x.ModifiedUserId);
-            Map(x => x.ModifiedBy);
+            HasMany(x => x.children);
         }
     }
 }

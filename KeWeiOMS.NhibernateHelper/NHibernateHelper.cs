@@ -50,12 +50,35 @@ namespace KeWeiOMS.NhibernateHelper
             return SessionFactory.OpenSession();
         }
 
-
-        private static void BuildSchema(Configuration config)
+        public static void CreateDatabase()
         {
+            string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            string assemblyFile = Path.Combine(path, "bin/KeWeiOMS.Domain.dll");
 
-            new SchemaExport(config)
-                .Create(true, true);
+            Fluently.Configure()
+                .Database(MsSqlConfiguration.MsSql2008.ConnectionString(c => c.FromConnectionStringWithKey("db")))
+                .Mappings(delegate(MappingConfiguration m)
+                {
+                    Assembly assembly = Assembly.LoadFrom(assemblyFile);
+                    m.HbmMappings.AddFromAssembly(assembly);
+                    m.FluentMappings.AddFromAssembly(assembly).Conventions.AddAssembly(assembly);
+                })
+                .ExposeConfiguration(CreateSchema)
+                .BuildConfiguration();
+        }
+
+        //private static void BuildSchema(Configuration config)
+        //{
+
+        //    new SchemaExport(config).Create(false, false);
+        //}
+
+        private static void CreateSchema(Configuration cfg)
+        {
+            var schemaExport = new SchemaUpdate(cfg);
+           
+            schemaExport.Execute(true, true);
+
         }
 
     }

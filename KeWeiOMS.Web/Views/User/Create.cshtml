@@ -1,484 +1,179 @@
 ﻿@model KeWeiOMS.Domain.UserType
-
 @{
     Layout = null;
 }
 
 <script type="text/javascript">
 
+    $.extend($.fn.validatebox.defaults.rules, {
+        /*必须和某个字段相等*/
+        equalTo: {
+            validator: function (value, param) {
+                return $(param[0]).val() == value;
+            },
+            message: '字段不匹配'
+        }
+
+    });
+
     $(function () {
 
-		
-        $('#c_ChangePasswordDate').datebox();
 
 
-        $('#c_AllowStartTime').datebox();
-
-
-        $('#c_AllowEndTime').datebox();
-
-
-        $('#c_LockStartDate').datebox();
-
-
-        $('#c_LockEndDate').datebox();
-
-
-        $('#c_FirstVisit').datebox();
-
-
-        $('#c_PreviousVisit').datebox();
-
-
-        $('#c_LastVisit').datebox();
-
-
-        $('#c_CreateOn').datebox();
 
         $('#c_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
+            url: 'User/UserSrc',
+            editable: true
+        });
 
 
-        $('#c_ModifiedOn').datebox();
-
-        $('#c_ModifiedBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-		
-        //入库表单校验
-        $("#c_form").validate({
-			submitHandler: function (form) {
-                        ajaxAdd();
-			}
-		});
     });
-    
+
 </script>
 
 @using (Html.BeginForm("Create", "User", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Code, "编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Code, new { @id = "c_Code" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Code,"编号:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Username, "登录名:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Username, new { @id = "c_Username", })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Username,"登录名:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Username,new{@id="c_Username"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Password, "用户密码:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Password, new { @id = "c_Password" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Password, "确认密码")
+                </td>
+                <td>
+                    @Html.TextBox("confirmPwd"))
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Password,"用户密码:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Password,new{@id="c_Password"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Realname, "姓名:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Realname, new { @id = "c_Realname" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Realname,"姓名:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Realname,new{@id="c_Realname"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.RoleId,"默认角色主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.RoleId,new{@id="c_RoleId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SecurityLevel,"安全级别:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SecurityLevel,new{@id="c_SecurityLevel"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CId,"公司代码:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CId,new{@id="c_CId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CompanyName,"公司:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CompanyName,new{@id="c_CompanyName"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.DId,"部门主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.DId,new{@id="c_DId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.DepartmentName,"部门名称:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.DepartmentName,new{@id="c_DepartmentName"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.WorkgroupId,"工作组主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WorkgroupId,new{@id="c_WorkgroupId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.WorkgroupName,"工作组名称:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WorkgroupName,new{@id="c_WorkgroupName"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Gender,"性别:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Gender,new{@id="c_Gender"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Telephone,"电话:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Telephone,new{@id="c_Telephone"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Mobile,"手机:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Mobile,new{@id="c_Mobile"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Birthday,"出生日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Birthday,new{@id="c_Birthday"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Duty,"岗位:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Duty,new{@id="c_Duty"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ChangePasswordDate,"最后修改密码日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ChangePasswordDate,new{@id="c_ChangePasswordDate"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.OICQ,"QQ号码:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OICQ,new{@id="c_OICQ"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Email,"电子邮件:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Email,new{@id="c_Email"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.HomeAddress,"家庭住址:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.HomeAddress,new{@id="c_HomeAddress"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AllowStartTime,"允许登录时间开始:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AllowStartTime,new{@id="c_AllowStartTime"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AllowEndTime,"允许登录时间结束:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AllowEndTime,new{@id="c_AllowEndTime"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LockStartDate,"暂停用户开始日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LockStartDate,new{@id="c_LockStartDate"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LockEndDate,"暂停用户结束日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LockEndDate,new{@id="c_LockEndDate"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.FirstVisit,"第一次访问时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.FirstVisit,new{@id="c_FirstVisit"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.PreviousVisit,"上一次访问时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.PreviousVisit,new{@id="c_PreviousVisit"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LastVisit,"最后访问时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LastVisit,new{@id="c_LastVisit"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LogOnCount,"登录次数:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LogOnCount,new{@id="c_LogOnCount"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AuditStatus,"审核状态:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AuditStatus,new{@id="c_AuditStatus"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.IsVisible,"是否显示:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.IsVisible,new{@id="c_IsVisible"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.UserOnLine,"在线状态:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.UserOnLine,new{@id="c_UserOnLine"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.IPAddress,"IP地址:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.IPAddress,new{@id="c_IPAddress"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.MACAddress,"MAC地址:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.MACAddress,new{@id="c_MACAddress"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.OpenId,"单点登录标识:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OpenId,new{@id="c_OpenId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.DeletionStateCode,"删除标志:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.DeletionStateCode,new{@id="c_DeletionStateCode"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Enabled,"有效:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Enabled,new{@id="c_Enabled"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SortCode,"排序码:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SortCode,new{@id="c_SortCode"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Description,"备注:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Description,new{@id="c_Description"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateOn,"创建日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateUserId,"创建用户主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateUserId,new{@id="c_CreateUserId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateBy,"创建用户:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedOn,"修改日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedOn,new{@id="c_ModifiedOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedUserId,"修改用户主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedUserId,new{@id="c_ModifiedUserId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedBy,"修改用户:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedBy,new{@id="c_ModifiedBy"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.RoleId, "角色:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.RoleId, new { @id = "c_RoleId" })
+                </td>
+            </tr>
 
 
-</table>
-</fieldset>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CId, "公司:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CId, new { @id = "c_CId" })
+                    @Html.HiddenFor(model => model.CompanyName, new { @id = "c_CompanyName" })
+                </td>
+            </tr>
+
+
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.DId, "部门:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DId, new { @id = "c_DId" })
+                    @Html.HiddenFor(model => model.DepartmentName, new { @id = "c_DepartmentName" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Gender, "性别:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Gender, new { @id = "c_Gender" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Telephone, "电话:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Telephone, new { @id = "c_Telephone" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Mobile, "手机:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Mobile, new { @id = "c_Mobile" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Birthday, "出生日期:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Birthday, new { @id = "c_Birthday" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Email, "电子邮件:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Email, new { @id = "c_Email" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.HomeAddress, "家庭住址:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.HomeAddress, new { @id = "c_HomeAddress" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Description, "备注:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
 }

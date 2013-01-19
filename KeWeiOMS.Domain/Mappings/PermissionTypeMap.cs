@@ -33,16 +33,6 @@ namespace KeWeiOMS.Domain
             Map(x => x.ResourceCategory);
             Map(x => x.ResourceId);
             Map(x => x.PermissionId);
-            Map(x => x.PermissionConstraint);
-            Map(x => x.Enabled);
-            Map(x => x.DeletionStateCode);
-            Map(x => x.Description);
-            Map(x => x.CreateOn);
-            Map(x => x.CreateBy);
-            Map(x => x.CreateUserId);
-            Map(x => x.ModifiedOn);
-            Map(x => x.ModifiedBy);
-            Map(x => x.ModifiedUserId);
         }
     }
 }

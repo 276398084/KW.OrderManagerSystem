@@ -31,23 +31,13 @@ namespace KeWeiOMS.Domain
             Table("Roles");
             Id(x => x.Id);
             Map(x => x.OrganizeId);
-            Map(x => x.SystemId);
             Map(x => x.Code);
             Map(x => x.Realname);
-            Map(x => x.Category);
-            Map(x => x.AllowEdit);
-            Map(x => x.AllowDelete);
-            Map(x => x.IsVisible);
             Map(x => x.SortCode);
             Map(x => x.DeletionStateCode);
-            Map(x => x.Enabled);
             Map(x => x.Description);
             Map(x => x.CreateOn);
-            Map(x => x.CreateUserId);
             Map(x => x.CreateBy);
-            Map(x => x.ModifiedOn);
-            Map(x => x.ModifiedUserId);
-            Map(x => x.ModifiedBy);
         }
     }
 }

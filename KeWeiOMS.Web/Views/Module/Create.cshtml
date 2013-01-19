@@ -6,13 +6,13 @@
 <script type="text/javascript">
 
     $(function () {
-
-        $('#c_ParentId').combobox({
+        $('#c_ParentId').combotree({
             url: '/Module/ParentList',
             valueField: 'Id',
             textField: 'FullName',
-            panelHeight: 'auto'
+            required: true
         });
+
     });
 
 </script>
@@ -21,7 +21,6 @@
 {
     <fieldset>
         <table class="editForm">
-
 
             <tr>
                 <td>
@@ -52,28 +51,10 @@
 
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.Category, "菜单分类:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Category, new { @id = "c_Category" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
                     @Html.LabelFor(model => model.ImageIndex, "图标编号:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.ImageIndex, new { @id = "c_ImageIndex" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.SelectedImageIndex, "选中状态图标编号:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.SelectedImageIndex, new { @id = "c_SelectedImageIndex" })
                 </td>
             </tr>
 
@@ -86,24 +67,22 @@
                 </td>
             </tr>
 
-
-
-
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.IsMenu, "是菜单:")
+                    @Html.LabelFor(model => model.SortCode, "排序码:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.IsMenu, new { @id = "c_IsMenu" })
+                    @Html.TextBoxFor(model => model.SortCode, new { @id = "c_SortCode" })
                 </td>
             </tr>
 
+
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.Expand, "展开状态:")
+                    @Html.LabelFor(model => model.Description, "备注:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.Expand, new { @id = "c_Expand" })
+                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
                 </td>
             </tr>
 

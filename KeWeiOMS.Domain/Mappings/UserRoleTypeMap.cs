@@ -32,16 +32,11 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.UserId);
             Map(x => x.RoleId);
-            Map(x => x.Enabled);
             Map(x => x.Description);
             Map(x => x.DeletionStateCode);
             Map(x => x.SortCode);
             Map(x => x.CreateOn);
-            Map(x => x.CreateUserId);
             Map(x => x.CreateBy);
-            Map(x => x.ModifiedOn);
-            Map(x => x.ModifiedUserId);
-            Map(x => x.ModifiedBy);
         }
     }
 }

@@ -12,8 +12,6 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class PermissionController : BaseController
     {
-        protected ISession Session = NHibernateHelper.CreateSession();
-
         public ViewResult Index()
         {
             return View();
@@ -29,8 +27,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                Session.SaveOrUpdate(obj);
-                Session.Flush();
+                NSession.SaveOrUpdate(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -46,7 +44,7 @@ namespace KeWeiOMS.Web.Controllers
         /// <returns></returns>
         public  PermissionType GetById(int Id)
         {
-            PermissionType obj = Session.Get<PermissionType>(Id);
+            PermissionType obj = NSession.Get<PermissionType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -71,8 +69,8 @@ namespace KeWeiOMS.Web.Controllers
            
             try
             {
-                Session.Update(obj);
-                Session.Flush();
+                NSession.Update(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -89,8 +87,8 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 PermissionType obj = GetById(id);
-                Session.Delete(obj);
-                Session.Flush();
+                NSession.Delete(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -101,7 +99,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<PermissionType> objList = Session.CreateQuery("from PermissionType")
+            IList<PermissionType> objList = NSession.CreateQuery("from PermissionType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<PermissionType>();

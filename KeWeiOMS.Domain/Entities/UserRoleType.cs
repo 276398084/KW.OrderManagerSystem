@@ -41,11 +41,6 @@ namespace KeWeiOMS.Domain
         public virtual int RoleId { get; set; }
 
         /// <summary>
-        /// 有效
-        /// </summary>
-        public virtual int Enabled { get; set; }
-
-        /// <summary>
         /// 描述
         /// </summary>
         public virtual String Description { get; set; }
@@ -66,29 +61,9 @@ namespace KeWeiOMS.Domain
         public virtual DateTime CreateOn { get; set; }
 
         /// <summary>
-        /// 创建用户主键
-        /// </summary>
-        public virtual String CreateUserId { get; set; }
-
-        /// <summary>
         /// 创建用户
         /// </summary>
         public virtual String CreateBy { get; set; }
-
-        /// <summary>
-        /// 修改日期
-        /// </summary>
-        public virtual DateTime ModifiedOn { get; set; }
-
-        /// <summary>
-        /// 修改用户主键
-        /// </summary>
-        public virtual String ModifiedUserId { get; set; }
-
-        /// <summary>
-        /// 修改用户
-        /// </summary>
-        public virtual String ModifiedBy { get; set; }
 
     }
 }

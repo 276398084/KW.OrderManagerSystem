@@ -5,28 +5,7 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-
-        $('#e_ChangePasswordDate').datebox();
-
-
-        $('#e_AllowStartTime').datebox();
-
-
-        $('#e_AllowEndTime').datebox();
-
-
-        $('#e_LockStartDate').datebox();
-
-
-        $('#e_LockEndDate').datebox();
-
-
-        $('#e_FirstVisit').datebox();
-
-
-        $('#e_PreviousVisit').datebox();
-
-
+	
         $('#e_LastVisit').datebox();
 
 
@@ -36,22 +15,6 @@
           url: 'User/UserSrc',
           editable: true
       });
-
-
-        $('#e_ModifiedOn').datebox();
-
-        $('#e_ModifiedBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-        //表单校验
-        $("#e_form").validate({
-			submitHandler: function (form) {
-                        ajaxEdit();
-			}
-		});
 
 
     });
@@ -224,24 +187,6 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.ChangePasswordDate,"最后修改密码日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ChangePasswordDate,new{@id="e_ChangePasswordDate"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.OICQ,"QQ号码:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OICQ,new{@id="e_OICQ"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
             @Html.LabelFor(model => model.Email,"电子邮件:")
 		</td>
 		<td>
@@ -260,60 +205,6 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.AllowStartTime,"允许登录时间开始:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AllowStartTime,new{@id="e_AllowStartTime"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AllowEndTime,"允许登录时间结束:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AllowEndTime,new{@id="e_AllowEndTime"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LockStartDate,"暂停用户开始日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LockStartDate,new{@id="e_LockStartDate"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LockEndDate,"暂停用户结束日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LockEndDate,new{@id="e_LockEndDate"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.FirstVisit,"第一次访问时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.FirstVisit,new{@id="e_FirstVisit"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.PreviousVisit,"上一次访问时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.PreviousVisit,new{@id="e_PreviousVisit"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
             @Html.LabelFor(model => model.LastVisit,"最后访问时间:")
 		</td>
 		<td>
@@ -323,55 +214,10 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.LogOnCount,"登录次数:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LogOnCount,new{@id="e_LogOnCount"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
             @Html.LabelFor(model => model.AuditStatus,"审核状态:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.AuditStatus,new{@id="e_AuditStatus"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.IsVisible,"是否显示:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.IsVisible,new{@id="e_IsVisible"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.UserOnLine,"在线状态:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.UserOnLine,new{@id="e_UserOnLine"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.IPAddress,"IP地址:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.IPAddress,new{@id="e_IPAddress"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.MACAddress,"MAC地址:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.MACAddress,new{@id="e_MACAddress"})
 		</td>
 	</tr>
 
@@ -390,15 +236,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.DeletionStateCode,new{@id="e_DeletionStateCode"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Enabled,"有效:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Enabled,new{@id="e_Enabled"})
 		</td>
 	</tr>
 
@@ -444,33 +281,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedOn,"修改日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedOn,new{@id="e_ModifiedOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedUserId,"修改用户主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedUserId,new{@id="e_ModifiedUserId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedBy,"修改用户:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedBy,new{@id="e_ModifiedBy"})
 		</td>
 	</tr>
 

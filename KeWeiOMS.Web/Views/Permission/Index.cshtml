@@ -37,7 +37,7 @@
                     }
                 }]
             });
-        }).show();
+        }).dialog('open');;
     }
 
     //编辑框
@@ -63,11 +63,11 @@
                         }
                     }]
                 });
-            }).show();
+            }).dialog('open');
         }
     }
 
-//异步新建提交
+	//异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
                 url: '@Url.Action("Create","Permission")',
@@ -96,7 +96,7 @@
                 }
             });
         }
-   //异步修改提交
+		//异步修改提交
         function ajaxEdit() {
             $('#e_form').form('submit', {
                 url: '@Url.Action("Edit","Permission")',
@@ -203,46 +203,6 @@
 
             <th field="PermissionId" width="100">
                 操作权限主键
-            </th>
-
-            <th field="PermissionConstraint" width="100">
-                权限约束表达式
-            </th>
-
-            <th field="Enabled" width="100">
-                有效
-            </th>
-
-            <th field="DeletionStateCode" width="100">
-                删除标记
-            </th>
-
-            <th field="Description" width="100">
-                备注
-            </th>
-
-            <th field="CreateOn" width="100">
-                创建日期
-            </th>
-
-            <th field="CreateBy" width="100">
-                创建用户
-            </th>
-
-            <th field="CreateUserId" width="100">
-                创建用户主键
-            </th>
-
-            <th field="ModifiedOn" width="100">
-                修改日期
-            </th>
-
-            <th field="ModifiedBy" width="100">
-                修改用户
-            </th>
-
-            <th field="ModifiedUserId" width="100">
-                修改用户主键
             </th>
 
 

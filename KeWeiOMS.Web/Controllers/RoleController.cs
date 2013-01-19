@@ -12,8 +12,6 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class RoleController : BaseController
     {
-        protected ISession Session = NHibernateHelper.CreateSession();
-
         public ViewResult Index()
         {
             return View();
@@ -29,8 +27,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                Session.SaveOrUpdate(obj);
-                Session.Flush();
+                obj.CreateBy = CurrentUser.Realname;
+                obj.CreateOn = DateTime.Now;
+                NSession.SaveOrUpdate(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -44,9 +44,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  RoleType GetById(int Id)
+        public RoleType GetById(int Id)
         {
-            RoleType obj = Session.Get<RoleType>(Id);
+            RoleType obj = NSession.Get<RoleType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -68,29 +68,29 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(RoleType obj)
         {
-           
+
             try
             {
-                Session.Update(obj);
-                Session.Flush();
+                NSession.Update(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 RoleType obj = GetById(id);
-                Session.Delete(obj);
-                Session.Flush();
+                NSession.Delete(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -101,7 +101,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<RoleType> objList = Session.CreateQuery("from RoleType")
+            IList<RoleType> objList = NSession.CreateQuery("from RoleType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<RoleType>();

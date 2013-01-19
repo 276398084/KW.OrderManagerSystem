@@ -9,13 +9,6 @@
     $(function () {
 
 		<#cjs#>
-		
-        //入库表单校验
-        $("#c_form").validate({
-			submitHandler: function (form) {
-                        ajaxAdd();
-			}
-		});
     });
     
 </script>

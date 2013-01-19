@@ -12,8 +12,6 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class UserController : BaseController
     {
-        protected ISession Session = NHibernateHelper.CreateSession();
-
         public ViewResult Index()
         {
             return View();
@@ -29,8 +27,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                Session.SaveOrUpdate(obj);
-                Session.Flush();
+                NSession.SaveOrUpdate(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -46,7 +44,7 @@ namespace KeWeiOMS.Web.Controllers
         /// <returns></returns>
         public  UserType GetById(int Id)
         {
-            UserType obj = Session.Get<UserType>(Id);
+            UserType obj = NSession.Get<UserType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -71,8 +69,8 @@ namespace KeWeiOMS.Web.Controllers
            
             try
             {
-                Session.Update(obj);
-                Session.Flush();
+                NSession.Update(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -89,8 +87,8 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 UserType obj = GetById(id);
-                Session.Delete(obj);
-                Session.Flush();
+                NSession.Delete(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -101,7 +99,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<UserType> objList = Session.CreateQuery("from UserType")
+            IList<UserType> objList = NSession.CreateQuery("from UserType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<UserType>();

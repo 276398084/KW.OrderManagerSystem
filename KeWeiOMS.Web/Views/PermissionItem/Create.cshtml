@@ -1,5 +1,4 @@
 ﻿@model KeWeiOMS.Domain.PermissionItemType
-
 @{
     Layout = null;
 }
@@ -7,223 +6,70 @@
 <script type="text/javascript">
 
     $(function () {
+        $(function () {
+            $('#c_ParentId').combotree({
+                url: '/PermissionItem/ParentList',
+                valueField: 'Id',
+                textField: 'FullName',
+                required: true
+            });
+        });
 
-		
-        $('#c_LastCall').datebox();
-
-
-        $('#c_CreateOn').datebox();
-
-        $('#c_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-        $('#c_ModifiedOn').datebox();
-
-        $('#c_ModifiedBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-		
-        //入库表单校验
-        $("#c_form").validate({
-			submitHandler: function (form) {
-                        ajaxAdd();
-			}
-		});
     });
-    
+
 </script>
 
 @using (Html.BeginForm("Create", "PermissionItem", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>
+    <fieldset>
+        <table class="editForm">
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ParentId,"父级主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ParentId,new{@id="c_ParentId"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ParentId, "父级主键:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ParentId, new { @id = "c_ParentId" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Code,"编号:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Code, "编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Code, new { @id = "c_Code" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.FullName,"名称:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.FullName,new{@id="c_FullName"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.FullName, "名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.FullName, new { @id = "c_FullName" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CategoryCode,"分类:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CategoryCode,new{@id="c_CategoryCode"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SortCode, "排序码:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SortCode, new { @id = "c_SortCode" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.IsScope,"权限域:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.IsScope,new{@id="c_IsScope"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.IsPublic,"是公开:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.IsPublic,new{@id="c_IsPublic"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AllowEdit,"允许编辑:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AllowEdit,new{@id="c_AllowEdit"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AllowDelete,"允许删除:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AllowDelete,new{@id="c_AllowDelete"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LastCall,"最后被调用日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LastCall,new{@id="c_LastCall"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Enabled,"有效:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Enabled,new{@id="c_Enabled"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.DeletionStateCode,"删除标记:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.DeletionStateCode,new{@id="c_DeletionStateCode"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SortCode,"排序码:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SortCode,new{@id="c_SortCode"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Description,"备注:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Description,new{@id="c_Description"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateOn,"创建日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateUserId,"创建用户主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateUserId,new{@id="c_CreateUserId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateBy,"创建用户:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedOn,"修改日期:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedOn,new{@id="c_ModifiedOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedUserId,"修改用户主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedUserId,new{@id="c_ModifiedUserId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ModifiedBy,"修改用户:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ModifiedBy,new{@id="c_ModifiedBy"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Description, "备注:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
+                </td>
+            </tr>
 
 
-</table>
-</fieldset>
+        </table>
+    </fieldset>
 }

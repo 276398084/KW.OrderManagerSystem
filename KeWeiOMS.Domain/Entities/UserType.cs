@@ -116,16 +116,6 @@ namespace KeWeiOMS.Domain
         public virtual String Duty { get; set; }
 
         /// <summary>
-        /// 最后修改密码日期
-        /// </summary>
-        public virtual DateTime ChangePasswordDate { get; set; }
-
-        /// <summary>
-        /// QQ号码
-        /// </summary>
-        public virtual String OICQ { get; set; }
-
-        /// <summary>
         /// 电子邮件
         /// </summary>
         public virtual String Email { get; set; }
@@ -136,69 +126,14 @@ namespace KeWeiOMS.Domain
         public virtual String HomeAddress { get; set; }
 
         /// <summary>
-        /// 允许登录时间开始
-        /// </summary>
-        public virtual DateTime AllowStartTime { get; set; }
-
-        /// <summary>
-        /// 允许登录时间结束
-        /// </summary>
-        public virtual DateTime AllowEndTime { get; set; }
-
-        /// <summary>
-        /// 暂停用户开始日期
-        /// </summary>
-        public virtual DateTime LockStartDate { get; set; }
-
-        /// <summary>
-        /// 暂停用户结束日期
-        /// </summary>
-        public virtual DateTime LockEndDate { get; set; }
-
-        /// <summary>
-        /// 第一次登录时间
-        /// </summary>
-        public virtual DateTime FirstVisit { get; set; }
-
-        /// <summary>
-        /// 上一次登录时间
-        /// </summary>
-        public virtual DateTime PreviousVisit { get; set; }
-
-        /// <summary>
         /// 最后登录时间
         /// </summary>
         public virtual DateTime LastVisit { get; set; }
 
         /// <summary>
-        /// 登录次数
-        /// </summary>
-        public virtual int LogOnCount { get; set; }
-
-        /// <summary>
         /// 审核状态
         /// </summary>
         public virtual String AuditStatus { get; set; }
-
-        /// <summary>
-        /// 是否显示
-        /// </summary>
-        public virtual int IsVisible { get; set; }
-
-        /// <summary>
-        /// 在线状态
-        /// </summary>
-        public virtual int UserOnLine { get; set; }
-
-        /// <summary>
-        /// IP地址
-        /// </summary>
-        public virtual String IPAddress { get; set; }
-
-        /// <summary>
-        /// MAC地址
-        /// </summary>
-        public virtual String MACAddress { get; set; }
 
         /// <summary>
         /// 单点登录标识
@@ -209,11 +144,6 @@ namespace KeWeiOMS.Domain
         /// 删除标志
         /// </summary>
         public virtual int DeletionStateCode { get; set; }
-
-        /// <summary>
-        /// 有效
-        /// </summary>
-        public virtual int Enabled { get; set; }
 
         /// <summary>
         /// 排序码
@@ -239,21 +169,6 @@ namespace KeWeiOMS.Domain
         /// 创建用户
         /// </summary>
         public virtual String CreateBy { get; set; }
-
-        /// <summary>
-        /// 修改日期
-        /// </summary>
-        public virtual DateTime ModifiedOn { get; set; }
-
-        /// <summary>
-        /// 修改用户主键
-        /// </summary>
-        public virtual String ModifiedUserId { get; set; }
-
-        /// <summary>
-        /// 修改用户
-        /// </summary>
-        public virtual String ModifiedBy { get; set; }
 
     }
 }

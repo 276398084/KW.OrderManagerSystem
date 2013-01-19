@@ -51,109 +51,9 @@ namespace KeWeiOMS.Domain
         public virtual String FullName { get; set; }
 
         /// <summary>
-        /// 分类
-        /// </summary>
-        public virtual String Category { get; set; }
-
-        /// <summary>
-        /// 层
-        /// </summary>
-        public virtual int Layer { get; set; }
-
-        /// <summary>
-        /// 外线电话
-        /// </summary>
-        public virtual String OuterPhone { get; set; }
-
-        /// <summary>
-        /// 内线电话
-        /// </summary>
-        public virtual String InnerPhone { get; set; }
-
-        /// <summary>
-        /// 传真
-        /// </summary>
-        public virtual String Fax { get; set; }
-
-        /// <summary>
-        /// 邮编
-        /// </summary>
-        public virtual String Postalcode { get; set; }
-
-        /// <summary>
-        /// 地址
-        /// </summary>
-        public virtual String Address { get; set; }
-
-        /// <summary>
-        /// 网址
-        /// </summary>
-        public virtual String Web { get; set; }
-
-        /// <summary>
-        /// 领导
-        /// </summary>
-        public virtual String LeadershipRoleId { get; set; }
-
-        /// <summary>
-        /// 分管领导
-        /// </summary>
-        public virtual String AssistantLeadershipRoleId { get; set; }
-
-        /// <summary>
-        /// 主负责人
-        /// </summary>
-        public virtual String ManagerRoleId { get; set; }
-
-        /// <summary>
-        /// 副负责人
-        /// </summary>
-        public virtual String AssistantManagerRoleId { get; set; }
-
-        /// <summary>
-        /// 财务主管
-        /// </summary>
-        public virtual String FinancialRoleId { get; set; }
-
-        /// <summary>
-        /// 会计
-        /// </summary>
-        public virtual String AccountingRoleId { get; set; }
-
-        /// <summary>
-        /// 出纳
-        /// </summary>
-        public virtual String CashierRoleId { get; set; }
-
-        /// <summary>
-        /// 系统管理员
-        /// </summary>
-        public virtual String SystemManagerRoleId { get; set; }
-
-        /// <summary>
-        /// 内部组织机构
-        /// </summary>
-        public virtual int IsInnerOrganize { get; set; }
-
-        /// <summary>
-        /// 开户行
-        /// </summary>
-        public virtual String Bank { get; set; }
-
-        /// <summary>
-        /// 银行帐号
-        /// </summary>
-        public virtual String BankAccount { get; set; }
-
-        /// <summary>
         /// 删除标记
         /// </summary>
         public virtual int DeletionStateCode { get; set; }
-
-        /// <summary>
-        /// 有效
-        /// </summary>
-        public virtual int Enabled { get; set; }
 
         /// <summary>
         /// 排序码
@@ -171,29 +71,14 @@ namespace KeWeiOMS.Domain
         public virtual DateTime CreateOn { get; set; }
 
         /// <summary>
-        /// 创建用户主键
-        /// </summary>
-        public virtual String CreateUserId { get; set; }
-
-        /// <summary>
         /// 创建用户
         /// </summary>
         public virtual String CreateBy { get; set; }
 
         /// <summary>
-        /// 修改日期
+        /// 
         /// </summary>
-        public virtual DateTime ModifiedOn { get; set; }
-
-        /// <summary>
-        /// 修改用户主键
-        /// </summary>
-        public virtual String ModifiedUserId { get; set; }
-
-        /// <summary>
-        /// 修改用户
-        /// </summary>
-        public virtual String ModifiedBy { get; set; }
+        public virtual IList<OrganizeType> children { get; set; }
 
     }
 }

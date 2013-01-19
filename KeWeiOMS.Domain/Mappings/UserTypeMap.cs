@@ -47,34 +47,17 @@ namespace KeWeiOMS.Domain
             Map(x => x.Mobile);
             Map(x => x.Birthday);
             Map(x => x.Duty);
-            Map(x => x.ChangePasswordDate);
-            Map(x => x.OICQ);
             Map(x => x.Email);
             Map(x => x.HomeAddress);
-            Map(x => x.AllowStartTime);
-            Map(x => x.AllowEndTime);
-            Map(x => x.LockStartDate);
-            Map(x => x.LockEndDate);
-            Map(x => x.FirstVisit);
-            Map(x => x.PreviousVisit);
             Map(x => x.LastVisit);
-            Map(x => x.LogOnCount);
             Map(x => x.AuditStatus);
-            Map(x => x.IsVisible);
-            Map(x => x.UserOnLine);
-            Map(x => x.IPAddress);
-            Map(x => x.MACAddress);
             Map(x => x.OpenId);
             Map(x => x.DeletionStateCode);
-            Map(x => x.Enabled);
             Map(x => x.SortCode);
             Map(x => x.Description);
             Map(x => x.CreateOn);
             Map(x => x.CreateUserId);
             Map(x => x.CreateBy);
-            Map(x => x.ModifiedOn);
-            Map(x => x.ModifiedUserId);
-            Map(x => x.ModifiedBy);
         }
     }
 }
