@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -37,12 +38,39 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
+        [HttpPost]
+        public JsonResult UpdateRate()
+        {
+            try
+            {
+                cn.com.webxml.webservice.ForexRmbRateWebService server = new cn.com.webxml.webservice.ForexRmbRateWebService();
+                DataSet ds = server.getForexRmbRate();
+
+                NSession.Delete(" from CurrencyType");
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    CurrencyType c = new CurrencyType();
+                    c.CurrencyCode = dr["Symbol"].ToString();
+                    c.CurrencyName = dr["Name"].ToString();
+                    c.CurrencySign = "";
+                    c.CurrencyValue = Convert.ToDouble(dr["fBuyPrice"].ToString()) / 100;
+                    c.CreateOn = DateTime.Now; ;
+                    NSession.Save(c);
+                }
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = "true" });
+        }
+
         /// <summary>
         /// 根据Id获取
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  CurrencyType GetById(int Id)
+        public CurrencyType GetById(int Id)
         {
             CurrencyType obj = NSession.Get<CurrencyType>(Id);
             if (obj == null)
@@ -66,7 +94,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(CurrencyType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +105,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 CurrencyType obj = GetById(id);

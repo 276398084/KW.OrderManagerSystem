@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class ReturnAddresController : BaseController
+    public class ReturnAddressController : BaseController
     {
         public ViewResult Index()
         {

@@ -85,7 +85,7 @@
 							if (type == 'boolean'){
 								opts[name] = t.attr(name) ? (t.attr(name) == 'true') : undefined;
 							} else if (type == 'number'){
-								opts[name] = t.attr(name)=='0' ? 0 : parseFloat(t.attr(name)) || undefined;
+								opts[name] = t.attr(name)=='0' ? 0 : parsedouble(t.attr(name)) || undefined;
 							}
 						}
 					}

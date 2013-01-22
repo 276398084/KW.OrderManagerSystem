@@ -82,11 +82,11 @@ namespace CodeGenerator.Business
                                      + "            entity." + field + " = Decimal.Parse(this.txt" + field + ".Text); " + System.Environment.NewLine
                                      + "        }" + System.Environment.NewLine;
                         break;
-                    case "FLOAT":
+                    case "double":
                         returnValue += System.Environment.NewLine;
                         returnValue += "        if (!string.IsNullOrEmpty(this.txt" + field + ".Text)) " + System.Environment.NewLine
                                      + "        { " + System.Environment.NewLine
-                                     + "            entity." + field + " = float.Parse(this.txt" + field + ".Text); " + System.Environment.NewLine
+                                     + "            entity." + field + " = double.Parse(this.txt" + field + ".Text); " + System.Environment.NewLine
                                      + "        }" + System.Environment.NewLine;
                         break;
                     case "DOUBLE":
@@ -198,9 +198,9 @@ namespace CodeGenerator.Business
                     break;
                 case "NUMBER":
                 case "NUMERIC":
-                case "FLOAT":
+                case "double":
                     returnValue += System.Environment.NewLine;
-                    returnValue += "            if(!IsFloat(document.getElementById(\"txt" + field + "\").value))" + System.Environment.NewLine;
+                    returnValue += "            if(!Isdouble(document.getElementById(\"txt" + field + "\").value))" + System.Environment.NewLine;
                     returnValue += "            {" + System.Environment.NewLine;
                     returnValue += "                alert(\"" + filedName + ",格式不正确，应为数字。\");" + System.Environment.NewLine;
                     returnValue += "                document.getElementById(\"txt" + field + "\").focus();" + System.Environment.NewLine;
@@ -284,11 +284,11 @@ namespace CodeGenerator.Business
                     break;
                 case "NUMBER":
                 case "NUMERIC":
-                case "FLOAT":
+                case "double":
                     if (!field.StartsWith("Items"))
                     {
                         returnValue += System.Environment.NewLine;
-                        returnValue += "        if (!floatRegex.IsMatch(this.txt" + field + ".Text))" + System.Environment.NewLine;
+                        returnValue += "        if (!doubleRegex.IsMatch(this.txt" + field + ".Text))" + System.Environment.NewLine;
                         returnValue += "        {" + System.Environment.NewLine;
                         returnValue += "            MessageBox.ShowAlert(\"" + filedName + ",格式不正确。\");" + System.Environment.NewLine;
                         returnValue += "            this.txt" + field + ".Focus();" + System.Environment.NewLine;
@@ -500,8 +500,8 @@ namespace CodeGenerator.Business
                     break;
                 case "NUMBER":
                 case "NUMERIC":
-                case "FLOAT":
-                    returnValue = returnValue.Replace("{onkeypress}", "onkeypress=\"event.returnValue=CheckInputIsFloat(event.keyCode,this)\"");
+                case "double":
+                    returnValue = returnValue.Replace("{onkeypress}", "onkeypress=\"event.returnValue=CheckInputIsdouble(event.keyCode,this)\"");
                     break;
                 default:
                     returnValue = returnValue.Replace("{onkeypress}", "");

@@ -26,7 +26,7 @@
 	padding: 2px;
 	margin: 0;
 	display:block;
-	float: left;
+	double: left;
 }
 .ui-menu .ui-menu {
 	margin-top: -3px;
@@ -35,7 +35,7 @@
 	margin:0;
 	padding: 0;
 	zoom: 1;
-	float: left;
+	double: left;
 	clear: left;
 	width: 100%;
 }

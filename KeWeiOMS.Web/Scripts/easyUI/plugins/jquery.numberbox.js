@@ -207,7 +207,7 @@ if(_23.suffix){
 s=s.replace(new RegExp("\\"+$.trim(_23.suffix),"g"),"");
 }
 s=s.replace(/\s/g,"");
-var val=parseFloat(s).toFixed(_23.precision);
+var val=parsedouble(s).toFixed(_23.precision);
 if(isNaN(val)){
 val="";
 }else{

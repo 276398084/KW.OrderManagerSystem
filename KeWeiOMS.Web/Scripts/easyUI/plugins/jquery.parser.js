@@ -70,7 +70,7 @@ if(_d=="boolean"){
 _b[_c]=t.attr(_c)?(t.attr(_c)=="true"):undefined;
 }else{
 if(_d=="number"){
-_b[_c]=t.attr(_c)=="0"?0:parseFloat(t.attr(_c))||undefined;
+_b[_c]=t.attr(_c)=="0"?0:parsedouble(t.attr(_c))||undefined;
 }
 }
 }

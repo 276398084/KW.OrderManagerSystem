@@ -24,13 +24,14 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class CurrencyTypeMap : ClassMap<CurrencyType> 
+    public class CurrencyTypeMap : ClassMap<CurrencyType>
     {
         public CurrencyTypeMap()
         {
             Table("Currency");
             Id(x => x.Id);
             Map(x => x.CurrencyName);
+            Map(x => x.CurrencyCode);
             Map(x => x.CurrencySign);
             Map(x => x.CurrencyValue);
             Map(x => x.CreateOn);

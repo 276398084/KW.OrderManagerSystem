@@ -36,7 +36,7 @@ if(p=="-"){
 _8.append("<div class=\"dialog-tool-separator\"></div>");
 }else{
 var _9=$("<a href=\"javascript:void(0)\"></a>").appendTo(_8);
-_9.css("float","left");
+_9.css("double","left");
 _9[0].onclick=eval(p.handler||function(){
 });
 _9.linkbutton($.extend({},p,{plain:true}));

@@ -14,7 +14,7 @@ $(_2).spinner(_3).numberbox(_3);
 };
 function _4(_5,_6){
 var _7=$.data(_5,"numberspinner").options;
-var v=parseFloat($(_5).numberbox("getValue")||_7.value)||0;
+var v=parsedouble($(_5).numberbox("getValue")||_7.value)||0;
 if(_6==true){
 v-=_7.increment;
 }else{

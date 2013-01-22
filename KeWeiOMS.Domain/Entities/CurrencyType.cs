@@ -36,6 +36,10 @@ namespace KeWeiOMS.Domain
         public virtual String CurrencyName { get; set; }
 
         /// <summary>
+        /// 代码
+        /// </summary>
+        public virtual String CurrencyCode { get; set; }
+        /// <summary>
         /// 符号
         /// </summary>
         public virtual String CurrencySign { get; set; }
@@ -43,7 +47,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 值
         /// </summary>
-        public virtual float CurrencyValue { get; set; }
+        public virtual double CurrencyValue { get; set; }
 
         /// <summary>
         /// CreateOn

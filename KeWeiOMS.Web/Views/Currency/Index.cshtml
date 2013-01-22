@@ -1,88 +1,112 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.CurrencyType>
+﻿@model IEnumerable<KeWeiOMS.Domain.CurrencyType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","Currency")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Currency")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
         });
 
-    });
-
-    //新建
-    function c_dlg() {
-        var url_str = '@Url.Action("Create","Currency")';
-		
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
+        function updateRate() {
+            var url_str = '@Url.Action("UpdateRate", "Currency")';
+            $('#dg').datagrid('loading');
+            $.post(url_str, "", function (result) {
+                var result = eval('(' + result + ')');
+                if (result.errorMsg) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存失败:' + result.errorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                } else {
+                    $('#c_dlg').dialog('close');
+                    $('#dg').datagrid('reload');
+                    $.messager.show({
+                        title: '提示',
+                        msg: '更新成功',
+                        timeout: 2000,
+                        showType: 'slide'
+                    });
+                }
             });
-        }).dialog('open');;
-    }
+        }
 
-    //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit","Currency")/' + id;
-            $('#e_dlg').load(url, function () {
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Currency")';
+
+            $('#c_dlg').load(url_str, function () {
                 $(this).dialog({
-                    title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
+                    title: '新建',
+                    modal: true,
+                    loadingMessage: '正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-							ajaxEdit();
+                            ajaxAdd();
                         }
                     }, {
                         text: '取消',
                         handler: function () {
-                            $('#e_dlg').dialog('close');
+                            $('#c_dlg').dialog('close');
                         }
                     }]
                 });
-            }).dialog('open');
+            }).dialog('open');;
         }
-    }
 
-	//异步新建提交
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Currency")/' + id;
+                $('#e_dlg').load(url, function () {
+                    $(this).dialog({
+                        title: '编辑',
+                        modal: true,
+                        loadingMessage: '正在加载...',
+                        buttons: [{
+                            text: '提交',
+                            iconCls: 'icon-ok',
+                            handler: function () {
+                                ajaxEdit();
+                            }
+                        }, {
+                            text: '取消',
+                            handler: function () {
+                                $('#e_dlg').dialog('close');
+                            }
+                        }]
+                    });
+                }).dialog('open');
+            }
+        }
+
+        //异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
-                url: '@Url.Action("Create","Currency")',
+                url: '@Url.Action("Create", "Currency")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
                     var result = eval('(' + result + ')');
                     if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#c_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -95,132 +119,126 @@
                     }
                 }
             });
-        }
-		//异步修改提交
-        function ajaxEdit() {
-            $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","Currency")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
-                    } else {
-                        $('#e_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
+            }
+            //异步修改提交
+            function ajaxEdit() {
+                $('#e_form').form('submit', {
+                    url: '@Url.Action("Edit", "Currency")',
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.errorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#e_dlg').dialog('close');
+                            $('#dg').datagrid('reload');
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
+                    }
+                });
+            }
+
+
+            //删除
+            function del() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    $.messager.confirm('确认', '确定删除?', function (r) {
+                        if (r) {
+                            var url = '@Url.Action("Delete", "Currency")/' + id;
+                            $.post(url, function () {
+                            }).success(function (data) {
+                                var msgstr = "删除成功";
+                                if (data != true) {
+                                    msgstr = "删除失败" + data;
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 0,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 3000,
+                                        showType: 'slide'
+                                    });
+                                }
+
+                                $('#dg').datagrid('reload');
+                            }).error(function () {
+                                $.messager.alert('错误', '删除发生错误');
+                            });
+
+                        }
+                    });
+                }
+            }
+
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
                     }
                 }
-            });
-        }
-   
-
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","Currency")/' + id;
-                    $.post(url, function () {
-                    }).success(function (data) {
-                        var msgstr = "删除成功";
-                        if (data != true) {
-                            msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
-
-                        $('#dg').datagrid('reload');
-                    }) .error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
-                }
-            });
-        }
-    }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
             }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-   
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-            <th field="Id" width="100">
-                主键表
-            </th>
 
-            <th field="CurrencyName" width="100">
-                货币
-            </th>
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
 
-            <th field="CurrencySign" width="100">
-                符号
-            </th>
+                    <th field="CurrencyName" width="100">货币
+                    </th>
 
-            <th field="CurrencyValue" width="100">
-                值
-            </th>
+                    <th field="CurrencySign" width="100">符号
+                    </th>
 
-            <th field="CreateOn" width="100">
-                CreateOn
-            </th>
+                    <th field="CurrencyValue" width="100">值
+                    </th>
+
+                    <th field="CreateOn" width="100">更新时间
+                    </th>
 
 
-    	</tr>
-		</thead>
-		</table>
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="updateRate();">同步</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+        </div>
 
-</div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
 </body>

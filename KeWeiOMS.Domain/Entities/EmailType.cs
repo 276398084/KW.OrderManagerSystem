@@ -83,7 +83,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 产品价格
         /// </summary>
-        public virtual float ProductPrice { get; set; }
+        public virtual double ProductPrice { get; set; }
 
         /// <summary>
         /// 账户

@@ -248,7 +248,7 @@ $("<div class=\"datagrid-btn-separator\"></div>").appendTo(tb);
 var _45=$("<a href=\"javascript:void(0)\"></a>");
 _45[0].onclick=eval(btn.handler||function(){
 });
-_45.css("float","left").appendTo(tb).linkbutton($.extend({},btn,{plain:true}));
+_45.css("double","left").appendTo(tb).linkbutton($.extend({},btn,{plain:true}));
 }
 }
 }

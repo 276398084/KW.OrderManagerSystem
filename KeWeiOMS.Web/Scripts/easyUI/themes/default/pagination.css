@@ -2,14 +2,14 @@
 	zoom:1;
 }
 .pagination table{
-	float:left;
+	double:left;
 	height:30px;
 }
 .pagination td{
 	border:0;
 }
 .pagination-btn-separator{
-	float:left;
+	double:left;
 	height:24px;
 	border-left:1px solid #ccc;
 	border-right:1px solid #fff;
@@ -23,7 +23,7 @@
 	margin:0px 6px;
 }
 .pagination-info{
-	float:right;
+	double:right;
 	padding-right:6px;
 	padding-top:8px;
 	font-size:12px;

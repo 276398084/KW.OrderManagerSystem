@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://webxml.com.cn/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://webxml.com.cn/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;a href="http://www.webxml.com.cn/" target="_blank"&gt;WebXml.com.cn&lt;/a&gt; &lt;strong&gt;外汇-人民币即时报价 WEB 服务&lt;/strong&gt;， 数据即时更新。外汇-人民币即时报价 WEB 服务仅作为用户获取信息之目的，并不构成投资建议。&lt;a href="http://www.webxml.com.cn/" target="_blank"&gt;WebXml.com.cn&lt;/a&gt; 和/或其各供应商不为本页面提供信息的错误、残缺、延迟或因依靠此信息所采取的任何行动负责。&lt;strong&gt;市场有风险，投资需谨慎&lt;/strong&gt;。&lt;br /&gt;此外汇汇率数据Web Services请不要用于任何商业目的，若有需要请&lt;a href="http://www.webxml.com.cn/zh_cn/contact_us.aspx" target="_blank"&gt;联系我们&lt;/a&gt;，欢迎技术交流。 QQ：8409035&lt;br /&gt;&lt;strong&gt;使用本站 WEB 服务请注明或链接本站：http://www.webxml.com.cn/ 感谢大家的支持&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;&amp;nbsp;</wsdl:documentation>
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://webxml.com.cn/">
+      <s:element name="getForexRmbRate">
+        <s:complexType />
+      </s:element>
+      <s:element name="getForexRmbRateResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getForexRmbRateResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getForexRmbRatePro">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="theUserID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="getForexRmbRateProResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="getForexRmbRateProResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="DataSet" nillable="true">
+        <s:complexType>
+          <s:sequence>
+            <s:element ref="s:schema" />
+            <s:any />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="getForexRmbRateSoapIn">
+    <wsdl:part name="parameters" element="tns:getForexRmbRate" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateSoapOut">
+    <wsdl:part name="parameters" element="tns:getForexRmbRateResponse" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateProSoapIn">
+    <wsdl:part name="parameters" element="tns:getForexRmbRatePro" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateProSoapOut">
+    <wsdl:part name="parameters" element="tns:getForexRmbRateProResponse" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateHttpGetIn" />
+  <wsdl:message name="getForexRmbRateHttpGetOut">
+    <wsdl:part name="Body" element="tns:DataSet" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateProHttpGetIn">
+    <wsdl:part name="theUserID" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateProHttpGetOut">
+    <wsdl:part name="Body" element="tns:DataSet" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateHttpPostIn" />
+  <wsdl:message name="getForexRmbRateHttpPostOut">
+    <wsdl:part name="Body" element="tns:DataSet" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateProHttpPostIn">
+    <wsdl:part name="theUserID" type="s:string" />
+  </wsdl:message>
+  <wsdl:message name="getForexRmbRateProHttpPostOut">
+    <wsdl:part name="Body" element="tns:DataSet" />
+  </wsdl:message>
+  <wsdl:portType name="ForexRmbRateWebServiceSoap">
+    <wsdl:operation name="getForexRmbRate">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;br /&gt;&lt;h3&gt;获得外汇-人民币即时报价&lt;/h3&gt;&lt;p&gt;输入参数：无； 返回数据：DataSet，Item(Symbol) = 货币代号、Item(Name) = 货币名称、Item(mBuyPrice) = 现钞买入价、Item(fBuyPrice) = 现汇买入价、Item(SellPrice) = 卖出价、Item(BasePrice) = 基准价&lt;/p&gt;&lt;br /&gt;</wsdl:documentation>
+      <wsdl:input message="tns:getForexRmbRateSoapIn" />
+      <wsdl:output message="tns:getForexRmbRateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getForexRmbRatePro">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;br /&gt;&lt;h3&gt;获得外汇-人民币即时报价（商业用户）&lt;/h3&gt;&lt;p&gt;调用方法同：getForexRmbRate，输入参数：theUserID = 商业用户ID ； 返回数据：DataSet&lt;/p&gt;&lt;br /&gt;</wsdl:documentation>
+      <wsdl:input message="tns:getForexRmbRateProSoapIn" />
+      <wsdl:output message="tns:getForexRmbRateProSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ForexRmbRateWebServiceHttpGet">
+    <wsdl:operation name="getForexRmbRate">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;br /&gt;&lt;h3&gt;获得外汇-人民币即时报价&lt;/h3&gt;&lt;p&gt;输入参数：无； 返回数据：DataSet，Item(Symbol) = 货币代号、Item(Name) = 货币名称、Item(mBuyPrice) = 现钞买入价、Item(fBuyPrice) = 现汇买入价、Item(SellPrice) = 卖出价、Item(BasePrice) = 基准价&lt;/p&gt;&lt;br /&gt;</wsdl:documentation>
+      <wsdl:input message="tns:getForexRmbRateHttpGetIn" />
+      <wsdl:output message="tns:getForexRmbRateHttpGetOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getForexRmbRatePro">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;br /&gt;&lt;h3&gt;获得外汇-人民币即时报价（商业用户）&lt;/h3&gt;&lt;p&gt;调用方法同：getForexRmbRate，输入参数：theUserID = 商业用户ID ； 返回数据：DataSet&lt;/p&gt;&lt;br /&gt;</wsdl:documentation>
+      <wsdl:input message="tns:getForexRmbRateProHttpGetIn" />
+      <wsdl:output message="tns:getForexRmbRateProHttpGetOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ForexRmbRateWebServiceHttpPost">
+    <wsdl:operation name="getForexRmbRate">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;br /&gt;&lt;h3&gt;获得外汇-人民币即时报价&lt;/h3&gt;&lt;p&gt;输入参数：无； 返回数据：DataSet，Item(Symbol) = 货币代号、Item(Name) = 货币名称、Item(mBuyPrice) = 现钞买入价、Item(fBuyPrice) = 现汇买入价、Item(SellPrice) = 卖出价、Item(BasePrice) = 基准价&lt;/p&gt;&lt;br /&gt;</wsdl:documentation>
+      <wsdl:input message="tns:getForexRmbRateHttpPostIn" />
+      <wsdl:output message="tns:getForexRmbRateHttpPostOut" />
+    </wsdl:operation>
+    <wsdl:operation name="getForexRmbRatePro">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;br /&gt;&lt;h3&gt;获得外汇-人民币即时报价（商业用户）&lt;/h3&gt;&lt;p&gt;调用方法同：getForexRmbRate，输入参数：theUserID = 商业用户ID ； 返回数据：DataSet&lt;/p&gt;&lt;br /&gt;</wsdl:documentation>
+      <wsdl:input message="tns:getForexRmbRateProHttpPostIn" />
+      <wsdl:output message="tns:getForexRmbRateProHttpPostOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ForexRmbRateWebServiceSoap" type="tns:ForexRmbRateWebServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getForexRmbRate">
+      <soap:operation soapAction="http://webxml.com.cn/getForexRmbRate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getForexRmbRatePro">
+      <soap:operation soapAction="http://webxml.com.cn/getForexRmbRatePro" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ForexRmbRateWebServiceSoap12" type="tns:ForexRmbRateWebServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="getForexRmbRate">
+      <soap12:operation soapAction="http://webxml.com.cn/getForexRmbRate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getForexRmbRatePro">
+      <soap12:operation soapAction="http://webxml.com.cn/getForexRmbRatePro" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ForexRmbRateWebServiceHttpGet" type="tns:ForexRmbRateWebServiceHttpGet">
+    <http:binding verb="GET" />
+    <wsdl:operation name="getForexRmbRate">
+      <http:operation location="/getForexRmbRate" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getForexRmbRatePro">
+      <http:operation location="/getForexRmbRatePro" />
+      <wsdl:input>
+        <http:urlEncoded />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ForexRmbRateWebServiceHttpPost" type="tns:ForexRmbRateWebServiceHttpPost">
+    <http:binding verb="POST" />
+    <wsdl:operation name="getForexRmbRate">
+      <http:operation location="/getForexRmbRate" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getForexRmbRatePro">
+      <http:operation location="/getForexRmbRatePro" />
+      <wsdl:input>
+        <mime:content type="application/x-www-form-urlencoded" />
+      </wsdl:input>
+      <wsdl:output>
+        <mime:mimeXml part="Body" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ForexRmbRateWebService">
+    <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">&lt;a href="http://www.webxml.com.cn/" target="_blank"&gt;WebXml.com.cn&lt;/a&gt; &lt;strong&gt;外汇-人民币即时报价 WEB 服务&lt;/strong&gt;， 数据即时更新。外汇-人民币即时报价 WEB 服务仅作为用户获取信息之目的，并不构成投资建议。&lt;a href="http://www.webxml.com.cn/" target="_blank"&gt;WebXml.com.cn&lt;/a&gt; 和/或其各供应商不为本页面提供信息的错误、残缺、延迟或因依靠此信息所采取的任何行动负责。&lt;strong&gt;市场有风险，投资需谨慎&lt;/strong&gt;。&lt;br /&gt;此外汇汇率数据Web Services请不要用于任何商业目的，若有需要请&lt;a href="http://www.webxml.com.cn/zh_cn/contact_us.aspx" target="_blank"&gt;联系我们&lt;/a&gt;，欢迎技术交流。 QQ：8409035&lt;br /&gt;&lt;strong&gt;使用本站 WEB 服务请注明或链接本站：http://www.webxml.com.cn/ 感谢大家的支持&lt;/strong&gt;&lt;br /&gt;&lt;br /&gt;&amp;nbsp;</wsdl:documentation>
+    <wsdl:port name="ForexRmbRateWebServiceSoap" binding="tns:ForexRmbRateWebServiceSoap">
+      <soap:address location="http://webservice.webxml.com.cn/WebServices/ForexRmbRateWebService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ForexRmbRateWebServiceSoap12" binding="tns:ForexRmbRateWebServiceSoap12">
+      <soap12:address location="http://webservice.webxml.com.cn/WebServices/ForexRmbRateWebService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ForexRmbRateWebServiceHttpGet" binding="tns:ForexRmbRateWebServiceHttpGet">
+      <http:address location="http://webservice.webxml.com.cn/WebServices/ForexRmbRateWebService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ForexRmbRateWebServiceHttpPost" binding="tns:ForexRmbRateWebServiceHttpPost">
+      <http:address location="http://webservice.webxml.com.cn/WebServices/ForexRmbRateWebService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

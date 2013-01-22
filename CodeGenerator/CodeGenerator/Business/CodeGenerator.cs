@@ -425,7 +425,7 @@ namespace CodeGenerator.Business
                                     {"NUMBER", "Decimal", "0", "ToDecimal"},
                                     {"DECIMAL", "Decimal", "0", "ToDecimal"},
                                     {"NUMERIC", "Decimal", "0", "ToDecimal"},
-                                    {"FLOAT", "float", "0", "ToFloat"},
+                                    {"double", "double", "0", "Todouble"},
                                     {"DATE", "DateTime", "null", "ToDateTime"},
                                     {"DATETIME", "DateTime", "null", "ToDateTime"},
                                     {"SMALLDATETIME", "DateTime?", "null", "ToDateTime"},

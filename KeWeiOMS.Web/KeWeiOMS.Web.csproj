@@ -55,6 +55,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -109,6 +111,7 @@
     <Compile Include="Common\Easyui.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountEmailController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
@@ -124,7 +127,7 @@
     <Compile Include="Controllers\PermissionItemController.cs" />
     <Compile Include="Controllers\PermissionScopeController.cs" />
     <Compile Include="Controllers\PrintTemplateController.cs" />
-    <Compile Include="Controllers\ReturnAddresController.cs" />
+    <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
@@ -132,6 +135,16 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\cn.com.webxml.webservice\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -526,17 +539,28 @@
     <Content Include="Scripts\easyUI\themes\metro\validatebox.css" />
     <Content Include="Scripts\easyUI\themes\metro\window.css" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </Content>
+    <Content Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.wsdl" />
+    <Content Include="Web References\cn.com.webxml.webservice\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -648,11 +672,27 @@
     <Content Include="Views\PrintTemplate\Details.cshtml" />
     <Content Include="Views\PrintTemplate\Edit.cshtml" />
     <Content Include="Views\PrintTemplate\Index.cshtml" />
-    <Content Include="Views\ReturnAddres\Create.cshtml" />
-    <Content Include="Views\ReturnAddres\Delete.cshtml" />
-    <Content Include="Views\ReturnAddres\Details.cshtml" />
-    <Content Include="Views\ReturnAddres\Edit.cshtml" />
-    <Content Include="Views\ReturnAddres\Index.cshtml" />
+    <Content Include="Views\ReturnAddress\Create.cshtml" />
+    <Content Include="Views\ReturnAddress\Delete.cshtml" />
+    <Content Include="Views\ReturnAddress\Details.cshtml" />
+    <Content Include="Views\ReturnAddress\Edit.cshtml" />
+    <Content Include="Views\ReturnAddress\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://webservice.webxml.com.cn/WebServices/ForexRmbRateWebService.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\cn.com.webxml.webservice\</RelPath>
+      <UpdateFromURL>http://webservice.webxml.com.cn/WebServices/ForexRmbRateWebService.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>KeWeiOMS_Web_cn_com_webxml_webservice_ForexRmbRateWebService</CachedSettingsPropName>
+    </WebReferenceUrl>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

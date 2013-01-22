@@ -97,7 +97,7 @@
 	border-bottom:1px solid #8DB2E3;
 }
 .tabs li{
-	float:left;
+	double:left;
 	display:inline-block;
 	margin-right:4px;
 	margin-bottom:-1px;
