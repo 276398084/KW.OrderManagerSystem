@@ -1,0 +1,68 @@
+﻿@model KeWeiOMS.Domain.DictionaryType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Dictionary", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DicCode,"分类代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DicCode,new{@id="c_DicCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FullName,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FullName,new{@id="c_FullName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DicValue,"值:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DicValue,new{@id="c_DicValue"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllowDelete,"内置:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllowDelete,new{@id="c_AllowDelete"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

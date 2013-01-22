@@ -1,0 +1,55 @@
+﻿@model KeWeiOMS.Domain.AccountEmailType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "AccountEmail", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountId,"账户ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountId,new{@id="e_AccountId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountName,"账户名:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountName,new{@id="e_AccountName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Email,"邮箱名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Email,new{@id="e_Email"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

@@ -1,0 +1,53 @@
+﻿@model KeWeiOMS.Domain.PaypalAccountType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.PaypalAccountType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.PaypalAccountType</legend>
+    <div class="display-label">主键标识</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">账户名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AccountName)
+    </div>
+
+    <div class="display-label">Key</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppKey)
+    </div>
+
+    <div class="display-label">密钥</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppPwd)
+    </div>
+
+    <div class="display-label">会话</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AppToken)
+    </div>
+
+    <div class="display-label">状态</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

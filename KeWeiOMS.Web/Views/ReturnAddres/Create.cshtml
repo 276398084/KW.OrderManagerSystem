@@ -1,0 +1,122 @@
+﻿@model KeWeiOMS.Domain.ReturnAddresType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "ReturnAddres", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RetuanName,"发件人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RetuanName,new{@id="c_RetuanName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Phone,"手机:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Phone,new{@id="c_Phone"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Tel,"电话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Tel,new{@id="c_Tel"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PostCode,"邮编:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PostCode,new{@id="c_PostCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Street,"街道:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Street,new{@id="c_Street"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.County,"区:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.County,new{@id="c_County"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.City,"市:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.City,new{@id="c_City"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Province,"省:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Province,new{@id="c_Province"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Country,"国家:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Country,new{@id="c_Country"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CountryCode,"国家代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CountryCode,new{@id="c_CountryCode"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

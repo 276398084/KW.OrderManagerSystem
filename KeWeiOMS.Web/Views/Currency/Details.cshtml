@@ -1,0 +1,48 @@
+﻿@model KeWeiOMS.Domain.CurrencyType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.CurrencyType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.CurrencyType</legend>
+    <div class="display-label">主键表</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">货币</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CurrencyName)
+    </div>
+
+    <div class="display-label">符号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CurrencySign)
+    </div>
+
+    <div class="display-label">值</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CurrencyValue)
+    </div>
+
+    <div class="display-label">CreateOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

@@ -103,17 +103,19 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<ModuleType> objList = NSession.CreateQuery("from ModuleType").List<ModuleType>();
             IList<ModuleType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
-            List<SystemTree> tree = new List<SystemTree>();
+            SystemTree tree = new SystemTree { id = "0", text = "根目录" };
+            List<SystemTree> trees = new List<SystemTree>();
             foreach (ModuleType item in fristList)
             {
                 List<ModuleType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
                 item.children = fooList;
                 List<SystemTree> tree2 = ConvertToTree(fooList);
-                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
+                tree.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
                 GetChildren(objList, item, tree2);
 
             }
-            return Json(tree);
+            trees.Add(tree);
+            return Json(trees);
         }
 
         public JsonResult ALLList()

@@ -1,0 +1,73 @@
+﻿@model KeWeiOMS.Domain.PrintTemplateType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "PrintTemplate", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"模板代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="e_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TempName,"模板名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TempName,new{@id="e_TempName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TempType,"模板分类:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TempType,new{@id="e_TempType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"模板内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="e_Content"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Description,"描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Description,new{@id="e_Description"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

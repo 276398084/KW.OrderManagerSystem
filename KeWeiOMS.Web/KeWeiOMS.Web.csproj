@@ -109,12 +109,22 @@
     <Compile Include="Common\Easyui.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountEmailController.cs" />
+    <Compile Include="Controllers\CurrencyController.cs" />
+    <Compile Include="Controllers\DictionaryClassController.cs" />
+    <Compile Include="Controllers\DictionaryController.cs" />
+    <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\OrganizeController.cs" />
+    <Compile Include="Controllers\PaypalAccountController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Controllers\PermissionItemController.cs" />
     <Compile Include="Controllers\PermissionScopeController.cs" />
+    <Compile Include="Controllers\PrintTemplateController.cs" />
+    <Compile Include="Controllers\ReturnAddresController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
@@ -591,6 +601,58 @@
   <ItemGroup>
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountEmail\Create.cshtml" />
+    <Content Include="Views\AccountEmail\Delete.cshtml" />
+    <Content Include="Views\AccountEmail\Details.cshtml" />
+    <Content Include="Views\AccountEmail\Edit.cshtml" />
+    <Content Include="Views\AccountEmail\Index.cshtml" />
+    <Content Include="Views\Account\Create.cshtml" />
+    <Content Include="Views\Account\Delete.cshtml" />
+    <Content Include="Views\Account\Details.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Currency\Create.cshtml" />
+    <Content Include="Views\Currency\Delete.cshtml" />
+    <Content Include="Views\Currency\Details.cshtml" />
+    <Content Include="Views\Currency\Edit.cshtml" />
+    <Content Include="Views\Currency\Index.cshtml" />
+    <Content Include="Views\DictionaryClass\Create.cshtml" />
+    <Content Include="Views\DictionaryClass\Delete.cshtml" />
+    <Content Include="Views\DictionaryClass\Details.cshtml" />
+    <Content Include="Views\DictionaryClass\Edit.cshtml" />
+    <Content Include="Views\DictionaryClass\Index.cshtml" />
+    <Content Include="Views\Dictionary\Create.cshtml" />
+    <Content Include="Views\Dictionary\Delete.cshtml" />
+    <Content Include="Views\Dictionary\Details.cshtml" />
+    <Content Include="Views\Dictionary\Edit.cshtml" />
+    <Content Include="Views\Dictionary\Index.cshtml" />
+    <Content Include="Views\EmailTemplate\Create.cshtml" />
+    <Content Include="Views\EmailTemplate\Delete.cshtml" />
+    <Content Include="Views\EmailTemplate\Details.cshtml" />
+    <Content Include="Views\EmailTemplate\Edit.cshtml" />
+    <Content Include="Views\EmailTemplate\Index.cshtml" />
+    <Content Include="Views\Email\Create.cshtml" />
+    <Content Include="Views\Email\Delete.cshtml" />
+    <Content Include="Views\Email\Details.cshtml" />
+    <Content Include="Views\Email\Edit.cshtml" />
+    <Content Include="Views\Email\Index.cshtml" />
+    <Content Include="Views\PaypalAccount\Create.cshtml" />
+    <Content Include="Views\PaypalAccount\Delete.cshtml" />
+    <Content Include="Views\PaypalAccount\Details.cshtml" />
+    <Content Include="Views\PaypalAccount\Edit.cshtml" />
+    <Content Include="Views\PaypalAccount\Index.cshtml" />
+    <Content Include="Views\PrintTemplate\Create.cshtml" />
+    <Content Include="Views\PrintTemplate\Delete.cshtml" />
+    <Content Include="Views\PrintTemplate\Details.cshtml" />
+    <Content Include="Views\PrintTemplate\Edit.cshtml" />
+    <Content Include="Views\PrintTemplate\Index.cshtml" />
+    <Content Include="Views\ReturnAddres\Create.cshtml" />
+    <Content Include="Views\ReturnAddres\Delete.cshtml" />
+    <Content Include="Views\ReturnAddres\Details.cshtml" />
+    <Content Include="Views\ReturnAddres\Edit.cshtml" />
+    <Content Include="Views\ReturnAddres\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

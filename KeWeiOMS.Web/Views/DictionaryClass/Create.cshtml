@@ -1,0 +1,59 @@
+﻿@model KeWeiOMS.Domain.DictionaryClasType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "DictionaryClas", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ClassName,"分类:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ClassName,new{@id="c_ClassName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllowDelete,"系统内置:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllowDelete,new{@id="c_AllowDelete"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

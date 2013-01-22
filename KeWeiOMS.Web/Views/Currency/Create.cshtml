@@ -1,0 +1,71 @@
+﻿@model KeWeiOMS.Domain.CurrencyType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Currency", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键表:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrencyName,"货币:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyName,new{@id="c_CurrencyName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrencySign,"符号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencySign,new{@id="c_CurrencySign"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrencyValue,"值:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyValue,new{@id="c_CurrencyValue"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"CreateOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

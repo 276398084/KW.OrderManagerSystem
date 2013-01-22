@@ -1,0 +1,64 @@
+﻿@model KeWeiOMS.Domain.DictionaryType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "Dictionary", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DicCode,"分类代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DicCode,new{@id="e_DicCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FullName,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FullName,new{@id="e_FullName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DicValue,"值:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DicValue,new{@id="e_DicValue"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllowDelete,"内置:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllowDelete,new{@id="e_AllowDelete"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

@@ -1,0 +1,59 @@
+﻿@model KeWeiOMS.Domain.EmailTemplateType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "EmailTemplate", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Subject,"主题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Subject,new{@id="c_Subject"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="c_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

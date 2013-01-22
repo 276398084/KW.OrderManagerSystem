@@ -1,0 +1,43 @@
+﻿@model KeWeiOMS.Domain.DictionaryClasType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.DictionaryClasType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.DictionaryClasType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">分类</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ClassName)
+    </div>
+
+    <div class="display-label">代码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Code)
+    </div>
+
+    <div class="display-label">系统内置</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AllowDelete)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

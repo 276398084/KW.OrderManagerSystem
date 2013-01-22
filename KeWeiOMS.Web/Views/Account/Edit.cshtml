@@ -1,0 +1,127 @@
+﻿@model KeWeiOMS.Domain.AccountType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "Account", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountName,"账户名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountName,new{@id="e_AccountName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountUrl,"平台网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountUrl,new{@id="e_AccountUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ApiKey,"APIKey:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ApiKey,new{@id="e_ApiKey"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ApiSecret,"API密钥:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ApiSecret,new{@id="e_ApiSecret"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ApiToken,"API会话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ApiToken,new{@id="e_ApiToken"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Description,"描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Description,new{@id="e_Description"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Manager,"负责人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Manager,new{@id="e_Manager"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Phone,"负责人电话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Phone,new{@id="e_Phone"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Email,"负责人邮箱:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Email,new{@id="e_Email"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

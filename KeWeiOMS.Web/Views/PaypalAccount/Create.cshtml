@@ -1,0 +1,77 @@
+﻿@model KeWeiOMS.Domain.PaypalAccountType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "PaypalAccount", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountName,"账户名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountName,new{@id="c_AccountName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppKey,"Key:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppKey,new{@id="c_AppKey"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppPwd,"密钥:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppPwd,new{@id="c_AppPwd"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppToken,"会话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppToken,new{@id="c_AppToken"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

@@ -1,0 +1,73 @@
+﻿@model KeWeiOMS.Domain.PaypalAccountType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "PaypalAccount", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountName,"账户名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountName,new{@id="e_AccountName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppKey,"Key:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppKey,new{@id="e_AppKey"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppPwd,"密钥:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppPwd,new{@id="e_AppPwd"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AppToken,"会话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AppToken,new{@id="e_AppToken"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}
