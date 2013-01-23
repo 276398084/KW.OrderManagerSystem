@@ -17,26 +17,32 @@
         function updateRate() {
             var url_str = '@Url.Action("UpdateRate", "Currency")';
             $('#dg').datagrid('loading');
-            $.post(url_str, "", function (result) {
-                var result = eval('(' + result + ')');
-                if (result.errorMsg) {
-                    $.messager.show({
-                        title: '提示',
-                        msg: '保存失败:' + result.errorMsg,
-                        timeout: 0,
-                        showType: 'slide'
-                    });
-                } else {
-                    $('#c_dlg').dialog('close');
-                    $('#dg').datagrid('reload');
-                    $.messager.show({
-                        title: '提示',
-                        msg: '更新成功',
-                        timeout: 2000,
-                        showType: 'slide'
-                    });
+            $.ajax({
+                type: "POST",
+                url: url_str,
+                success: function (result) {
+                    $('#dg').datagrid('loaded');
+
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    } else {
+                        alert("2");
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '更新成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
                 }
             });
+
         }
 
         //新建

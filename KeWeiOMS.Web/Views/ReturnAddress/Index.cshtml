@@ -7,7 +7,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         $('#dg').datagrid({
-            url: '@Url.Action("List","ReturnAddres")',
+            url: '@Url.Action("List","ReturnAddress")',
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
@@ -17,7 +17,7 @@
 
     //新建
     function c_dlg() {
-        var url_str = '@Url.Action("Create","ReturnAddres")';
+        var url_str = '@Url.Action("Create","ReturnAddress")';
 		
         $('#c_dlg').load(url_str, function () {
             $(this).dialog({
@@ -44,7 +44,7 @@
     function e_dlg() {
         var id = getselectedRow();
         if (id != undefined) {
-            var url = '@Url.Action("Edit","ReturnAddres")/' + id;
+            var url = '@Url.Action("Edit","ReturnAddress")/' + id;
             $('#e_dlg').load(url, function () {
                 $(this).dialog({
                     title: '编辑',
@@ -70,7 +70,7 @@
 	//异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
-                url: '@Url.Action("Create","ReturnAddres")',
+                url: '@Url.Action("Create","ReturnAddress")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
@@ -99,7 +99,7 @@
 		//异步修改提交
         function ajaxEdit() {
             $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","ReturnAddres")',
+                url: '@Url.Action("Edit","ReturnAddress")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
@@ -133,7 +133,7 @@
         if (id != undefined) {
             $.messager.confirm('确认', '确定删除?', function (r) {
                 if (r) {
-                    var url = '@Url.Action("Delete","ReturnAddres")/' + id;
+                    var url = '@Url.Action("Delete","ReturnAddress")/' + id;
                     $.post(url, function () {
                     }).success(function (data) {
                         var msgstr = "删除成功";

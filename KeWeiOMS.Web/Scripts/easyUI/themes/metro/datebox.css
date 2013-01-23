@@ -11,13 +11,13 @@
 	text-align:center;
 }
 .datebox-current,.datebox-close{
-	double:left;
+	float:left;
 	color:#777;
 	text-decoration:none;
 	font-weight:bold;
 }
 .datebox-close{
-	double:right;
+	float:right;
 }
 .datebox-ok{
 	color:#777;

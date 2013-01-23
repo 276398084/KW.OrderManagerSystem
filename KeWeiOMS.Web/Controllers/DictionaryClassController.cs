@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class DictionaryClasController : BaseController
+    public class DictionaryClassController : BaseController
     {
         public ViewResult Index()
         {
@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  DictionaryClassType GetById(int Id)
+        public DictionaryClassType GetById(int Id)
         {
             DictionaryClassType obj = NSession.Get<DictionaryClassType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(DictionaryClassType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 DictionaryClassType obj = GetById(id);

@@ -47,13 +47,19 @@ namespace KeWeiOMS.Web.Controllers
                 DataSet ds = server.getForexRmbRate();
 
                 NSession.Delete(" from CurrencyType");
+                NSession.Flush();
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     CurrencyType c = new CurrencyType();
                     c.CurrencyCode = dr["Symbol"].ToString();
                     c.CurrencyName = dr["Name"].ToString();
                     c.CurrencySign = "";
-                    c.CurrencyValue = Convert.ToDouble(dr["fBuyPrice"].ToString()) / 100;
+                    string str = dr["fBuyPrice"].ToString();
+                    if (string.IsNullOrEmpty(str))
+                    {
+                        str = "0";
+                    }
+                    c.CurrencyValue = Convert.ToDouble(str) / 100;
                     c.CreateOn = DateTime.Now; ;
                     NSession.Save(c);
                 }
@@ -132,7 +138,9 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows * page)
                 .List<CurrencyType>();
 
-            return Json(new { total = objList.Count, rows = objList });
+            object count = NSession.CreateQuery("select count(Id) from CurrencyType ").UniqueResult();
+
+            return Json(new { total = count, rows = objList });
         }
 
     }

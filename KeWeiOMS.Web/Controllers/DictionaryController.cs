@@ -12,8 +12,9 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class DictionaryController : BaseController
     {
-        public ViewResult Index()
+        public ViewResult Index(string code)
         {
+            ViewData["code"] = code;
             return View();
         }
 
@@ -42,7 +43,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  DictionaryType GetById(int Id)
+        public DictionaryType GetById(int Id)
         {
             DictionaryType obj = NSession.Get<DictionaryType>(Id);
             if (obj == null)
@@ -64,12 +65,12 @@ namespace KeWeiOMS.Web.Controllers
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(DictionaryType obj)
+        public ActionResult Save(DictionaryType obj)
         {
-           
+
             try
             {
-                NSession.Update(obj);
+                NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -77,13 +78,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 DictionaryType obj = GetById(id);
@@ -97,16 +98,12 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(string code)
         {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType")
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where  DicCode=:t").SetString("t", code)
                 .List<DictionaryType>();
-
             return Json(new { total = objList.Count, rows = objList });
         }
-
     }
 }
 

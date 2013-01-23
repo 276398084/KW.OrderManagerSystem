@@ -1,88 +1,85 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.DictionaryClasType>
+﻿@model IEnumerable<KeWeiOMS.Domain.DictionaryClassType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","DictionaryClas")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
-        });
-
-    });
-
-    //新建
-    function c_dlg() {
-        var url_str = '@Url.Action("Create","DictionaryClas")';
-		
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "DictionaryClass")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
             });
-        }).dialog('open');;
-    }
+        });
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "DictionaryClass")';
 
-    //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit","DictionaryClas")/' + id;
-            $('#e_dlg').load(url, function () {
+            $('#c_dlg').load(url_str, function () {
                 $(this).dialog({
-                    title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
+                    title: '新建',
+                    modal: true,
+                    loadingMessage: '正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-							ajaxEdit();
+                            ajaxAdd();
                         }
                     }, {
                         text: '取消',
                         handler: function () {
-                            $('#e_dlg').dialog('close');
+                            $('#c_dlg').dialog('close');
                         }
                     }]
                 });
-            }).dialog('open');
+            }).dialog('open');;
         }
-    }
 
-	//异步新建提交
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "DictionaryClass")/' + id;
+                $('#e_dlg').load(url, function () {
+                    $(this).dialog({
+                        title: '编辑',
+                        modal: true,
+                        loadingMessage: '正在加载...',
+                        buttons: [{
+                            text: '提交',
+                            iconCls: 'icon-ok',
+                            handler: function () {
+                                ajaxEdit();
+                            }
+                        }, {
+                            text: '取消',
+                            handler: function () {
+                                $('#e_dlg').dialog('close');
+                            }
+                        }]
+                    });
+                }).dialog('open');
+            }
+        }
+
+        //异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
-                url: '@Url.Action("Create","DictionaryClas")',
+                url: '@Url.Action("Create", "DictionaryClass")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
                     var result = eval('(' + result + ')');
                     if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#c_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -95,128 +92,226 @@
                     }
                 }
             });
-        }
-		//异步修改提交
-        function ajaxEdit() {
-            $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","DictionaryClas")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
-                    } else {
-                        $('#e_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
+            }
+            //异步修改提交
+            function ajaxEdit() {
+                $('#e_form').form('submit', {
+                    url: '@Url.Action("Edit", "DictionaryClass")',
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.errorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#e_dlg').dialog('close');
+                            $('#dg').datagrid('reload');
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
+                    }
+                });
+            }
+
+
+            //删除
+            function del() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    $.messager.confirm('确认', '确定删除?', function (r) {
+                        if (r) {
+                            var url = '@Url.Action("Delete", "DictionaryClass")/' + id;
+                            $.post(url, function () {
+                            }).success(function (data) {
+                                var msgstr = "删除成功";
+                                if (data != true) {
+                                    msgstr = "删除失败" + data;
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 0,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 3000,
+                                        showType: 'slide'
+                                    });
+                                }
+
+                                $('#dg').datagrid('reload');
+                            }).error(function () {
+                                $.messager.alert('错误', '删除发生错误');
+                            });
+
+                        }
+                    });
+                }
+            }
+
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
                     }
                 }
-            });
-        }
-   
-
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","DictionaryClas")/' + id;
-                    $.post(url, function () {
-                    }).success(function (data) {
-                        var msgstr = "删除成功";
-                        if (data != true) {
-                            msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
-
-                        $('#dg').datagrid('reload');
-                    }) .error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
-                }
-            });
-        }
-    }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
             }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-   
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-            <th field="Id" width="100">
-                主键
-            </th>
 
-            <th field="ClassName" width="100">
-                分类
-            </th>
+            function ShowOp(v, r, i) {
+                return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showData("' + r.Code + '")\'>查看明细</a>'
+            }
+            var code;
+            function showData(v) {
+                code = v;
+                $('#s_dlg').dialog({
+                    title: '字典明细',
+                    height: 400,
+                    width: 600,
+                    loadingMessage: '正在加载...'
+                }).dialog('open');
+                $('#dg1').datagrid({
+                    url: '@Url.Action("List", "Dictionary")/',
+                    queryParams: { code: v },
+                    onClickRow: onClickRow
+                });
 
-            <th field="Code" width="100">
-                代码
-            </th>
+                $('#s_dlg').dialog('open');
+            }
 
-            <th field="AllowDelete" width="100">
-                系统内置
-            </th>
+            var editIndex = undefined;
+            function endEditing() {
+                if (editIndex == undefined) { return true }
+                if ($('#dg1').datagrid('validateRow', editIndex)) {
+                    $('#dg1').datagrid('endEdit', editIndex);
+                    $.post("/Dictionary/Save/", $('#dg1').datagrid("getRows")[editIndex], function (rsp) {
+                        if (rsp.IsSuccess) {
+                            $.messager.alert("提示", "提交成功！");
+                        }
+                    }, "JSON").error(function () {
+                        $.messager.alert("提示", "提交错误了！");
+                    });
+                    editIndex = undefined;
 
+                    return true;
 
-    	</tr>
-		</thead>
-		</table>
+                } else {
+                    return false;
+                }
+            }
+
+            function onClickRow(index) {
+                if (editIndex != index) {
+                    if (endEditing()) {
+                        $('#dg1').datagrid('selectRow', index)
+                                .datagrid('beginEdit', index);
+                        editIndex = index;
+                    } else {
+                        $('#dg1').datagrid('selectRow', editIndex);
+                    }
+                }
+            }
+
+            function s_add() {
+                if (endEditing()) {
+                    $('#dg1').datagrid('appendRow', { DicCode: code });
+                    editIndex = $('#dg1').datagrid('getRows').length - 1;
+                    $('#dg1').datagrid('selectRow', editIndex)
+                            .datagrid('beginEdit', editIndex);
+                }
+            }
+
+            function s_del() {
+                if (editIndex == undefined) { return }
+                $.ajax({
+                    url: "/Modules/Data/GetDataByOrder.ashx?m=DelFreight&id=" + $('#dlgFreight').datagrid('selectRow', editIndex).Id,
+                });
+                $('#dg1').dialog('reload');
+            }
+
+            function accept() {
+                if (endEditing()) {
+                    $('#dg1').datagrid('acceptChanges');
+                }
+            }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="ClassName" width="100">分类
+                    </th>
+
+                    <th field="Code" width="100">代码
+                    </th>
+
+                    <th field="AllowDelete" width="100">系统内置
+                    </th>
+                    <th field="Id" width="100" formatter="ShowOp">操作
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+        </div>
 
-</div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="s_dlg">
+            <table id="dg1" class="easyui-datagrid"
+                toolbar="#toolbar1"
+                rownumbers="true" fitcolumns="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="Id" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field="DicCode" width="100">分类代码
+                        </th>
+
+                        <th field="FullName" width="100" data-options="editor:'text'">名称
+                        </th>
+
+                        <th field="DicValue" width="100" data-options="editor:'text'">值
+                        </th>
+
+                        <th field="AllowDelete" width="100" data-options="editor:{type:'checkbox',options:{on:'是',off:'否'}}">内置
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="toolbar1">
+                <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="s_add();">新建</a>
+                <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="s_del();">删除</a>
+                <a href="#" class="easyui-linkbutton" iconcls="icon-save" plain="true" onclick="s_save();">保存</a>
+            </div>
+        </div>
+
+    </div>
 </body>

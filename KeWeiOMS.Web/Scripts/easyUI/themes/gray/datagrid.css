@@ -58,7 +58,7 @@
 	border-bottom:1px solid #ccc;
 }
 .datagrid-btn-separator{
-	double:left;
+	float:left;
 	height:24px;
 	border-left:1px solid #ccc;
 	border-right:1px solid #fff;
@@ -81,7 +81,7 @@
 	cursor:default;
 }
 .datagrid-header-inner{
-	double:left;
+	float:left;
 	width:10000px;
 }
 .datagrid-header-row{
@@ -148,7 +148,7 @@
 .datagrid-footer-inner{
 	border-top:1px solid #ccc;
 	width:10000px;
-	double:left;
+	float:left;
 }
 .datagrid-body td,.datagrid-footer td{
 	font-size:12px;

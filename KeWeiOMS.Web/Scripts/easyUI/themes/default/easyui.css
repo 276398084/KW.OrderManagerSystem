@@ -300,7 +300,7 @@
 	border-bottom:1px solid #ccc;
 }
 .datagrid-btn-separator{
-	double:left;
+	float:left;
 	height:24px;
 	border-left:1px solid #ccc;
 	border-right:1px solid #fff;
@@ -323,7 +323,7 @@
 	cursor:default;
 }
 .datagrid-header-inner{
-	double:left;
+	float:left;
 	width:10000px;
 }
 .datagrid-header-row{
@@ -390,7 +390,7 @@
 .datagrid-footer-inner{
 	border-top:1px solid #ccc;
 	width:10000px;
-	double:left;
+	float:left;
 }
 .datagrid-body td,.datagrid-footer td{
 	font-size:12px;
@@ -485,13 +485,13 @@
 	text-align:center;
 }
 .datebox-current,.datebox-close{
-	double:left;
+	float:left;
 	color:#888;
 	text-decoration:none;
 	font-weight:bold;
 }
 .datebox-close{
-	double:right;
+	float:right;
 }
 .datebox-ok{
 	color:#888;
@@ -510,7 +510,7 @@
 	border-bottom:1px solid #eee;
 }
 .dialog-tool-separator{
-	double:left;
+	float:left;
 	height:24px;
 	border-left:1px solid #ccc;
 	border-right:1px solid #fff;
@@ -794,7 +794,7 @@ a.m-btn-plain-active{
 	padding-top:10px;
 }
 .messager-icon{
-	double:left;
+	float:left;
 	width:47px;
 	height:35px;
 }
@@ -823,14 +823,14 @@ a.m-btn-plain-active{
 	zoom:1;
 }
 .pagination table{
-	double:left;
+	float:left;
 	height:30px;
 }
 .pagination td{
 	border:0;
 }
 .pagination-btn-separator{
-	double:left;
+	float:left;
 	height:24px;
 	border-left:1px solid #ccc;
 	border-right:1px solid #fff;
@@ -844,7 +844,7 @@ a.m-btn-plain-active{
 	margin:0px 6px;
 }
 .pagination-info{
-	double:right;
+	float:right;
 	padding-right:6px;
 	padding-top:8px;
 	font-size:12px;
@@ -1118,7 +1118,7 @@ a.m-btn-plain-active{
 	width:6px;
 	left:7px;
 	top:0;
-	double:left;
+	float:left;
 }
 .slider-v .slider-handle{
 	left:3px;
@@ -1129,7 +1129,7 @@ a.m-btn-plain-active{
 	margin-top:-6px;
 }
 .slider-v .slider-rule{
-	double:left;
+	float:left;
 	top:0;
 	left:16px;
 }
@@ -1140,7 +1140,7 @@ a.m-btn-plain-active{
 	border-top:1px solid #999;
 }
 .slider-v .slider-rulelabel{
-	double:left;
+	float:left;
 	top:0;
 	left:23px;
 }
@@ -1311,7 +1311,7 @@ a.s-btn-plain-active .s-btn-downarrow{
 	border-bottom:1px solid #8DB2E3;
 }
 .tabs li{
-	double:left;
+	float:left;
 	display:inline-block;
 	margin-right:4px;
 	margin-bottom:-1px;

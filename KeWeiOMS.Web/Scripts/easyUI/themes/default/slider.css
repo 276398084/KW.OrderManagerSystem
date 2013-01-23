@@ -59,7 +59,7 @@
 	width:6px;
 	left:7px;
 	top:0;
-	double:left;
+	float:left;
 }
 .slider-v .slider-handle{
 	left:3px;
@@ -70,7 +70,7 @@
 	margin-top:-6px;
 }
 .slider-v .slider-rule{
-	double:left;
+	float:left;
 	top:0;
 	left:16px;
 }
@@ -81,7 +81,7 @@
 	border-top:1px solid #999;
 }
 .slider-v .slider-rulelabel{
-	double:left;
+	float:left;
 	top:0;
 	left:23px;
 }
