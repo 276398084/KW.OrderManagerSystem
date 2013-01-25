@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class AccountController : BaseController
+    public class OrderRecordController : BaseController
     {
         public ViewResult Index()
         {
@@ -22,27 +22,8 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Platform()
-        {
-            List<object> list = new List<object>();
-            foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
-            {
-                list.Add(new { id = item, text = item });
-            }
-            return Json(list);
-        }
-
         [HttpPost]
-        public ActionResult AccountList(string p)
-        {
-            IList<AccountType> list = NSession.CreateQuery(" from AccountType where Platform=:p").SetString("p", p).List<AccountType>();
-
-
-            return Json(list);
-        }
-
-        [HttpPost]
-        public JsonResult Create(AccountType obj)
+        public JsonResult Create(OrderRecordType obj)
         {
             try
             {
@@ -61,9 +42,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public AccountType GetById(int Id)
+        public  OrderRecordType GetById(int Id)
         {
-            AccountType obj = NSession.Get<AccountType>(Id);
+            OrderRecordType obj = NSession.Get<OrderRecordType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -77,15 +58,15 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            AccountType obj = GetById(id);
+            OrderRecordType obj = GetById(id);
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(AccountType obj)
+        public ActionResult Edit(OrderRecordType obj)
         {
-
+           
             try
             {
                 NSession.Update(obj);
@@ -96,16 +77,16 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-
+           
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
+          
             try
             {
-                AccountType obj = GetById(id);
+                OrderRecordType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -118,10 +99,10 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<AccountType> objList = NSession.CreateQuery("from AccountType")
+            IList<OrderRecordType> objList = NSession.CreateQuery("from OrderRecordType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
-                .List<AccountType>();
+                .List<OrderRecordType>();
 
             return Json(new { total = objList.Count, rows = objList });
         }

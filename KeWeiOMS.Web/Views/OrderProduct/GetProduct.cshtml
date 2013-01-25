@@ -1,0 +1,19 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderProductType>
+@{
+    Layout = null;
+    ViewBag.Title = "";
+}
+
+<table class="dv-table" border="0" style="width: 100%;">
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>
+                <img /></td>
+            <td>ExSKU:@p.ExSKU</td>
+            <td>SKU:@p.SKU</td>
+            <td>Qty:@p.Qty</td>
+            <td>描述: @p.Remark</td>
+        </tr>
+    }
+</table>

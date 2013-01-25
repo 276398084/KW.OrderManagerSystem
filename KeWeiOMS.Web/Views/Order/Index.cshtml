@@ -1,0 +1,286 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderType>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Order")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100],
+                view: detailview,
+                detailFormatter: function (index, row) {
+                    return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).panel({
+                        border: false,
+                        cache: false,
+                        href: '@Url.Action("List", "OrderProduct")' + "" + row.itemid,
+                        onLoad: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
+            });
+
+        });
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Order")';
+
+            $('#c_dlg').load(url_str, function () {
+                $(this).dialog({
+                    title: '新建',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '提交',
+                        iconCls: 'icon-ok',
+                        handler: function () {
+                            ajaxAdd();
+                        }
+                    }, {
+                        text: '取消',
+                        handler: function () {
+                            $('#c_dlg').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');;
+        }
+
+        //新建
+        function o_Import() {
+            var url_str = '@Url.Action("Import", "Order")';
+            $('#o_dlg').load(url_str, function () {
+                $(this).dialog({
+                    title: '新建',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '提交',
+                        iconCls: 'icon-ok',
+                        handler: function () {
+                            //ajaxAdd();
+                        }
+                    }, {
+                        text: '取消',
+                        handler: function () {
+                            $('#o_dlg').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');;
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Order")/' + id;
+                $('#e_dlg').load(url, function () {
+                    $(this).dialog({
+                        title: '编辑',
+                        modal: true,
+                        loadingMessage: '正在加载...',
+                        buttons: [{
+                            text: '提交',
+                            iconCls: 'icon-ok',
+                            handler: function () {
+                                ajaxEdit();
+                            }
+                        }, {
+                            text: '取消',
+                            handler: function () {
+                                $('#e_dlg').dialog('close');
+                            }
+                        }]
+                    });
+                }).dialog('open');
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            $('#c_form').form('submit', {
+                url: '@Url.Action("Create", "Order")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $('#c_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
+                }
+            });
+            }
+            //异步修改提交
+            function ajaxEdit() {
+                $('#e_form').form('submit', {
+                    url: '@Url.Action("Edit", "Order")',
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.errorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#e_dlg').dialog('close');
+                            $('#dg').datagrid('reload');
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
+                    }
+                });
+            }
+
+
+            //删除
+            function del() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    $.messager.confirm('确认', '确定删除?', function (r) {
+                        if (r) {
+                            var url = '@Url.Action("Delete", "Order")/' + id;
+                            $.post(url, function () {
+                            }).success(function (data) {
+                                var msgstr = "删除成功";
+                                if (data != true) {
+                                    msgstr = "删除失败" + data;
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 0,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 3000,
+                                        showType: 'slide'
+                                    });
+                                }
+
+                                $('#dg').datagrid('reload');
+                            }).error(function () {
+                                $.messager.alert('错误', '删除发生错误');
+                            });
+
+                        }
+                    });
+                }
+            }
+
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
+                    }
+                }
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
+            }
+
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="OrderNo" width="100">订单编号
+                    </th>
+                    <th field="Status" width="100">订单状态
+                    </th>
+
+                    <th field="CurrencyCode" width="100">货币
+                    </th>
+
+                    <th field="Amount" width="100">总金额
+                    </th>
+
+                    <th field="TId" width="100">流水交易号
+                    </th>
+
+                    <th field="BuyerName" width="100">买家
+                    </th>
+
+                    <th field="BuyerEmail" width="100">买家邮箱
+                    </th>
+
+                    <th field="BuyerMemo" width="100">买家留言
+                    </th>
+
+                    <th field="SellerMemo" width="100">商家留言
+                    </th>
+
+                    <th field="CutOffMemo" width="100">包裹截留留言
+                    </th>
+                    <th field="Country" width="100">国家
+                    </th>
+
+                    <th field="LogisticMode" width="100">发货方式
+                    </th>
+                    <th field="Weight" width="100">重量
+                    </th>
+
+                    <th field="Freight" width="100">运费
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Sync()">订单同步</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Import()">订单导入</a>
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+        </div>
+
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="o_dlg"></div>
+    </div>
+</body>

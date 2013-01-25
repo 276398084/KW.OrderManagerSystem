@@ -109,6 +109,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Easyui.cs" />
+    <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
     <Compile Include="Common\Utilities.cs" />
@@ -121,6 +122,11 @@
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\OrderAddresController.cs" />
+    <Compile Include="Controllers\OrderBuyerController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\OrderProductController.cs" />
+    <Compile Include="Controllers\OrderRecordController.cs" />
     <Compile Include="Controllers\OrganizeController.cs" />
     <Compile Include="Controllers\PaypalAccountController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
@@ -204,6 +210,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\date.js" />
+    <Content Include="Scripts\easyUI\datagrid-detailview.js" />
     <Content Include="Scripts\easyUI\themes\default\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\themes\gray\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
@@ -540,6 +547,13 @@
     <Content Include="Scripts\easyUI\themes\metro\window.css" />
     <Content Include="Scripts\modernizr-2.5.3.js" />
     <Content Include="Properties\DataSources\System.Data.DataSet.datasource" />
+    <Content Include="Scripts\swfobject.js" />
+    <Content Include="Scripts\uploadify\jquery.uploadify-3.1.js" />
+    <Content Include="Scripts\uploadify\jquery.uploadify-3.1.min.js" />
+    <Content Include="Scripts\uploadify\license.txt" />
+    <Content Include="Scripts\uploadify\uploadify-cancel.png" />
+    <Content Include="Scripts\uploadify\uploadify.css" />
+    <Content Include="Scripts\uploadify\uploadify.swf" />
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
@@ -566,6 +580,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
+    <Folder Include="upload\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -693,6 +708,43 @@
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>KeWeiOMS_Web_cn_com_webxml_webservice_ForexRmbRateWebService</CachedSettingsPropName>
     </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OrderAddress\Create.cshtml" />
+    <Content Include="Views\OrderAddress\Delete.cshtml" />
+    <Content Include="Views\OrderAddress\Details.cshtml" />
+    <Content Include="Views\OrderAddress\Edit.cshtml" />
+    <Content Include="Views\OrderAddress\Index.cshtml" />
+    <Content Include="Views\OrderBuyer\Create.cshtml" />
+    <Content Include="Views\OrderBuyer\Delete.cshtml" />
+    <Content Include="Views\OrderBuyer\Details.cshtml" />
+    <Content Include="Views\OrderBuyer\Edit.cshtml" />
+    <Content Include="Views\OrderBuyer\Index.cshtml" />
+    <Content Include="Views\OrderProduct\Create.cshtml" />
+    <Content Include="Views\OrderProduct\Delete.cshtml" />
+    <Content Include="Views\OrderProduct\Details.cshtml" />
+    <Content Include="Views\OrderProduct\Edit.cshtml" />
+    <Content Include="Views\OrderProduct\Index.cshtml" />
+    <Content Include="Views\OrderRecord\Create.cshtml" />
+    <Content Include="Views\OrderRecord\Delete.cshtml" />
+    <Content Include="Views\OrderRecord\Details.cshtml" />
+    <Content Include="Views\OrderRecord\Edit.cshtml" />
+    <Content Include="Views\OrderRecord\Index.cshtml" />
+    <Content Include="Views\Order\Create.cshtml" />
+    <Content Include="Views\Order\Delete.cshtml" />
+    <Content Include="Views\Order\Details.cshtml" />
+    <Content Include="Views\Order\Edit.cshtml" />
+    <Content Include="Views\Order\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\OrderProduct\GetProduct.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Order\Import.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\uploadify\check-exists.php" />
+    <Content Include="Scripts\uploadify\uploadify.php" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,62 @@
+﻿@{
+    Layout = null;
+}
+<script src="@Url.Content("~/Scriptsswfobject.js")"></script>
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")"></script>
+<script type="text/javascript" language="javascript">
+
+    $(function () {
+
+        $("#up_file").uploadify({
+            'uploader': '/Scripts/uploadify/uploadify.swf',
+            'script': '/uploadify/UploadifyHandler.ashx',
+            'cancelImg': '/Scripts/uploadify/cancel.png',
+            'folder': '/upload/',
+            'multi': false
+
+        });
+
+        $('#Platform').combotree({
+            url: '/Account/Platform',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150,
+            onChange: changePlatform
+        });
+
+
+    });
+
+    function changePlatform(n, o) {
+        $('#Account').combotree({
+            url: '/Account/AccountList/p='+n,
+            valueField: 'Id',
+            textField: 'AccountName',
+            required: true,
+            width: 150,
+        });
+    }
+
+</script>
+
+@using (Html.BeginForm("Import", "Order", FormMethod.Post, new { id = "c_Import" }))
+{
+    <table class="dv-table" border="0" style="width: 100%;">
+        <tr>
+            <td>平台:</td>
+            <td>
+                <input id="Platform" /></td>
+        </tr>
+        <tr>
+            <td>账户:</td>
+            <td>
+                <input id="Account" /></td>
+        </tr>
+        <tr>
+            <td>文件:</td>
+            <td>
+                <input id="up_file" type="file" /></td>
+        </tr>
+    </table>
+}

@@ -1,0 +1,267 @@
+﻿@model KeWeiOMS.Domain.OrderType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_GenerateOn').datebox();
+
+
+        $('#e_CreateOn').datebox();
+
+
+        $('#e_ScanningOn').datebox();
+
+        $('#e_ScanningBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Order", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderExNo,"外部编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"订单状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsMerger,"合并订单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsMerger,new{@id="e_IsMerger"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsSplit,"拆分订单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsSplit,new{@id="e_IsSplit"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsOutOfStock,"缺货订单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsOutOfStock,new{@id="e_IsOutOfStock"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsRepeat,"重发订单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsRepeat,new{@id="e_IsRepeat"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrencyCode,"货币:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="e_CurrencyCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Amount,"总金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TId,"流水交易号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TId,new{@id="e_TId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyerName,"买家:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyerName,new{@id="e_BuyerName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyerEmail,"买家邮箱:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyerEmail,new{@id="e_BuyerEmail"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyerId,"买家Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyerId,new{@id="e_BuyerId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyerMemo,"买家留言:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyerMemo,new{@id="e_BuyerMemo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SellerMemo,"商家留言:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SellerMemo,new{@id="e_SellerMemo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CutOffMemo,"包裹截留留言:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CutOffMemo,new{@id="e_CutOffMemo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticMode,"发货方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticMode,new{@id="e_LogisticMode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Country,"国家:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Country,new{@id="e_Country"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AddressId,"地址Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AddressId,new{@id="e_AddressId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Weight,"总量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Weight,new{@id="e_Weight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Freight,"运费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Freight,new{@id="e_Freight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.GenerateOn,"生成时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.GenerateOn,new{@id="e_GenerateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"同步时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ScanningOn,"扫描时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ScanningOn,new{@id="e_ScanningOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ScanningBy,"扫描人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ScanningBy,new{@id="e_ScanningBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

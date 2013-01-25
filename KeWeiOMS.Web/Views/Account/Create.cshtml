@@ -1,5 +1,4 @@
 ﻿@model KeWeiOMS.Domain.AccountType
-
 @{
     Layout = null;
 }
@@ -8,124 +7,122 @@
 
     $(function () {
 
-		
+        $('#c_Platform').combotree({
+            url: '/Account/Platform',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150
+
+        });
     });
-    
+
 </script>
 
 @using (Html.BeginForm("Create", "Account", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AccountName, "账户名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AccountName, new { @id = "c_AccountName" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AccountName,"账户名称:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AccountName,new{@id="c_AccountName"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AccountUrl, "平台网址:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AccountUrl, new { @id = "c_AccountUrl" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.AccountUrl,"平台网址:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.AccountUrl,new{@id="c_AccountUrl"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ApiKey, "APIKey:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ApiKey, new { @id = "c_ApiKey" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ApiKey,"APIKey:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ApiKey,new{@id="c_ApiKey"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ApiSecret, "API密钥:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ApiSecret, new { @id = "c_ApiSecret" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ApiSecret,"API密钥:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ApiSecret,new{@id="c_ApiSecret"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ApiToken, "API会话:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ApiToken, new { @id = "c_ApiToken" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ApiToken,"API会话:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ApiToken,new{@id="c_ApiToken"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Platform, "平台:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Platform, new { @id = "c_Platform" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Platform,"平台:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Platform,new{@id="c_Platform"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Status, "状态:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Status,"状态:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Description, "描述:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Description,"描述:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Description,new{@id="c_Description"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Manager, "负责人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Manager, new { @id = "c_Manager" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Manager,"负责人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Manager,new{@id="c_Manager"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Phone, "负责人电话:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Phone, new { @id = "c_Phone" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Phone,"负责人电话:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Phone,new{@id="c_Phone"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Email,"负责人邮箱:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Email,new{@id="c_Email"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Email, "负责人邮箱:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Email, new { @id = "c_Email" })
+                </td>
+            </tr>
 
 
-</table>
-</fieldset>
+        </table>
+    </fieldset>
 }

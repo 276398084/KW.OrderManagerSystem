@@ -1,0 +1,118 @@
+﻿@model KeWeiOMS.Domain.OrderAddressType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "OrderAddress", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BId,"客户Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BId,new{@id="e_BId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Addressee,"收件人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Addressee,new{@id="e_Addressee"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Tel,"电话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Tel,new{@id="e_Tel"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Phone,"手机:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Phone,new{@id="e_Phone"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Street,"街道:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Street,new{@id="e_Street"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.County,"区:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.County,new{@id="e_County"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.City,"市:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.City,new{@id="e_City"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Province,"省:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Province,new{@id="e_Province"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Country,"国家:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Country,new{@id="e_Country"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CountryCode,"国家代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CountryCode,new{@id="e_CountryCode"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

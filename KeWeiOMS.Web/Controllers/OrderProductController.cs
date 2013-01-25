@@ -10,11 +10,14 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class AccountController : BaseController
+    public class OrderProductController : BaseController
     {
-        public ViewResult Index()
+
+        public ViewResult GetProduct(int Id)
         {
-            return View();
+
+            IList<OrderProductType> list = NSession.CreateQuery("from OrderProductType where OId=:p").SetInt32("p", Id).List<OrderProductType>();
+            return View(list);
         }
 
         public ActionResult Create()
@@ -22,27 +25,13 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Platform()
+        public ActionResult Index()
         {
-            List<object> list = new List<object>();
-            foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
-            {
-                list.Add(new { id = item, text = item });
-            }
-            return Json(list);
+            return View();
         }
 
         [HttpPost]
-        public ActionResult AccountList(string p)
-        {
-            IList<AccountType> list = NSession.CreateQuery(" from AccountType where Platform=:p").SetString("p", p).List<AccountType>();
-
-
-            return Json(list);
-        }
-
-        [HttpPost]
-        public JsonResult Create(AccountType obj)
+        public JsonResult Create(OrderProductType obj)
         {
             try
             {
@@ -61,9 +50,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public AccountType GetById(int Id)
+        public OrderProductType GetById(int Id)
         {
-            AccountType obj = NSession.Get<AccountType>(Id);
+            OrderProductType obj = NSession.Get<OrderProductType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -77,13 +66,13 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            AccountType obj = GetById(id);
+            OrderProductType obj = GetById(id);
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(AccountType obj)
+        public ActionResult Edit(OrderProductType obj)
         {
 
             try
@@ -105,7 +94,7 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
-                AccountType obj = GetById(id);
+                OrderProductType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -118,10 +107,10 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<AccountType> objList = NSession.CreateQuery("from AccountType")
+            IList<OrderProductType> objList = NSession.CreateQuery("from OrderProductType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
-                .List<AccountType>();
+                .List<OrderProductType>();
 
             return Json(new { total = objList.Count, rows = objList });
         }

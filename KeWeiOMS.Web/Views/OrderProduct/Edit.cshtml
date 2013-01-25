@@ -1,0 +1,118 @@
+﻿@model KeWeiOMS.Domain.OrderProductType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "OrderProduct", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OId,"订单ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OId,new{@id="e_OId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExSKU,"外部商品SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExSKU,new{@id="e_ExSKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="e_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"对应内部库存SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"产品描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="e_Remark"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Standard,"产品规格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Standard,new{@id="e_Standard"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"产品价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Url,"产品网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Url,new{@id="e_Url"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

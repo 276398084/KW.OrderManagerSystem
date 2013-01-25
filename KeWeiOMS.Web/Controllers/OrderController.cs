@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -10,7 +11,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class AccountController : BaseController
+    public class OrderController : BaseController
     {
         public ViewResult Index()
         {
@@ -22,27 +23,55 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Platform()
+        public ActionResult Import()
         {
-            List<object> list = new List<object>();
-            foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ContentResult Import(HttpPostedFileBase FileData, string folder)
+        {
+            string result = "";
+            if (null != FileData)
             {
-                list.Add(new { id = item, text = item });
+                try
+                {
+                    result = Path.GetFileName(FileData.FileName);//获得文件名
+                    string ext = Path.GetExtension(FileData.FileName);//获得文件扩展名
+                    string saveName = "uploadfile" + ext;//实际保存文件名
+                    saveFile(FileData, folder, saveName);//保存文件
+                }
+                catch
+                {
+                    result = "";
+                }
             }
-            return Json(list);
+            return Content(result);
         }
 
-        [HttpPost]
-        public ActionResult AccountList(string p)
+        [NonAction]
+        private void saveFile(HttpPostedFileBase postedFile, string filepath, string saveName)
         {
-            IList<AccountType> list = NSession.CreateQuery(" from AccountType where Platform=:p").SetString("p", p).List<AccountType>();
+            string phyPath = Request.MapPath("~" + filepath + "/");
+            if (!Directory.Exists(phyPath))
+            {
+                Directory.CreateDirectory(phyPath);
+            }
+            try
+            {
+                postedFile.SaveAs(phyPath + saveName);
+            }
+            catch (Exception e)
+            {
+                throw new ApplicationException(e.Message);
 
-
-            return Json(list);
+            }
         }
 
+     
+
         [HttpPost]
-        public JsonResult Create(AccountType obj)
+        public JsonResult Create(OrderType obj)
         {
             try
             {
@@ -61,9 +90,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public AccountType GetById(int Id)
+        public OrderType GetById(int Id)
         {
-            AccountType obj = NSession.Get<AccountType>(Id);
+            OrderType obj = NSession.Get<OrderType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -77,13 +106,13 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            AccountType obj = GetById(id);
+            OrderType obj = GetById(id);
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(AccountType obj)
+        public ActionResult Edit(OrderType obj)
         {
 
             try
@@ -105,7 +134,7 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
-                AccountType obj = GetById(id);
+                OrderType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -118,10 +147,10 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<AccountType> objList = NSession.CreateQuery("from AccountType")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
-                .List<AccountType>();
+                .List<OrderType>();
 
             return Json(new { total = objList.Count, rows = objList });
         }
