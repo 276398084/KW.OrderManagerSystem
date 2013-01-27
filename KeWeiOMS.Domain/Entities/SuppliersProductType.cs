@@ -43,7 +43,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 价格
         /// </summary>
-        public virtual String Price { get; set; }
+        public virtual double Price { get; set; }
 
         /// <summary>
         /// Web

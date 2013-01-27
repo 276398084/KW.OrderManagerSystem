@@ -30,31 +30,34 @@ namespace KeWeiOMS.Domain
         {
             Table("Orders");
             Id(x => x.Id);
-            Map(x => x.OrderNo);
-            Map(x => x.OrderExNo);
+            Map(x => x.OrderNo).Length(40);
+            Map(x => x.OrderExNo).Length(40);
             Map(x => x.Status);
+            Map(x => x.IsPrint);
             Map(x => x.IsMerger);
             Map(x => x.IsSplit);
             Map(x => x.IsOutOfStock);
             Map(x => x.IsRepeat);
-            Map(x => x.CurrencyCode);
+            Map(x => x.CurrencyCode).Length(10);
             Map(x => x.Amount);
-            Map(x => x.TId);
-            Map(x => x.BuyerName);
-            Map(x => x.BuyerEmail);
+            Map(x => x.TId).Length(40);
+            Map(x => x.BuyerName).Length(40);
+            Map(x => x.BuyerEmail).Length(80);
             Map(x => x.BuyerId);
-            Map(x => x.BuyerMemo);
-            Map(x => x.SellerMemo);
-            Map(x => x.CutOffMemo);
-            Map(x => x.LogisticMode);
-            Map(x => x.Country);
+            Map(x => x.BuyerMemo).Length(1000);
+            Map(x => x.SellerMemo).Length(1000);
+            Map(x => x.CutOffMemo).Length(300);
+            Map(x => x.LogisticMode).Length(40);
+            Map(x => x.Country).Length(40);
             Map(x => x.AddressId);
             Map(x => x.Weight);
             Map(x => x.Freight);
             Map(x => x.GenerateOn);
             Map(x => x.CreateOn);
             Map(x => x.ScanningOn);
-            Map(x => x.ScanningBy);
+            Map(x => x.ScanningBy).Length(40);
+            Map(x => x.Account).Length(40);
+            Map(x => x.Platform).Length(40);
         }
     }
 }

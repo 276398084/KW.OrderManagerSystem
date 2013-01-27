@@ -9,8 +9,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// Table1Type
-    /// 库位表
+    /// SerialNumberType
+    /// 序列号表
     /// 
     /// 修改纪录
     /// 
@@ -23,27 +23,22 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class Table1Type
+    public class SerialNumberType
     {
         /// <summary>
-        /// 主键
+        /// 主键标识
         /// </summary>
         public virtual int Id { get; set; }
 
         /// <summary>
-        /// 仓库ID
+        /// 代码
         /// </summary>
-        public virtual int WId { get; set; }
+        public virtual String Code { get; set; }
 
         /// <summary>
-        /// 仓库名称
+        /// 起始
         /// </summary>
-        public virtual String Warehouse { get; set; }
-
-        /// <summary>
-        /// 仓位名称
-        /// </summary>
-        public virtual String PositionsName { get; set; }
+        public virtual int BeginNo { get; set; }
 
     }
 }

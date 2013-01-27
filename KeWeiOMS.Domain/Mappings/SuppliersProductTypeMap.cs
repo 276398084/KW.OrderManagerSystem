@@ -31,9 +31,9 @@ namespace KeWeiOMS.Domain
             Table("SuppliersProduct");
             Id(x => x.Id);
             Map(x => x.SId);
-            Map(x => x.SKU);
+            Map(x => x.SKU).Length(50);
             Map(x => x.Price);
-            Map(x => x.Web);
+            Map(x => x.Web).Length(50);
         }
     }
 }

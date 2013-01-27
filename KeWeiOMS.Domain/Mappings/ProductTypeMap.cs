@@ -30,32 +30,32 @@ namespace KeWeiOMS.Domain
         {
             Table("Products");
             Id(x => x.Id);
-            Map(x => x.SKU);
-            Map(x => x.Category);
-            Map(x => x.ProductName);
+            Map(x => x.SKU).Length(50);
+            Map(x => x.Category).Length(50);
+            Map(x => x.ProductName).Length(200);
             Map(x => x.Price);
             Map(x => x.Weight);
             Map(x => x.Long);
             Map(x => x.Wide);
             Map(x => x.High);
             Map(x => x.DayByStock);
-            Map(x => x.Summary);
-            Map(x => x.PackMemo);
+            Map(x => x.Summary).Length(2000);
+            Map(x => x.PackMemo).Length(200);
             Map(x => x.IsInfraction);
-            Map(x => x.Model);
-            Map(x => x.Brand);
-            Map(x => x.PicUrl);
+            Map(x => x.Model).Length(50);
+            Map(x => x.Brand).Length(50);
+            Map(x => x.PicUrl).Length(200);
             Map(x => x.PicQty);
-            Map(x => x.SPicUrl);
-            Map(x => x.Purchaser);
-            Map(x => x.Examiner);
-            Map(x => x.Packer);
+            Map(x => x.SPicUrl).Length(200);
+            Map(x => x.Purchaser).Length(50);
+            Map(x => x.Examiner).Length(50);
+            Map(x => x.Packer).Length(50);
             Map(x => x.PackCoefficient);
             Map(x => x.IsElectronic);
             Map(x => x.HasBattery);
-            Map(x => x.Location);
+            Map(x => x.Location).Length(50);
             Map(x => x.CreateOn);
-            Map(x => x.CreateBy);
+            Map(x => x.CreateBy).Length(50);
         }
     }
 }

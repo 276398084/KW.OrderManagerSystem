@@ -24,22 +24,22 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class OrganizeTypeMap : ClassMap<OrganizeType>
+    public class OrganizeTypeMap : ClassMap<OrganizeType> 
     {
         public OrganizeTypeMap()
         {
             Table("Organizes");
             Id(x => x.Id);
             Map(x => x.ParentId);
-            Map(x => x.Code);
-            Map(x => x.ShortName);
-            Map(x => x.FullName);
+            Map(x => x.Code).Length(50);
+            Map(x => x.ShortName).Length(50);
+            Map(x => x.FullName).Length(200);
             Map(x => x.DeletionStateCode);
             Map(x => x.SortCode);
-            Map(x => x.Description);
+            Map(x => x.Description).Length(800);
             Map(x => x.CreateOn);
-            Map(x => x.CreateBy);
-            HasMany(x => x.children);
+            Map(x => x.CreateBy).Length(50);
+            //References(x => x.children);
         }
     }
 }

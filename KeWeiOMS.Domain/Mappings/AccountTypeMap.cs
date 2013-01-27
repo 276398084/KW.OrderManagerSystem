@@ -30,17 +30,17 @@ namespace KeWeiOMS.Domain
         {
             Table("Account");
             Id(x => x.Id);
-            Map(x => x.AccountName);
-            Map(x => x.AccountUrl);
-            Map(x => x.ApiKey);
-            Map(x => x.ApiSecret);
-            Map(x => x.ApiToken);
-            Map(x => x.Platform);
+            Map(x => x.AccountName).Length(50);
+            Map(x => x.AccountUrl).Length(255);
+            Map(x => x.ApiKey).Length(200);
+            Map(x => x.ApiSecret).Length(200);
+            Map(x => x.ApiToken).Length(2000);
+            Map(x => x.Platform).Length(50);
             Map(x => x.Status);
-            Map(x => x.Description);
-            Map(x => x.Manager);
-            Map(x => x.Phone);
-            Map(x => x.Email);
+            Map(x => x.Description).Length(800);
+            Map(x => x.Manager).Length(200);
+            Map(x => x.Phone).Length(200);
+            Map(x => x.Email).Length(200);
         }
     }
 }

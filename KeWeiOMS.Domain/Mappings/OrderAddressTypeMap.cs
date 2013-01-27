@@ -10,7 +10,7 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// OrderAddresTypeMap
+    /// OrderAddressTypeMap
     /// 订单买家地址表
     /// 
     /// 修改纪录
@@ -31,15 +31,17 @@ namespace KeWeiOMS.Domain
             Table("OrderAddress");
             Id(x => x.Id);
             Map(x => x.BId);
-            Map(x => x.Addressee);
-            Map(x => x.Tel);
-            Map(x => x.Phone);
-            Map(x => x.Street);
-            Map(x => x.County);
-            Map(x => x.City);
-            Map(x => x.Province);
-            Map(x => x.Country);
-            Map(x => x.CountryCode);
+            Map(x => x.Addressee).Length(50);
+            Map(x => x.Tel).Length(50);
+            Map(x => x.Phone).Length(50);
+            Map(x => x.Street).Length(200);
+            Map(x => x.County).Length(50);
+            Map(x => x.City).Length(50);
+            Map(x => x.Province).Length(50);
+            Map(x => x.Country).Length(50);
+            Map(x => x.CountryCode).Length(50);
+            Map(x => x.Email).Length(50);
+            Map(x => x.PostCode).Length(50);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -27,48 +28,35 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
-
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ContentResult Import(HttpPostedFileBase FileData, string folder)
+        [HttpPost]
+        public ActionResult Import(FormCollection form)
         {
-            string result = "";
-            if (null != FileData)
+            string Platform = form["Platform"];
+            string Account = form["Account"];
+            string file = form["hfile"];
+            DataTable dt = OrderHelper.GetDataTable(file);
+
+            switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
             {
-                try
-                {
-                    result = Path.GetFileName(FileData.FileName);//获得文件名
-                    string ext = Path.GetExtension(FileData.FileName);//获得文件扩展名
-                    string saveName = "uploadfile" + ext;//实际保存文件名
-                    saveFile(FileData, folder, saveName);//保存文件
-                }
-                catch
-                {
-                    result = "";
-                }
+                case PlatformEnum.SMT:
+                    OrderHelper.ImportBySMT(Account, file);
+                    break;
+                case PlatformEnum.Ebay:
+                    break;
+                case PlatformEnum.Amazon:
+                    break;
+                case PlatformEnum.B2C:
+                    break;
+                case PlatformEnum.Gmarket:
+                    break;
+                case PlatformEnum.LT:
+                    break;
+                default:
+                    break;
             }
-            return Content(result);
+            return Json(new { IsSuccess = "true" });
         }
 
-        [NonAction]
-        private void saveFile(HttpPostedFileBase postedFile, string filepath, string saveName)
-        {
-            string phyPath = Request.MapPath("~" + filepath + "/");
-            if (!Directory.Exists(phyPath))
-            {
-                Directory.CreateDirectory(phyPath);
-            }
-            try
-            {
-                postedFile.SaveAs(phyPath + saveName);
-            }
-            catch (Exception e)
-            {
-                throw new ApplicationException(e.Message);
-
-            }
-        }
-
-     
 
         [HttpPost]
         public JsonResult Create(OrderType obj)

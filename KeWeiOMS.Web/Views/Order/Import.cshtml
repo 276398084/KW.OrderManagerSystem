@@ -1,21 +1,26 @@
 ﻿@{
     Layout = null;
 }
-<script src="@Url.Content("~/Scriptsswfobject.js")"></script>
-<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")"></script>
-<script type="text/javascript" language="javascript">
 
+<link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
+
+
+<script type="text/javascript">
     $(function () {
 
-        $("#up_file").uploadify({
-            'uploader': '/Scripts/uploadify/uploadify.swf',
-            'script': '/uploadify/UploadifyHandler.ashx',
-            'cancelImg': '/Scripts/uploadify/cancel.png',
-            'folder': '/upload/',
-            'multi': false
-
+        $('#up_file').uploadify({
+            'auto': false,
+            'buttonText': '请选择订单文件',
+            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+            'uploader': '/Home/SaveFile/',
+            'multi': false,
+            'onUploadSuccess': function (file, data, response) {
+                eval("data=" + data);
+                $('#hfile').val(data.SaveName);
+                ajaxImport();
+            }
         });
-
         $('#Platform').combotree({
             url: '/Account/Platform',
             valueField: 'id',
@@ -30,9 +35,9 @@
 
     function changePlatform(n, o) {
         $('#Account').combotree({
-            url: '/Account/AccountList/p='+n,
-            valueField: 'Id',
-            textField: 'AccountName',
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
             required: true,
             width: 150,
         });
@@ -42,21 +47,22 @@
 
 @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { id = "c_Import" }))
 {
-    <table class="dv-table" border="0" style="width: 100%;">
+    <table class="dv-table" border="0" style="width: 600px; height: 400px;">
         <tr>
             <td>平台:</td>
             <td>
-                <input id="Platform" /></td>
+                <input id="Platform" name="Platform" /></td>
         </tr>
         <tr>
             <td>账户:</td>
             <td>
-                <input id="Account" /></td>
+                <input id="Account" name="Account" /></td>
         </tr>
         <tr>
             <td>文件:</td>
             <td>
-                <input id="up_file" type="file" /></td>
+                <input id="hfile" type="hidden" value="" name="hfile" />
+                <input id="up_file" type="file" name="up_file" /></td>
         </tr>
     </table>
 }

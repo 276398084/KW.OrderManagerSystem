@@ -31,11 +31,11 @@ namespace KeWeiOMS.Domain
             Table("PermissionItems");
             Id(x => x.Id);
             Map(x => x.ParentId);
-            Map(x => x.Code);
-            Map(x => x.FullName);
+            Map(x => x.Code).Length(50);
+            Map(x => x.FullName).Length(50);
             Map(x => x.SortCode);
-            Map(x => x.Description);
-            HasMany(x => x.children);
+            Map(x => x.Description).Length(200);
+            //References(x => x.children);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// DictionaryClasType
+    /// DictionaryClassType>
     /// 数据字典分类
     /// 
     /// 修改纪录

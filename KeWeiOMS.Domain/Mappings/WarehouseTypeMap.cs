@@ -30,9 +30,9 @@ namespace KeWeiOMS.Domain
         {
             Table("Warehouse");
             Id(x => x.Id);
-            Map(x => x.WCode);
-            Map(x => x.WName);
-            Map(x => x.Address);
+            Map(x => x.WCode).Length(50);
+            Map(x => x.WName).Length(50);
+            Map(x => x.Address).Length(200);
         }
     }
 }

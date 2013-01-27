@@ -1,0 +1,50 @@
+﻿@model KeWeiOMS.Domain.SerialNumberType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "SerialNumber", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BeginNo,"起始:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BeginNo,new{@id="c_BeginNo"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

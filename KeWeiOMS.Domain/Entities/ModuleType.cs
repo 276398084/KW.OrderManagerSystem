@@ -80,9 +80,6 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String CreateBy { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public virtual IList<ModuleType> children { get; set; }
 
     }

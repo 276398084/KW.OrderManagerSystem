@@ -30,12 +30,12 @@ namespace KeWeiOMS.Domain
         {
             Table("StockOut");
             Id(x => x.Id);
-            Map(x => x.OrderNo);
-            Map(x => x.SKU);
+            Map(x => x.OrderNo).Length(50);
+            Map(x => x.SKU).Length(50);
             Map(x => x.Qty);
             Map(x => x.SourceQty);
             Map(x => x.WId);
-            Map(x => x.CreateBy);
+            Map(x => x.CreateBy).Length(50);
             Map(x => x.CreateOn);
         }
     }

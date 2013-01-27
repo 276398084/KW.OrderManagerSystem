@@ -30,10 +30,10 @@ namespace KeWeiOMS.Domain
         {
             Table("ProductSKU");
             Id(x => x.Id);
-            Map(x => x.ParentSKU);
-            Map(x => x.SKU);
+            Map(x => x.ParentSKU).Length(50);
+            Map(x => x.SKU).Length(50);
             Map(x => x.Price);
-            Map(x => x.Memo);
+            Map(x => x.Memo).Length(500);
             Map(x => x.Qty);
             Map(x => x.DayOfStock);
         }

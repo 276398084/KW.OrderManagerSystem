@@ -32,11 +32,11 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.UserId);
             Map(x => x.RoleId);
-            Map(x => x.Description);
+            Map(x => x.Description).Length(800);
             Map(x => x.DeletionStateCode);
             Map(x => x.SortCode);
             Map(x => x.CreateOn);
-            Map(x => x.CreateBy);
+            Map(x => x.CreateBy).Length(50);
         }
     }
 }

@@ -105,16 +105,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\AudioHelper.cs" />
     <Compile Include="Common\BaseController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\Easyui.cs" />
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountEmailController.cs" />
+    <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\DictionaryClassController.cs" />
     <Compile Include="Controllers\DictionaryController.cs" />
@@ -135,6 +139,7 @@
     <Compile Include="Controllers\PrintTemplateController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\SerialNumberController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
     <Compile Include="Global.asax.cs">
@@ -153,6 +158,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Config\smt.xml" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -550,7 +556,6 @@
     <Content Include="Scripts\swfobject.js" />
     <Content Include="Scripts\uploadify\jquery.uploadify-3.1.js" />
     <Content Include="Scripts\uploadify\jquery.uploadify-3.1.min.js" />
-    <Content Include="Scripts\uploadify\license.txt" />
     <Content Include="Scripts\uploadify\uploadify-cancel.png" />
     <Content Include="Scripts\uploadify\uploadify.css" />
     <Content Include="Scripts\uploadify\uploadify.swf" />
@@ -715,11 +720,6 @@
     <Content Include="Views\OrderAddress\Details.cshtml" />
     <Content Include="Views\OrderAddress\Edit.cshtml" />
     <Content Include="Views\OrderAddress\Index.cshtml" />
-    <Content Include="Views\OrderBuyer\Create.cshtml" />
-    <Content Include="Views\OrderBuyer\Delete.cshtml" />
-    <Content Include="Views\OrderBuyer\Details.cshtml" />
-    <Content Include="Views\OrderBuyer\Edit.cshtml" />
-    <Content Include="Views\OrderBuyer\Index.cshtml" />
     <Content Include="Views\OrderProduct\Create.cshtml" />
     <Content Include="Views\OrderProduct\Delete.cshtml" />
     <Content Include="Views\OrderProduct\Details.cshtml" />
@@ -745,6 +745,20 @@
   <ItemGroup>
     <Content Include="Scripts\uploadify\check-exists.php" />
     <Content Include="Scripts\uploadify\uploadify.php" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Country\Create.cshtml" />
+    <Content Include="Views\Country\Delete.cshtml" />
+    <Content Include="Views\Country\Details.cshtml" />
+    <Content Include="Views\Country\Edit.cshtml" />
+    <Content Include="Views\Country\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\SerialNumber\Create.cshtml" />
+    <Content Include="Views\SerialNumber\Delete.cshtml" />
+    <Content Include="Views\SerialNumber\Details.cshtml" />
+    <Content Include="Views\SerialNumber\Edit.cshtml" />
+    <Content Include="Views\SerialNumber\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

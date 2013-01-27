@@ -1,0 +1,55 @@
+﻿@model KeWeiOMS.Domain.CountryType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "Country", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CCountry,"国家中文:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CCountry,new{@id="e_CCountry"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ECountry,"国家英文:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ECountry,new{@id="e_ECountry"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CountryCode,"国家代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CountryCode,new{@id="e_CountryCode"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

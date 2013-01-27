@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<KeWeiOMS.Domain.OrderBuyerType>
+@model IEnumerable<KeWeiOMS.Domain.CountryType>
 @{
     ViewBag.Title = "Index";
 }
@@ -7,7 +7,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         $('#dg').datagrid({
-            url: '@Url.Action("List","OrderBuyer")',
+            url: '@Url.Action("List","Country")',
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
@@ -17,7 +17,7 @@
 
     //新建
     function c_dlg() {
-        var url_str = '@Url.Action("Create","OrderBuyer")';
+        var url_str = '@Url.Action("Create","Country")';
 		
         $('#c_dlg').load(url_str, function () {
             $(this).dialog({
@@ -44,7 +44,7 @@
     function e_dlg() {
         var id = getselectedRow();
         if (id != undefined) {
-            var url = '@Url.Action("Edit","OrderBuyer")/' + id;
+            var url = '@Url.Action("Edit","Country")/' + id;
             $('#e_dlg').load(url, function () {
                 $(this).dialog({
                     title: '编辑',
@@ -70,7 +70,7 @@
 	//异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
-                url: '@Url.Action("Create","OrderBuyer")',
+                url: '@Url.Action("Create","Country")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
@@ -99,7 +99,7 @@
 		//异步修改提交
         function ajaxEdit() {
             $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","OrderBuyer")',
+                url: '@Url.Action("Edit","Country")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
@@ -133,7 +133,7 @@
         if (id != undefined) {
             $.messager.confirm('确认', '确定删除?', function (r) {
                 if (r) {
-                    var url = '@Url.Action("Delete","OrderBuyer")/' + id;
+                    var url = '@Url.Action("Delete","Country")/' + id;
                     $.post(url, function () {
                     }).success(function (data) {
                         var msgstr = "删除成功";
@@ -190,39 +190,19 @@
         <thead>  
         <tr>
             <th field="Id" width="100">
-                主键
+                主键标识
             </th>
 
-            <th field="BuyerName" width="100">
-                客户名称
+            <th field="CCountry" width="100">
+                国家中文
             </th>
 
-            <th field="BuyerEmail" width="100">
-                客户邮件
+            <th field="ECountry" width="100">
+                国家英文
             </th>
 
-            <th field="BuyCount" width="100">
-                客户购买次数
-            </th>
-
-            <th field="BuyAmount" width="100">
-                客户购买金额
-            </th>
-
-            <th field="FristBuyOn" width="100">
-                第一次购买时间
-            </th>
-
-            <th field="ListBuyOn" width="100">
-                最后一次购买时间
-            </th>
-
-            <th field="Remark" width="100">
-                客户备注
-            </th>
-
-            <th field="BuyerType" width="100">
-                客户类型
+            <th field="CountryCode" width="100">
+                国家代码
             </th>
 
 

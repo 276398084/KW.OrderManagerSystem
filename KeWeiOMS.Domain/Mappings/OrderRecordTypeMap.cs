@@ -31,11 +31,11 @@ namespace KeWeiOMS.Domain
             Table("OrderRecord");
             Id(x => x.Id);
             Map(x => x.OId);
-            Map(x => x.OrderNo);
+            Map(x => x.OrderNo).Length(40);
             Map(x => x.CreateOn);
-            Map(x => x.RecordType);
-            Map(x => x.Content);
-            Map(x => x.CreateBy);
+            Map(x => x.RecordType).Length(40);
+            Map(x => x.Content).Length(1000);
+            Map(x => x.CreateBy).Length(40);
         }
     }
 }

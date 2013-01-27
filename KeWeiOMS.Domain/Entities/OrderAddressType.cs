@@ -80,5 +80,15 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String CountryCode { get; set; }
 
+        /// <summary>
+        /// email
+        /// </summary>
+        public virtual String Email { get; set; }
+
+        /// <summary>
+        /// 邮编
+        /// </summary>
+        public virtual String PostCode { get; set; }
+
     }
 }

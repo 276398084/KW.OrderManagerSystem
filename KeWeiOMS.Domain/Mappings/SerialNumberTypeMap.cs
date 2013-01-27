@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// Table1TypeMap
-    /// 库位表
+    /// SerialNumberTypeMap
+    /// 序列号表
     /// 
     /// 修改纪录
     /// 
@@ -24,15 +24,14 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class Table1TypeMap : ClassMap<Table1Type> 
+    public class SerialNumberTypeMap : ClassMap<SerialNumberType> 
     {
-        public Table1TypeMap()
+        public SerialNumberTypeMap()
         {
-            Table("Table1");
+            Table("SerialNumber");
             Id(x => x.Id);
-            Map(x => x.WId);
-            Map(x => x.Warehouse);
-            Map(x => x.PositionsName);
+            Map(x => x.Code).Length(50);
+            Map(x => x.BeginNo);
         }
     }
 }

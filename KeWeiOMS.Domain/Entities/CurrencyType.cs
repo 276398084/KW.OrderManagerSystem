@@ -35,8 +35,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String CurrencyName { get; set; }
 
+
+
         /// <summary>
-        /// 代码
+        /// 货币
         /// </summary>
         public virtual String CurrencyCode { get; set; }
         /// <summary>

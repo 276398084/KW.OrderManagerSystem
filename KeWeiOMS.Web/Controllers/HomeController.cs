@@ -9,15 +9,12 @@ using KeWeiOMS.Domain;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using System.Web.UI;
+using System.IO;
 
 namespace KeWeiOMS.Web.Controllers
 {
     public class HomeController : BaseController
     {
-
-
-        //lim
-        // GET: /User/
 
         public ViewResult Index()
         {
@@ -36,7 +33,41 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        //
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult SaveFile(HttpPostedFileBase fileData)
+        {
+            if (fileData != null)
+            {
+                try
+                {
+                    // 文件上传后的保存路径
+                    string filePath = Server.MapPath("~/Uploads/");
+                    if (!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+                    string fileName = Path.GetFileName(fileData.FileName);// 原始文件名称
+                    string fileExtension = Path.GetExtension(fileName); // 文件扩展名
+                    string saveName = Guid.NewGuid().ToString() + fileExtension; // 保存文件名称
+
+                    fileData.SaveAs(filePath + saveName);
+
+                    return Json(new { Success = true, FileName = fileName, SaveName = filePath + saveName });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+
+                return Json(new { Success = false, Message = "请选择要上传的文件！" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
 
 
 

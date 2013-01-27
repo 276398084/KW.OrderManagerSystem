@@ -25,6 +25,7 @@ namespace KeWeiOMS.Web.Controllers
         /// <returns></returns>
         public string GetCurrentPerson()
         {
+
             //Account account = GetCurrentAccount();
             //if (account != null && !string.IsNullOrWhiteSpace(account.PersonName))
             //{

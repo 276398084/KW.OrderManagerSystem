@@ -30,16 +30,16 @@ namespace KeWeiOMS.Domain
         {
             Table("ReturnAddress");
             Id(x => x.Id);
-            Map(x => x.RetuanName);
-            Map(x => x.Phone);
-            Map(x => x.Tel);
-            Map(x => x.PostCode);
-            Map(x => x.Street);
-            Map(x => x.County);
-            Map(x => x.City);
-            Map(x => x.Province);
-            Map(x => x.Country);
-            Map(x => x.CountryCode);
+            Map(x => x.RetuanName).Length(50);
+            Map(x => x.Phone).Length(50);
+            Map(x => x.Tel).Length(50);
+            Map(x => x.PostCode).Length(50);
+            Map(x => x.Street).Length(200);
+            Map(x => x.County).Length(50);
+            Map(x => x.City).Length(50);
+            Map(x => x.Province).Length(50);
+            Map(x => x.Country).Length(50);
+            Map(x => x.CountryCode).Length(50);
         }
     }
 }

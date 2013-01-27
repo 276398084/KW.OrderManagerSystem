@@ -31,8 +31,8 @@ namespace KeWeiOMS.Domain
             Table("AccountEmail");
             Id(x => x.Id);
             Map(x => x.AccountId);
-            Map(x => x.AccountName);
-            Map(x => x.Email);
+            Map(x => x.AccountName).Length(50);
+            Map(x => x.Email).Length(200);
         }
     }
 }

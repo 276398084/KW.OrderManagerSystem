@@ -74,11 +74,7 @@ namespace KeWeiOMS.Domain
         /// 创建用户
         /// </summary>
         public virtual String CreateBy { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual IList<OrganizeType> children { get; set; }
+        public virtual List<OrganizeType> children { get; set; }
 
     }
 }

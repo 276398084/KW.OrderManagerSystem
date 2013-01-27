@@ -31,11 +31,11 @@ namespace KeWeiOMS.Domain
             Table("StockIn");
             Id(x => x.Id);
             Map(x => x.WId);
-            Map(x => x.SKU);
+            Map(x => x.SKU).Length(50);
             Map(x => x.Qty);
             Map(x => x.Price);
             Map(x => x.SourceQty);
-            Map(x => x.CreateBy);
+            Map(x => x.CreateBy).Length(50);
             Map(x => x.CreateOn);
         }
     }

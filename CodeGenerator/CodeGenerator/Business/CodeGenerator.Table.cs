@@ -63,6 +63,7 @@ namespace CodeGenerator.Business
                         string field = string.Empty;
                         string fieldName = string.Empty;
                         string fieldDescription = string.Empty;
+                        string Length = string.Empty;
                         for (int z = 0; z < xmlNode.ChildNodes[i].ChildNodes[j].ChildNodes.Count; z++)
                         {
                             if (xmlNode.ChildNodes[i].ChildNodes[j].ChildNodes[z].LocalName.Equals("Name"))
@@ -74,6 +75,10 @@ namespace CodeGenerator.Business
                                 field = xmlNode.ChildNodes[i].ChildNodes[j].ChildNodes[z].InnerText;
                                 // 关键字转换
                                 this.IsKeywords(ref field);
+                            }
+                            if (xmlNode.ChildNodes[i].ChildNodes[j].ChildNodes[z].LocalName.Equals("Length"))
+                            {
+                                Length = xmlNode.ChildNodes[i].ChildNodes[j].ChildNodes[z].InnerText;
                             }
                             if (xmlNode.ChildNodes[i].ChildNodes[j].ChildNodes[z].LocalName.Equals("Comment"))
                             {
@@ -95,7 +100,15 @@ namespace CodeGenerator.Business
                         }
                         else
                         {
-                            this.CodeText.AppendLine("            Map(x => x." + fieldKey + ");");
+                            //.Length(50);
+                            if (string.IsNullOrEmpty(Length))
+                            {
+                                this.CodeText.AppendLine("            Map(x => x." + fieldKey + ");");
+                            }
+                            else
+                            {
+                                this.CodeText.AppendLine("            Map(x => x." + fieldKey + ").Length(" + Length + ");");
+                            }
                         }
                     }
                     break;

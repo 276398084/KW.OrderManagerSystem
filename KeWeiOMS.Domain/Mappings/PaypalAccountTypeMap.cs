@@ -30,10 +30,10 @@ namespace KeWeiOMS.Domain
         {
             Table("PaypalAccount");
             Id(x => x.Id);
-            Map(x => x.AccountName);
-            Map(x => x.AppKey);
-            Map(x => x.AppPwd);
-            Map(x => x.AppToken);
+            Map(x => x.AccountName).Length(40);
+            Map(x => x.AppKey).Length(100);
+            Map(x => x.AppPwd).Length(100);
+            Map(x => x.AppToken).Length(400);
             Map(x => x.Status);
         }
     }

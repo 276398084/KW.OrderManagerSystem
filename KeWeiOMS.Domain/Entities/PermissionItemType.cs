@@ -55,12 +55,7 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String Description { get; set; }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual IList<PermissionItemType> children { get; set; }
-
+        public virtual List<PermissionItemType> children { get; set; }
 
     }
 }

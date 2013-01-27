@@ -33,11 +33,14 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AccountList(string p)
+        public ActionResult AccountList(string id)
         {
-            IList<AccountType> list = NSession.CreateQuery(" from AccountType where Platform=:p").SetString("p", p).List<AccountType>();
-
-
+            IList<AccountType> list1 = NSession.CreateQuery(" from AccountType where Platform=:p").SetString("p", id).List<AccountType>();
+            List<object> list = new List<object>();
+            foreach (var item in list1)
+            {
+                list.Add(new { id = item.Id, text = item.AccountName });
+            }
             return Json(list);
         }
 

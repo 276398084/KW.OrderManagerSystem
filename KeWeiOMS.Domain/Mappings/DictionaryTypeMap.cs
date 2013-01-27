@@ -30,9 +30,9 @@ namespace KeWeiOMS.Domain
         {
             Table("Dictionarys");
             Id(x => x.Id);
-            Map(x => x.DicCode);
-            Map(x => x.FullName);
-            Map(x => x.DicValue);
+            Map(x => x.DicCode).Length(50);
+            Map(x => x.FullName).Length(50);
+            Map(x => x.DicValue).Length(50);
             Map(x => x.AllowDelete);
         }
     }

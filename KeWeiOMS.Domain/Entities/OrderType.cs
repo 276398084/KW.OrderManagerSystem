@@ -46,6 +46,11 @@ namespace KeWeiOMS.Domain
         public virtual int Status { get; set; }
 
         /// <summary>
+        /// 是否打印
+        /// </summary>
+        public virtual int IsPrint { get; set; }
+
+        /// <summary>
         /// 合并订单
         /// </summary>
         public virtual int IsMerger { get; set; }
@@ -73,7 +78,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 总金额
         /// </summary>
-        public virtual String Amount { get; set; }
+        public virtual double Amount { get; set; }
 
         /// <summary>
         /// 流水交易号
@@ -133,7 +138,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 运费
         /// </summary>
-        public virtual String Freight { get; set; }
+        public virtual double Freight { get; set; }
 
         /// <summary>
         /// 生成时间
@@ -154,6 +159,16 @@ namespace KeWeiOMS.Domain
         /// 扫描人
         /// </summary>
         public virtual String ScanningBy { get; set; }
+
+        /// <summary>
+        /// 账户
+        /// </summary>
+        public virtual String Account { get; set; }
+
+        /// <summary>
+        /// 平台
+        /// </summary>
+        public virtual String Platform { get; set; }
 
     }
 }

@@ -30,11 +30,11 @@ namespace KeWeiOMS.Domain
         {
             Table("PrintTemplate");
             Id(x => x.Id);
-            Map(x => x.Code);
-            Map(x => x.TempName);
-            Map(x => x.TempType);
+            Map(x => x.Code).Length(20);
+            Map(x => x.TempName).Length(40);
+            Map(x => x.TempType).Length(20);
             Map(x => x.Content);
-            Map(x => x.Description);
+            Map(x => x.Description).Length(200);
         }
     }
 }

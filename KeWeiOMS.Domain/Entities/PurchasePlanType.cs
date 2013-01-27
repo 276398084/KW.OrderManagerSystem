@@ -43,7 +43,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 单价
         /// </summary>
-        public virtual String Price { get; set; }
+        public virtual double Price { get; set; }
 
         /// <summary>
         /// 数量
@@ -53,7 +53,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 运费
         /// </summary>
-        public virtual String Freight { get; set; }
+        public virtual double Freight { get; set; }
 
         /// <summary>
         /// 名称

@@ -1,0 +1,59 @@
+﻿@model KeWeiOMS.Domain.CountryType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Country", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CCountry,"国家中文:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CCountry,new{@id="c_CCountry"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ECountry,"国家英文:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ECountry,new{@id="c_ECountry"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CountryCode,"国家代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CountryCode,new{@id="c_CountryCode"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

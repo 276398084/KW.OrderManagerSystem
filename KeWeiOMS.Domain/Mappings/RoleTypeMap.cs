@@ -31,13 +31,13 @@ namespace KeWeiOMS.Domain
             Table("Roles");
             Id(x => x.Id);
             Map(x => x.OrganizeId);
-            Map(x => x.Code);
-            Map(x => x.Realname);
+            Map(x => x.Code).Length(50);
+            Map(x => x.Realname).Length(200);
             Map(x => x.SortCode);
             Map(x => x.DeletionStateCode);
-            Map(x => x.Description);
+            Map(x => x.Description).Length(200);
             Map(x => x.CreateOn);
-            Map(x => x.CreateBy);
+            Map(x => x.CreateBy).Length(50);
         }
     }
 }

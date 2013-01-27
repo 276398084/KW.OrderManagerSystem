@@ -48,7 +48,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 金额
         /// </summary>
-        public virtual String Price { get; set; }
+        public virtual double Price { get; set; }
 
         /// <summary>
         /// 原有库存

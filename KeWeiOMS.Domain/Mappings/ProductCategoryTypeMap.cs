@@ -31,7 +31,7 @@ namespace KeWeiOMS.Domain
             Table("ProductCategory");
             Id(x => x.Id);
             Map(x => x.ParentId);
-            Map(x => x.Name);
+            Map(x => x.Name).Length(50);
             Map(x => x.SortCode);
         }
     }

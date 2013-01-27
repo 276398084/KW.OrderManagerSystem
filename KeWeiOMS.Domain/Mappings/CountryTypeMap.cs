@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// Table5TypeMap
-    /// 平台账户费用表
+    /// CountryTypeMap
+    /// 国家表
     /// 
     /// 修改纪录
     /// 
@@ -24,18 +24,15 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class Table5TypeMap : ClassMap<Table5Type> 
+    public class CountryTypeMap : ClassMap<CountryType> 
     {
-        public Table5TypeMap()
+        public CountryTypeMap()
         {
-            Table("Table5");
+            Table("Country");
             Id(x => x.Id);
-            Map(x => x.AccountId);
-            Map(x => x.AccountName);
-            Map(x => x.AmountBegin);
-            Map(x => x.AmountEnd);
-            Map(x => x.FeeFormula);
-            Map(x => x.FeeName);
+            Map(x => x.CCountry).Length(50);
+            Map(x => x.ECountry).Length(50);
+            Map(x => x.CountryCode).Length(50);
         }
     }
 }

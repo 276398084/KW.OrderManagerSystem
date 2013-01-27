@@ -73,7 +73,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 产品价格
         /// </summary>
-        public virtual String Price { get; set; }
+        public virtual double Price { get; set; }
 
         /// <summary>
         /// 产品网址

@@ -30,14 +30,15 @@ namespace KeWeiOMS.Domain
         {
             Table("OrderBuyer");
             Id(x => x.Id);
-            Map(x => x.BuyerName);
-            Map(x => x.BuyerEmail);
+            Map(x => x.BuyerName).Length(40);
+            Map(x => x.BuyerEmail).Length(100);
             Map(x => x.BuyCount);
             Map(x => x.BuyAmount);
             Map(x => x.FristBuyOn);
             Map(x => x.ListBuyOn);
-            Map(x => x.Remark);
-            Map(x => x.BuyerType);
+            Map(x => x.Remark).Length(400);
+            Map(x => x.BuyerType).Length(40);
+            Map(x => x.Platform).Length(40);
         }
     }
 }

@@ -30,8 +30,8 @@ namespace KeWeiOMS.Domain
         {
             Table("Permissions");
             Id(x => x.Id);
-            Map(x => x.ResourceCategory);
-            Map(x => x.ResourceId);
+            Map(x => x.ResourceCategory).Length(50);
+            Map(x => x.ResourceId).Length(50);
             Map(x => x.PermissionId);
         }
     }

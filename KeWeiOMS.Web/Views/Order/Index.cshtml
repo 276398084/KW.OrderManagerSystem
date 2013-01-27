@@ -19,7 +19,7 @@
                     $('#ddv-' + index).panel({
                         border: false,
                         cache: false,
-                        href: '@Url.Action("List", "OrderProduct")' + "" + row.itemid,
+                        href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
                         onLoad: function () {
                             $('#dg').datagrid('fixDetailRowHeight', index);
                         }
@@ -67,7 +67,9 @@
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-                            //ajaxAdd();
+                            if ($('#c_Import').form('validate')) {
+                                javascript: $('#up_file').uploadify('upload');
+                            }
                         }
                     }, {
                         text: '取消',
@@ -107,9 +109,9 @@
         }
 
         //异步新建提交
-        function ajaxAdd() {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create", "Order")',
+        function ajaxImport() {
+            $('#c_Import').form('submit', {
+                url: '@Url.Action("Import", "Order")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
@@ -134,6 +136,37 @@
                     }
                 }
             });
+            }
+
+
+            //异步新建提交
+            function ajaxAdd() {
+                $('#c_form').form('submit', {
+                    url: '@Url.Action("Create", "Order")',
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.errorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#c_dlg').dialog('close');
+                            $('#dg').datagrid('reload');
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
+                    }
+                });
             }
             //异步修改提交
             function ajaxEdit() {
@@ -272,7 +305,7 @@
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
-             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Sync()">订单同步</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Sync()">订单同步</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Import()">订单导入</a>
 
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>

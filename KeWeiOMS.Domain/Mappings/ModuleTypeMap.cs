@@ -24,23 +24,23 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class ModuleTypeMap : ClassMap<ModuleType> 
+    public class ModuleTypeMap : ClassMap<ModuleType>
     {
         public ModuleTypeMap()
         {
             Table("Modules");
             Id(x => x.Id);
             Map(x => x.ParentId);
-            Map(x => x.Code);
-            Map(x => x.FullName);
-            Map(x => x.ImageIndex);
-            Map(x => x.NavigateUrl);
+            Map(x => x.Code).Length(50);
+            Map(x => x.FullName).Length(200);
+            Map(x => x.ImageIndex).Length(50);
+            Map(x => x.NavigateUrl).Length(500);
             Map(x => x.SortCode);
             Map(x => x.DeletionStateCode);
-            Map(x => x.Description);
+            Map(x => x.Description).Length(500);
             Map(x => x.CreateOn);
-            Map(x => x.CreateBy);
-            HasMany(x => x.children);
+            Map(x => x.CreateBy).Length(50);
+           // References(x => x.children);
         }
     }
 }

@@ -9,8 +9,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// Table5Type
-    /// 平台账户费用表
+    /// CountryType
+    /// 国家表
     /// 
     /// 修改纪录
     /// 
@@ -23,7 +23,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class Table5Type
+    public class CountryType
     {
         /// <summary>
         /// 主键标识
@@ -31,34 +31,19 @@ namespace KeWeiOMS.Domain
         public virtual int Id { get; set; }
 
         /// <summary>
-        /// 账户ID
+        /// 国家中文
         /// </summary>
-        public virtual int AccountId { get; set; }
+        public virtual String CCountry { get; set; }
 
         /// <summary>
-        /// 账户名称
+        /// 国家英文
         /// </summary>
-        public virtual String AccountName { get; set; }
+        public virtual String ECountry { get; set; }
 
         /// <summary>
-        /// 总金额开始
+        /// 国家代码
         /// </summary>
-        public virtual String AmountBegin { get; set; }
-
-        /// <summary>
-        /// 总金额结束
-        /// </summary>
-        public virtual String AmountEnd { get; set; }
-
-        /// <summary>
-        /// 公式
-        /// </summary>
-        public virtual String FeeFormula { get; set; }
-
-        /// <summary>
-        /// 费用名称
-        /// </summary>
-        public virtual String FeeName { get; set; }
+        public virtual String CountryCode { get; set; }
 
     }
 }

@@ -30,9 +30,9 @@ namespace KeWeiOMS.Domain
         {
             Table("Currency");
             Id(x => x.Id);
-            Map(x => x.CurrencyName);
-            Map(x => x.CurrencyCode);
-            Map(x => x.CurrencySign);
+            Map(x => x.CurrencyCode).Length(30);
+            Map(x => x.CurrencyName).Length(30);
+            Map(x => x.CurrencySign).Length(30);
             Map(x => x.CurrencyValue);
             Map(x => x.CreateOn);
         }

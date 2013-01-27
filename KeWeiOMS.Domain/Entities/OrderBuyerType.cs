@@ -48,7 +48,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 客户购买金额
         /// </summary>
-        public virtual String BuyAmount { get; set; }
+        public virtual double BuyAmount { get; set; }
 
         /// <summary>
         /// 第一次购买时间
@@ -69,6 +69,11 @@ namespace KeWeiOMS.Domain
         /// 客户类型
         /// </summary>
         public virtual String BuyerType { get; set; }
+
+        /// <summary>
+        /// 平台
+        /// </summary>
+        public virtual String Platform { get; set; }
 
     }
 }

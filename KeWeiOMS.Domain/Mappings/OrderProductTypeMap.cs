@@ -31,15 +31,15 @@ namespace KeWeiOMS.Domain
             Table("OrderProducts");
             Id(x => x.Id);
             Map(x => x.OId);
-            Map(x => x.OrderNo);
-            Map(x => x.ExSKU);
-            Map(x => x.Title);
+            Map(x => x.OrderNo).Length(40);
+            Map(x => x.ExSKU).Length(40);
+            Map(x => x.Title).Length(400);
             Map(x => x.Qty);
-            Map(x => x.SKU);
-            Map(x => x.Remark);
-            Map(x => x.Standard);
+            Map(x => x.SKU).Length(40);
+            Map(x => x.Remark).Length(400);
+            Map(x => x.Standard).Length(400);
             Map(x => x.Price);
-            Map(x => x.Url);
+            Map(x => x.Url).Length(200);
         }
     }
 }

@@ -30,8 +30,8 @@ namespace KeWeiOMS.Domain
         {
             Table("EmailTemplate");
             Id(x => x.Id);
-            Map(x => x.Subject);
-            Map(x => x.Title);
+            Map(x => x.Subject).Length(200);
+            Map(x => x.Title).Length(200);
             Map(x => x.Content);
         }
     }

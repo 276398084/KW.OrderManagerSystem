@@ -48,147 +48,75 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Entities\AccountEmailType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\AccountType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\CurrencyType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\DictionaryClasType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\DictionaryType.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Entities\AccountEmailType.cs" />
+    <Compile Include="Entities\AccountType.cs" />
+    <Compile Include="Entities\CountryType.cs" />
+    <Compile Include="Entities\CurrencyType.cs" />
+    <Compile Include="Entities\DictionaryClassType.cs" />
+    <Compile Include="Entities\DictionaryType.cs" />
     <Compile Include="Entities\EmailReturnType.cs" />
-    <Compile Include="Entities\EmailTemplateType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\EmailType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\ModuleType.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Entities\EmailTemplateType.cs" />
+    <Compile Include="Entities\EmailType.cs" />
+    <Compile Include="Entities\ModuleType.cs" />
     <Compile Include="Entities\OrderAddressType.cs" />
     <Compile Include="Entities\OrderBuyerType.cs" />
     <Compile Include="Entities\OrderProductType.cs" />
     <Compile Include="Entities\OrderRecordType.cs" />
     <Compile Include="Entities\OrderType.cs" />
-    <Compile Include="Entities\OrganizeType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\PaypalAccountType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\PermissionItemType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\PermissionScopeType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\PermissionType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\PrintTemplateType.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Entities\OrganizeType.cs" />
+    <Compile Include="Entities\PaypalAccountType.cs" />
+    <Compile Include="Entities\PermissionItemType.cs" />
+    <Compile Include="Entities\PermissionScopeType.cs" />
+    <Compile Include="Entities\PermissionType.cs" />
+    <Compile Include="Entities\PrintTemplateType.cs" />
     <Compile Include="Entities\ProductCategoryType.cs" />
     <Compile Include="Entities\ProductSKUType.cs" />
     <Compile Include="Entities\ProductType.cs" />
     <Compile Include="Entities\PurchasePlanType.cs" />
-    <Compile Include="Entities\ReturnAddresType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\RoleType.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Entities\ReturnAddresType.cs" />
+    <Compile Include="Entities\RoleType.cs" />
+    <Compile Include="Entities\SerialNumberType.cs" />
     <Compile Include="Entities\StockInType.cs" />
     <Compile Include="Entities\StockOutType.cs" />
     <Compile Include="Entities\SuppliersProductType.cs" />
     <Compile Include="Entities\SupplierType.cs" />
-    <Compile Include="Entities\Table1Type.cs" />
-    <Compile Include="Entities\Table5Type.cs" />
-    <Compile Include="Entities\UserRoleType.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Entities\UserType.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Entities\UserRoleType.cs" />
+    <Compile Include="Entities\UserType.cs" />
     <Compile Include="Entities\WarehouseType.cs" />
-    <Compile Include="Mappings\AccountEmailTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\AccountTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\CurrencyTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\DictionaryClasTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\DictionaryTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Mappings\AccountEmailTypeMap.cs" />
+    <Compile Include="Mappings\AccountTypeMap.cs" />
+    <Compile Include="Mappings\CountryTypeMap.cs" />
+    <Compile Include="Mappings\CurrencyTypeMap.cs" />
+    <Compile Include="Mappings\DictionaryClasTypeMap.cs" />
+    <Compile Include="Mappings\DictionaryTypeMap.cs" />
     <Compile Include="Mappings\EmailReturnTypeMap.cs" />
-    <Compile Include="Mappings\EmailTemplateTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\EmailTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\ModuleTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Mappings\EmailTemplateTypeMap.cs" />
+    <Compile Include="Mappings\EmailTypeMap.cs" />
+    <Compile Include="Mappings\ModuleTypeMap.cs" />
     <Compile Include="Mappings\OrderAddressTypeMap.cs" />
     <Compile Include="Mappings\OrderBuyerTypeMap.cs" />
     <Compile Include="Mappings\OrderProductTypeMap.cs" />
     <Compile Include="Mappings\OrderRecordTypeMap.cs" />
     <Compile Include="Mappings\OrderTypeMap.cs" />
-    <Compile Include="Mappings\OrganizeTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\PaypalAccountTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\PermissionItemTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\PermissionScopeTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\PermissionTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\PrintTemplateTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Mappings\OrganizeTypeMap.cs" />
+    <Compile Include="Mappings\PaypalAccountTypeMap.cs" />
+    <Compile Include="Mappings\PermissionItemTypeMap.cs" />
+    <Compile Include="Mappings\PermissionScopeTypeMap.cs" />
+    <Compile Include="Mappings\PermissionTypeMap.cs" />
+    <Compile Include="Mappings\PrintTemplateTypeMap.cs" />
     <Compile Include="Mappings\ProductCategoryTypeMap.cs" />
     <Compile Include="Mappings\ProductSKUTypeMap.cs" />
     <Compile Include="Mappings\ProductTypeMap.cs" />
     <Compile Include="Mappings\PurchasePlanTypeMap.cs" />
-    <Compile Include="Mappings\ReturnAddresTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\RoleTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Mappings\ReturnAddresTypeMap.cs" />
+    <Compile Include="Mappings\RoleTypeMap.cs" />
+    <Compile Include="Mappings\SerialNumberTypeMap.cs" />
     <Compile Include="Mappings\StockInTypeMap.cs" />
     <Compile Include="Mappings\StockOutTypeMap.cs" />
     <Compile Include="Mappings\SuppliersProductTypeMap.cs" />
     <Compile Include="Mappings\SupplierTypeMap.cs" />
-    <Compile Include="Mappings\Table1TypeMap.cs" />
-    <Compile Include="Mappings\Table5TypeMap.cs" />
-    <Compile Include="Mappings\UserRoleTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Mappings\UserTypeMap.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Mappings\UserRoleTypeMap.cs" />
+    <Compile Include="Mappings\UserTypeMap.cs" />
     <Compile Include="Mappings\WarehouseTypeMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -30,13 +30,13 @@ namespace KeWeiOMS.Domain
         {
             Table("Suppliers");
             Id(x => x.Id);
-            Map(x => x.SuppliersName);
-            Map(x => x.QQ);
-            Map(x => x.WW);
-            Map(x => x.Phone);
-            Map(x => x.Tel);
-            Map(x => x.Web);
-            Map(x => x.Memo);
+            Map(x => x.SuppliersName).Length(50);
+            Map(x => x.QQ).Length(50);
+            Map(x => x.WW).Length(50);
+            Map(x => x.Phone).Length(50);
+            Map(x => x.Tel).Length(50);
+            Map(x => x.Web).Length(200);
+            Map(x => x.Memo).Length(400);
         }
     }
 }
