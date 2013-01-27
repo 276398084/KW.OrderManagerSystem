@@ -426,6 +426,7 @@ namespace CodeGenerator.Business
                                     {"DECIMAL", "Decimal", "0", "ToDecimal"},
                                     {"NUMERIC", "Decimal", "0", "ToDecimal"},
                                     {"double", "double", "0", "Todouble"},
+                                    {"FLOAT", "double", "0", "Todouble"},
                                     {"DATE", "DateTime", "null", "ToDateTime"},
                                     {"DATETIME", "DateTime", "null", "ToDateTime"},
                                     {"SMALLDATETIME", "DateTime?", "null", "ToDateTime"},
@@ -449,6 +450,7 @@ namespace CodeGenerator.Business
             // 这个是查找对比对比
             for (int i = 0; i < DataTypeMapping.GetLength(0); i++)
             {
+
                 if (fieldDataType.IndexOf(DataTypeMapping[i, 0]) >= 0)
                 {
                     returnValue = DataTypeMapping[i, 1];
@@ -508,6 +510,7 @@ namespace CodeGenerator.Business
                             case "INT":
                             case "INTEGER":
                             case "BIGINT":
+
                                 break;
                         }
                     }
