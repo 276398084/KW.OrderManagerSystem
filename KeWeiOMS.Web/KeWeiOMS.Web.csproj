@@ -159,6 +159,27 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\smt.xml" />
+    <Content Include="Content\imgs\anquantuichu.gif" />
+    <Content Include="Content\imgs\bangzhu.gif" />
+    <Content Include="Content\imgs\beijing.gif" />
+    <Content Include="Content\imgs\buttonOn_login.gif" />
+    <Content Include="Content\imgs\deleteimge.png" />
+    <Content Include="Content\imgs\direction.gif" />
+    <Content Include="Content\imgs\duanxinxi.gif" />
+    <Content Include="Content\imgs\excelcss.jpg" />
+    <Content Include="Content\imgs\login_bottom.gif" />
+    <Content Include="Content\imgs\login_midbg.gif" />
+    <Content Include="Content\imgs\login_pic.gif" />
+    <Content Include="Content\imgs\login_top.gif" />
+    <Content Include="Content\imgs\mimaxiugai.gif" />
+    <Content Include="Content\imgs\noscript.gif" />
+    <Content Include="Content\imgs\notfound.gif" />
+    <Content Include="Content\imgs\password_bg.gif" />
+    <Content Include="Content\imgs\tabicons.png" />
+    <Content Include="Content\imgs\top-back.gif" />
+    <Content Include="Content\imgs\username_bg.gif" />
+    <Content Include="Content\imgs\view.png" />
+    <Content Include="Content\imgs\yuanjiao.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />

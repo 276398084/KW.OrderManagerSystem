@@ -35,11 +35,11 @@ namespace KeWeiOMS.Web.Controllers
             string Account = form["Account"];
             string file = form["hfile"];
             DataTable dt = OrderHelper.GetDataTable(file);
-
+            List<ResultInfo> results = new List<ResultInfo>();
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
             {
                 case PlatformEnum.SMT:
-                    OrderHelper.ImportBySMT(Account, file);
+                    results = OrderHelper.ImportBySMT(Account, file);
                     break;
                 case PlatformEnum.Ebay:
                     break;
@@ -55,6 +55,7 @@ namespace KeWeiOMS.Web.Controllers
                     break;
             }
             return Json(new { IsSuccess = "true" });
+
         }
 
 
@@ -139,8 +140,8 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<OrderType>();
-
-            return Json(new { total = objList.Count, rows = objList });
+            object count = NSession.CreateQuery("select count(Id) from OrderType ").UniqueResult();
+            return Json(new { total = count, rows = objList });
         }
 
     }
