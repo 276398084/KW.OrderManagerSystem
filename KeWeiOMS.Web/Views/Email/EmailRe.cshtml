@@ -1,0 +1,132 @@
+﻿@model KeWeiOMS.Domain.EmailReturnType
+@{
+    ViewBag.Title = "EmailRe";
+}
+<script type="text/javascript">
+
+    $(function () {
+        $('#dg').datagrid({
+            singleSelect: true,
+            onClickRow: function (index, row) {
+                $.getJSON("/Email/getEmailTempDetail?id=" + row.Id, function (json) {
+                    $('#r_Content').attr('value', json[0].Content);
+                })
+
+            }
+        })
+    });
+    function cancel() {
+        window.close();
+    }
+    //发送提交
+    function send() {
+        // $.getJSON("/Email/EmailReMark?id=" + $('#eid').attr("value"));
+
+        $('#r_form').form('submit', {
+
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.errorMsg) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '发送失败:' + result.errorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                } else {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存成功',
+                        timeout: 2000,
+                        showType: 'slide'
+                    });
+                }
+            }
+        });
+    }
+</script>
+<body class="easyui-layout">
+    <div data-options="region:'north',border:false,title:'邮件内容'" style="height:200px;padding:10px">
+          <table class ="editForm" id="etable">
+            <tr>
+		        <td>
+                    <TextBox id="eid" style = "width:800px;display:none">@ViewData["eid"]</TextBox>
+		        </td>
+	        </tr>
+              <tr>
+		        <td>
+                    <Label>邮件标题:</Label>
+		        </td>
+		        <td>
+                    <TextBox id="ESubject"  style = "width:800px;font-size:larger">@ViewData["sub"]</TextBox>
+		        </td>
+	        </tr>
+
+	        <tr>
+		        <td>
+                    <Label>邮件内容:</Label>
+		        </td>
+		        <td>
+                    <TextArea id="EContent" style = "width:800px;height:110px;resize:none;">@ViewData["con"]</TextArea>
+		        </td>
+	        </tr>
+        </table >
+    </div>
+	<div data-options="region:'east',split:true,title:'回复模板'" style="width:450px;padding:10px;">
+        <table id="dg" class="easyui-datagrid" style="width:420px;height:325px"
+			data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
+		<thead>
+			<tr>
+                <th data-options="field:'Id'" style="display:none"></th>
+				<th data-options="field:'Title',width:150">情况名称</th>
+				<th data-options="field:'Content',width:280">回复内容</th>
+			</tr>
+		</thead>
+	</table>
+	</div>
+	<div data-options="region:'center',title:'邮件回复'">
+@using (Html.BeginForm("EmailRerrr", "Email", FormMethod.Post, new { id = "r_form" }))
+{
+<fieldset>
+        <table class="editForm">
+        	            <tr >
+		            <td>
+                        @Html.LabelFor(model => model.REmail, "回复邮箱:")
+		            </td>
+		            <td>
+                        @Html.TextBoxFor(model => model.REmail, new { @id = "r_REmail", @readOnly = "readOnly", style = "width:800px;" })
+		            </td>
+	            </tr>
+
+	            <tr>
+		            <td>
+                        @Html.LabelFor(model => model.Subject, "回复主题:")
+		            </td>
+		            <td>
+                        @Html.TextBoxFor(model => model.Subject, new { @id = "r_Subject", style = "width:800px;" })
+		            </td>
+	            </tr>
+
+	            <tr>
+		            <td>
+                        @Html.LabelFor(model => model.Content, "回复内容:")
+		            </td>
+		            <td>
+                        @Html.TextAreaFor(model => model.Content, new { @id = "r_Content", style = "width:800px;height:205px;resize:none" })
+		            </td>
+	            </tr>
+            <tr>
+                <td></td>
+                <td align=center>
+                    <button class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="send()">发送</button>
+                    <button class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="cancel()">取消</button>
+                </td>
+            </tr>
+            </table>
+          </fieldset>
+}
+	</div>
+</body>

@@ -10,20 +10,41 @@
             url: '@Url.Action("List","EmailTemplate")',
             pageNumber: 1,
             pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
-        });
+            pageList: [20, 40, 60, 80, 100],
+            onDblClickRow: function (index, row) {
 
+                var id = getselectedRow();
+                if (id != undefined) {
+                    var ur = '@Url.Action("Details","EmailTemplate")/' + id;
+                    $('#d_dlg').load(ur, function () {
+                        $(this).dialog({
+                            title: '详细内容',
+                            modal: true,
+                            loadingMessage: '正在加载...',
+                            buttons: [{
+                                text: '关闭',
+                                handler: function () {
+                                    $('#d_dlg').dialog('close');
+                                }
+                            }]
+                        });
+                    }).dialog('open');;
+                }
+            }
+
+
+        });
     });
 
     //新建
     function c_dlg() {
         var url_str = '@Url.Action("Create","EmailTemplate")';
-		
+
         $('#c_dlg').load(url_str, function () {
             $(this).dialog({
                 title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
+                modal: true,
+                loadingMessage: '正在加载...',
                 buttons: [{
                     text: '提交',
                     iconCls: 'icon-ok',
@@ -48,13 +69,13 @@
             $('#e_dlg').load(url, function () {
                 $(this).dialog({
                     title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
+                    modal: true,
+                    loadingMessage: '正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-							ajaxEdit();
+                            ajaxEdit();
                         }
                     }, {
                         text: '取消',
@@ -67,22 +88,22 @@
         }
     }
 
-	//异步新建提交
-        function ajaxAdd() {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create","EmailTemplate")',
+    //异步新建提交
+    function ajaxAdd() {
+        $('#c_form').form('submit', {
+            url: '@Url.Action("Create","EmailTemplate")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
                     var result = eval('(' + result + ')');
                     if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#c_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -96,7 +117,7 @@
                 }
             });
         }
-		//异步修改提交
+        //异步修改提交
         function ajaxEdit() {
             $('#e_form').form('submit', {
                 url: '@Url.Action("Edit","EmailTemplate")',
@@ -106,12 +127,12 @@
                 success: function (result) {
                     var result = eval('(' + result + ')');
                     if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#e_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -125,39 +146,39 @@
                 }
             });
         }
-   
 
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","EmailTemplate")/' + id;
+
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                $.messager.confirm('确认', '确定删除?', function (r) {
+                    if (r) {
+                        var url = '@Url.Action("Delete","EmailTemplate")/' + id;
                     $.post(url, function () {
                     }).success(function (data) {
                         var msgstr = "删除成功";
                         if (data != true) {
                             msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
+                            $.messager.show({
+                                title: '提示',
+                                msg: msgstr,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $.messager.show({
+                                title: '提示',
+                                msg: msgstr,
+                                timeout: 3000,
+                                showType: 'slide'
+                            });
+                        }
 
                         $('#dg').datagrid('reload');
-                    }) .error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
+                    }).error(function () {
+                        $.messager.alert('错误', '删除发生错误');
+                    });
 
                 }
             });
@@ -181,7 +202,7 @@
         });
         return (undefined);
     }
-   
+
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -189,19 +210,19 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*          <th field="Id" width="100">
                 主键
             </th>
 
             <th field="Subject" width="100">
                 主题
-            </th>
+            </th>*@
 
             <th field="Title" width="100">
                 标题
             </th>
 
-            <th field="Content" width="100">
+            <th field="Content" width="300">
                 内容
             </th>
 
@@ -211,12 +232,13 @@
 		</table>
         <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true"  onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
         </div> 
         
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
+    <div id="d_dlg"></div>
 
 </div>
 </body>
