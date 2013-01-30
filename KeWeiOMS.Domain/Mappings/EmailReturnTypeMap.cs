@@ -32,7 +32,7 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.REmail).Length(100);
             Map(x => x.Subject).Length(200);
-            Map(x => x.Content);
+            Map(x => x.Content).Length(2000);
             Map(x => x.MyEmail).Length(100);
             Map(x => x.EId);
             Map(x => x.CreateOn);

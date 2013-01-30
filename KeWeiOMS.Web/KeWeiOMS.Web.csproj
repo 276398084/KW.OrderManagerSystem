@@ -46,6 +46,9 @@
     <Reference Include="Iesi.Collections">
       <HintPath>..\Lib\Iesi.Collections.dll</HintPath>
     </Reference>
+    <Reference Include="LumiSoft.Net">
+      <HintPath>..\Lib\LumiSoft.Net.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\NHibernate.dll</HintPath>
@@ -126,6 +129,7 @@
     <Compile Include="Controllers\DictionaryClassController.cs" />
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
@@ -1058,6 +1062,16 @@
     <Content Include="Views\WarehouseStock\Details.cshtml" />
     <Content Include="Views\WarehouseStock\Edit.cshtml" />
     <Content Include="Views\WarehouseStock\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EmailReturn\Create.cshtml" />
+    <Content Include="Views\EmailReturn\Delete.cshtml" />
+    <Content Include="Views\EmailReturn\Details.cshtml" />
+    <Content Include="Views\EmailReturn\Edit.cshtml" />
+    <Content Include="Views\EmailReturn\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Email\EmailRe.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,63 @@
+﻿@model KeWeiOMS.Domain.EmailReturnType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.EmailReturnType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.EmailReturnType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">回复邮箱</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.REmail)
+    </div>
+
+    <div class="display-label">主机</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Subject)
+    </div>
+
+    <div class="display-label">内容</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Content)
+    </div>
+
+    <div class="display-label">我们的邮箱</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MyEmail)
+    </div>
+
+    <div class="display-label">回复的邮件Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EId)
+    </div>
+
+    <div class="display-label">回复时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">回复人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

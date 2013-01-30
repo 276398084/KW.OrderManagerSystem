@@ -8,10 +8,10 @@
 
     $(function () {
 
-		        $('#c_ReplyBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
+        $('#c_ReplyBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
 
 
         $('#c_GenerateOn').datebox();
@@ -24,7 +24,224 @@
 
 
     });
-    
+
+</script>
+
+@using (Html.BeginForm("Create", "Email", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Subject,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Subject,new{@id="c_Subject"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyerCode,"买家ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyerCode,new{@id="c_BuyerCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyerEmail,"买家Email:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyerEmail,new{@id="c_BuyerEmail"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageId,"消息ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageId,new{@id="c_MessageId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageType,"消息类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageType,new{@id="c_MessageType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"产品SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"产品标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="c_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductUrl,"产品链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductUrl,new{@id="c_ProductUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductPrice,"产品价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductPrice,new{@id="c_ProductPrice"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Account,"账户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account,new{@id="c_Account"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="c_Platform"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplyBy,"回复人员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplyBy,new{@id="c_ReplyBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsReply,"是否回复:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsReply,new{@id="c_IsReply"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.GenerateOn,"邮件生成时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.GenerateOn,new{@id="c_GenerateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"同步时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplyOn,"回复时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplyOn,new{@id="c_ReplyOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}
+@model KeWeiOMS.Domain.EmailType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#c_ReplyBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+
+
+        $('#c_GenerateOn').datebox();
+
+
+        $('#c_CreateOn').datebox();
+
+
+        $('#c_ReplyOn').datebox();
+
+
+    });
+
 </script>
 
 @using (Html.BeginForm("Create", "Email", FormMethod.Post, new { id = "c_form" }))

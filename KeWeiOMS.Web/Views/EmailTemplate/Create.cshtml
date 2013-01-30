@@ -3,21 +3,19 @@
 @{
     Layout = null;
 }
-
+<script src="@Url.Content("../../kindeditor/kindeditor-min.js")" type="text/javascript"></script>
+<script src="@Url.Content("../../kindeditor/lang/zh_CN.js")" type="text/javascript"></script>
 <script type="text/javascript">
-
     $(function () {
 
-		
-    });
-    
-</script>
 
-@using (Html.BeginForm("Create", "EmailTemplate", FormMethod.Post, new { id = "c_form" }))
+    });
+</script>
+@using (Html.BeginForm("Create", "EmailTemplate", FormMethod.Post, new { id ="c_form" }))
 {
 <fieldset>
 <table class="editForm">
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
@@ -33,27 +31,27 @@
 		<td>
             @Html.TextBoxFor(model => model.Subject,new{@id="c_Subject"})
 		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title, "标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title, new { @id = "c_Title",style="width:600px;"})
+		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.Title,"标题:")
+            @Html.LabelFor(model => model.Content, "内容:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Title,new{@id="c_Title"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Content,"内容:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
+            @Html.TextAreaFor(model => model.Content, new { @id = "c_Content" ,style="width:600px;height:300px;resize:none" })
 		</td>
 	</tr>
 
 
-</table>
+</table> 
 </fieldset>
 }

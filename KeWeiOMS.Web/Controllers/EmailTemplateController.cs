@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  EmailTemplateType GetById(int Id)
+        public EmailTemplateType GetById(int Id)
         {
             EmailTemplateType obj = NSession.Get<EmailTemplateType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(EmailTemplateType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 EmailTemplateType obj = GetById(id);
@@ -105,6 +105,13 @@ namespace KeWeiOMS.Web.Controllers
                 .List<EmailTemplateType>();
 
             return Json(new { total = objList.Count, rows = objList });
+        }
+
+        public ActionResult Details(int id)
+        {
+            EmailTemplateType obj = GetById(id);
+            return View(obj);
+
         }
 
     }
