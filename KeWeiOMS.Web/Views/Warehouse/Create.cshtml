@@ -1,0 +1,59 @@
+﻿@model KeWeiOMS.Domain.WarehouseType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Warehouse", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WCode,"仓库代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WCode,new{@id="c_WCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WName,"仓库名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WName,new{@id="c_WName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Address,"仓库地址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Address,new{@id="c_Address"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

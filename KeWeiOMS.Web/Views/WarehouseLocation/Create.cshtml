@@ -1,0 +1,54 @@
+﻿@model KeWeiOMS.Domain.WarehouseLocationType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_WId').combobox({
+            url: '/Warehouse/QList/',
+            valueField: 'Id',
+            textField: 'WName',
+            required: true,
+            width: 150,
+            onSelect: function () {
+                $('#c_Warehouse').val($('#c_WId').combobox("getText"))
+                alert($('#c_Warehouse').val());
+            }
+        });
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "WarehouseLocation", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WId, "仓库ID:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
+                    @Html.HiddenFor(model => model.Warehouse, new { @id = "c_Warehouse" })
+                </td>
+            </tr>
+
+            <tr>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.PositionsName, "仓位名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PositionsName, new { @id = "c_PositionsName" })
+                </td>
+            </tr>
+
+
+        </table>
+    </fieldset>
+}

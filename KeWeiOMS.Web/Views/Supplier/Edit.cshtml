@@ -1,0 +1,91 @@
+﻿@model KeWeiOMS.Domain.SupplierType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "Supplier", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SuppliersName,"供应商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SuppliersName,new{@id="e_SuppliersName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.QQ,"QQ:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.QQ,new{@id="e_QQ"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WW,"旺旺:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WW,new{@id="e_WW"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Phone,"电话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Phone,new{@id="e_Phone"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Tel,"手机:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Tel,new{@id="e_Tel"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Web,"网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Web,new{@id="e_Web"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Memo,new{@id="e_Memo"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

@@ -1,0 +1,64 @@
+﻿@model KeWeiOMS.Domain.SuppliersProductType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "SuppliersProduct", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SId,"供应商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SId,new{@id="e_SId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Web,"Web:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Web,new{@id="e_Web"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

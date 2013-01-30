@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-
+ 
 <script type="text/javascript">
 
     $(function () {
@@ -30,11 +30,6 @@
                 <td>
                     @Html.TextBoxFor(model => model.ParentId, new { @id = "c_ParentId" })
                 </td>
-            </tr>
-
-
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.FullName, "名称:")
                 </td>
@@ -42,7 +37,6 @@
                     @Html.TextBoxFor(model => model.FullName, new { @id = "c_FullName" })
                 </td>
             </tr>
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.ImageIndex, "图标编号:")
@@ -53,9 +47,6 @@
                     </div>
                     @Html.TextBoxFor(model => model.ImageIndex, new { @id = "c_ImageIndex" })
                 </td>
-            </tr>
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.NavigateUrl, "导航地址:")
                 </td>
@@ -64,6 +55,7 @@
                 </td>
             </tr>
 
+
             <tr>
                 <td>
                     @Html.LabelFor(model => model.SortCode, "排序码:")
@@ -71,10 +63,6 @@
                 <td>
                     @Html.TextBoxFor(model => model.SortCode, new { @id = "c_SortCode" })
                 </td>
-            </tr>
-
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.Description, "备注:")
                 </td>
@@ -82,14 +70,11 @@
                     @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
                 </td>
             </tr>
-
-
-
-
         </table>
     </fieldset>
     <div id="myWindow">
     </div>
+   
 }
 <script type="text/javascript">
 
@@ -101,8 +86,9 @@
             , width: 210
         });
         $('#c_ImageIndex').val(tuclass);
-
+        alert("2:" + $('#myWindow'));
         $('#myWindow').window('close');
+        alert("3:");
     }
     function showMyWindow(title, href, width, height, modal, minimizable, maximizable) {
 

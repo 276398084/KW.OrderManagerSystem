@@ -1,0 +1,95 @@
+﻿@model KeWeiOMS.Domain.SupplierType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Supplier", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SuppliersName,"供应商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SuppliersName,new{@id="c_SuppliersName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.QQ,"QQ:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.QQ,new{@id="c_QQ"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WW,"旺旺:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WW,new{@id="c_WW"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Phone,"电话:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Phone,new{@id="c_Phone"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Tel,"手机:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Tel,new{@id="c_Tel"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Web,"网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Web,new{@id="c_Web"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Memo,new{@id="c_Memo"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

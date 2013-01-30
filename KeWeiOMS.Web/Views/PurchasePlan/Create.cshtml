@@ -1,0 +1,216 @@
+﻿@model KeWeiOMS.Domain.PurchasePlanType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		        $('#c_BuyBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#c_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_CreateOn').datebox();
+
+
+        $('#c_BuyOn').datebox();
+
+
+        $('#c_SendOn').datebox();
+
+
+        $('#c_ReceiveOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "PurchasePlan", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PlanNo,"计划编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PlanNo,new{@id="c_PlanNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"单价:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="c_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Freight,"运费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Freight,new{@id="c_Freight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductName,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductName,new{@id="c_ProductName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Suppliers,"供应商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Suppliers,new{@id="c_Suppliers"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SId,"供应商ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SId,new{@id="c_SId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsMode,"发货方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="c_LogisticsMode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TrackCode,"运单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TrackCode,new{@id="c_TrackCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PostStatus,"物流状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PostStatus,new{@id="c_PostStatus"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyBy,"采购人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyBy,new{@id="c_BuyBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"生成人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"生成时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyOn,"采购时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyOn,new{@id="c_BuyOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SendOn,"发货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SendOn,new{@id="c_SendOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="c_ReceiveOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

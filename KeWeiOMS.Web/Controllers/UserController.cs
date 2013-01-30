@@ -27,6 +27,9 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.CreateOn = DateTime.Now;
+                obj.LastVisit = DateTime.Now;
+               
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }

@@ -1,0 +1,118 @@
+﻿@model KeWeiOMS.Domain.PurchasePlanType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.PurchasePlanType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.PurchasePlanType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">计划编号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PlanNo)
+    </div>
+
+    <div class="display-label">SKU</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SKU)
+    </div>
+
+    <div class="display-label">单价</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Price)
+    </div>
+
+    <div class="display-label">数量</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qty)
+    </div>
+
+    <div class="display-label">运费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Freight)
+    </div>
+
+    <div class="display-label">名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductName)
+    </div>
+
+    <div class="display-label">供应商</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Suppliers)
+    </div>
+
+    <div class="display-label">供应商ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SId)
+    </div>
+
+    <div class="display-label">发货方式</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LogisticsMode)
+    </div>
+
+    <div class="display-label">运单号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TrackCode)
+    </div>
+
+    <div class="display-label">物流状态</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PostStatus)
+    </div>
+
+    <div class="display-label">状态</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+    <div class="display-label">采购人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BuyBy)
+    </div>
+
+    <div class="display-label">生成人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">生成时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">采购时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BuyOn)
+    </div>
+
+    <div class="display-label">发货时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SendOn)
+    </div>
+
+    <div class="display-label">到货时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReceiveOn)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

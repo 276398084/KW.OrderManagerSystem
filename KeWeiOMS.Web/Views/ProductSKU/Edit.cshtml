@@ -1,0 +1,82 @@
+﻿@model KeWeiOMS.Domain.ProductSKUType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "ProductSKU", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ParentSKU,"父编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ParentSKU,new{@id="e_ParentSKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"子编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"规格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Memo,new{@id="e_Memo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DayOfStock,"库存天数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DayOfStock,new{@id="e_DayOfStock"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

@@ -1,5 +1,4 @@
 ﻿@model KeWeiOMS.Domain.OrderProductType
-
 @{
     Layout = null;
 }
@@ -8,115 +7,72 @@
 
     $(function () {
 
-		
+
     });
-    
+
 </script>
 
 @using (Html.BeginForm("Create", "OrderProduct", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.OId,"订单ID:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OId,new{@id="c_OId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.OrderNo,"订单号:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ExSKU,"外部商品SKU:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ExSKU,new{@id="c_ExSKU"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Title,"名称:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Title,new{@id="c_Title"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Qty,"数量:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SKU,"对应内部库存SKU:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Remark,"产品描述:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Remark,new{@id="c_Remark"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Standard,"产品规格:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Standard,new{@id="c_Standard"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Price,"产品价格:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Price,new{@id="c_Price"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Url,"产品网址:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Url,new{@id="c_Url"})
-		</td>
-	</tr>
-
-
-</table>
-</fieldset>
+    <fieldset>
+        <legend>产品信息</legend>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ExSKU, "平台SKU:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ExSKU, new { @id = "c_ExSKU" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "SKU:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Title, "名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Title, new { @id = "c_Title" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Qty, new { @id = "c_Qty" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Remark, "产品描述:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Remark, new { @id = "c_Remark" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Standard, "产品规格:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Standard, new { @id = "c_Standard" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Price, "产品价格:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Price, new { @id = "c_Price" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Url, "产品网址:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Url, new { @id = "c_Url" })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
 }

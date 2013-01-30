@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  CountryType GetById(int Id)
+        public CountryType GetById(int Id)
         {
             CountryType obj = NSession.Get<CountryType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(CountryType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 CountryType obj = GetById(id);
@@ -101,11 +101,22 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<CountryType> objList = NSession.CreateQuery("from CountryType")
                 .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
+                .SetMaxResults(page)
                 .List<CountryType>();
 
             object count = NSession.CreateQuery("select count(Id) from CountryType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        public JsonResult ListALL(string q)
+        {
+            IList<CountryType> objList = NSession.CreateQuery("from CountryType where ECountry like '%" + q + "%'")
+                .SetFirstResult(0)
+            .SetMaxResults(10)
+                .List<CountryType>();
+
+
+            return Json(new { total = objList.Count, rows = objList });
         }
 
     }

@@ -11,14 +11,22 @@ input[type="password"]
     width: 210px;
     border: 1px solid #CCC;
 }
-input[type="text"]
+
+form input[type="text"]
 {
     font-family: 微软雅黑,新宋体;
     height: 21px;
     width: 210px;
     border: 1px solid #CCC;
 }
-fieldset
+td label
+{
+    width: 120px;
+    height: 25px;
+    float: right;
+}
+
+.fieldset
 {
     width: 810px;
     margin-left: 4px;
@@ -83,7 +91,7 @@ legend
                     font-weight: bold;
                 }
 
-.panel-icon,.icons, .tree-icon
+.panel-icon, .icons, .tree-icon
 {
     background: url(/Content/imgs/tabicons.png) no-repeat;
     width: 18px;

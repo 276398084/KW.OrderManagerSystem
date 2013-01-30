@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\AccountEmailType.cs" />
+    <Compile Include="Entities\AccountFeeType.cs" />
     <Compile Include="Entities\AccountType.cs" />
     <Compile Include="Entities\CountryType.cs" />
     <Compile Include="Entities\CurrencyType.cs" />
@@ -82,8 +83,11 @@
     <Compile Include="Entities\SupplierType.cs" />
     <Compile Include="Entities\UserRoleType.cs" />
     <Compile Include="Entities\UserType.cs" />
+    <Compile Include="Entities\WarehouseLocationType.cs" />
+    <Compile Include="Entities\WarehouseStockType.cs" />
     <Compile Include="Entities\WarehouseType.cs" />
     <Compile Include="Mappings\AccountEmailTypeMap.cs" />
+    <Compile Include="Mappings\AccountFeeTypeMap.cs" />
     <Compile Include="Mappings\AccountTypeMap.cs" />
     <Compile Include="Mappings\CountryTypeMap.cs" />
     <Compile Include="Mappings\CurrencyTypeMap.cs" />
@@ -117,6 +121,8 @@
     <Compile Include="Mappings\SupplierTypeMap.cs" />
     <Compile Include="Mappings\UserRoleTypeMap.cs" />
     <Compile Include="Mappings\UserTypeMap.cs" />
+    <Compile Include="Mappings\WarehouseLocationTypeMap.cs" />
+    <Compile Include="Mappings\WarehouseStockTypeMap.cs" />
     <Compile Include="Mappings\WarehouseTypeMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -169,6 +169,15 @@ namespace KeWeiOMS.Domain
         /// 平台
         /// </summary>
         public virtual String Platform { get; set; }
+        /// <summary>
+        /// 订单的产品
+        /// </summary>
+        public virtual IList<OrderProductType> Products { get; set; }
+
+        /// <summary>
+        /// 订单的地址
+        /// </summary>
+        public virtual OrderAddressType AddressInfo { get; set; }
 
     }
 }

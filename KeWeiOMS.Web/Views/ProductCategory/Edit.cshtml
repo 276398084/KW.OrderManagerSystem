@@ -1,0 +1,55 @@
+﻿@model KeWeiOMS.Domain.ProductCategoryType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "ProductCategory", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ParentId,"父Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ParentId,new{@id="e_ParentId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Name,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Name,new{@id="e_Name"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SortCode,"排序:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SortCode,new{@id="e_SortCode"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

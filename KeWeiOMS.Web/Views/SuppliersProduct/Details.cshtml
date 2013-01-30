@@ -1,0 +1,48 @@
+﻿@model KeWeiOMS.Domain.SuppliersProductType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.SuppliersProductType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.SuppliersProductType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">供应商</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SId)
+    </div>
+
+    <div class="display-label">SKU</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SKU)
+    </div>
+
+    <div class="display-label">价格</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Price)
+    </div>
+
+    <div class="display-label">Web</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Web)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

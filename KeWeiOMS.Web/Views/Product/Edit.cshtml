@@ -1,0 +1,270 @@
+﻿@model KeWeiOMS.Domain.ProductType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Product", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"商品编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Category,"类别:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Category,new{@id="e_Category"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductName,"商品名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductName,new{@id="e_ProductName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"商品价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Weight,"重量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Weight,new{@id="e_Weight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Long,"长:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Long,new{@id="e_Long"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Wide,"宽:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Wide,new{@id="e_Wide"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.High,"高:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.High,new{@id="e_High"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DayByStock,"库存天数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DayByStock,new{@id="e_DayByStock"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Summary,"简单描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Summary,new{@id="e_Summary"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PackMemo,"包装注意事项:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PackMemo,new{@id="e_PackMemo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsInfraction,"是否侵权:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsInfraction,new{@id="e_IsInfraction"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Model,"型号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Model,new{@id="e_Model"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Brand,"品牌:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Brand,new{@id="e_Brand"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PicUrl,"大图片网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PicUrl,new{@id="e_PicUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PicQty,"大图数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PicQty,new{@id="e_PicQty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SPicUrl,"小图片网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SPicUrl,new{@id="e_SPicUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Purchaser,"采购人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Purchaser,new{@id="e_Purchaser"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Examiner,"验货人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Examiner,new{@id="e_Examiner"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Packer,"包装人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Packer,new{@id="e_Packer"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PackCoefficient,"包装系数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PackCoefficient,new{@id="e_PackCoefficient"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsElectronic,"电子:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsElectronic,new{@id="e_IsElectronic"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.HasBattery,"电池:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.HasBattery,new{@id="e_HasBattery"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Location,"库位:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Location,new{@id="e_Location"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

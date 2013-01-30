@@ -16,13 +16,8 @@
 @using (Html.BeginForm("Edit", "Module", FormMethod.Post, new { id = "e_form" }))
 {
     <fieldset>
-
         <table class="editForm">
             <tr>
-
-
-
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.ParentId, "父节点主键:")
@@ -35,9 +30,6 @@
                     @Html.HiddenFor(model => model.CreateBy, new { @id = "e_CreateBy" })
                 </td>
             </tr>
-
-
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.FullName, "名称:")
@@ -76,9 +68,6 @@
                     @Html.TextBoxFor(model => model.SortCode, new { @id = "e_SortCode" })
                 </td>
             </tr>
-
-
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Description, "备注:")
@@ -87,11 +76,6 @@
                     @Html.TextBoxFor(model => model.Description, new { @id = "e_Description" })
                 </td>
             </tr>
-
-
-
-
-
         </table>
     </fieldset>
    <div id="myWindow"></div>

@@ -1,0 +1,63 @@
+﻿@model KeWeiOMS.Domain.SupplierType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.SupplierType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.SupplierType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">供应商</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SuppliersName)
+    </div>
+
+    <div class="display-label">QQ</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.QQ)
+    </div>
+
+    <div class="display-label">旺旺</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WW)
+    </div>
+
+    <div class="display-label">电话</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Phone)
+    </div>
+
+    <div class="display-label">手机</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Tel)
+    </div>
+
+    <div class="display-label">网址</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Web)
+    </div>
+
+    <div class="display-label">备注</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Memo)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

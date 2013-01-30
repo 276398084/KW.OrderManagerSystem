@@ -1,0 +1,82 @@
+﻿@model KeWeiOMS.Domain.AccountFeeType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "AccountFee", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键标识:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountId,"账户ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountId,new{@id="e_AccountId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AccountName,"账户名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AccountName,new{@id="e_AccountName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AmountBegin,"总金额开始:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AmountBegin,new{@id="e_AmountBegin"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AmountEnd,"总金额结束:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AmountEnd,new{@id="e_AmountEnd"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FeeFormula,"公式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FeeFormula,new{@id="e_FeeFormula"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FeeName,"费用名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FeeName,new{@id="e_FeeName"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

@@ -131,15 +131,11 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List()
         {
             IList<CurrencyType> objList = NSession.CreateQuery("from CurrencyType")
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
                 .List<CurrencyType>();
-
             object count = NSession.CreateQuery("select count(Id) from CurrencyType ").UniqueResult();
-
             return Json(new { total = count, rows = objList });
         }
 

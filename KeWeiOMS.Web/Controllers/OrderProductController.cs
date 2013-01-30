@@ -45,6 +45,34 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
+        [HttpPost]
+        public JsonResult Save(OrderProductType obj)
+        {
+            try
+            {
+                List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
+                if (list == null)
+                    list = new List<OrderProductType>();
+                OrderProductType findOne = list.Find(p => p.SKU == obj.SKU);
+                if (findOne != null)
+                {
+                    // findOne = obj;
+                    list.Remove(findOne);
+                    list.Add(obj);
+                }
+                else
+                {
+                    list.Add(obj);
+                }
+                Session["OrderProducts"] = list;
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = "true" });
+        }
+
         /// <summary>
         /// 根据Id获取
         /// </summary>
@@ -105,11 +133,9 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int id)
         {
-            IList<OrderProductType> objList = NSession.CreateQuery("from OrderProductType")
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
+            IList<OrderProductType> objList = NSession.CreateQuery("from OrderProductType where OId =:p").SetInt32("p", id)
                 .List<OrderProductType>();
 
             return Json(new { total = objList.Count, rows = objList });

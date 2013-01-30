@@ -1,0 +1,63 @@
+﻿@model KeWeiOMS.Domain.StockInType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.StockInType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.StockInType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">入库仓库Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WId)
+    </div>
+
+    <div class="display-label">商品</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SKU)
+    </div>
+
+    <div class="display-label">数量</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qty)
+    </div>
+
+    <div class="display-label">金额</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Price)
+    </div>
+
+    <div class="display-label">原有库存</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SourceQty)
+    </div>
+
+    <div class="display-label">入库人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">入库时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

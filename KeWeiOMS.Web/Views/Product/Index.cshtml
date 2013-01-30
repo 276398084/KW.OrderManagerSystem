@@ -1,0 +1,277 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.ProductType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Product")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
+        });
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Product")';
+
+        $('#c_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '新建',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        ajaxAdd();
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#c_dlg').dialog('close');
+                    }
+                }]
+            });
+        }).dialog('open');;
+    }
+
+    //编辑框
+    function e_dlg() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "Product")/' + id;
+            $('#e_dlg').load(url, function () {
+                $(this).dialog({
+                    title: '编辑',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '提交',
+                        iconCls: 'icon-ok',
+                        handler: function () {
+                            ajaxEdit();
+                        }
+                    }, {
+                        text: '取消',
+                        handler: function () {
+                            $('#e_dlg').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');
+        }
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        $('#c_form').form('submit', {
+            url: '@Url.Action("Create", "Product")',
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.errorMsg) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存失败:' + result.errorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                } else {
+                    $('#c_dlg').dialog('close');
+                    $('#dg').datagrid('reload');
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存成功',
+                        timeout: 2000,
+                        showType: 'slide'
+                    });
+                }
+            }
+        });
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            $('#e_form').form('submit', {
+                url: '@Url.Action("Edit", "Product")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $('#e_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
+                }
+            });
+        }
+
+
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                $.messager.confirm('确认', '确定删除?', function (r) {
+                    if (r) {
+                        var url = '@Url.Action("Delete", "Product")/' + id;
+                        $.post(url, function () {
+                        }).success(function (data) {
+                            var msgstr = "删除成功";
+                            if (data != true) {
+                                msgstr = "删除失败" + data;
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 0,
+                                    showType: 'slide'
+                                });
+                            } else {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
+                            }
+
+                            $('#dg').datagrid('reload');
+                        }).error(function () {
+                            $.messager.alert('错误', '删除发生错误');
+                        });
+
+                    }
+                });
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+
+
+                    <th field="SKU" width="100">商品编号
+                    </th>
+
+                    <th field="Category" width="100">类别
+                    </th>
+
+                    <th field="ProductName" width="100">商品名称
+                    </th>
+
+                    <th field="Price" width="100">商品价格
+                    </th>
+
+                    <th field="Weight" width="100">重量
+                    </th>
+
+                    <th field="Long" width="100">长宽高
+                    </th>
+                    <th field="DayByStock" width="100">库存天数
+                    </th>
+                    <th field="Summary" width="100">简单描述
+                    </th>
+
+                    <th field="PackMemo" width="100">包装注意事项
+                    </th>
+
+                    <th field="IsInfraction" width="100">是否侵权
+                    </th>
+
+                    <th field="Model" width="100">型号
+                    </th>
+
+                    <th field="Brand" width="100">品牌
+                    </th>
+
+                    <th field="PicUrl" width="100">大图片网址
+                    </th>
+
+                    <th field="PicQty" width="100">大图数量
+                    </th>
+
+                    <th field="SPicUrl" width="100">小图片网址
+                    </th>
+
+                    <th field="Purchaser" width="100">采购人
+                    </th>
+
+                    <th field="Examiner" width="100">验货人
+                    </th>
+
+                    <th field="Packer" width="100">包装人
+                    </th>
+
+                    <th field="PackCoefficient" width="100">包装系数
+                    </th>
+
+                    <th field="IsElectronic" width="100">电子
+                    </th>
+
+                    <th field="HasBattery" width="100">电池
+                    </th>
+
+                    <th field="Location" width="100">库位
+                    </th>
+
+                    <th field="CreateOn" width="100">创建时间
+                    </th>
+
+                    <th field="CreateBy" width="100">创建人
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+        </div>
+
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+</body>

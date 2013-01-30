@@ -20,11 +20,10 @@
                 <td>
                     @Html.LabelFor(model => model.RetuanName, "发件人:")
                 </td>
-                <td>
+                <td colspan="3">
                     @Html.TextBoxFor(model => model.RetuanName, new { @id = "c_RetuanName" })
                 </td>
             </tr>
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Phone, "手机:")
@@ -32,9 +31,6 @@
                 <td>
                     @Html.TextBoxFor(model => model.Phone, new { @id = "c_Phone" })
                 </td>
-            </tr>
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.Tel, "电话:")
                 </td>
@@ -45,18 +41,9 @@
 
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.PostCode, "邮编:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.PostCode, new { @id = "c_PostCode" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
                     @Html.LabelFor(model => model.Street, "街道:")
                 </td>
-                <td>
+                <td colspan="3">
                     @Html.TextBoxFor(model => model.Street, new { @id = "c_Street" })
                 </td>
             </tr>
@@ -68,9 +55,6 @@
                 <td>
                     @Html.TextBoxFor(model => model.County, new { @id = "c_County" })
                 </td>
-            </tr>
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.City, "市:")
                 </td>
@@ -80,15 +64,13 @@
             </tr>
 
             <tr>
+
                 <td>
                     @Html.LabelFor(model => model.Province, "省:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.Province, new { @id = "c_Province" })
                 </td>
-            </tr>
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.Country, "国家:")
                 </td>
@@ -103,7 +85,14 @@
                 <td>
                     @Html.TextBoxFor(model => model.CountryCode, new { @id = "c_CountryCode" })
                 </td>
+                <td>
+                    @Html.LabelFor(model => model.PostCode, "邮编:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PostCode, new { @id = "c_PostCode" })
+                </td>
             </tr>
+
         </table>
     </fieldset>
 }

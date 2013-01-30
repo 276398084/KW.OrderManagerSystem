@@ -17,17 +17,8 @@
     });
 
     $(function () {
-
-
-
-
-        $('#c_CreateBy').combobox({
-            url: 'User/UserSrc',
-            editable: true
-        });
-
-
-    });
+        $('#c_Birthday').datetimebox();
+    })
 
 </script>
 
@@ -42,9 +33,6 @@
                 <td>
                     @Html.TextBoxFor(model => model.Code, new { @id = "c_Code" })
                 </td>
-            </tr>
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.Username, "登录名:")
                 </td>
@@ -54,32 +42,31 @@
             </tr>
 
             <tr>
+            </tr>
+
+            <tr>
                 <td>
                     @Html.LabelFor(model => model.Password, "用户密码:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.Password, new { @id = "c_Password" })
+                    @Html.PasswordFor(model => model.Password, new { @id = "c_Password" })
                 </td>
-            </tr>
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.Password, "确认密码")
                 </td>
                 <td>
-                    @Html.TextBox("confirmPwd"))
+                    <input type="password" name="repassword" id="repassword" required="true" class="easyui-validatebox" validtype="equalTo['#Password']" invalidmessage="两次输入密码不匹配" />
                 </td>
             </tr>
 
+
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.Realname, "姓名:")
+                    @Html.LabelFor(model => model.Realname, "真实姓名:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.Realname, new { @id = "c_Realname" })
                 </td>
-            </tr>
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.RoleId, "角色:")
                 </td>
@@ -89,16 +76,6 @@
             </tr>
 
 
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.CId, "公司:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.CId, new { @id = "c_CId" })
-                    @Html.HiddenFor(model => model.CompanyName, new { @id = "c_CompanyName" })
-                </td>
-            </tr>
 
 
 
@@ -110,7 +87,17 @@
                     @Html.TextBoxFor(model => model.DId, new { @id = "c_DId" })
                     @Html.HiddenFor(model => model.DepartmentName, new { @id = "c_DepartmentName" })
                 </td>
+                <td>
+                    @Html.LabelFor(model => model.CId, "公司:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CId, new { @id = "c_CId" })
+                    @Html.HiddenFor(model => model.CompanyName, new { @id = "c_CompanyName" })
+                </td>
             </tr>
+
+
+
 
             <tr>
                 <td>
@@ -119,16 +106,15 @@
                 <td>
                     @Html.TextBoxFor(model => model.Gender, new { @id = "c_Gender" })
                 </td>
+                <td>
+                    @Html.LabelFor(model => model.Birthday, "出生日期:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Birthday, new { @id = "c_Birthday" })
+                </td>
+
             </tr>
 
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Telephone, "电话:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Telephone, new { @id = "c_Telephone" })
-                </td>
-            </tr>
 
             <tr>
                 <td>
@@ -137,16 +123,15 @@
                 <td>
                     @Html.TextBoxFor(model => model.Mobile, new { @id = "c_Mobile" })
                 </td>
+                <td>
+                    @Html.LabelFor(model => model.Telephone, "电话:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Telephone, new { @id = "c_Telephone" })
+                </td>
             </tr>
 
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Birthday, "出生日期:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Birthday, new { @id = "c_Birthday" })
-                </td>
-            </tr>
+
 
             <tr>
                 <td>
@@ -155,9 +140,6 @@
                 <td>
                     @Html.TextBoxFor(model => model.Email, new { @id = "c_Email" })
                 </td>
-            </tr>
-
-            <tr>
                 <td>
                     @Html.LabelFor(model => model.HomeAddress, "家庭住址:")
                 </td>
@@ -166,11 +148,12 @@
                 </td>
             </tr>
 
+
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Description, "备注:")
                 </td>
-                <td>
+                <td colspan="3">
                     @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
                 </td>
             </tr>

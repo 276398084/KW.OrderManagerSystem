@@ -45,5 +45,7 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual int SortCode { get; set; }
 
+        public virtual List<ProductCategoryType> children { get; set; }
+
     }
 }

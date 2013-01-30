@@ -1,0 +1,56 @@
+﻿@model KeWeiOMS.Domain.ProductCategoryType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_ParentId').combotree({
+            url: '/ProductCategory/ParentList',
+            valueField: 'Id',
+            textField: 'FullName',
+            required: true,
+            width: 150
+        });
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "ProductCategory", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ParentId, "父Id:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ParentId, new { @id = "c_ParentId" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Name, "名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Name, new { @id = "c_Name" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SortCode, "排序:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SortCode, new { @id = "c_SortCode" })
+                </td>
+            </tr>
+
+
+        </table>
+    </fieldset>
+}

@@ -1,0 +1,92 @@
+﻿@model KeWeiOMS.Domain.WarehouseStockType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "WarehouseStock", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Id, "主键:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Id, new { @id = "c_Id" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WId, "仓库ID:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Warehouse, "仓库:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Warehouse, new { @id = "c_Warehouse" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.PId, "商品ID:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PId, new { @id = "c_PId" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "商品SKU:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Title, "商品名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Title, new { @id = "c_Title" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "盘点数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Qty, new { @id = "c_Qty" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.UpdateOn, "更新时间:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.UpdateOn, new { @id = "c_UpdateOn" })
+                </td>
+            </tr>
+
+
+        </table>
+    </fieldset>
+}

@@ -64,7 +64,18 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                NSession.SaveOrUpdate(obj);
+                NSession.Save(obj.AddressInfo);
+                obj.AddressId = obj.AddressInfo.Id;
+                obj.GenerateOn = obj.ScanningOn = obj.CreateOn = DateTime.Now;
+                List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
+                NSession.Save(obj);
+                foreach (var item in list)
+                {
+                    item.OId = item.Id;
+                    item.OrderNo = item.OrderNo;
+                    NSession.Save(item);
+                }
+
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -138,7 +149,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<OrderType> objList = NSession.CreateQuery("from OrderType")
                 .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
+                .SetMaxResults(rows)
                 .List<OrderType>();
             object count = NSession.CreateQuery("select count(Id) from OrderType ").UniqueResult();
             return Json(new { total = count, rows = objList });

@@ -99,87 +99,87 @@
             function ajaxEdit() {
                 $('#e_form').form('submit', {
                     url: '@Url.Action("Edit", "Role")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存失败:' + result.errorMsg,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                    } else {
-                        $('#e_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
-                }
-            });
-        }
-
-
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-                $.messager.confirm('确认', '确定删除?', function (r) {
-                    if (r) {
-                        var url = '@Url.Action("Delete", "Role")/' + id;
-                        $.post(url, function () {
-                        }).success(function (data) {
-                            var msgstr = "删除成功";
-                            if (data != true) {
-                                msgstr = "删除失败" + data;
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 0,
-                                    showType: 'slide'
-                                });
-                            } else {
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 3000,
-                                    showType: 'slide'
-                                });
-                            }
-
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        var result = eval('(' + result + ')');
+                        if (result.errorMsg) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.errorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#e_dlg').dialog('close');
                             $('#dg').datagrid('reload');
-                        }).error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
                     }
                 });
             }
-        }
 
-        //获取选中行
-        function getselectedRow() {
-            var row = $('#dg').datagrid('getSelected');
-            if (row != undefined) {
-                if (row.hasOwnProperty('Id')) {
-                    var id = row['Id'];
-                    return id;
+
+            //删除
+            function del() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    $.messager.confirm('确认', '确定删除?', function (r) {
+                        if (r) {
+                            var url = '@Url.Action("Delete", "Role")/' + id;
+                            $.post(url, function () {
+                            }).success(function (data) {
+                                var msgstr = "删除成功";
+                                if (data != true) {
+                                    msgstr = "删除失败" + data;
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 0,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 3000,
+                                        showType: 'slide'
+                                    });
+                                }
+
+                                $('#dg').datagrid('reload');
+                            }).error(function () {
+                                $.messager.alert('错误', '删除发生错误');
+                            });
+
+                        }
+                    });
                 }
             }
-            $.messager.show({
-                title: '提示',
-                msg: '请选择行',
-                timeout: 3000,
-                showType: 'slide'
-            });
-            return (undefined);
-        }
+
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
+                    }
+                }
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
+            }
 
     </script>
     <div region="center">
@@ -201,7 +201,7 @@
                     <th field="Description" width="100">描述
                     </th>
 
-                    <th field="CreateOn" width="100">创建日期
+                    <th field="CreateOn" width="100" formatter="getDate">创建日期
                     </th>
 
                     <th field="CreateBy" width="100">创建用户

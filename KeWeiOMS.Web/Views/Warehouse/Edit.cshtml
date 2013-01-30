@@ -1,0 +1,55 @@
+﻿@model KeWeiOMS.Domain.WarehouseType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "Warehouse", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WCode,"仓库代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WCode,new{@id="e_WCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WName,"仓库名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WName,new{@id="e_WName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Address,"仓库地址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Address,new{@id="e_Address"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

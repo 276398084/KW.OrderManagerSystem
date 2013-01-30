@@ -101,9 +101,9 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<<#ControllerRootName#>Type> objList = NSession.CreateQuery("from <#ControllerRootName#>Type")
                 .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows * page)
+                .SetMaxResults(rows)
                 .List<<#ControllerRootName#>Type>();
-
+			
             object count = NSession.CreateQuery("select count(Id) from <#ControllerRootName#>Type ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }

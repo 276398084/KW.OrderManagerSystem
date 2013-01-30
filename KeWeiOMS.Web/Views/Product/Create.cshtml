@@ -1,0 +1,202 @@
+﻿@model KeWeiOMS.Domain.ProductType
+@{
+    //Layout = null;
+}
+<script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
+<script type="text/javascript">
+    var editor;
+    var editor2;
+    KindEditor.ready(function (K) {
+        editor = K.create('textarea[name="Summary"]', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+        editor2 = K.create('textarea[name="PackMemo"]', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+    });
+    function addProduct() {
+        formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
+        $('c_form').clear();
+    }
+</script>
+
+@using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "c_form" }))
+{
+   
+    <input type="button" value="保存" onclick="addProduct();" />
+    <fieldset>
+        <legend>产品信息</legend>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "商品编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.ProductName, "商品名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ProductName, new { @id = "c_ProductName" })
+                </td>
+
+                <td rowspan="2">
+                    @Html.LabelFor(model => model.PicUrl, "大图片网址:")
+                </td>
+                <td rowspan="2">
+                    @Html.TextBoxFor(model => model.PicUrl, new { @id = "c_PicUrl" })
+                    @Html.TextBoxFor(model => model.SPicUrl, new { @id = "c_SPicUrl" })
+                    @Html.TextBoxFor(model => model.PicQty, new { @id = "c_PicQty" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Category, "类别:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Category, new { @id = "c_Category" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Price, "商品价格:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Price, new { @id = "c_Price" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Weight, "重量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Weight, new { @id = "c_Weight" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Long, "长×宽×高:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Long, new { @id = "c_Long", @style = "width:50px" })×
+                    @Html.TextBoxFor(model => model.Wide, new { @id = "c_Wide", @style = "width:50px" })×
+                    @Html.TextBoxFor(model => model.High, new { @id = "c_High", @style = "width:50px" })
+                </td>
+
+                <td>
+                    @Html.LabelFor(model => model.DayByStock, "库存天数:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DayByStock, new { @id = "c_DayByStock" })
+                </td>
+            </tr>
+            @*<tr>
+                <td>
+                    @Html.LabelFor(model => model.PackMemo, "禁售:")
+                </td>
+                <td colspan="5">
+                   
+                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:200px;visibility:hidden;" })
+                </td>
+            </tr>*@
+
+
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.IsInfraction, "是否侵权:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.IsInfraction, new { @id = "c_IsInfraction" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Model, "型号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Model, new { @id = "c_Model" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Brand, "品牌:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Brand, new { @id = "c_Brand" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Purchaser, "采购人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Purchaser, new { @id = "c_Purchaser" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Examiner, "验货人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Examiner, new { @id = "c_Examiner" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Packer, "包装人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Packer, new { @id = "c_Packer" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.PackCoefficient, "包装系数:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PackCoefficient, new { @id = "c_PackCoefficient" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.IsElectronic, "电子:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.IsElectronic, new { @id = "c_IsElectronic" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.HasBattery, "电池:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.HasBattery, new { @id = "c_HasBattery" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Location, "库位:")
+                </td>
+                <td colspan="5">
+                    @Html.TextBoxFor(model => model.Location, new { @id = "c_Location" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Summary, "简单描述:")
+                </td>
+                <td colspan="5">
+                    @Html.TextAreaFor(model => model.Summary, new { @id = "c_Summary", @style = "width:700px;height:200px;visibility:hidden;" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.PackMemo, "包装注意事项:")
+                </td>
+                <td colspan="5">
+                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:200px;visibility:hidden;" })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
