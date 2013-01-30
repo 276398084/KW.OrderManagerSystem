@@ -13,12 +13,21 @@
             },
             message: '字段不匹配'
         }
-
     });
 
     $(function () {
         $('#c_Birthday').datetimebox();
     })
+
+    $(function () {
+        $('#c_ParentId').combotree({
+            url: '/Organize/ParentList',
+            valueField: 'Id',
+            textField: 'FullName',
+            required: true
+        });
+    });
+
 
 </script>
 
@@ -74,11 +83,6 @@
                     @Html.TextBoxFor(model => model.RoleId, new { @id = "c_RoleId" })
                 </td>
             </tr>
-
-
-
-
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.DId, "部门:")
