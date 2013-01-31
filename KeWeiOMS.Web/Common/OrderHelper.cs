@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
 using System.Linq;
+using System.Text;
 using System.Web;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
@@ -13,6 +14,7 @@ namespace KeWeiOMS.Web
     public class OrderHelper
     {
         public static ISession NSession = NHibernateHelper.CreateSession();
+
         public static DataTable GetDataTable(string fileName)
         {
             string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileName + ";" +
@@ -23,29 +25,44 @@ namespace KeWeiOMS.Web
             return ds.Tables[0];
         }
 
+        public static ResultInfo GetResult(string key, string info, string result, string field1, string field2, string field3, string field4)
+        {
+            ResultInfo r = new ResultInfo();
+            r.Field1 = field1;
+            r.Field2 = field2;
+            r.Field3 = field3;
+            r.Field4 = field4;
+            r.Key = key;
+            r.Info = info;
+            r.Result = result;
+            return r;
+        }
+
+        public static ResultInfo GetResult(string key, string info, string result)
+        {
+            return GetResult(key, info, result, "", "", "", "");
+        }
+
+
         public static List<ResultInfo> ImportBySMT(string AccountName, string fileName)
         {
             List<ResultInfo> results = new List<ResultInfo>();
             foreach (DataRow dr in GetDataTable(fileName).Rows)
             {
-                ResultInfo r = new ResultInfo();
                 string OrderExNo = dr["订单号"].ToString();
-                r.Key = OrderExNo;
                 string o = dr["订单状态"].ToString();
                 if (o != "等待您发货")
                 {
-                    r.Info = "订单状态不为：等待您发货";
-                    r.Result = "导入失败";
-                    results.Add(r);
+                    results.Add(GetResult(OrderExNo, "订单已经发货", "导入失败"));
                     continue;
                 }
-                object obj = NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo).UniqueResult();
-                if (Convert.ToInt32(obj) == 0)
-                {
 
+                bool isExist = IsExist(OrderExNo);
+                if (isExist)
+                {
                     OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = Convert.ToInt32(OrderStatusEnum.待处理), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
 
-                    order.OrderNo = Utilities.GetOrderNo(); ;
+                    order.OrderNo = Utilities.GetOrderNo();
                     order.CurrencyCode = "USD";
                     order.OrderExNo = OrderExNo;
                     order.Amount = Convert.ToDouble(dr["订单金额"]);
@@ -59,7 +76,6 @@ namespace KeWeiOMS.Web
                     order.Platform = PlatformEnum.SMT.ToString();
                     //舍弃原来的客户表
                     //下面地址
-                    //
                     order.AddressId = CreateAddress(dr["收货人名称"].ToString(), dr["地址"].ToString(), dr["城市"].ToString(), dr["州/省"].ToString(), dr["收货国家"].ToString(), dr["收货国家"].ToString(), dr["联系电话"].ToString(), dr["手机"].ToString(), dr["买家邮箱"].ToString(), dr["邮编"].ToString(), 0);
 
 
@@ -69,16 +85,11 @@ namespace KeWeiOMS.Web
                     //添加产品
                     //
                     string info = dr["产品信息_（双击单元格展开所有产品信息！）"].ToString();
-
                     string[] cels = info.Split(new char[] { '【' }, StringSplitOptions.RemoveEmptyEntries);
-
                     if (cels.Length == 0)
                     {
-                        r.Info = "没有产品信息";
-                        r.Result = "导入失败";
-                        results.Add(r);
+                        results.Add(GetResult(OrderExNo, "没有产品信息", "导入失败"));
                         continue;//物品信息出错
-
                     }
                     for (int i = 0; i < cels.Length; i++)
                     {
@@ -95,15 +106,98 @@ namespace KeWeiOMS.Web
                         System.Text.RegularExpressions.Match mc6 = r6.Match(Str);
                         CreateOrderPruduct(mc3.Groups["sku"].Value, Convert.ToInt32(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo);
                     }
-                    r.Info = "";
-                    r.Result = "导入成功";
-                    results.Add(r);
+                    results.Add(GetResult(OrderExNo, "", "导入成功"));
                 }
                 else
                 {
-                    r.Info = "订单已存在!";
-                    r.Result = "导入失败";
-                    results.Add(r);
+                    results.Add(GetResult(OrderExNo, "订单已存在", "导入失败"));
+
+                }
+            }
+            return results;
+        }
+
+        public static List<ResultInfo> ImportByAmazon(string AccountName, string fileName)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            CsvReader csv = new CsvReader(fileName, Encoding.Default);
+            csv.CellSeparator = '\t';
+            List<Dictionary<string, string>> lsitss = csv.ReadAllData();
+
+            foreach (Dictionary<string, string> item in lsitss)
+            {
+                if (item.Count < 10)//判断列数
+                    continue;
+                string OrderExNo = item["order-id"];
+                bool isExist = IsExist(OrderExNo);
+                if (isExist)
+                {
+                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = Convert.ToInt32(OrderStatusEnum.待处理), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    order.OrderNo = Utilities.GetOrderNo();
+                    // order.CurrencyCode = "USD";
+                    order.OrderExNo = item["order-id"];
+                    //order.Amount = Convert.ToDouble(dr["订单金额"]);
+                    // order.BuyerMemo = dr["订单备注"].ToString();
+                    order.Country = item["ship-country"];
+                    order.BuyerName = item["buyer-name"];
+                    order.BuyerEmail = item["buyer-email"];
+                    order.TId = "";
+                    order.Account = AccountName;
+                    order.GenerateOn = Convert.ToDateTime(item["payments-date"]);
+                    order.Platform = PlatformEnum.Amazon.ToString();
+
+                    order.AddressId = CreateAddress(item["recipient-name"], item["ship-address-1"] + item["ship-address-2"] + item["ship-address-3"], item["ship-city"], item["ship-state"], item["ship-country"], item["ship-country"], item["buyer-phone-number"], item["buyer-phone-number"], item["buyer-email"], item["ship-postal-code"], 0);
+                    NSession.Save(order);
+                    NSession.Flush();
+                    CreateOrderPruduct(item["sku"], Convert.ToInt32(item["quantity-purchased"]), item["sku"], "", 0, "", order.Id, order.OrderNo);
+                    results.Add(GetResult(OrderExNo, "", "导入成功"));
+                }
+                else
+                {
+                    results.Add(GetResult(OrderExNo, "订单已存在", "导入失败"));
+                }
+            }
+            return results;
+        }
+
+        public static List<ResultInfo> ImportByGmarket(string AccountName, string fileName)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            CsvReader csv = new CsvReader(fileName, Encoding.Default);
+            csv.CellSeparator = '\t';
+            List<Dictionary<string, string>> lsitss = csv.ReadAllData();
+
+            foreach (Dictionary<string, string> item in lsitss)
+            {
+                if (item.Count < 10)//判断列数
+                    continue;
+                string OrderExNo = item["Cart no."];
+                bool isExist = IsExist(OrderExNo);
+                if (isExist)
+                {
+                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = Convert.ToInt32(OrderStatusEnum.待处理), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    order.OrderNo = Utilities.GetOrderNo();
+                    // order.CurrencyCode = "USD";
+                    order.OrderExNo = OrderExNo;
+                    //order.Amount = Convert.ToDouble(dr["订单金额"]);
+                    order.BuyerMemo = item["Memo to Seller"];
+                    order.Country = item["Nation"];
+                    order.BuyerName = item["Customer"];
+                    // order.BuyerEmail = item["buyer-email"];
+                    order.TId = item["Order no."];
+                    order.Account = AccountName;
+                    order.GenerateOn = Convert.ToDateTime(item["Payment Complete"]);
+                    order.Platform = PlatformEnum.Gmarket.ToString();
+
+                    order.AddressId = CreateAddress(item["Recipient"], item["Address"], "", "", item["Nation"], item["Nation"], item["Recipient Phone number"], item["Recipient mobile Phone number"], "", item["Postal code"], 0);
+                    NSession.Save(order);
+                    NSession.Flush();
+                    CreateOrderPruduct(item["Item code"], item["Option Code"], Convert.ToInt32(item["Qty."]), item["Item"], "", 0, "", order.Id, order.OrderNo);
+                    results.Add(GetResult(OrderExNo, "", "导入成功"));
+                }
+                else
+                {
+                    results.Add(GetResult(OrderExNo, "订单已存在", "导入失败"));
                 }
             }
             return results;
@@ -198,8 +292,24 @@ namespace KeWeiOMS.Web
         /// <param name="orderNo"></param>
         public static void CreateOrderPruduct(string sku, int qty, string name, string remark, double price, string url, int oid, string orderNo)
         {
+            CreateOrderPruduct(sku, sku, qty, name, remark, price, url, oid, orderNo);
+        }
+
+        /// <summary>
+        /// 创建订单产品
+        /// </summary>
+        /// <param name="sku"></param>
+        /// <param name="qty"></param>
+        /// <param name="name"></param>
+        /// <param name="remark"></param>
+        /// <param name="price"></param>
+        /// <param name="url"></param>
+        /// <param name="oid"></param>
+        /// <param name="orderNo"></param>
+        public static void CreateOrderPruduct(string exSKU, string sku, int qty, string name, string remark, double price, string url, int oid, string orderNo)
+        {
             OrderProductType product = new OrderProductType();
-            product.ExSKU = sku;
+            product.ExSKU = exSKU;
             product.SKU = sku;
             product.Qty = qty;
             product.Price = price;
@@ -209,6 +319,18 @@ namespace KeWeiOMS.Web
             product.OrderNo = orderNo;
             NSession.Save(product);
             NSession.Flush();
+        }
+        #endregion
+
+        #region 是否存在订单 public static bool IsExist(string OrderExNo)
+        public static bool IsExist(string OrderExNo)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo).UniqueResult();
+            if (Convert.ToInt32(obj) == 0)
+            {
+                return true;
+            }
+            return false;
         }
         #endregion
 
@@ -226,5 +348,7 @@ namespace KeWeiOMS.Web
             }
             return dic;
         }
+
+
     }
 }

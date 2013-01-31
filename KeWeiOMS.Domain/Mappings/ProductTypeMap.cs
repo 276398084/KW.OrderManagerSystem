@@ -35,7 +35,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.ProductName).Length(200);
             Map(x => x.Price);
             Map(x => x.Standard).Length(100);
-            Map(x => x.Status);
+            Map(x => x.Status).Length(10);
             Map(x => x.Weight);
             Map(x => x.Long);
             Map(x => x.Wide);

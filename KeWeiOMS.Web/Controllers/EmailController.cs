@@ -111,7 +111,7 @@ namespace KeWeiOMS.Web.Controllers
             IList<EmailType> objList = NSession.CreateQuery("from EmailType " + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
-                
+
                 .List<EmailType>();
 
             return Json(new { total = objList.Count, rows = objList });
@@ -154,9 +154,9 @@ namespace KeWeiOMS.Web.Controllers
                 SendMail(obj.REmail, obj.Subject, obj.Content);
                 obj.CreateOn = ReTime;
                 obj.CreateBy = ReTime;
+
                 NSession.Save(obj);
-                int eid = int.Parse(Request["eid"].ToString());
-                IList<EmailType> mail = NSession.CreateQuery("from EmailType c where c.Id=:id").SetInt32("id", eid).List<EmailType>();
+                IList<EmailType> mail = NSession.CreateQuery("from EmailType c where c.Id=:id").SetInt32("id", obj.EId).List<EmailType>();
                 mail[0].IsReply = 1;
                 mail[0].ReplyOn = ReTime;
                 NSession.Update(mail[0]);

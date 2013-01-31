@@ -110,15 +110,23 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
-        public JsonResult QList(string Q)
+        public JsonResult HasExist(string sku)
         {
-            IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU")
-                .SetMaxResults(10)
-                .List<ProductType>();
 
-            object count = NSession.CreateQuery("select count(Id) from ProductType ").UniqueResult();
-            return Json(new { total = count, rows = objList });
+
+            object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
+            if (Convert.ToInt32(count) > 0)
+            {
+                return Json(new { IsSuccess = "false" });
+            }
+            else
+            {
+
+                return Json(new { IsSuccess = "true" });
+            }
         }
+
+
 
     }
 }
