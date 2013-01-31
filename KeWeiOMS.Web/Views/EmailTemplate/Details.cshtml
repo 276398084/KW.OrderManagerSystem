@@ -14,7 +14,7 @@
 
 @using (Html.BeginForm("Details", "EmailTemplate", FormMethod.Post, new { id = "d_form" }))
 {
-<fieldset>
+<fieldset style="border:0">
 <table class="editForm">
 @*	<tr>
 		<td>
@@ -48,7 +48,7 @@
             @Html.LabelFor(model => model.Content,"内容:")
 		</td>
 		<td>
-            @Html.TextAreaFor(model => model.Content,new{@id="d_Content",style="width:600px;height:300px",@readOnly = "readOnly;resize:none" })
+            @Html.TextAreaFor(model => model.Content,new{@id="d_Content",style="width:600px;height:300px;resize:none",@readOnly = "readOnly" })
 		</td>
 	</tr>
 
