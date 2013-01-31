@@ -46,6 +46,15 @@ namespace KeWeiOMS.Domain
         public virtual String ProductName { get; set; }
 
         /// <summary>
+        /// 规格
+        /// </summary>
+        public virtual String Standard { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public virtual int Status { get; set; }
+        /// <summary>
         /// 商品价格
         /// </summary>
         public virtual double Price { get; set; }

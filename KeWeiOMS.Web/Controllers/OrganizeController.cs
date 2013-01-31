@@ -113,6 +113,32 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = fristList.Count, rows = fristList });
         }
 
+        public JsonResult RootList()
+        {
+            IList<OrganizeType> objList = NSession.CreateQuery("from OrganizeType where ParentId=0").List<OrganizeType>();
+
+            return Json(objList);
+        }
+
+        public JsonResult BuMenList(int id)
+        {
+            IList<OrganizeType> objList = NSession.CreateQuery("from OrganizeType where ParentId=" + id).List<OrganizeType>();
+            IList<OrganizeType> list = NSession.CreateQuery("from OrganizeType").List<OrganizeType>();
+            List<SystemTree> tree = new List<SystemTree>();
+
+            foreach (OrganizeType item in objList)
+            {
+                List<OrganizeType> fooList = list.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                List<SystemTree> tree2 = ConvertToTree(fooList);
+                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.ShortName, children = tree2 });
+                GetChildren(list, item, tree2);
+
+
+            }
+            return Json(tree);
+        }
+
         public JsonResult ParentList()
         {
             var root = new SystemTree { id = "0", text = "root" };

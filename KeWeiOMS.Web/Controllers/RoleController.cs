@@ -99,14 +99,21 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
+        public JsonResult RootList()
+        {
+            IList<RoleType> objList = NSession.CreateQuery("from RoleType")
+                .List<RoleType>();
+            return Json(objList);
+        }
+
         public JsonResult List(int page, int rows)
         {
             IList<RoleType> objList = NSession.CreateQuery("from RoleType")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<RoleType>();
-
-            return Json(new { total = objList.Count, rows = objList });
+            object count = NSession.CreateQuery("select count(Id) from RoleType ").UniqueResult();
+            return Json(new { total = count, rows = objList });
         }
 
     }

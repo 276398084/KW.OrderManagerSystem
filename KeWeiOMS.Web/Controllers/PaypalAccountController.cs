@@ -104,6 +104,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows * page)
                 .List<PaypalAccountType>();
 
+            object count = NSession.CreateQuery("select count(Id) from StockOutType ").UniqueResult();
             return Json(new { total = objList.Count, rows = objList });
         }
 

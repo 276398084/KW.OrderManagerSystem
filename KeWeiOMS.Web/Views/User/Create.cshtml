@@ -17,16 +17,40 @@
 
     $(function () {
         $('#c_Birthday').datetimebox();
-    })
 
-    $(function () {
-        $('#c_ParentId').combotree({
-            url: '/Organize/ParentList',
+        $('#c_RoleId').combobox({
+            url: '/Role/RootList',
             valueField: 'Id',
-            textField: 'FullName',
+            textField: 'Realname',
             required: true
         });
-    });
+
+        $('#c_CId').combobox({
+            url: '/Organize/RootList',
+            valueField: 'Id',
+            textField: 'FullName',
+            required: true,
+            onChange: showBuMen
+        });
+        $('#c_DId').combotree();
+    })
+
+
+    function showBuMen(id) {
+        $('#c_DId').combotree({
+            url: '/Organize/BuMenList/' + id,
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            onChange: setCD
+        });
+    }
+
+    function setCD() {
+        $('#c_CompanyName').val($('#c_CId').combobox("getText"));
+        $('#c_DepartmentName').val($('#c_DId').combotree("getText"));
+    }
+
 
 
 </script>
@@ -81,22 +105,24 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.RoleId, new { @id = "c_RoleId" })
+                    @Html.HiddenFor(model => model.RoleId, new { @id = "c_Role" })
                 </td>
             </tr>
             <tr>
-                <td>
-                    @Html.LabelFor(model => model.DId, "部门:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.DId, new { @id = "c_DId" })
-                    @Html.HiddenFor(model => model.DepartmentName, new { @id = "c_DepartmentName" })
-                </td>
+
                 <td>
                     @Html.LabelFor(model => model.CId, "公司:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.CId, new { @id = "c_CId" })
                     @Html.HiddenFor(model => model.CompanyName, new { @id = "c_CompanyName" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.DId, "部门:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.DId, new { @id = "c_DId" })
+                    @Html.HiddenFor(model => model.DepartmentName, new { @id = "c_DepartmentName" })
                 </td>
             </tr>
 

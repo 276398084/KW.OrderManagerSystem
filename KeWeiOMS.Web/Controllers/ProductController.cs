@@ -27,6 +27,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.CreateOn = DateTime.Now;
+
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -42,7 +44,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  ProductType GetById(int Id)
+        public ProductType GetById(int Id)
         {
             ProductType obj = NSession.Get<ProductType>(Id);
             if (obj == null)
@@ -66,7 +68,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(ProductType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +79,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 ProductType obj = GetById(id);
@@ -103,7 +105,17 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<ProductType>();
-			
+
+            object count = NSession.CreateQuery("select count(Id) from ProductType ").UniqueResult();
+            return Json(new { total = count, rows = objList });
+        }
+
+        public JsonResult QList(string Q)
+        {
+            IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU")
+                .SetMaxResults(10)
+                .List<ProductType>();
+
             object count = NSession.CreateQuery("select count(Id) from ProductType ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }

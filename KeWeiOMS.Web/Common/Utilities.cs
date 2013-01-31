@@ -11,6 +11,8 @@ namespace KeWeiOMS.Web
     public class Utilities
     {
         public const string OrderNo = "OrderNo";
+
+        public const string UserNo = "UserNo";
         public static string GetOrderNo()
         {
             string result = string.Empty;
@@ -24,6 +26,22 @@ namespace KeWeiOMS.Web
                 NSession.Flush();
                 return list[0].BeginNo.ToString();
 
+            }
+            return "";
+
+        }
+
+        public static string GetUserNo()
+        {
+            string result = string.Empty;
+            ISession NSession = NHibernateHelper.CreateSession();
+            IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", UserNo).List<SerialNumberType>();
+            if (list.Count > 0)
+            {
+                list[0].BeginNo = list[0].BeginNo + 1;
+                NSession.Update(list[0]);
+                NSession.Flush();
+                return list[0].BeginNo.ToString();
             }
             return "";
 

@@ -18,148 +18,71 @@
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Product")';
 
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-                modal: true,
-                loadingMessage: '正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-        }).dialog('open');;
-    }
-
-    //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit", "Product")/' + id;
-            $('#e_dlg').load(url, function () {
+            $('#c_dlg').load(url_str, function () {
                 $(this).dialog({
-                    title: '编辑',
+                    title: '新建',
                     modal: true,
                     loadingMessage: '正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-                            ajaxEdit();
+                            ajaxAdd();
                         }
                     }, {
                         text: '取消',
                         handler: function () {
-                            $('#e_dlg').dialog('close');
+                            $('#c_dlg').dialog('close');
                         }
                     }]
                 });
-            }).dialog('open');
+            }).dialog('open');;
         }
-    }
 
-    //异步新建提交
-    function ajaxAdd() {
-        $('#c_form').form('submit', {
-            url: '@Url.Action("Create", "Product")',
-            onSubmit: function () {
-                return $(this).form('validate');
-            },
-            success: function (result) {
-                var result = eval('(' + result + ')');
-                if (result.errorMsg) {
-                    $.messager.show({
-                        title: '提示',
-                        msg: '保存失败:' + result.errorMsg,
-                        timeout: 0,
-                        showType: 'slide'
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Product")/' + id;
+                $('#e_dlg').load(url, function () {
+                    $(this).dialog({
+                        title: '编辑',
+                        modal: true,
+                        loadingMessage: '正在加载...',
+                        buttons: [{
+                            text: '提交',
+                            iconCls: 'icon-ok',
+                            handler: function () {
+                                ajaxEdit();
+                            }
+                        }, {
+                            text: '取消',
+                            handler: function () {
+                                $('#e_dlg').dialog('close');
+                            }
+                        }]
                     });
-                } else {
-                    $('#c_dlg').dialog('close');
-                    $('#dg').datagrid('reload');
-                    $.messager.show({
-                        title: '提示',
-                        msg: '保存成功',
-                        timeout: 2000,
-                        showType: 'slide'
-                    });
-                }
+                }).dialog('open');
             }
-        });
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
         }
         //异步修改提交
         function ajaxEdit() {
-            $('#e_form').form('submit', {
-                url: '@Url.Action("Edit", "Product")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存失败:' + result.errorMsg,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                    } else {
-                        $('#e_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
-                }
-            });
+            formPost('e_form', '@Url.Action("Edit", "Product")', 'e_dlg', 'dg');
         }
-
-
         //删除
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-                $.messager.confirm('确认', '确定删除?', function (r) {
-                    if (r) {
-                        var url = '@Url.Action("Delete", "Product")/' + id;
-                        $.post(url, function () {
-                        }).success(function (data) {
-                            var msgstr = "删除成功";
-                            if (data != true) {
-                                msgstr = "删除失败" + data;
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 0,
-                                    showType: 'slide'
-                                });
-                            } else {
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 3000,
-                                    showType: 'slide'
-                                });
-                            }
 
-                            $('#dg').datagrid('reload');
-                        }).error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
+                var url = '@Url.Action("Delete", "Product")/' + id;
+                alert(1);
+                delData(url, 'dg', 't');
 
-                    }
-                });
             }
         }
 
@@ -188,8 +111,6 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-
-
                     <th field="SKU" width="100">商品编号
                     </th>
 
@@ -209,13 +130,7 @@
                     </th>
                     <th field="DayByStock" width="100">库存天数
                     </th>
-                    <th field="Summary" width="100">简单描述
-                    </th>
-
-                    <th field="PackMemo" width="100">包装注意事项
-                    </th>
-
-                    <th field="IsInfraction" width="100">是否侵权
+                    <th field="IsInfraction" width="100" formatter="getTrue">是否侵权
                     </th>
 
                     <th field="Model" width="100">型号
@@ -224,37 +139,21 @@
                     <th field="Brand" width="100">品牌
                     </th>
 
-                    <th field="PicUrl" width="100">大图片网址
+                    <th field="SPicUrl" width="100">图片
                     </th>
-
-                    <th field="PicQty" width="100">大图数量
-                    </th>
-
-                    <th field="SPicUrl" width="100">小图片网址
-                    </th>
-
-                    <th field="Purchaser" width="100">采购人
-                    </th>
-
-                    <th field="Examiner" width="100">验货人
-                    </th>
-
-                    <th field="Packer" width="100">包装人
-                    </th>
-
                     <th field="PackCoefficient" width="100">包装系数
                     </th>
 
-                    <th field="IsElectronic" width="100">电子
+                    <th field="IsElectronic" width="100" formatter="getTrue">电子
                     </th>
 
-                    <th field="HasBattery" width="100">电池
+                    <th field="HasBattery" width="100" formatter="getTrue">电池
                     </th>
 
                     <th field="Location" width="100">库位
                     </th>
 
-                    <th field="CreateOn" width="100">创建时间
+                    <th field="CreateOn" width="100" formatter="getDate">创建时间
                     </th>
 
                     <th field="CreateBy" width="100">创建人
@@ -265,9 +164,12 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">批量导入</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">复制</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick=";">上传图片</a>
         </div>
 
         <div id="c_dlg"></div>

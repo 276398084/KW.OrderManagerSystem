@@ -19,7 +19,9 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult Create()
         {
-            return View();
+            UserType u = new UserType();
+            u.Code = Utilities.GetUserNo();
+            return View(u);
         }
 
         [HttpPost]
@@ -29,7 +31,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 obj.CreateOn = DateTime.Now;
                 obj.LastVisit = DateTime.Now;
-               
+
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -45,7 +47,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  UserType GetById(int Id)
+        public UserType GetById(int Id)
         {
             UserType obj = NSession.Get<UserType>(Id);
             if (obj == null)
@@ -69,7 +71,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(UserType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -80,13 +82,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 UserType obj = GetById(id);
@@ -107,6 +109,13 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows * page)
                 .List<UserType>();
 
+            return Json(new { total = objList.Count, rows = objList });
+        }
+
+        public JsonResult QList(string Id)
+        {
+            IList<UserType> objList = NSession.CreateQuery("from UserType where RoleId=" + Id)
+                .List<UserType>();
             return Json(new { total = objList.Count, rows = objList });
         }
 
