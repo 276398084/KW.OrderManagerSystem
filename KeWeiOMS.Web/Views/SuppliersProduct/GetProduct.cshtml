@@ -1,0 +1,18 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.SuppliersProductType>
+@{
+    Layout = null;
+    ViewBag.Title = "";
+}
+
+<table class="dv-table" border="0" style="width: 100%;">
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>
+            <img /></td>
+            <td>SKU:@p.SKU</td>
+            <td>价格:@p.Price</td>
+            <td>网站: @p.Web</td>
+        </tr>
+    }
+</table>

@@ -50,6 +50,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+
+        
                 List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
                 if (list == null)
                     list = new List<OrderProductType>();

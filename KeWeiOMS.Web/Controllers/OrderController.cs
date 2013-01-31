@@ -71,8 +71,8 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(obj);
                 foreach (var item in list)
                 {
-                    item.OId = item.Id;
-                    item.OrderNo = item.OrderNo;
+                    item.OId = obj.Id;
+                    item.OrderNo = obj.OrderNo;
                     NSession.Save(item);
                 }
 

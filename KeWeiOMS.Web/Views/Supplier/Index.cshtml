@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Index";
 }
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
 <script language="javascript" type="text/javascript">
     $(function () {
@@ -10,34 +11,29 @@
             url: '@Url.Action("List","Supplier")',
             pageNumber: 1,
             pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+            pageList: [20, 40, 60, 80, 100],
+            view: detailview,
+            detailFormatter: function (index, row) {
+                return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+            },
+            onExpandRow: function (index, row) {
+                $('#ddv-' + index).panel({
+                    border: false,
+                    cache: false,
+                    href: '@Url.Action("GetProduct", "SuppliersProduct")' + "/" + row.Id,
+                        onLoad: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
         });
 
     });
 
     //新建
     function c_dlg() {
-        var url_str = '@Url.Action("Create","Supplier")';
-		
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-        }).dialog('open');;
+		 window.location.href='@Url.Action("Create","Supplier")';
     }
 
     //编辑框
@@ -189,9 +185,9 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*            <th field="Id" width="100">
                 主键
-            </th>
+            </th>*@
 
             <th field="SuppliersName" width="100">
                 供应商

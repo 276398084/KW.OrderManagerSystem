@@ -22,6 +22,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ViewResult GetProduct(int id)
+        {
+            IList<SuppliersProductType> list = NSession.CreateQuery("from SuppliersProductType where SId=:id").SetInt32("id", id).List<SuppliersProductType>();
+            return View(list);
+        }
+
         [HttpPost]
         public JsonResult Create(SuppliersProductType obj)
         {
@@ -37,6 +43,33 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
+        [HttpPost]
+        public JsonResult Save(SuppliersProductType obj)
+        {
+            try
+            {
+                List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
+                if (list == null)
+                    list = new List<SuppliersProductType>();
+                SuppliersProductType findOne = list.Find(p => p.SKU == obj.SKU);
+                if (findOne != null)
+                {
+                    // findOne = obj;
+                    list.Remove(findOne);
+                    list.Add(obj);
+                }
+                else
+                {
+                    list.Add(obj);
+                }
+                Session["SupplierProducts"] = list;
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = "true" });
+        }
         /// <summary>
         /// 根据Id获取
         /// </summary>
@@ -54,7 +87,6 @@ namespace KeWeiOMS.Web.Controllers
                 return obj;
             }
         }
-
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {

@@ -50,7 +50,7 @@ namespace KeWeiOMS.Web
             //每次执行时间间隔
             System.Timers.Timer myTimer = new System.Timers.Timer(60000);
             myTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEvent);
-            myTimer.Interval = 6000;
+            myTimer.Interval =1800000;
             myTimer.Enabled = true;
         }
 
@@ -61,34 +61,34 @@ namespace KeWeiOMS.Web
         private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
         {
             //邮箱的账号信息
-            //string username = "feidutest@163.com";
-            //string password = "feiduq";
-            //string mailServer = "imap.163.com";
+            string username = "feidutest@163.com";
+            string password = "feiduq";
+            string mailServer = "imap.163.com";
 
-            //IMAP_Client IMAPService = new IMAP_Client();
-            //try
-            //{
-            //    IMAPService.Connect(mailServer, 143);
-            //    IMAPService.Login(username, password);
-            //    IMAPService.SelectFolder("INBOX");
-            //    var flolder = IMAPService.SelectedFolder;
-            //    var seqSet = LumiSoft.Net.IMAP.IMAP_t_SeqSet.Parse("1:*");
-            //    var imapfetch = new IMAP_t_Fetch_i[]{
-            //    new IMAP_t_Fetch_i_Uid(),
-            //    new IMAP_t_Fetch_i_InternalDate(),
-            //    new IMAP_t_Fetch_i_Rfc822(),
-            //    };
-            //    EventHandler<LumiSoft.Net.EventArgs<IMAP_r_u>> eventhandler = new EventHandler<LumiSoft.Net.EventArgs<IMAP_r_u>>(fetchback);
-            //    IMAPService.Fetch(false, seqSet, imapfetch, eventhandler);
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
-            //finally
-            //{
-            //    IMAPService.Disconnect();
-            //}
+            IMAP_Client IMAPService = new IMAP_Client();
+            try
+            {
+                IMAPService.Connect(mailServer, 143);
+                IMAPService.Login(username, password);
+                IMAPService.SelectFolder("INBOX");
+                var flolder = IMAPService.SelectedFolder;
+                var seqSet = LumiSoft.Net.IMAP.IMAP_t_SeqSet.Parse("1:*");
+                var imapfetch = new IMAP_t_Fetch_i[]{
+                new IMAP_t_Fetch_i_Uid(),
+                new IMAP_t_Fetch_i_InternalDate(),
+                new IMAP_t_Fetch_i_Rfc822(),
+                };
+                EventHandler<LumiSoft.Net.EventArgs<IMAP_r_u>> eventhandler = new EventHandler<LumiSoft.Net.EventArgs<IMAP_r_u>>(fetchback);
+                IMAPService.Fetch(false, seqSet, imapfetch, eventhandler);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                IMAPService.Disconnect();
+            }
 
         }
         //读出邮件中的内容

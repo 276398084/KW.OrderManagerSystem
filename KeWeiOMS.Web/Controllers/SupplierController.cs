@@ -27,7 +27,14 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                NSession.SaveOrUpdate(obj);
+                int id=(int)NSession.Save(obj);
+                 List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
+                foreach (var item in list)
+                {
+                    item.SId =id;
+                    NSession.Save(item);
+                }
+              
                 NSession.Flush();
             }
             catch (Exception ee)
