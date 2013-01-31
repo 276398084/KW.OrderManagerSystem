@@ -101,11 +101,17 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows, string sort, string order)
         {
-            IList<EmailType> objList = NSession.CreateQuery("from EmailType")
+            string orderby = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            IList<EmailType> objList = NSession.CreateQuery("from EmailType " + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
+                
                 .List<EmailType>();
 
             return Json(new { total = objList.Count, rows = objList });
@@ -140,15 +146,22 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult EmailRerrr(EmailReturnType obj)
+        public JsonResult EmailRe(EmailReturnType obj)
         {
             try
             {
-                SendMail(obj.REmail,obj.Subject,obj.Content);
-                obj.CreateOn = DateTime.Now;
-                obj.CreateBy = DateTime.Now;
+                DateTime ReTime = DateTime.Now;
+                SendMail(obj.REmail, obj.Subject, obj.Content);
+                obj.CreateOn = ReTime;
+                obj.CreateBy = ReTime;
                 NSession.Save(obj);
+                int eid = int.Parse(Request["eid"].ToString());
+                IList<EmailType> mail = NSession.CreateQuery("from EmailType c where c.Id=:id").SetInt32("id", eid).List<EmailType>();
+                mail[0].IsReply = 1;
+                mail[0].ReplyOn = ReTime;
+                NSession.Update(mail[0]);
                 NSession.Flush();
+
             }
             catch (Exception ee)
             {

@@ -1064,7 +1064,6 @@
     <Content Include="Views\WarehouseStock\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\EmailReturn\Create.cshtml" />
     <Content Include="Views\EmailReturn\Delete.cshtml" />
     <Content Include="Views\EmailReturn\Details.cshtml" />
     <Content Include="Views\EmailReturn\Edit.cshtml" />

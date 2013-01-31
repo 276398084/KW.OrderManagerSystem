@@ -2,8 +2,21 @@
 @{
     ViewBag.Title = "EmailRe";
 }
+<script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
 <script type="text/javascript">
-
+@*    var editor;
+    KindEditor.ready(function (K) {
+        editor = K.create('textarea[name="Content"]', {
+            resizeType: 0,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+    });
+    *@
     $(function () {
         $('#dg').datagrid({
             singleSelect: true,
@@ -20,11 +33,10 @@
     }
     //发送提交
     function send() {
-        // $.getJSON("/Email/EmailReMark?id=" + $('#eid').attr("value"));
-
+        var eid =@ViewData["eid"]
         $('#r_form').form('submit', {
-
-            onSubmit: function () {
+            url: '/Email/EmailRe?eid='+eid,
+                onSubmit: function () {
                 return $(this).form('validate');
             },
             success: function (result) {
@@ -49,34 +61,9 @@
     }
 </script>
 <body class="easyui-layout">
-    <div data-options="region:'north',border:false,title:'邮件内容'" style="height:200px;padding:10px">
-          <table class ="editForm" id="etable">
-            <tr>
-		        <td>
-                    <TextBox id="eid" style = "width:800px;display:none">@ViewData["eid"]</TextBox>
-		        </td>
-	        </tr>
-              <tr>
-		        <td>
-                    <Label>邮件标题:</Label>
-		        </td>
-		        <td>
-                    <TextBox id="ESubject"  style = "width:800px;font-size:larger">@ViewData["sub"]</TextBox>
-		        </td>
-	        </tr>
 
-	        <tr>
-		        <td>
-                    <Label>邮件内容:</Label>
-		        </td>
-		        <td>
-                    <TextArea id="EContent" style = "width:800px;height:110px;resize:none;">@ViewData["con"]</TextArea>
-		        </td>
-	        </tr>
-        </table >
-    </div>
 	<div data-options="region:'east',split:true,title:'回复模板'" style="width:450px;padding:10px;">
-        <table id="dg" class="easyui-datagrid" style="width:420px;height:325px"
+        <table id="dg" class="easyui-datagrid" style="width:410px;height:520px"
 			data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
 		<thead>
 			<tr>
@@ -87,17 +74,39 @@
 		</thead>
 	</table>
 	</div>
-	<div data-options="region:'center',title:'邮件回复'">
+	<div data-options="region:'center',title:'邮件内容'" style="height:200px;">
+      <div class="easyui-layout" style="width:100%;height:520px;">
+              <div data-options="region:'north',border:false" style="height:180px;">
+          <table class ="editForm" id="etable">
+		        <td>
+                   &nbsp;&nbsp;<Label>邮件标题:</Label>
+		        </td>
+		        <td>
+                    <TextBox id="ESubject"  style = "width:700px;font-size:larger">@ViewData["sub"]</TextBox>
+		        </td>
+	        </tr>
+
+	        <tr>
+		        <td>
+                    &nbsp;&nbsp;<Label>邮件内容:</Label>
+		        </td>
+		        <td>
+                    <TextArea id="EContent" style = "width:700px;height:120px;resize:none;" readOnly = "readOnly">@ViewData["con"]</TextArea>
+		        </td>
+	        </tr>
+        </table >
+    </div>
+        <div data-options="region:'center',title:'回复内容'">
 @using (Html.BeginForm("EmailRerrr", "Email", FormMethod.Post, new { id = "r_form" }))
 {
-<fieldset>
+<fieldset style="border:0">
         <table class="editForm">
         	            <tr >
 		            <td>
                         @Html.LabelFor(model => model.REmail, "回复邮箱:")
 		            </td>
 		            <td>
-                        @Html.TextBoxFor(model => model.REmail, new { @id = "r_REmail", @readOnly = "readOnly", style = "width:800px;" })
+                        @Html.TextBoxFor(model => model.REmail, new { @id = "r_REmail", @readOnly = "readOnly", style = "width:700px;" })
 		            </td>
 	            </tr>
 
@@ -106,7 +115,7 @@
                         @Html.LabelFor(model => model.Subject, "回复主题:")
 		            </td>
 		            <td>
-                        @Html.TextBoxFor(model => model.Subject, new { @id = "r_Subject", style = "width:800px;" })
+                        @Html.TextBoxFor(model => model.Subject, new { @id = "r_Subject", style = "width:700px;" })
 		            </td>
 	            </tr>
 
@@ -115,7 +124,7 @@
                         @Html.LabelFor(model => model.Content, "回复内容:")
 		            </td>
 		            <td>
-                        @Html.TextAreaFor(model => model.Content, new { @id = "r_Content", style = "width:800px;height:205px;resize:none" })
+                        @Html.TextAreaFor(model => model.Content, new { @id = "r_Content", style = "width:700px;height:190px;resize:none" })
 		            </td>
 	            </tr>
             <tr>
@@ -128,5 +137,7 @@
             </table>
           </fieldset>
 }
+            </div>
+            </div>
 	</div>
 </body>
