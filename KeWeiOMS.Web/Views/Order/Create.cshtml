@@ -59,6 +59,23 @@
             onChange: changeCountry
         });
 
+        $('#c_Country').combogrid({
+            panelWidth: 360,
+            value: 'USD',
+            idField: 'CountryCode',
+            textField: 'ECountry',
+            url: '/Country/ListALL',
+            fit: true,
+            mode: 'remote',
+            columns: [[
+                { field: 'CCountry', title: '中文', width: 150 },
+                { field: 'ECountry', title: '英文', width: 100 },
+                { field: 'CountryCode', title: '简码', width: 100 }
+
+            ]],
+            onChange: changeCountry
+        });
+
     });
 
     function changeCountry(n, o) {

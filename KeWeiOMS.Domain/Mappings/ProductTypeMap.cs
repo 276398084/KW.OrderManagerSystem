@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class ProductTypeMap : ClassMap<ProductType> 
+    public class ProductTypeMap : ClassMap<ProductType>
     {
         public ProductTypeMap()
         {
@@ -34,6 +34,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.Category).Length(50);
             Map(x => x.ProductName).Length(200);
             Map(x => x.Price);
+            Map(x => x.Standard).Length(100);
+            Map(x => x.Status);
             Map(x => x.Weight);
             Map(x => x.Long);
             Map(x => x.Wide);

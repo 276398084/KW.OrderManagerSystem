@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  ProductSKUType GetById(int Id)
+        public ProductSKUType GetById(int Id)
         {
             ProductSKUType obj = NSession.Get<ProductSKUType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(ProductSKUType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 ProductSKUType obj = GetById(id);
@@ -103,9 +103,17 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<ProductSKUType>();
-			
+
             object count = NSession.CreateQuery("select count(Id) from ProductSKUType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        public JsonResult QList(string Q)
+        {
+            IList<ProductSKUType> objList = NSession.CreateQuery("from ProductSKUType where SKU like '" + Q + "%'")
+                .SetMaxResults(10)
+                .List<ProductSKUType>();
+            return Json(new { total = objList.Count, rows = objList });
         }
 
     }

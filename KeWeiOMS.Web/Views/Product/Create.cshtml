@@ -4,6 +4,56 @@
 }
 <script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
 <script type="text/javascript">
+
+    $(function () {
+
+        $('#c_IsInfraction').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            data: checks
+        });
+        $('#c_IsElectronic').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            data: checks
+        });
+        $('#c_HasBattery').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            data: checks
+        });
+
+
+        $('#c_Category').combotree({
+            url: '/ProductCategory/ParentList',
+            valueField: 'Id',
+            textField: 'FullName',
+            required: true,
+            width: 200
+        });
+
+
+
+        $('#c_Location').combogrid({
+            panelWidth: 360,
+            idField: 'Id',
+            textField: 'PositionsName',
+            url: '/WarehouseLocation/QList',
+            fit: true,
+            mode: 'remote',
+            columns: [[
+               { field: 'PositionsName', title: '库位', width: 150 },
+                { field: 'Warehouse', title: '仓库', width: 200 }
+
+            ]]
+
+        });
+        //$("#c_IsInfraction").combobox("loadData", checkJson)
+    });
+
     var editor;
     var editor2;
     KindEditor.ready(function (K) {
@@ -30,6 +80,9 @@
         formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
         $('c_form').clear();
     }
+
+
+
 </script>
 
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "c_form" }))

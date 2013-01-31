@@ -21,7 +21,20 @@ function getDate(value) {
     return date.format("yyyy-MM-dd hh:mm:ss");
 }
 
-var checkJson = '[{ "id":0,"text":"否"  },{ "id":1,"text":"是"}]';
+function getTrue(value) {
+    if (value == 1)
+        return "是";
+    else
+        return "否";
+}
+
+var checks = [["1", "是"], ["0", "否"]];
+
+var checkSex = '[["不详"],["男"],["女"]]';
+
+var packer = 5;
+var Examiner = 7;
+var Purchaser = 9;
 
 function formPost(form, url, dlg, dg, t) {
 

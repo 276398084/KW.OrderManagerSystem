@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  WarehouseLocationType GetById(int Id)
+        public WarehouseLocationType GetById(int Id)
         {
             WarehouseLocationType obj = NSession.Get<WarehouseLocationType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(WarehouseLocationType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 WarehouseLocationType obj = GetById(id);
@@ -103,9 +103,19 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<WarehouseLocationType>();
-			
+
             object count = NSession.CreateQuery("select count(Id) from WarehouseLocationType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        public JsonResult QList(string Q)
+        {
+            IList<WarehouseLocationType> objList = NSession.CreateQuery("from WarehouseLocationType where PositionsName like '" + Q + "%'")
+                .SetMaxResults(10)
+                .List<WarehouseLocationType>();
+
+
+            return Json(new { total = objList.Count, rows = objList });
         }
 
     }

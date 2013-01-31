@@ -103,7 +103,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<OrderAddressType>();
-
+            object count = NSession.CreateQuery("select count(Id) from StockOutType ").UniqueResult();
             return Json(new { total = objList.Count, rows = objList });
         }
 

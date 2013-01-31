@@ -17,6 +17,16 @@ namespace KeWeiOMS.Web
         已完成 = 7
     }
 
+    public enum ProductStatusEnum
+    {
+        销售中 = 0,
+        热卖 = 1,
+        滞销 = 2,
+        清仓 = 3,
+        停产 = 4,
+        暂停销售 = 5
+    }
+
     public enum PlatformEnum
     {
         SMT,
