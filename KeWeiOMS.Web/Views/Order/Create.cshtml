@@ -27,7 +27,7 @@
             onClickRow: onClickRow
         });
 
-      
+
 
         $('#c_Country').combogrid({
             panelWidth: 360,
@@ -46,7 +46,7 @@
             onChange: changeCountry
         });
 
-    
+
 
     });
 
@@ -138,21 +138,6 @@
                     @Html.TextBoxFor(model => model.OrderExNo, new { @id = "c_OrderExNo" })
                 </td>
             </tr>
-
-            @* <tr>
-                <td>
-                    @Html.LabelFor(model => model.Status, "订单状态:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.IsMerger, "订单属性:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.IsMerger, new { @id = "c_IsMerger" })
-                </td>
-            </tr>*@
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Amount, "总金额:")

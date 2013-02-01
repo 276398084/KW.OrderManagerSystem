@@ -71,6 +71,7 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     // 文件上传后的保存路径
                     string filePath = Server.MapPath("~/Uploads/");
+                    filePath += DateTime.Now.ToString("yyyyMMdd") + "/";
                     if (!Directory.Exists(filePath))
                     {
                         Directory.CreateDirectory(filePath);

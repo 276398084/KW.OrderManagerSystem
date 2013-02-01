@@ -28,7 +28,11 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 obj.CreateOn = DateTime.Now;
-
+                string pic = obj.PicUrl;
+                obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
+                obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
+                Utilities.DrawImageRectRect(pic, obj.PicUrl, 310, 310);
+                Utilities.DrawImageRectRect(pic, obj.SPicUrl, 64, 64);
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }

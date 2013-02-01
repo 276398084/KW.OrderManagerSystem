@@ -2,11 +2,12 @@
 @{
     //Layout = null;
 }
+<link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
 <script type="text/javascript">
 
     $(function () {
-
         $('#c_IsInfraction').combobox({
             valueField: 0,
             textField: 1,
@@ -25,8 +26,6 @@
             panelHeight: 50,
             data: checks
         });
-
-
         $('#c_Purchaser').combobox({
             url: '/User/QList/' + Purchaser,
             valueField: 'Id',
@@ -59,8 +58,6 @@
             width: 200,
             panelHeight: 'auto',
         });
-
-
         $('#c_Category').combotree({
             url: '/ProductCategory/ParentList',
             valueField: 'Id',
@@ -68,7 +65,6 @@
             required: true,
             width: 200
         });
-
         $('#c_Location').combogrid({
             panelWidth: 360,
             idField: 'Id',
@@ -78,12 +74,22 @@
             mode: 'remote',
             columns: [[
                { field: 'PositionsName', title: '库位', width: 150 },
-                { field: 'Warehouse', title: '仓库', width: 200 }
-
+               { field: 'Warehouse', title: '仓库', width: 200 }
             ]]
-
         });
         //$("#c_IsInfraction").combobox("loadData", checkJson)
+        $('#up_file').uploadify({
+            'auto': false,
+            'buttonText': '请选择图片',
+            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+            'uploader': '/Home/SaveFile/',
+            'multi': false,
+            'onUploadSuccess': function (file, data, response) {
+                eval("data=" + data);
+                $('#c_PicUrl').val(data.SaveName);
+                addProduct();
+            }
+        });
     });
 
     var editor;
@@ -109,13 +115,12 @@
         });
     });
     function addProduct() {
-
         $.ajax({
             type: "POST",
             url: "/Product/HasExist/",
             data: "sku=" + $('#c_SKU').val(),
             success: function (msg) {
-                if (msg.IsSuccess=="true") {
+                if (msg.IsSuccess == "true") {
                     formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
                     $('c_form').clear();
                 }
@@ -129,8 +134,9 @@
                 }
             }
         });
-     
+
     }
+
 
 
 
@@ -139,7 +145,7 @@
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "c_form" }))
 {
    
-    <input type="button" value="保存" onclick="addProduct();" />
+    <input type="button" value="保存" onclick="javascript: $('#up_file').uploadify('upload');" />
     <fieldset>
         <legend>产品信息</legend>
         <table class="editForm">
@@ -161,7 +167,8 @@
                     @Html.LabelFor(model => model.PicUrl, "大图片网址:")
                 </td>
                 <td rowspan="3">
-                    @Html.TextBoxFor(model => model.PicUrl, new { @id = "c_PicUrl" })
+                    <input id="up_file" type="file" name="up_file" />
+                    @Html.HiddenFor(model => model.PicUrl, new { @id = "c_PicUrl" })
                 </td>
             </tr>
             <tr>
@@ -285,6 +292,7 @@
                     @Html.TextBoxFor(model => model.Location, new { @id = "c_Location" })
                 </td>
             </tr>
+
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Summary, "简单描述:")

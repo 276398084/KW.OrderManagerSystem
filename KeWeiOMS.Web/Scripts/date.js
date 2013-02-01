@@ -136,3 +136,16 @@ function showdlg(url, dlg, handle) {
         });
     }).dialog('open');
 }
+
+
+function GetImg(v, u, w, h) {
+    var imgHtml = "<img src=" + v;
+    if (w)
+        imgHtml += " width='" + w + "'";
+    if (h)
+        imgHtml += " height='" + h + "'";
+    imgHtml += "/>";
+    if (u)
+        imgHtml = "<a href='" + u + "'>" + imgHtml + "</a>";
+    return imgHtml;
+}
