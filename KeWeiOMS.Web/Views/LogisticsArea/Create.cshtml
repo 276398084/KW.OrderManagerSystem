@@ -1,0 +1,50 @@
+﻿@model KeWeiOMS.Domain.LogisticsAreaType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "LogisticsArea", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AreaName,"分区名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AreaName,new{@id="c_AreaName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LId,"承运商ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LId,new{@id="c_LId"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

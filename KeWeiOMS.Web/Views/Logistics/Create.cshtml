@@ -1,0 +1,89 @@
+﻿@model KeWeiOMS.Domain.LogisticsType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Logistic", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsName,"承运商名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsName,new{@id="c_LogisticsName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsCode,"承运商代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="c_LogisticsCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.HasTrackCode,"是否有追踪码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.HasTrackCode,new{@id="c_HasTrackCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CodeLength,"追踪码长度:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CodeLength,new{@id="c_CodeLength"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="c_Remark"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"添加时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

@@ -1,0 +1,58 @@
+﻿@model KeWeiOMS.Domain.LogisticsType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.LogisticsType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.LogisticsType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">承运商名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LogisticsName)
+    </div>
+
+    <div class="display-label">承运商代码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LogisticsCode)
+    </div>
+
+    <div class="display-label">是否有追踪码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HasTrackCode)
+    </div>
+
+    <div class="display-label">追踪码长度</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CodeLength)
+    </div>
+
+    <div class="display-label">备注</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Remark)
+    </div>
+
+    <div class="display-label">添加时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

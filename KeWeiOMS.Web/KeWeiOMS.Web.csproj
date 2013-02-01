@@ -132,6 +132,11 @@
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogisticsController.cs" />
+    <Compile Include="Controllers\LogisticsAreaController.cs" />
+    <Compile Include="Controllers\LogisticsAreaCountryController.cs" />
+    <Compile Include="Controllers\LogisticsFreightController.cs" />
+    <Compile Include="Controllers\LogisticsModeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\OrderAddresController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
@@ -1074,6 +1079,33 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\SuppliersProduct\GetProduct.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\LogisticsAreaCountry\Create.cshtml" />
+    <Content Include="Views\LogisticsAreaCountry\Delete.cshtml" />
+    <Content Include="Views\LogisticsAreaCountry\Details.cshtml" />
+    <Content Include="Views\LogisticsAreaCountry\Edit.cshtml" />
+    <Content Include="Views\LogisticsAreaCountry\Index.cshtml" />
+    <Content Include="Views\LogisticsArea\Create.cshtml" />
+    <Content Include="Views\LogisticsArea\Delete.cshtml" />
+    <Content Include="Views\LogisticsArea\Details.cshtml" />
+    <Content Include="Views\LogisticsArea\Edit.cshtml" />
+    <Content Include="Views\LogisticsArea\Index.cshtml" />
+    <Content Include="Views\LogisticsFreight\Create.cshtml" />
+    <Content Include="Views\LogisticsFreight\Delete.cshtml" />
+    <Content Include="Views\LogisticsFreight\Details.cshtml" />
+    <Content Include="Views\LogisticsFreight\Edit.cshtml" />
+    <Content Include="Views\LogisticsFreight\Index.cshtml" />
+    <Content Include="Views\LogisticsMode\Create.cshtml" />
+    <Content Include="Views\LogisticsMode\Delete.cshtml" />
+    <Content Include="Views\LogisticsMode\Details.cshtml" />
+    <Content Include="Views\LogisticsMode\Edit.cshtml" />
+    <Content Include="Views\LogisticsMode\Index.cshtml" />
+    <Content Include="Views\Logistics\Create.cshtml" />
+    <Content Include="Views\Logistics\Delete.cshtml" />
+    <Content Include="Views\Logistics\Details.cshtml" />
+    <Content Include="Views\Logistics\Edit.cshtml" />
+    <Content Include="Views\Logistics\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,0 +1,117 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.LogisticsModeType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","LogisticsMode")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","LogisticsMode")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit","LogisticsMode")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "LogisticsMode")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "LogisticsMode")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "LogisticsMode")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+   
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="100">
+                主键
+            </th>
+
+            <th field="LogisticsName" width="100">
+                明细名称
+            </th>
+
+            <th field="LogisticsCode" width="100">
+                代码
+            </th>
+
+            <th field="ParentID" width="100">
+                父ID
+            </th>
+
+            <th field="Discount" width="100">
+                折扣
+            </th>
+
+            <th field="Remark" width="100">
+                备注
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+        </div> 
+        
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

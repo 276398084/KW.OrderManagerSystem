@@ -1,0 +1,118 @@
+﻿@model KeWeiOMS.Domain.LogisticsFreightType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "LogisticsFreight", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AreaCode,"分区代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AreaCode,new{@id="e_AreaCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BeginWeight,"开始:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BeginWeight,new{@id="e_BeginWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndWeight,"结束:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndWeight,new{@id="e_EndWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FristWeight,"首重:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FristWeight,new{@id="e_FristWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IncrementWeight,"续重:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IncrementWeight,new{@id="e_IncrementWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FristFreight,"起步费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FristFreight,new{@id="e_FristFreight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IncrementFreight,"递增:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IncrementFreight,new{@id="e_IncrementFreight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EveryFee,"每克费用:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EveryFee,new{@id="e_EveryFee"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProcessingFee,"出力费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProcessingFee,new{@id="e_ProcessingFee"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsDiscountALL,"是否全部打折:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsDiscountALL,new{@id="e_IsDiscountALL"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

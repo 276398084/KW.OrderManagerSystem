@@ -1,0 +1,42 @@
+﻿@model KeWeiOMS.Domain.LogisticsAreaType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KeWeiOMS.Domain.LogisticsAreaType</title>
+</head>
+<body>
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>KeWeiOMS.Domain.LogisticsAreaType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">分区名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AreaName)
+    </div>
+
+    <div class="display-label">承运商ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LId)
+    </div>
+
+
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("返回列表", "Index")
+    </p>
+}
+
+
+</body>
+</html>

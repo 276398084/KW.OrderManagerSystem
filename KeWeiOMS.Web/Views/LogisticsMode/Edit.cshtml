@@ -1,0 +1,73 @@
+﻿@model KeWeiOMS.Domain.LogisticsModeType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "LogisticsMode", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsName,"明细名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsName,new{@id="e_LogisticsName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsCode,"代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="e_LogisticsCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ParentID,"父ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ParentID,new{@id="e_ParentID"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Discount,"折扣:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Discount,new{@id="e_Discount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="e_Remark"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

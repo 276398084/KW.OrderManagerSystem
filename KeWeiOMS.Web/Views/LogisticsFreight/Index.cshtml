@@ -1,0 +1,137 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.LogisticsFreightType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","LogisticsFreight")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","LogisticsFreight")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit","LogisticsFreight")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "LogisticsFreight")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "LogisticsFreight")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "LogisticsFreight")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+   
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="100">
+                Id
+            </th>
+
+            <th field="AreaCode" width="100">
+                分区代码
+            </th>
+
+            <th field="BeginWeight" width="100">
+                开始
+            </th>
+
+            <th field="EndWeight" width="100">
+                结束
+            </th>
+
+            <th field="FristWeight" width="100">
+                首重
+            </th>
+
+            <th field="IncrementWeight" width="100">
+                续重
+            </th>
+
+            <th field="FristFreight" width="100">
+                起步费
+            </th>
+
+            <th field="IncrementFreight" width="100">
+                递增
+            </th>
+
+            <th field="EveryFee" width="100">
+                每克费用
+            </th>
+
+            <th field="ProcessingFee" width="100">
+                出力费
+            </th>
+
+            <th field="IsDiscountALL" width="100">
+                是否全部打折
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+        </div> 
+        
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

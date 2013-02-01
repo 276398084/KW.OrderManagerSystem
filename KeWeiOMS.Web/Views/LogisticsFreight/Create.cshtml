@@ -1,0 +1,122 @@
+﻿@model KeWeiOMS.Domain.LogisticsFreightType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "LogisticsFreight", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AreaCode,"分区代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AreaCode,new{@id="c_AreaCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BeginWeight,"开始:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BeginWeight,new{@id="c_BeginWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndWeight,"结束:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndWeight,new{@id="c_EndWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FristWeight,"首重:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FristWeight,new{@id="c_FristWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IncrementWeight,"续重:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IncrementWeight,new{@id="c_IncrementWeight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FristFreight,"起步费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FristFreight,new{@id="c_FristFreight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IncrementFreight,"递增:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IncrementFreight,new{@id="c_IncrementFreight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EveryFee,"每克费用:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EveryFee,new{@id="c_EveryFee"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProcessingFee,"出力费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProcessingFee,new{@id="c_ProcessingFee"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsDiscountALL,"是否全部打折:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsDiscountALL,new{@id="c_IsDiscountALL"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

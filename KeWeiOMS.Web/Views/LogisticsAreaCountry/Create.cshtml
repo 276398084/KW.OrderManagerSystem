@@ -1,0 +1,59 @@
+﻿@model KeWeiOMS.Domain.LogisticsAreaCountryType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "LogisticsAreaCountry", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AreaCode,"分区ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AreaCode,new{@id="c_AreaCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CountryCode,"国家代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CountryCode,new{@id="c_CountryCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Country,"国家名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Country,new{@id="c_Country"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

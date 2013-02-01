@@ -1,0 +1,77 @@
+﻿@model KeWeiOMS.Domain.LogisticsModeType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "LogisticsMode", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsName,"明细名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsName,new{@id="c_LogisticsName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsCode,"代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="c_LogisticsCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ParentID,"父ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ParentID,new{@id="c_ParentID"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Discount,"折扣:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Discount,new{@id="c_Discount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="c_Remark"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

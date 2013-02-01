@@ -1,0 +1,55 @@
+﻿@model KeWeiOMS.Domain.LogisticsAreaCountryType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+    });
+</script>
+@using (Html.BeginForm("Edit", "LogisticsAreaCountry", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AreaCode,"分区ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AreaCode,new{@id="e_AreaCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CountryCode,"国家代码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CountryCode,new{@id="e_CountryCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Country,"国家名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Country,new{@id="e_Country"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

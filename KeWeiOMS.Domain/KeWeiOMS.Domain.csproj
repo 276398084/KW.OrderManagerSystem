@@ -58,6 +58,11 @@
     <Compile Include="Entities\EmailReturnType.cs" />
     <Compile Include="Entities\EmailTemplateType.cs" />
     <Compile Include="Entities\EmailType.cs" />
+    <Compile Include="Entities\LogisticsAreaCountryType.cs" />
+    <Compile Include="Entities\LogisticsAreaType.cs" />
+    <Compile Include="Entities\LogisticsFreightType.cs" />
+    <Compile Include="Entities\LogisticsModeType.cs" />
+    <Compile Include="Entities\LogisticsType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
     <Compile Include="Entities\OrderAddressType.cs" />
     <Compile Include="Entities\OrderBuyerType.cs" />
@@ -96,6 +101,11 @@
     <Compile Include="Mappings\EmailReturnTypeMap.cs" />
     <Compile Include="Mappings\EmailTemplateTypeMap.cs" />
     <Compile Include="Mappings\EmailTypeMap.cs" />
+    <Compile Include="Mappings\LogisticsAreaCountryTypeMap.cs" />
+    <Compile Include="Mappings\LogisticsAreaTypeMap.cs" />
+    <Compile Include="Mappings\LogisticsFreightTypeMap.cs" />
+    <Compile Include="Mappings\LogisticsModeTypeMap.cs" />
+    <Compile Include="Mappings\LogisticTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
     <Compile Include="Mappings\OrderAddressTypeMap.cs" />
     <Compile Include="Mappings\OrderBuyerTypeMap.cs" />

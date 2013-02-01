@@ -1,0 +1,78 @@
+﻿@model KeWeiOMS.Domain.LogisticsFreightType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.LogisticsFreightType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.LogisticsFreightType</legend>
+    <div class="display-label">Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">分区代码</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AreaCode)
+    </div>
+
+    <div class="display-label">开始</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BeginWeight)
+    </div>
+
+    <div class="display-label">结束</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EndWeight)
+    </div>
+
+    <div class="display-label">首重</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FristWeight)
+    </div>
+
+    <div class="display-label">续重</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IncrementWeight)
+    </div>
+
+    <div class="display-label">起步费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FristFreight)
+    </div>
+
+    <div class="display-label">递增</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IncrementFreight)
+    </div>
+
+    <div class="display-label">每克费用</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EveryFee)
+    </div>
+
+    <div class="display-label">出力费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProcessingFee)
+    </div>
+
+    <div class="display-label">是否全部打折</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsDiscountALL)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>
