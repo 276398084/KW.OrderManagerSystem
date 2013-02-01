@@ -114,9 +114,10 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult QList(string Id)
         {
+
             IList<UserType> objList = NSession.CreateQuery("from UserType where RoleId=" + Id)
                 .List<UserType>();
-            return Json(new { total = objList.Count, rows = objList });
+            return Json(objList);
         }
 
     }

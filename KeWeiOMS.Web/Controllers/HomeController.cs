@@ -33,6 +33,34 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult Platform()
+        {
+            List<object> list = new List<object>();
+            foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
+            {
+                list.Add(new { id = item, text = item });
+            }
+            return Json(list);
+        }
+        public ActionResult OrderStatus()
+        {
+            List<object> list = new List<object>();
+            foreach (string item in Enum.GetNames(typeof(OrderStatusEnum)))
+            {
+                list.Add(new { id = item, text = item });
+            }
+            return Json(list);
+        }
+        public ActionResult ProductStatus()
+        {
+            List<object> list = new List<object>();
+            foreach (string item in Enum.GetNames(typeof(ProductStatusEnum)))
+            {
+                list.Add(new { id = item, text = item });
+            }
+            return Json(list);
+        }
+
 
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult SaveFile(HttpPostedFileBase fileData)

@@ -27,20 +27,7 @@
             onClickRow: onClickRow
         });
 
-        $('#c_CurrencyCode').combogrid({
-            panelWidth: 360,
-            value: 'USD',
-            idField: 'CurrencyCode',
-            textField: 'CurrencyName',
-            url: '/Currency/List',
-            fit: true,
-            columns: [[
-                { field: 'CurrencyName', title: '货币', width: 150 },
-                { field: 'CurrencyCode', title: '代码', width: 100 },
-                { field: 'CurrencyValue', title: '汇率', width: 100 }
-
-            ]]
-        });
+      
 
         $('#c_Country').combogrid({
             panelWidth: 360,
@@ -59,22 +46,7 @@
             onChange: changeCountry
         });
 
-        $('#c_Country').combogrid({
-            panelWidth: 360,
-            value: 'USD',
-            idField: 'CountryCode',
-            textField: 'ECountry',
-            url: '/Country/ListALL',
-            fit: true,
-            mode: 'remote',
-            columns: [[
-                { field: 'CCountry', title: '中文', width: 150 },
-                { field: 'ECountry', title: '英文', width: 100 },
-                { field: 'CountryCode', title: '简码', width: 100 }
-
-            ]],
-            onChange: changeCountry
-        });
+    
 
     });
 

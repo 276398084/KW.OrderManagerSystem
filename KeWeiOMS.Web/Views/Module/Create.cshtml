@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
- 
+
 <script type="text/javascript">
 
     $(function () {
@@ -86,12 +86,9 @@
             , width: 210
         });
         $('#c_ImageIndex').val(tuclass);
-        alert("2:" + $('#myWindow'));
         $('#myWindow').window('close');
-        alert("3:");
     }
     function showMyWindow(title, href, width, height, modal, minimizable, maximizable) {
-
         $('#myWindow').window({
             title: title,
             width: width === undefined ? 423 : width,

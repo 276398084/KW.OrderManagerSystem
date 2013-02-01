@@ -53,7 +53,8 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 状态
         /// </summary>
-        public virtual int Status { get; set; }
+        public virtual String Status { get; set; }
+
         /// <summary>
         /// 商品价格
         /// </summary>

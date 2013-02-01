@@ -27,6 +27,40 @@
         });
 
 
+        $('#c_Purchaser').combobox({
+            url: '/User/QList/' + Purchaser,
+            valueField: 'Id',
+            textField: 'Realname',
+            required: true,
+            width: 200,
+            panelHeight: 'auto',
+        });
+        $('#c_Examiner').combobox({
+            url: '/User/QList/' + Examiner,
+            valueField: 'Id',
+            textField: 'Realname',
+            required: true,
+            width: 200,
+            panelHeight: 'auto',
+        });
+        $('#c_Packer').combobox({
+            url: '/User/QList/' + Packer,
+            valueField: 'Id',
+            textField: 'Realname',
+            required: true,
+            width: 200,
+            panelHeight: 'auto',
+        });
+        $('#c_Status').combobox({
+            url: '/Home/ProductStatus/',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 200,
+            panelHeight: 'auto',
+        });
+
+
         $('#c_Category').combotree({
             url: '/ProductCategory/ParentList',
             valueField: 'Id',
@@ -34,8 +68,6 @@
             required: true,
             width: 200
         });
-
-
 
         $('#c_Location').combogrid({
             panelWidth: 360,
@@ -77,8 +109,27 @@
         });
     });
     function addProduct() {
-        formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
-        $('c_form').clear();
+
+        $.ajax({
+            type: "POST",
+            url: "/Product/HasExist/",
+            data: "sku=" + $('#c_SKU').val(),
+            success: function (msg) {
+                if (msg.IsSuccess=="true") {
+                    formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
+                    $('c_form').clear();
+                }
+                else {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '改编号已经存在',
+                        timeout: 0,
+                        showType: 'slide'
+                    })
+                }
+            }
+        });
+     
     }
 
 
@@ -106,13 +157,11 @@
                     @Html.TextBoxFor(model => model.ProductName, new { @id = "c_ProductName" })
                 </td>
 
-                <td rowspan="2">
+                <td rowspan="3">
                     @Html.LabelFor(model => model.PicUrl, "大图片网址:")
                 </td>
-                <td rowspan="2">
+                <td rowspan="3">
                     @Html.TextBoxFor(model => model.PicUrl, new { @id = "c_PicUrl" })
-                    @Html.TextBoxFor(model => model.SPicUrl, new { @id = "c_SPicUrl" })
-                    @Html.TextBoxFor(model => model.PicQty, new { @id = "c_PicQty" })
                 </td>
             </tr>
             <tr>
@@ -123,10 +172,24 @@
                     @Html.TextBoxFor(model => model.Category, new { @id = "c_Category" })
                 </td>
                 <td>
+                    @Html.LabelFor(model => model.Status, "状态:")
+                </td>
+                <td>@Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
+
+                </td>
+            </tr>
+            <tr>
+                <td>
                     @Html.LabelFor(model => model.Price, "商品价格:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.Price, new { @id = "c_Price" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Standard, "规格:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Standard, new { @id = "c_Standard" })
                 </td>
             </tr>
             <tr>
@@ -152,17 +215,6 @@
                     @Html.TextBoxFor(model => model.DayByStock, new { @id = "c_DayByStock" })
                 </td>
             </tr>
-            @*<tr>
-                <td>
-                    @Html.LabelFor(model => model.PackMemo, "禁售:")
-                </td>
-                <td colspan="5">
-                   
-                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:200px;visibility:hidden;" })
-                </td>
-            </tr>*@
-
-
 
             <tr>
                 <td>
