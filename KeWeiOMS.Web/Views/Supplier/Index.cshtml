@@ -39,27 +39,8 @@
     //编辑框
     function e_dlg() {
         var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit","Supplier")/' + id;
-            $('#e_dlg').load(url, function () {
-                $(this).dialog({
-                    title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
-                    buttons: [{
-                        text: '提交',
-                        iconCls: 'icon-ok',
-                        handler: function () {
-							ajaxEdit();
-                        }
-                    }, {
-                        text: '取消',
-                        handler: function () {
-                            $('#e_dlg').dialog('close');
-                        }
-                    }]
-                });
-            }).dialog('open');
+        if (id != undefined) { 
+            window.location.href = '@Url.Action("Edit","Supplier")/' +id;
         }
     }
 

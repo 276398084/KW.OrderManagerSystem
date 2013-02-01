@@ -15,19 +15,6 @@
             }
         })
         $('#r_EId').val('@ViewData["EId"]');
-        if ('@ViewData["eid"]' == '0') {
-            alert("已经到最后一封，点击“确定”关闭！")
-            setTimeout(window.close(), 1000);
-        }
-        if ('@ViewData["Reply"]' == '1') {
-            $.messager.confirm('确认', '该邮件已经回复过，是否进入下一封?', function (r) {
-                if (r) {
-                    var i = parseInt(@ViewData["EId"]) + parseInt(1);
-                    window.location = '@Url.Action("EmailRe", "Email")?id=' + i;
-                }
-            })
-        }
-
     });
     function cancel() {
         window.close();
@@ -36,9 +23,6 @@
 
     function send() {
         formPost('r_form', '@Url.Action("EmailRe", "Email")');
-        var i = parseInt(@ViewData["EId"]) + parseInt(1);
-        window.location = '@Url.Action("EmailRe", "Email")?id=' + i;
-
     }
 
 
@@ -113,6 +97,28 @@
                                 <td></td>
                                 <td align="center">
 
+<<<<<<< HEAD
+	            <tr>
+		            <td>
+                        @Html.LabelFor(model => model.Content, "回复内容:")
+		            </td>
+		            <td>
+                        @Html.TextAreaFor(model => model.Content, new { @id = "r_Content", style = "width:700px;height:190px;resize:none" })
+		            </td>
+	            </tr>
+            <tr>
+                <td></td>
+                <td align=center>
+                    <a   class="easyui-linkbutton" href="javascript:void(0);"
+                    <button class="easyui-linkbutton" data-options="iconCls:'icon-ok'" onclick="send()">发送</button>
+                    <button class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="cancel()">取消</button>
+                </td>
+            </tr>
+            </table>
+          </fieldset>
+}
+            </div>
+=======
                                     <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">确定</a>
 
 
@@ -121,6 +127,7 @@
                         </table>
                     </fieldset>
                 }
+>>>>>>> KeWeiOMS/jmyd
             </div>
         </div>
     </div>

@@ -51,7 +51,8 @@ namespace KeWeiOMS.Web.Controllers
             EmailType obj = NSession.Get<EmailType>(Id);
             if (obj == null)
             {
-                throw new Exception("返回实体为空");
+                obj = new EmailType { Id = 0 };
+                return obj;
             }
             else
             {
@@ -142,6 +143,7 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["sub"] = obj.Subject;
             ViewData["con"] = obj.Content;
             ViewData["eid"] = obj.Id;
+            ViewData["Reply"] = obj.IsReply;
             return View(ob);
         }
 
