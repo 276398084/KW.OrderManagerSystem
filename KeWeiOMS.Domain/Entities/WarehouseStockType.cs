@@ -41,6 +41,11 @@ namespace KeWeiOMS.Domain
         public virtual String Warehouse { get; set; }
 
         /// <summary>
+        /// 图片
+        /// </summary>
+        public virtual String Pic { get; set; }
+
+        /// <summary>
         /// 商品ID
         /// </summary>
         public virtual int PId { get; set; }

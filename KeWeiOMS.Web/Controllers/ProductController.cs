@@ -35,6 +35,25 @@ namespace KeWeiOMS.Web.Controllers
                 Utilities.DrawImageRectRect(pic, obj.SPicUrl, 64, 64);
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+
+                //
+                //在仓库中添加产品库存
+                //
+                foreach (var item in list)
+                {
+                    WarehouseStockType stock = new WarehouseStockType();
+                    stock.Pic = obj.SPicUrl;
+                    stock.WId = item.Id;
+                    stock.Warehouse = item.WName;
+                    stock.PId = obj.Id;
+                    stock.SKU = obj.SKU;
+                    stock.Title = obj.ProductName;
+                    stock.Qty = 0;
+                    stock.UpdateOn = DateTime.Now;
+                    NSession.SaveOrUpdate(stock);
+                    NSession.Flush();
+                }
             }
             catch (Exception ee)
             {
