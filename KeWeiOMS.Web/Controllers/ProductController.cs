@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,17 +23,51 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult ImportPic()
+        {
+            return View();
+        }
+
+        public ActionResult ImportProduct()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ImportProduct(string fileName)
+        {
+            DataTable dt = OrderHelper.GetDataTable(fileName);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                ProductType p = new ProductType { CreateOn = DateTime.Now };
+                p.SKU = dt.Rows[i]["SKU"].ToString();
+                p.ProductName = dt.Rows[i]["名称"].ToString();
+                p.Category = dt.Rows[i]["分类"].ToString();
+                p.Standard = dt.Rows[i]["规格"].ToString();
+                p.Price = Convert.ToDouble(dt.Rows[i]["价格"]);
+                p.Weight = Convert.ToInt16(dt.Rows[i]["重量"]);
+                p.Long = Convert.ToInt16(dt.Rows[i]["长"]);
+                p.Wide = Convert.ToInt16(dt.Rows[i]["宽"]);
+                p.High = Convert.ToInt16(dt.Rows[i]["高"]);
+                p.Location = dt.Rows[i]["库位"].ToString();
+
+                NSession.SaveOrUpdate(p);
+                NSession.Flush();
+            }
+            return View();
+        }
+
         [HttpPost]
         public JsonResult Create(ProductType obj)
         {
             try
             {
+                string filePath = Server.MapPath("~");
                 obj.CreateOn = DateTime.Now;
                 string pic = obj.PicUrl;
                 obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
                 obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
-                Utilities.DrawImageRectRect(pic, obj.PicUrl, 310, 310);
-                Utilities.DrawImageRectRect(pic, obj.SPicUrl, 64, 64);
+                Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
+                Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();

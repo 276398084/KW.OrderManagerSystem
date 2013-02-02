@@ -25,6 +25,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ViewResult Login()
+        {
+            return View();
+        }
+
         //
         // GET: /User/Create
 
@@ -62,25 +67,31 @@ namespace KeWeiOMS.Web.Controllers
         }
 
 
+
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult SaveFile(HttpPostedFileBase fileData)
+        public ActionResult SavePic(HttpPostedFileBase fileData)
         {
             if (fileData != null)
             {
                 try
                 {
                     // 文件上传后的保存路径
-                    string filePath = Server.MapPath("~/Uploads/");
-                    filePath += DateTime.Now.ToString("yyyyMMdd") + "/";
-                    if (!Directory.Exists(filePath))
+                    string filePath;
+                    string fileName;
+                    string saveName;
+                    SaveFile(fileData, out filePath, out fileName, out saveName);
+                    filePath = Server.MapPath("~");
+                    IList<ProductType> list = NSession.CreateQuery(" from ProductType where SKU='" + fileName + "' ").List<ProductType>();
+                    if (list.Count > 0)
                     {
-                        Directory.CreateDirectory(filePath);
-                    }
-                    string fileName = Path.GetFileName(fileData.FileName);// 原始文件名称
-                    string fileExtension = Path.GetExtension(fileName); // 文件扩展名
-                    string saveName = Guid.NewGuid().ToString() + fileExtension; // 保存文件名称
 
-                    fileData.SaveAs(filePath + saveName);
+                        list[0].PicUrl = Utilities.BPicPath + list[0].SKU + ".jpg";
+                        list[0].SPicUrl = Utilities.SPicPath + list[0].SKU + ".png";
+                        Utilities.DrawImageRectRect(saveName, filePath + list[0].PicUrl, 310, 310);
+                        Utilities.DrawImageRectRect(saveName, filePath + list[0].SPicUrl, 64, 64);
+                        NSession.SaveOrUpdate(list[0]);
+                        NSession.Flush();
+                    }
 
                     return Json(new { Success = true, FileName = fileName, SaveName = filePath + saveName });
                 }
@@ -94,6 +105,49 @@ namespace KeWeiOMS.Web.Controllers
 
                 return Json(new { Success = false, Message = "请选择要上传的文件！" }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult SaveFile(HttpPostedFileBase fileData)
+        {
+            if (fileData != null)
+            {
+                try
+                {
+                    // 文件上传后的保存路径
+                    string filePath;
+                    string fileName;
+                    string saveName;
+                    SaveFile(fileData, out filePath, out fileName, out saveName);
+
+                    return Json(new { Success = true, FileName = fileName, SaveName = saveName });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { Success = false, Message = ex.Message }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+
+                return Json(new { Success = false, Message = "请选择要上传的文件！" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private void SaveFile(HttpPostedFileBase fileData, out string filePath, out string fileName, out string saveName)
+        {
+            filePath = Server.MapPath("~/Uploads/");
+            filePath += DateTime.Now.ToString("yyyyMMdd") + "/";
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            fileName = Path.GetFileName(fileData.FileName);// 原始文件名称
+            string fileExtension = Path.GetExtension(fileName); // 文件扩展名
+            fileName = Path.GetFileNameWithoutExtension(fileName);
+            saveName = filePath + Guid.NewGuid().ToString() + fileExtension; // 保存文件名称
+            fileData.SaveAs(saveName);
         }
 
 

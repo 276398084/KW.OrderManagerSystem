@@ -97,11 +97,21 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows, string sort, string order, string k, string v)
         {
-            IList<CountryType> objList = NSession.CreateQuery("from CountryType")
+            string where = "";
+            string orderby = "order by ECountry desc";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(k) && !string.IsNullOrEmpty(v))
+            {
+                where = string.Format(" where {0} ='{1}'", k, v);
+            }
+            IList<CountryType> objList = NSession.CreateQuery("from CountryType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(page)
+                .SetMaxResults(rows)
                 .List<CountryType>();
 
             object count = NSession.CreateQuery("select count(Id) from CountryType ").UniqueResult();
@@ -114,8 +124,6 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(0)
             .SetMaxResults(10)
                 .List<CountryType>();
-
-
             return Json(new { total = objList.Count, rows = objList });
         }
 

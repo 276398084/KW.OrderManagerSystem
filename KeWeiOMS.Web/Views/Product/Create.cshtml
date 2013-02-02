@@ -59,15 +59,14 @@
             panelHeight: 'auto',
         });
         $('#c_Category').combotree({
-            url: '/ProductCategory/ParentList',
-            valueField: 'Id',
-            textField: 'FullName',
+            url: '/ProductCategory/PList',
+
             required: true,
             width: 200
         });
         $('#c_Location').combogrid({
             panelWidth: 360,
-            idField: 'Id',
+            idField: 'PositionsName',
             textField: 'PositionsName',
             url: '/WarehouseLocation/QList',
             fit: true,
@@ -77,7 +76,7 @@
                { field: 'Warehouse', title: '仓库', width: 200 }
             ]]
         });
-        //$("#c_IsInfraction").combobox("loadData", checkJson)
+
         $('#up_file').uploadify({
             'auto': false,
             'buttonText': '请选择图片',
@@ -87,33 +86,35 @@
             'onUploadSuccess': function (file, data, response) {
                 eval("data=" + data);
                 $('#c_PicUrl').val(data.SaveName);
-                addProduct();
+                formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
+                $('c_form').clear();
             }
         });
     });
 
-    var editor;
-    var editor2;
-    KindEditor.ready(function (K) {
-        editor = K.create('textarea[name="Summary"]', {
-            resizeType: 1,
-            allowPreviewEmoticons: false,
-            allowImageUpload: false,
-            items: [
-                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
-        });
-        editor2 = K.create('textarea[name="PackMemo"]', {
-            resizeType: 1,
-            allowPreviewEmoticons: false,
-            allowImageUpload: false,
-            items: [
-                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
-                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
-        });
-    });
+    //var editor;
+    //var editor2;
+    //KindEditor.ready(function (K) {
+    //    editor = K.create('textarea[name="Summary"]', {
+    //        resizeType: 1,
+    //        allowPreviewEmoticons: false,
+    //        allowImageUpload: false,
+    //        items: [
+    //            'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+    //            'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+    //            'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+    //    });
+    //    editor2 = K.create('textarea[name="PackMemo"]', {
+    //        resizeType: 1,
+    //        allowPreviewEmoticons: false,
+    //        allowImageUpload: false,
+    //        items: [
+    //            'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+    //            'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+    //            'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+    //    });
+    //});
+
     function addProduct() {
         $.ajax({
             type: "POST",
@@ -121,8 +122,8 @@
             data: "sku=" + $('#c_SKU').val(),
             success: function (msg) {
                 if (msg.IsSuccess == "true") {
-                    formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
-                    $('c_form').clear();
+                    $('#up_file').uploadify('upload')
+
                 }
                 else {
                     $.messager.show({
@@ -137,15 +138,12 @@
 
     }
 
-
-
-
 </script>
 
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "c_form" }))
 {
    
-    <input type="button" value="保存" onclick="javascript: $('#up_file').uploadify('upload');" />
+    <input type="button" value="保存" onclick="addProduct();" />
     <fieldset>
         <legend>产品信息</legend>
         <table class="editForm">
@@ -176,12 +174,12 @@
                     @Html.LabelFor(model => model.Category, "类别:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.Category, new { @id = "c_Category", @class = "easyui-validatebox", @required = "true" })
+                    @Html.TextBoxFor(model => model.Category, new { @id = "c_Category" })
                 </td>
                 <td>
                     @Html.LabelFor(model => model.Status, "状态:")
                 </td>
-                <td>@Html.TextBoxFor(model => model.Status, new { @id = "c_Status", @class = "easyui-validatebox", @required = "true" })
+                <td>@Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
 
                 </td>
             </tr>
@@ -289,7 +287,7 @@
                     @Html.LabelFor(model => model.Location, "库位:")
                 </td>
                 <td colspan="5">
-                    @Html.TextBoxFor(model => model.Location, new { @id = "c_Location" })
+                    @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
                 </td>
             </tr>
 

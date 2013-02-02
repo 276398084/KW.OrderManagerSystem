@@ -259,6 +259,12 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="product\images\blank.gif" />
+    <Content Include="product\images\loginbodybg.gif" />
+    <Content Include="product\images\loginbtn.gif" />
+    <Content Include="product\images\loginimgbg.jpg" />
+    <Content Include="product\images\loginInputWrapbg.gif" />
+    <Content Include="product\images\logo_login.png" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\easyUI\datagrid-detailview.js" />
     <Content Include="Scripts\easyUI\themes\default\images\Thumbs.db" />
@@ -1106,6 +1112,15 @@
     <Content Include="Views\Logistics\Details.cshtml" />
     <Content Include="Views\Logistics\Edit.cshtml" />
     <Content Include="Views\Logistics\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Product\ImportPic.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Product\ImportProduct.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -25,22 +25,20 @@ namespace KeWeiOMS.Web
         /// 小图片路劲
         /// </summary>
         public const string SPicPath = "/ProductImg/SPic/";
+
         public static string GetOrderNo()
         {
             string result = string.Empty;
             ISession NSession = NHibernateHelper.CreateSession();
             IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", OrderNo).List<SerialNumberType>();
-
             if (list.Count > 0)
             {
                 list[0].BeginNo = list[0].BeginNo + 1;
                 NSession.Update(list[0]);
                 NSession.Flush();
                 return list[0].BeginNo.ToString();
-
             }
             return "";
-
         }
 
         public static string GetUserNo()
@@ -56,12 +54,11 @@ namespace KeWeiOMS.Web
                 return list[0].BeginNo.ToString();
             }
             return "";
-
         }
 
-        public static void DrawImageRectRect(string rawImgPath, string newImgPath, int width, int height)
+        public static void DrawImageRectRect(Image imageFrom, string newImgPath, int width, int height)
         {
-            System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
+
             // 源图宽度及高度 
             int imageFromWidth = imageFrom.Width;
             int imageFromHeight = imageFrom.Height;
@@ -69,7 +66,6 @@ namespace KeWeiOMS.Web
             int X, Y;
             //在原画布中取得的长宽
             int bitmapWidth, bitmapHeight;
-
             //// 根据源图及欲生成的缩略图尺寸,计算缩略图的实际尺寸及其在"画布"上的位置 
             if (imageFromWidth / width > imageFromHeight / height)
             {
@@ -112,6 +108,13 @@ namespace KeWeiOMS.Web
                 bmp.Dispose();
                 g.Dispose();
             }
+        }
+
+        public static void DrawImageRectRect(string rawImgPath, string newImgPath, int width, int height)
+        {
+
+            System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
+            DrawImageRectRect(imageFrom, newImgPath, width, height);
         }
 
 

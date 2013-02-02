@@ -82,7 +82,6 @@
                 var url = '@Url.Action("Delete", "Product")/' + id;
                 alert(1);
                 delData(url, 'dg', 't');
-
             }
         }
 
@@ -103,6 +102,9 @@
             });
             return (undefined);
         }
+        function GetImg(v, r, i) {
+            return '<img  src=' + v + '  height="64px" width="64px" />'
+        }
 
     </script>
     <div region="center">
@@ -113,33 +115,19 @@
                 <tr>
                     <th field="SKU" width="100">商品编号
                     </th>
-
                     <th field="Category" width="100">类别
                     </th>
-
+                    <th field="SPicUrl" width="100" formatter='GetImg'>图片
+                    </th>
                     <th field="ProductName" width="100">商品名称
                     </th>
-
-                    <th field="Price" width="100">商品价格
+                    <th field="Price" width="60">Price
                     </th>
-
-                    <th field="Weight" width="100">重量
+                    <th field="Weight" width="60">重量
                     </th>
-
                     <th field="Long" width="100">长宽高
                     </th>
-                    <th field="DayByStock" width="100">库存天数
-                    </th>
-                    <th field="IsInfraction" width="100" formatter="getTrue">是否侵权
-                    </th>
-
-                    <th field="Model" width="100">型号
-                    </th>
-
-                    <th field="Brand" width="100">品牌
-                    </th>
-
-                    <th field="SPicUrl" width="100">图片
+                    <th field="IsInfraction" width="100" formatter="getTrue">侵权
                     </th>
                     <th field="PackCoefficient" width="100">包装系数
                     </th>
@@ -152,14 +140,6 @@
 
                     <th field="Location" width="100">库位
                     </th>
-
-                    <th field="CreateOn" width="100" formatter="getDate">创建时间
-                    </th>
-
-                    <th field="CreateBy" width="100">创建人
-                    </th>
-
-
                 </tr>
             </thead>
         </table>
