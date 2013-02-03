@@ -177,13 +177,14 @@
             }
 
             function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 $("#dg").datagrid("load", {
-                    v: $('#txtSearch').searchbox("getValue"),
-                    k: $('#txtSearch').searchbox("getName")
+                    search: search,
+
                 });
             }
             function ShowAdvanced() {
-                alert('123');
+                showSrarch('@Url.Action("Search", "Country")', 's_dlg', 'dg')
             }
 
     </script>
@@ -217,6 +218,7 @@
 
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
+        <div id="s_dlg"></div>
 
     </div>
 </body>

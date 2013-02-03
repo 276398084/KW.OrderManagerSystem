@@ -136,3 +136,34 @@ function showdlg(url, dlg, handle) {
         });
     }).dialog('open');
 }
+
+//“查询”按钮，弹出查询框
+function showSrarch(url, dlg, dg) {
+    $('#' + dlg).load(url, function () {
+        $(this).dialog({
+            title: '查询',
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '提交',
+                iconCls: 'icon-ok',
+                handler: function () {
+                    var search = "";
+                    $('#' + dlg).find(":text,:selected,select,textarea,:hidden,:checked,:password").each(function () {
+                        search = search + this.id + "&" + this.value + "^";
+                    });
+                    //执行查询                        
+                    $('#' + dg).datagrid('reload', { search: search });
+                    $('#' + dlg).dialog('close');
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#' + dlg).dialog('close');
+                }
+            }]
+        });
+    }).dialog('open');
+    $('#' + dlg).dialog("open");
+};
+

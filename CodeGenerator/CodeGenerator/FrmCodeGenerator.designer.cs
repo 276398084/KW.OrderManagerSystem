@@ -207,7 +207,7 @@
             // btnShowPage
             // 
             this.btnShowPage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnShowPage.Location = new System.Drawing.Point(787, 254);
+            this.btnShowPage.Location = new System.Drawing.Point(782, 254);
             this.btnShowPage.Name = "btnShowPage";
             this.btnShowPage.Size = new System.Drawing.Size(84, 23);
             this.btnShowPage.TabIndex = 38;
@@ -218,7 +218,7 @@
             // btnAddPage
             // 
             this.btnAddPage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnAddPage.Location = new System.Drawing.Point(617, 254);
+            this.btnAddPage.Location = new System.Drawing.Point(612, 254);
             this.btnAddPage.Name = "btnAddPage";
             this.btnAddPage.Size = new System.Drawing.Size(84, 23);
             this.btnAddPage.TabIndex = 34;
@@ -229,7 +229,7 @@
             // btnEditPage
             // 
             this.btnEditPage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnEditPage.Location = new System.Drawing.Point(702, 254);
+            this.btnEditPage.Location = new System.Drawing.Point(697, 254);
             this.btnEditPage.Name = "btnEditPage";
             this.btnEditPage.Size = new System.Drawing.Size(84, 23);
             this.btnEditPage.TabIndex = 36;
@@ -240,7 +240,7 @@
             // btnListPage
             // 
             this.btnListPage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnListPage.Location = new System.Drawing.Point(872, 254);
+            this.btnListPage.Location = new System.Drawing.Point(867, 254);
             this.btnListPage.Name = "btnListPage";
             this.btnListPage.Size = new System.Drawing.Size(84, 23);
             this.btnListPage.TabIndex = 40;
@@ -252,11 +252,11 @@
             // 
             this.btnTableColumns.Enabled = false;
             this.btnTableColumns.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnTableColumns.Location = new System.Drawing.Point(466, 255);
+            this.btnTableColumns.Location = new System.Drawing.Point(474, 255);
             this.btnTableColumns.Name = "btnTableColumns";
             this.btnTableColumns.Size = new System.Drawing.Size(118, 23);
             this.btnTableColumns.TabIndex = 33;
-            this.btnTableColumns.Text = "数据库脚本";
+            this.btnTableColumns.Text = "查询页面";
             this.btnTableColumns.UseVisualStyleBackColor = true;
             this.btnTableColumns.Click += new System.EventHandler(this.btnTableColumns_Click);
             // 
@@ -278,11 +278,11 @@
             // 
             this.btnIService.Enabled = false;
             this.btnIService.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnIService.Location = new System.Drawing.Point(379, 255);
+            this.btnIService.Location = new System.Drawing.Point(382, 255);
             this.btnIService.Name = "btnIService";
             this.btnIService.Size = new System.Drawing.Size(84, 23);
             this.btnIService.TabIndex = 32;
-            this.btnIService.Text = "服务接口(&I)";
+            this.btnIService.Text = "简单查询代码";
             this.btnIService.UseVisualStyleBackColor = true;
             this.btnIService.Click += new System.EventHandler(this.btnIService_Click);
             // 

@@ -16,6 +16,13 @@ namespace KeWeiOMS.Web
         public const string OrderNo = "OrderNo";
 
         public const string UserNo = "UserNo";
+        public const string Start_Time = "_st";
+        public const string End_Time = "_et";
+        public const string Start_Int = "_si";
+        public const string End_Int = "_ei";
+        public const string End_String = "_es";
+        public const string DDL_String = "_ds";
+
         /// <summary>
         /// 大图片路劲
         /// </summary>
@@ -56,6 +63,7 @@ namespace KeWeiOMS.Web
             return "";
         }
 
+        #region 缩略图生成
         public static void DrawImageRectRect(Image imageFrom, string newImgPath, int width, int height)
         {
 
@@ -116,8 +124,84 @@ namespace KeWeiOMS.Web
             System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
             DrawImageRectRect(imageFrom, newImgPath, width, height);
         }
+        #endregion
 
+        /// <summary>
+        /// 将String转换为Dictionary类型，过滤掉为空的值，首先 6 分割，再 7 分割
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> StringToDictionary(string value)
+        {
+            Dictionary<string, string> queryDictionary = new Dictionary<string, string>();
+            string[] s = value.Split('^');
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(s[i]) && !s[i].Contains("undefined"))
+                {
+                    var ss = s[i].Split('&');
+                    if ((!string.IsNullOrEmpty(ss[0])) && (!string.IsNullOrEmpty(ss[1])))
+                    {
+                        queryDictionary.Add(ss[0], ss[1]);
+                    }
+                }
 
+            }
+            return queryDictionary;
+        }
+
+        public static string Resolve(string search)
+        {
+            string where = string.Empty;
+            int flagWhere = 0;
+
+            Dictionary<string, string> queryDic = StringToDictionary(search);
+            if (queryDic != null && queryDic.Count > 0)
+            {
+                foreach (var item in queryDic)
+                {
+                    if (flagWhere != 0)
+                    {
+                        where += " and ";
+                    }
+                    flagWhere++;
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Time)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(Start_Time)) + " >=  CAST('" + item.Value + "' as   System.DateTime)";
+                        continue;
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_Time)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <  CAST('" + Convert.ToDateTime(item.Value).AddDays(1) + "' as   System.DateTime)";
+                        continue;
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Int)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(Start_Int)) + " >= " + item.Value;
+                        continue;
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_Int)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(End_Int)) + " <= " + item.Value;
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_String)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(End_String)) + " = '" + item.Value + "'";
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(DDL_String)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(DDL_String)) + " = '" + item.Value + "'";
+                        continue;
+                    }
+                    where += item.Key + " like '%" + item.Value + "%'";
+                }
+            }
+            return where;
+        }
 
     }
 

@@ -22,6 +22,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult Search()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult Create(CountryType obj)
         {
@@ -97,7 +102,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows, string sort, string order, string k, string v)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
             string orderby = "order by ECountry desc";
@@ -105,9 +110,14 @@ namespace KeWeiOMS.Web.Controllers
             {
                 orderby = " order by " + sort + " " + order;
             }
-            if (!string.IsNullOrEmpty(k) && !string.IsNullOrEmpty(v))
+
+            if (!string.IsNullOrEmpty(search))
             {
-                where = string.Format(" where {0} ='{1}'", k, v);
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
             }
             IList<CountryType> objList = NSession.CreateQuery("from CountryType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
