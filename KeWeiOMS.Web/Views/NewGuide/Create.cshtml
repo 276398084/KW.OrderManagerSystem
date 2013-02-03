@@ -7,10 +7,21 @@
 <script type="text/javascript">
 
     $(function () {
-
-		
-        $('#c_CreateOn').datebox();
-
+        $('#c_CreateOn').datebox({
+            required: true,
+        });
+        $("#c_NewSku").validatebox({
+             required: true,
+         });
+         $("#c_OldSku").validatebox({
+             required: true,
+         });
+         $("#c_Pic").validatebox({
+             required: true,
+         });
+         $("#c_Url").validatebox({
+             required: true,
+         });
 
     });
     
@@ -20,14 +31,14 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
 		<td>
@@ -43,7 +54,7 @@
             @Html.LabelFor(model => model.OldSku,"旧SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.OldSku,new{@id="c_OldSku"})
+            @Html.TextBoxFor(model => model.OldSku,new{@id="c_OldSku" })
 		</td>
 	</tr>
 

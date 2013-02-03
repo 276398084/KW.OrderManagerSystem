@@ -180,11 +180,10 @@
                 search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 $("#dg").datagrid("load", {
                     search: search,
-
                 });
             }
             function ShowAdvanced() {
-                showSrarch('@Url.Action("Search", "Country")', 's_dlg', 'dg')
+                showSrarch('@Url.Action("Search", "NewGuide")', 's_dlg', 'dg')
             }
 
     </script>

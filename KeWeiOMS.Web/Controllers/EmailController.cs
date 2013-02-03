@@ -104,7 +104,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows, string sort, string order)
         {
-            string orderby = "order by CountryCode desc";
+            string orderby = "order by CreateOn desc";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;

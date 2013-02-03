@@ -27,7 +27,6 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-               
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -98,14 +97,70 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult Copy(int id)
         {
-            IList<NewGuideType> objList = NSession.CreateQuery("from NewGuideType")
+            NewGuideType obj = GetById(id);
+            return View(obj);
+        }
+
+        [HttpPost]
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult Copy(NewGuideType obj)
+        {
+
+            try
+            {
+                NSession.Save(obj);
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = "true" });
+
+        }
+
+        //public JsonResult List(int page, int rows, string sort, string order)
+        //{
+        //    string orderby = "";
+        //    if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+        //    {
+        //        orderby = "order by " + sort + " " + order;
+        //    }
+        //    IList<NewGuideType> objList = NSession.CreateQuery("from NewGuideType " + orderby)
+        //        .SetFirstResult(rows * (page - 1))
+        //        .SetMaxResults(rows * page)
+        //        .List<NewGuideType>();
+
+        //    object count = NSession.CreateQuery("select count(Id) from NewGuideType ").UniqueResult();
+        //    return Json(new { total = count, rows = objList });
+        //}
+
+        public JsonResult List(int page, int rows, string sort, string order, string search)
+        {
+            string where = "";
+            string orderby = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<NewGuideType> objList = NSession.CreateQuery("from NewGuideType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<NewGuideType>();
-			
-            object count = NSession.CreateQuery("select count(Id) from NewGuideType ").UniqueResult();
+
+            object count = NSession.CreateQuery("select count(Id) from NewGuideType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
