@@ -66,6 +66,11 @@ namespace KeWeiOMS.Web.Controllers
             return Json(list);
         }
 
+        public ActionResult GetCompetence()
+        {
+            return View();
+        }
+
 
 
         [AcceptVerbs(HttpVerbs.Post)]

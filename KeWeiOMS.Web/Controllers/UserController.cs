@@ -26,6 +26,11 @@ namespace KeWeiOMS.Web.Controllers
             return View(u);
         }
 
+        public ActionResult GetCompetence()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult Create(UserType obj)
         {
@@ -49,6 +54,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult Login(UserType user)
         {
@@ -60,16 +66,12 @@ namespace KeWeiOMS.Web.Controllers
             if (ModelState.IsValid)
             {
                 IList<UserType> list = NSession.CreateQuery(" from  UserType where Username=:p1 and Password=:p2").SetString("p1", user.Username).SetString("p2", user.Password).List<UserType>();
-
                 if (list.Count > 0)
                 {   //登录成功
-
                     Session["account"] = list[0];
-
                     return RedirectToAction("Index", "Home");
                 }
             }
-
             ModelState.AddModelError("Username", "用户名或者密码出错。");
             return View();
 

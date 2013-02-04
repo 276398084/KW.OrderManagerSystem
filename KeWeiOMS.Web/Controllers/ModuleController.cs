@@ -122,25 +122,76 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<ModuleType> objList = NSession.CreateQuery("from ModuleType").List<ModuleType>();
             IList<ModuleType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
-            List<SystemTree> tree = new List<SystemTree>();
+
+            SystemTree tree = new SystemTree { id = "0", text = "根目录" };
+            List<SystemTree> trees = new List<SystemTree>();
             foreach (ModuleType item in fristList)
             {
                 List<ModuleType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
                 item.children = fooList;
                 List<SystemTree> tree2 = ConvertToTree(fooList);
-                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
+                trees.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
                 GetChildren(objList, item, tree2);
-
             }
-            return Json(new { total = objList.Count, rows = fristList });
+            tree.children = trees;
+
+
+            return Json(tree);
         }
 
-        public List<SystemTree> ConvertToTree(List<ModuleType> fooList)
+        public JsonResult SelectList(string type)
+        {
+            int id = GetCurrentAccount().Id;
+            if (type == ResourceCategoryEnum.Role.ToString())
+                id = GetCurrentAccount().RoleId;
+            IList<ModuleType> objList = NSession.CreateQuery("from ModuleType").List<ModuleType>();
+            //获得这个类型的菜单权限
+            List<PermissionScopeType> scopeList = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2 and TargetCategory =:p3").SetString("p1", type).SetInt32("p2", id).SetString("p3", TargetCategoryEnum.Module.ToString()).List<PermissionScopeType>().ToList<PermissionScopeType>();
+
+            IList<ModuleType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            List<SystemTree> tree = new List<SystemTree>();
+            SystemTree root = new SystemTree { id = "0", text = "所有菜单" };
+            foreach (ModuleType item in fristList)
+            {
+                List<ModuleType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                item.children = fooList;
+                List<SystemTree> tree2 = ConvertToTree(fooList, scopeList);
+
+
+                if (scopeList.FindIndex(p => p.TargetId == item.Id) >= 0)
+                {
+                    root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2, @checked = true });
+                }
+                else
+                {
+                    root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
+                }
+                GetChildren(objList, item, tree2);
+            }
+
+            tree.Add(root);
+            return Json(tree);
+
+        }
+
+        public List<SystemTree> ConvertToTree(List<ModuleType> fooList, List<PermissionScopeType> scopeList = null)
         {
             List<SystemTree> tree = new List<SystemTree>();
             foreach (ModuleType item in fooList)
             {
-                tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName });
+                if (scopeList == null)
+                    tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName });
+                else
+                {
+                    if (scopeList.FindIndex(p => p.TargetId == item.Id) >= 0)
+                    {
+                        tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, @checked = true });
+                    }
+                    else
+                    {
+                        tree.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName });
+                    }
+                }
             }
             return tree;
 

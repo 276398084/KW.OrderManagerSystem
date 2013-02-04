@@ -65,8 +65,8 @@ namespace KeWeiOMS.Web.Controllers
                 UserType account = (UserType)Session["account"];
                 return account;
             }
-            return null;
-            //return new UserType { Id = 0, Realname = "邵锡栋" };
+            //return null;
+            return new UserType { Id = 0, Realname = "邵锡栋" };
         }
 
         public BaseController()

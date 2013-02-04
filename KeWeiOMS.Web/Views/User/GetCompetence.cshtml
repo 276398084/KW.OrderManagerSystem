@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "GetCompetence";
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#tree1').tree({
+            url: '@Url.Action("SelectList", "Module")/User',
+            checkbox: true
+        });
+        $('#tree2').tree({
+            url: '@Url.Action("SelectList", "PermissionItem")/User',
+            checkbox: true
+        });
+    })
+
+
+
+</script>
+<table style="width: 600px; height: 1000px;">
+    <tr>
+        <td valign="top">
+            <fieldset>
+                <legend>菜单管理</legend>
+                <div id="tree1"></div>
+            </fieldset>
+
+        </td>
+        <td valign="top">
+            <fieldset>
+                <legend>权限管理</legend>
+                <div id="tree2"></div>
+            </fieldset>
+
+        </td>
+    </tr>
+
+</table>

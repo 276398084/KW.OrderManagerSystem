@@ -37,5 +37,16 @@ namespace KeWeiOMS.Web
         LT
     }
 
+    public enum ResourceCategoryEnum
+    {
+        User,
+        Role
+    }
+    public enum TargetCategoryEnum
+    {
+        Module,
+        PermissionItem
+    }
+
 
 }

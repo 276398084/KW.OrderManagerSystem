@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class UserTypeMap : ClassMap<UserType> 
+    public class UserTypeMap : ClassMap<UserType>
     {
         public UserTypeMap()
         {
@@ -35,6 +35,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Password).Length(200);
             Map(x => x.Realname).Length(50);
             Map(x => x.RoleId);
+            Map(x => x.RoleName).Length(50);
             Map(x => x.SecurityLevel);
             Map(x => x.CId);
             Map(x => x.CompanyName).Length(50);

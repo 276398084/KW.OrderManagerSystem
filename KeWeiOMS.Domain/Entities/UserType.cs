@@ -62,6 +62,11 @@ namespace KeWeiOMS.Domain
         public virtual int RoleId { get; set; }
 
         /// <summary>
+        /// 默认角色主键
+        /// </summary>
+        public virtual String RoleName { get; set; }
+
+        /// <summary>
         /// 安全级别
         /// </summary>
         public virtual int SecurityLevel { get; set; }

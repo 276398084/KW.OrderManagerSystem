@@ -32,7 +32,7 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.OrderNo).Length(40);
             Map(x => x.OrderExNo).Length(40);
-            Map(x => x.Status);
+            Map(x => x.Status).Length(10);
             Map(x => x.IsPrint);
             Map(x => x.IsMerger);
             Map(x => x.IsSplit);

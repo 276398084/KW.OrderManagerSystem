@@ -1128,6 +1128,19 @@
   <ItemGroup>
     <Content Include="Views\User\Login.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Order\SendScan.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Order\TodayIndex.cshtml" />
+    <Content Include="Views\Order\UnHandle.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\GetCompetence.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\GetCompetence.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

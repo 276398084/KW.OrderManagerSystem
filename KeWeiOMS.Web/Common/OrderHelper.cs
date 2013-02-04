@@ -60,7 +60,7 @@ namespace KeWeiOMS.Web
                 bool isExist = IsExist(OrderExNo);
                 if (isExist)
                 {
-                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = Convert.ToInt32(OrderStatusEnum.待处理), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
 
                     order.OrderNo = Utilities.GetOrderNo();
                     order.CurrencyCode = "USD";
@@ -132,7 +132,7 @@ namespace KeWeiOMS.Web
                 bool isExist = IsExist(OrderExNo);
                 if (isExist)
                 {
-                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = Convert.ToInt32(OrderStatusEnum.待处理), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo();
                     // order.CurrencyCode = "USD";
                     order.OrderExNo = item["order-id"];
@@ -175,7 +175,7 @@ namespace KeWeiOMS.Web
                 bool isExist = IsExist(OrderExNo);
                 if (isExist)
                 {
-                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = Convert.ToInt32(OrderStatusEnum.待处理), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo();
                     // order.CurrencyCode = "USD";
                     order.OrderExNo = OrderExNo;
