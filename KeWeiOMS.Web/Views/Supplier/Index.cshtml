@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.SupplierType>
+﻿@model IEnumerable<KeWeiOMS.Domain.SupplierType>
 @{
     ViewBag.Title = "Index";
 }
@@ -33,7 +32,27 @@
 
     //新建
     function c_dlg() {
-		 window.location.href='@Url.Action("Create","Supplier")';
+        var url_str = '@Url.Action("Create","Supplier")';
+            $('#c_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '新建',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        addSupliersProduct();
+                        $('#c_dlg').dialog('close');
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#c_dlg').dialog('close');
+                    }
+                }]
+            });
+        }).dialog('open');;
     }
 
     //编辑框

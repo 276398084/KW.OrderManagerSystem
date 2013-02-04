@@ -1107,6 +1107,12 @@
     <Content Include="Views\Logistics\Edit.cshtml" />
     <Content Include="Views\Logistics\Index.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\LogisticsAreaCountry\SetCountry.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\LogisticsFreight\SetFreight.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -1,0 +1,84 @@
+﻿@model KeWeiOMS.Domain.LogisticsModeType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#countryTo').datagrid({
+            url: '/LogisticsAreaCountry/GetCountryByAreaCode',
+            title: '已选择的国家',
+            width: 350,
+            singleSelect: true,
+            height: 400,
+            columns: [[
+               { field: 'CCountry', title: '中文', width: 100, sortable: "true" },
+               { field: 'ECountry', title: '英文', width: 120, sortable: "true" },
+               { field: 'CountryCode', title: '代码', width: 100, sortable: "true" }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) { return }
+                $('#countryForm').datagrid('appendRow', rowData);
+                removeCountry(rowData.Id)
+                $('#countryTo').datagrid('deleteRow', rowindex);
+                $('#countryTo').datagrid('deleteRow', unselectRow);
+
+            }
+        });
+
+        $('#countryForm').datagrid({
+            url: '/LogisticsAreaCountry/GetUnCountryByAreaCode',
+            title: '未选择的国家',
+            width: 350,
+            singleSelect: true,
+            height: 400,
+            columns: [[
+               { field: 'CCountry', title: '中文', width: 100, sortable: "true" },
+               { field: 'ECountry', title: '英文', width: 120, sortable: "true" },
+               { field: 'CountryCode', title: '代码', width: 100, sortable: "true" }
+            ]],
+            onSelect: function (rowindex, rowData) {
+                if (rowindex == undefined) { return }
+                $('#countryTo').datagrid('appendRow', rowData);
+                addCountry(rowData.Id)
+                $('#countryForm').datagrid('deleteRow', rowindex);
+                $('#countryForm').datagrid('deleteRow', unselectRow);                
+            }
+        });
+        $('#dlgCountry').dialog('open').dialog('setTitle', '国家设置');
+
+    });
+    function addCountry(c) {
+        $.ajax({
+            url: '/LogisticsAreaCountry/AddAreaCountry?id=' + c
+        });
+    }
+ function removeCountry(c) {
+        $.ajax({
+            url: '/LogisticsAreaCountry/DelAreaCountry?id=' + c
+        });
+    }
+
+</script>
+
+@using (Html.BeginForm("SetCountry", "LogisticsMode", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+    
+        <table border="0">
+            <tr>
+                <td>
+                    <table id='countryForm'>
+                    </table>
+                </td>
+                <td></td>
+                <td>
+                    <table id='countryTo'>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+</fieldset>
+}

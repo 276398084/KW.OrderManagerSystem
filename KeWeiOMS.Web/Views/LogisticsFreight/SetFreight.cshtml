@@ -1,0 +1,111 @@
+﻿@model KeWeiOMS.Domain.LogisticsFreightType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#dgFeright').datagrid({
+            url: '/LogisticsFreight/GetFreight',
+            title: '运费设置',
+            width: 800,
+            height: 400,
+            frozenColumns: [[
+    { field: 'ck', checkbox: true }
+            ]],
+            columns: [[
+               { field: 'Id', title: 'Id', width: 0, hidden: true, editor: 'numberbox' },
+               { field: 'AreaCode', title: 'AreaCode', width: 0, hidden: true, editor: 'numberbox', },
+               { field: 'BeginWeight', title: '开始', width: 80, editor: 'numberbox' },
+               { field: 'EndWeight', title: '结束', width: 80, editor: 'numberbox' },
+               { field: 'FristWeight', title: '首重', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+               { field: 'IncrementWeight', title: '续重', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+               { field: 'FristFreight', title: '起步费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+               { field: 'IncrementFreight', title: '续费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+               { field: 'EveryFee', title: '每克费用', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+               { field: 'ProcessingFee', title: '处理费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+               {
+                   field: 'IsDiscountALL', title: '全部打折', width: 80, editor: { type: 'checkbox', options: { on: '1', off: '' } },
+                   formatter: function (value) {
+                       if (value == "1")
+                           return "是";
+                       else
+                           return "否";
+                   }
+               }
+            ]],
+            onClickRow: onClickRow
+    
+        });
+    })
+
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dgFeright').datagrid('validateRow', editIndex)) {
+
+            $('#dgFeright').datagrid('endEdit', editIndex);
+            $.post('/LogisticsFreight/SaveFeight', $('#dgFeright').datagrid("getRows")[editIndex], function (rsp) {
+                if (rsp.status) {
+                    $.messager.alert("提示", "提交成功！");
+                }
+            }, "JSON").error(function () {
+                $.messager.alert("提示", "提交错误了！");
+            });
+
+            editIndex = undefined;
+            $('#dlgFreight').dialog('reload');
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dgFeright').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dgFeright').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function append() {
+        if (endEditing()) {
+            $('#dgFeright').datagrid('appendRow', {});
+            editIndex = $('#dgFeright').datagrid('getRows').length - 1;
+            $('#dgFeright').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function remove() {
+        var ids = [];
+        var rows = $('#dgFeright').datagrid('getSelections');
+        for (var i = 0; i < rows.length; i++) {
+            $.ajax({
+                url: '/LogisticsFreight/DelFreight?id=' + rows[i].Id,
+            });
+        }
+        $('#dgFeright').datagrid("reload");
+    }
+    function accept() {
+        if (endEditing()) {
+            $('#dgFeright').datagrid('acceptChanges');
+        }
+    }
+</script>
+        <div id="dlgFreight" class="easyui-dialog" title="设置运费" data-options="iconCls:'icon-save'" style="width: 800px; height: 400px; padding: 10px" closed="true">
+        <div>
+            <table id="dgFeright" toolbar="#tbFreight">
+            </table>
+        </div>
+    </div>
+        <div id="tbFreight">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">添加</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="remove()">删除</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+    </div>

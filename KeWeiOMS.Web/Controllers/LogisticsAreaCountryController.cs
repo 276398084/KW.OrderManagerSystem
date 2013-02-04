@@ -7,6 +7,7 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
+using NHibernate.Criterion;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -42,7 +43,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  LogisticsAreaCountryType GetById(int Id)
+        public LogisticsAreaCountryType GetById(int Id)
         {
             LogisticsAreaCountryType obj = NSession.Get<LogisticsAreaCountryType>(Id);
             if (obj == null)
@@ -66,7 +67,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(LogisticsAreaCountryType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +78,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 LogisticsAreaCountryType obj = GetById(id);
@@ -103,11 +104,52 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<LogisticsAreaCountryType>();
-			
+
             object count = NSession.CreateQuery("select count(Id) from LogisticsAreaCountryType ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
+        public ViewResult SetCountry(int id)
+        {
+            Session["cid"] = id;
+            return View();
+        }
+        [HttpPost]
+        public JsonResult GetUnCountryByAreaCode()
+        {
+            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id not in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)")
+              .SetInt32("cid", int.Parse(Session["cid"].ToString()))
+              .List<CountryType>();
+            return Json(new { total = list.Count, rows = list });
+
+        }
+        [HttpPost]
+        public JsonResult GetCountryByAreaCode()
+        {
+            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)")
+             .SetInt32("cid", int.Parse(Session["cid"].ToString()))
+             .List<CountryType>();
+            return Json(new { total = list.Count, rows = list });
+        }
+
+        public void DelAreaCountry(int id)
+        {   
+            LogisticsAreaCountryType logc = new LogisticsAreaCountryType { CountryCode = id.ToString(), AreaCode = int.Parse(Session["cid"].ToString()) };
+            IList<LogisticsAreaCountryType> list = NSession.CreateCriteria(typeof(LogisticsAreaCountryType))
+                .Add(Example.Create(logc))
+                .List<LogisticsAreaCountryType>();
+            foreach(LogisticsAreaCountryType item in  list)
+            {
+                NSession.Delete(item);
+                NSession.Flush();
+            }
+        }
+        public void AddAreaCountry(int id)
+        {
+            int tid = int.Parse(Session["cid"].ToString());
+            LogisticsAreaCountryType logcountry = new LogisticsAreaCountryType { CountryCode = id.ToString(), AreaCode = tid };
+            NSession.Save(logcountry);
+        }
     }
 }
 

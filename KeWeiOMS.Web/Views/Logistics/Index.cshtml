@@ -1,80 +1,171 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.LogisticsType>
+﻿@model IEnumerable<KeWeiOMS.Domain.LogisticsType>
 @{
     ViewBag.Title = "Index";
 }
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","Logistics")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Logistics")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100],
+                view: detailview,
+                columns: [[
+                   { field: 'LogisticsName', title: '承运商', width: 100 },
+                   { field: 'LogisticsCode', title: '承运商代码', width: 100, },
+                   {
+                       field: 'HasTrackCode', title: '是否有追踪码', width: 100, formatter: function (value) {
+                           if (value == "1")
+                               return "是";
+                           else
+                               return "否";
+                       }
+                   },
+                   { field: 'CodeLength', title: '追踪码长度', width: 100 },
+                   {
+                       field: 'ReMark', title: '备注', width: 100
+                   },
+                   {
+                       field: 'Id', title: '操作', width: 200, formatter: function (value) {
+                           return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'del(' + value + ')\'>删除</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'addMode(' + value + ')\'>添加明细</a>  <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'seeArea(' + value + ')\'>查看分区</a>';
+                       }
+                   }
+                ]],
+                detailFormatter: function (index, row) {
+                    return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).datagrid({
+                        fitColumns: true,
+                        singleSelect: true,
+                        rownumbers: true,
+                        loadMsg: '',
+                        height: 'auto',
+                        url: '@Url.Action("GetMode", "LogisticsMode")' + "/" + row.Id,
+                        columns: [[
+                                { field: 'LogisticsName', title: '承运商', width: 200 },
+                                { field: 'LogisticsCode', title: '承运商代码', width: 100 },
+                                {
+                                    field: 'Discount', title: '折扣', width: 100, formatter: function (value) {
+                                        if (value == "1")
+                                            return "是";
+                                        else
+                                            return "否";
+                                    }
+                                },
+                               {
+                                   field: 'Id', title: '操作', width: 100, formatter: function (value) {
+                                       return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'delMode(' + value + ')\'>删除</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'editMode(' + row.Id + ',' + value + ')\'>修改</a>';
+                                   }
+                               }
+
+                        ]],
+                        onResize: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        },
+                        onLoadSuccess: function () {
+                            setTimeout(function () {
+                                $('#dg').datagrid('fixDetailRowHeight', index);
+                            }, 0);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
+            });
+
+
+
+
         });
 
-    });
 
-
-	    //新建
+        //新建
         function c_dlg() {
-            var url_str = '@Url.Action("Create","Logistics")';
+            var url_str = '@Url.Action("Create", "Logistics")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
         function e_dlg() {
-            var url = '@Url.Action("Edit","Logistics")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
-            }
+            var url = '@Url.Action("Edit", "Logistics")/' + id;
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "Module")/' + id;
+            showdlg(url, 'e_dlg', ajaxEdit)
         }
+    }
 
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "Logistics")', 'c_dlg', 'dg');
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "Logistics")', 'c_dlg', 'dg');
         }
         //异步修改提交
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "Logistics")', 'e_dlg', 'dg');
         }
         //删除
-        function del() {
-            var id = getselectedRow();
+        function del(id) {
             if (id != undefined) {
 
-                var url = '@Url.Action("Delete", "Logistics")/' + id;
-                alert(1);
-                delData(url, 'dg');
+                delData('@Url.Action("Delete", "Logistics")/' + id, 'dg');
 
             }
         }
 
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+
+        function seeArea(id) {
+            window.open('@Url.Action("Index", "LogisticsArea")?id=' + id)
+        }
+        //添加明细
+        function addMode(id) {
+            var url_str = '@Url.Action("Create", "LogisticsMode")?id=' + id;
+            showdlg(url_str, 'm_dlg', ajaxAddM)
+         }
+        function ajaxAddM() {
+            formPost('m_form', '@Url.Action("Create", "LogisticsMode")', 'm_dlg', 'modedg');
+            $("#dg").datagrid("reload");
+        }
+        //修改明细
+        function editMode(pid,id) {
+            var url_str = '@Url.Action("Edit", "LogisticsMode")?id=' + id;
+            showdlg(url_str, 'me_dlg', ajaxUpdM)
+        }
+        function ajaxUpdM() {
+            formPost('me_form', '@Url.Action("Edit", "LogisticsMode")', 'me_dlg', 'modedg');
+            $("#dg").datagrid("reload");
+        }
+        //删除明细
+        function delMode(id) {
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "LogisticsMode")/' + id;
+                delData(url,'dg');
             }
         }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-   
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
+
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            @*        <thead>  
         <tr>
             <th field="Id" width="100">
                 主键
@@ -106,16 +197,18 @@
 
 
     	</tr>
-		</thead>
-		</table>
-        <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+		</thead>*@
 
-</div>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            @*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
+        </div>
+
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="m_dlg"></div>
+        <div id="me_dlg"></div>
+    </div>
 </body>

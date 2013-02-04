@@ -108,6 +108,31 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
+        public ViewResult SetFreight(int id)
+        {
+            Session["fid"] = id;
+            return View();
+        }
+        public JsonResult GetFreight()
+        { 
+            IList<LogisticsFreightType> list=NSession.CreateQuery("from LogisticsFreightType c where c.AreaCode=:ad")
+                .SetInt32("ad",int.Parse(Session["fid"].ToString()))
+                .List<LogisticsFreightType>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+        public void SaveFeight(LogisticsFreightType log)
+        {
+            log.AreaCode =int.Parse(Session["fid"].ToString());
+            NSession.SaveOrUpdate(log);
+            NSession.Flush();
+        }
+        public void DelFreight(int id)
+        {
+            LogisticsFreightType log = GetById(id);
+            NSession.Delete(log);
+            NSession.Flush();
+        }
+
     }
 }
 

@@ -1,9 +1,7 @@
 ﻿@model KeWeiOMS.Domain.SupplierType
-
 @{
-    ViewBag.Title = "Create";
+    Layout = null;
 }
-
 <script type="text/javascript">
     $(function () {
         $('#dg_product').datagrid({
@@ -17,7 +15,16 @@
                     $('#btnsave').linkbutton('enable');
                     addp();
                 }
-            }, {
+            },
+            {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    btnsave();
+                }
+            }
+            ,{
                 id: 'btndel',
                 text: '删除',
                 iconCls: 'icon-add',
@@ -71,6 +78,12 @@
                         .datagrid('beginEdit', editIndex);
             }
         }
+        function btnsave()
+        {
+            if (endEditing()) {
+                $('#dg_product').datagrid('acceptChanges');
+            }
+        }
 
         function s_del() {
 
@@ -106,7 +119,6 @@
                                           timeout: 2000,
                                           showType: 'slide'
                                       });
-                                      window.location.href = '@Url.Action("Index","Supplier")';
                                   }
                               }
                           });
@@ -114,7 +126,6 @@
 
    
 </script>
-<body>
 @using (Html.BeginForm("Create", "Supplier", FormMethod.Post, new { id = "c_form" }))
 {
 <fieldset>
@@ -216,5 +227,3 @@
         </table>
 </fieldset>
 }
-    <button onclick="addSupliersProduct() ">保存</button>
-</body>

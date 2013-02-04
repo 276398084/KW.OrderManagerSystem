@@ -43,9 +43,7 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "LogisticsMode")/' + id;
-                alert(1);
                 delData(url, 'dg');
 
             }

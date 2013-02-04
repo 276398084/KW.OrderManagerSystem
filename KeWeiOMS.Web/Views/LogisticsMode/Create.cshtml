@@ -1,73 +1,75 @@
 ﻿@model KeWeiOMS.Domain.LogisticsModeType
-
 @{
     Layout = null;
 }
 
 <script type="text/javascript">
-
     $(function () {
-
-		
+        $('#c_ParentID').combobox({
+            url: '/LogisticsMode/GetLogistics',
+            valueField: 'Id',
+            textField: 'LogisticsName',
+            required: true
+        });
+        $('#c_ParentID').combobox("setValue", '@ViewData["pid"]');
+        $("#c_LogisticsName").validatebox({
+            required: true,
+        });
+        $("#c_LogisticsCode").validatebox({
+            required: true
+        });
     });
-    
+
 </script>
 
-@using (Html.BeginForm("Create", "LogisticsMode", FormMethod.Post, new { id = "c_form" }))
+
+@using (Html.BeginForm("Create", "LogisticsMode", FormMethod.Post, new { id = "m_form" }))
 {
 <fieldset>
-<table class="editForm">
-	<tr>
+<table class="editForm" id="modedg">
+    	<tr>
 		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
+            @Html.LabelFor(model => model.ParentID, "所属分类:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+            @Html.TextBoxFor(model => model.ParentID, new { @id = "c_ParentID" })
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsName, "明细名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsName, new { @id = "c_LogisticsName" })
 		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.LogisticsName,"明细名称:")
+            @Html.LabelFor(model => model.LogisticsCode, "代码:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsName,new{@id="c_LogisticsName"})
+            @Html.TextBoxFor(model => model.LogisticsCode, new { @id = "c_LogisticsCode" })
+		</td>
+	</tr>
+
+
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Discount, "折扣:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Discount, new { @id = "c_Discount" })
 		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.LogisticsCode,"代码:")
+            @Html.LabelFor(model => model.Remark, "备注:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="c_LogisticsCode"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ParentID,"父ID:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ParentID,new{@id="c_ParentID"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Discount,"折扣:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Discount,new{@id="c_Discount"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Remark,"备注:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Remark,new{@id="c_Remark"})
+            @Html.TextBoxFor(model => model.Remark, new { @id = "c_Remark" })
 		</td>
 	</tr>
 

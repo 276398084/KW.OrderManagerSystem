@@ -17,14 +17,14 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
 		<td>
@@ -34,15 +34,11 @@
             @Html.TextBoxFor(model => model.AreaName,new{@id="c_AreaName"})
 		</td>
 	</tr>
-
-	<tr>
+@*	<tr>
 		<td>
-            @Html.LabelFor(model => model.LId,"承运商ID:")
+            @Html.TextBoxFor(model => model.LId,new{@id="c_LId",})
 		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LId,new{@id="c_LId"})
-		</td>
-	</tr>
+	</tr>*@
 
 
 </table>
