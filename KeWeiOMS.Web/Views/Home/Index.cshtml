@@ -162,7 +162,34 @@
 </style>
 
 <body class="easyui-layout" id="mainframe">
-    <div region="north" style="height: 66px; background-color: #E0ECFF" split="true">
+    <div region="north" border="false" style="overflow: hidden; height: 68px; line-height: 20px; background-color: green; font-family: 微软雅黑,黑体">
+        <div id="mainlogo">
+            @*<img src="images/main.gif" width="575" height="72" alt="此处放置一个带有系统名称的图片，大小为“500x72”" />*@
+        </div>
+        <div id="center">
+        </div>
+        <div id="mainctrl">
+            <div class="wel">
+                @ViewData["Username"]
+                ,欢迎您的光临！
+            </div>
+            <div class="ctr">
+                <li>
+                    <img src="/Content/imgs/yuanjiao.png" alt="" /></li>
+                <li><a href="#">
+                    <img src="/Content/imgs/mimaxiugai.gif" alt="" border="0" /></a></li>
+                <li class="zi"><a href="#" id="ChangePassword" class="v1">密码修改</a></li>
+                <li><a href="#">
+                    <img src="/Content/imgs/anquantuichu.gif" alt="" border="0" /></a></li>
+                <li class="zi"><a href="#" id="loginOut" class="v1">安全退出</a></li>
+                <li><a href="#">
+                    <img src="/Content/imgs/bangzhu.gif" border="0"></a></li>
+                <li class="zi"><a href="#" class="v1">帮助中心</a></li>
+                <li><a href="#">
+                    <img src="/Content/imgs/duanxinxi.gif" alt="" border="0" /></a></li>
+                <li class="zi"><a href="#" class="v1">短消息（0）</a></li>
+            </div>
+        </div>
     </div>
 
     <div region="west" split="true" title="功能菜单" style="width: 180px; padding: 1px; overflow: hidden;">

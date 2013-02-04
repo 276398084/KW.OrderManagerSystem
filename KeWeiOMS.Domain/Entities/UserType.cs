@@ -46,6 +46,12 @@ namespace KeWeiOMS.Domain
         public virtual String Password { get; set; }
 
         /// <summary>
+        /// 验证码
+        /// </summary>
+        public virtual String ValidateCode { get; set; }
+
+
+        /// <summary>
         /// 姓名
         /// </summary>
         public virtual String Realname { get; set; }

@@ -3,6 +3,62 @@
     font-family: 微软雅黑,新宋体;
 }
 
+#mainlogo
+{
+    height: 72px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 575px;
+}
+
+#center
+{
+    padding-left: 575px;
+    padding-right: 425px;
+}
+
+#mainctrl
+{
+    height: 72px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 425px;
+}
+
+.wel
+{
+    color: #FFFFFF;
+    font-size: 14px;
+    height: 30px;
+    line-height: 30px;
+    padding-right: 5px;
+    text-align: right;
+}
+
+.ctr
+{
+    float: right;
+    height: 22px;
+    margin-top: 18px;
+    text-align: right;
+    vertical-align: middle;
+}
+
+    .ctr li
+    {
+        float: left;
+        list-style: none outside none;
+    }
+
+.zi
+{
+    background-image: url("/Content/imgs/beijing.gif");
+    background-repeat: repeat-x;
+    padding-left: 3px;
+    padding-right: 6px;
+}
 
 input[type="password"]
 {
@@ -19,6 +75,7 @@ form input[type="text"]
     width: 210px;
     border: 1px solid #CCC;
 }
+
 td label
 {
     width: 120px;

@@ -18,15 +18,15 @@ namespace KeWeiOMS.Web.Controllers
 
         public ViewResult Index()
         {
-            //var ss = new ModuleType { FullName = "系统管理", CreateOn = DateTime.Now, CreateBy = "系统管理员" };
-            //NSession.Save(ss);
-            //var dd = new ModuleType { ParentId = ss.Id, FullName = "菜单管理", NavigateUrl = "/Module/Index", CreateOn = DateTime.Now, CreateBy = "系统管理员" };
-            //NSession.Save(dd);
-            return View();
-        }
-
-        public ViewResult Login()
-        {
+            UserType account = GetCurrentAccount();
+            if (account == null)
+            {
+                RedirectToAction("Login", "User");
+            }
+            else
+            {
+                ViewData["Username"] = account.Username;
+            }
             return View();
         }
 
