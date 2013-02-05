@@ -11,8 +11,17 @@
         $("#c_LogisticsName").validatebox({
             required: true,
         });
+        $("#c_LogisticsCode").validatebox({
+            required: true,
+        });
+        $('#c_HasTrackCode').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            data: checks
+        });
+        $('#c_HasTrackCode').combobox("setValue", 0);
     });
-    
 </script>
 
 @using (Html.BeginForm("Create", "Logistic", FormMethod.Post, new { id = "c_form" }))

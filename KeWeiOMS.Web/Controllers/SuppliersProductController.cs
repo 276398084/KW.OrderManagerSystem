@@ -70,6 +70,15 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = "true" });
         }
+        public void DelProduct(int id) 
+        {
+            List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
+            SuppliersProductType findOne = list.Find(p => p.SKU ==id.ToString());
+            list.Remove(findOne);
+        }
+        public void DelSession() {
+            Session.Contents.Remove("SupplierProducts");
+        }
         /// <summary>
         /// 根据Id获取
         /// </summary>

@@ -18,6 +18,13 @@
         $("#c_LogisticsCode").validatebox({
             required: true
         });
+        $('#c_Discount').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            data: checks
+        });
+        $('#c_Discount').combobox("setValue", 0);
     });
 
 </script>

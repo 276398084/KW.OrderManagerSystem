@@ -66,6 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             LogisticsModeType obj = GetById(id);
+            ViewData["checked"] = obj.Discount;
             return View(obj);
         }
 

@@ -4,6 +4,9 @@
 }
 <script type="text/javascript">
     $(function () {
+        $("#c_SuppliersName").validatebox({
+            required: true,
+        });
         $('#dg_product').datagrid({
             // url: '@Url.Action("List", "OrderProduct")',
             width: 700,
@@ -32,6 +35,9 @@
                     s_del();
                 }
             }],
+            frozenColumns: [[
+            { field: 'ck', checkbox: true }
+            ]],
             onClickRow: onClickRow
         });
     })
@@ -86,9 +92,15 @@
         }
 
         function s_del() {
+            var rows = $('#dg_product').datagrid('getSelections');
+                $.ajax({
+                    url: '/SuppliersProduct/DelProduct?id=' + rows[0].SKU,
+                });
+            var row = $('#dg_product').datagrid('getSelected');
+            var index = $('#dg_product').datagrid('getRowIndex', row);
+            $('#dg_product').datagrid('deleteRow', index);
 
         }
-
         function accept() {
             if (endEditing()) {
                 $('#dg_product').datagrid('acceptChanges');

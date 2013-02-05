@@ -2,137 +2,31 @@
 @{
     Layout = null;
 }
-
 <script type="text/javascript">
     $(function () {
-        $('#dg_product').datagrid({
-            // url: '@Url.Action("List", "OrderProduct")',
-            width: 700,
-            toolbar: [{
-                id: 'btnadd',
-                text: '添加',
-                iconCls: 'icon-add',
-                handler: function () {
-                    $('#btnsave').linkbutton('enable');
-                    addp();
-                }
-            }, {
-                id: 'btndel',
-                text: '删除',
-                iconCls: 'icon-add',
-                handler: function () {
-                    s_del();
-                }
-            }],
-            onClickRow: onClickRow
-        });
-    })
-    var editIndex = undefined;
-    function endEditing() {
-        if (editIndex == undefined) { return true }
-        if ($('#dg_product').datagrid('validateRow', editIndex)) {
-            $('#dg_product').datagrid('endEdit', editIndex);
+        //这里写加载下拉列表、修改编辑控件的初始化值
 
-            $.post("/SuppliersProduct/Save/", $('#dg_product').datagrid("getRows")[editIndex], function (rsp) {
-                if (rsp.IsSuccess) {
-                    $.messager.show("提示", "提交成功！");
-                }
-            }, "JSON").error(function () {
-                $.messager.show("提示", "提交错误了！");
-            });
-
-            editIndex = undefined;
-
-            return true;
-
-        } else {
-            return false;
-        }
-    }
-
-    function onClickRow(index) {
-        if (editIndex != index) {
-            if (endEditing()) {
-                $('#dg_product').datagrid('selectRow', index)
-                        .datagrid('beginEdit', index);
-                editIndex = index;
-            } else {
-                $('#dg_product').datagrid('selectRow', editIndex);
-            }
-        }
-    }
-
-    function addp() {
-        if (endEditing()) {
-            $('#dg_product').datagrid('appendRow', {});
-            editIndex = $('#dg_product').datagrid('getRows').length - 1;
-            $('#dg_product').datagrid('selectRow', editIndex)
-                    .datagrid('beginEdit', editIndex);
-        }
-    }
-
-    function s_del() {
-
-    }
-
-    function accept() {
-        if (endEditing()) {
-            $('#dg_product').datagrid('acceptChanges');
-        }
-    }
-
-    function addSupliersProduct() {
-        $('#c_form').form('submit', {
-            url: '@Url.Action("Create", "Supplier")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存失败:' + result.errorMsg,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                    } else {
-                        $('#e_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
-                }
-            });
-        }
-
-
+    });
 </script>
-<body>
-@using (Html.BeginForm("Create", "Supplier", FormMethod.Post, new { id = "c_form" }))
+@using (Html.BeginForm("Edit", "Supplier", FormMethod.Post, new { id = "e_form" }))
 {
 <fieldset>
-    <legend>供应商信息</legend>
 <table class="editForm">
-@*	<tr>
-		<td>
+	<tr>
+		<td style="display:none">
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
-	</tr>*@
+	</tr>
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.SuppliersName,"供应商:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SuppliersName,new{@id="c_SuppliersName"})
+            @Html.TextBoxFor(model => model.SuppliersName,new{@id="e_SuppliersName"})
 		</td>
 	</tr>
 
@@ -141,7 +35,7 @@
             @Html.LabelFor(model => model.QQ,"QQ:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.QQ,new{@id="c_QQ"})
+            @Html.TextBoxFor(model => model.QQ,new{@id="e_QQ"})
 		</td>
 	</tr>
 
@@ -150,7 +44,7 @@
             @Html.LabelFor(model => model.WW,"旺旺:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.WW,new{@id="c_WW"})
+            @Html.TextBoxFor(model => model.WW,new{@id="e_WW"})
 		</td>
 	</tr>
 
@@ -159,7 +53,7 @@
             @Html.LabelFor(model => model.Phone,"电话:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Phone,new{@id="c_Phone"})
+            @Html.TextBoxFor(model => model.Phone,new{@id="e_Phone"})
 		</td>
 	</tr>
 
@@ -168,7 +62,7 @@
             @Html.LabelFor(model => model.Tel,"手机:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Tel,new{@id="c_Tel"})
+            @Html.TextBoxFor(model => model.Tel,new{@id="e_Tel"})
 		</td>
 	</tr>
 
@@ -177,7 +71,7 @@
             @Html.LabelFor(model => model.Web,"网址:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Web,new{@id="c_Web"})
+            @Html.TextBoxFor(model => model.Web,new{@id="e_Web"})
 		</td>
 	</tr>
 
@@ -186,33 +80,12 @@
             @Html.LabelFor(model => model.Memo,"备注:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Memo,new{@id="c_Memo"})
+            @Html.TextBoxFor(model => model.Memo,new{@id="e_Memo"})
 		</td>
 	</tr>
 
 
+    
 </table>
 </fieldset>
-<fieldset>
-        <legend>产品信息</legend>
-        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true">
-            <thead>
-                <tr>
-                    <th field="SKU" width="200" data-options="editor:'text'">
-                        SKU
-                    </th>
-
-                    <th field="Price" width="200" data-options="editor:'text'">
-                        价格
-                    </th>
-
-                    <th field="Web"  width="200" data-options="editor:'text'">
-                        Web
-                    </th>
-                </tr>
-            </thead>
-        </table>
-</fieldset>
 }
-    <button onclick="addSupliersProduct() ">保存</button>
-</body>

@@ -5,7 +5,9 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-	
+        $("#e_SuppliersName").validatebox({
+            required: true,
+        });
         $('#e_CreateOn').datebox();
 
 
