@@ -18,22 +18,20 @@ namespace KeWeiOMS.Web.Controllers
 
         public ViewResult Index()
         {
-            UserType account = GetCurrentAccount();
-            if (account == null)
-            {
-                RedirectToAction("Login", "User");
-            }
-            else
-            {
-                ViewData["Username"] = account.Username;
-            }
+            ViewData["Username"] = CurrentUser.Realname;
             return View();
         }
 
+
         //
         // GET: /User/Create
+        //
 
         public ActionResult Create()
+        {
+            return View();
+        }
+        public ActionResult Default()
         {
             return View();
         }

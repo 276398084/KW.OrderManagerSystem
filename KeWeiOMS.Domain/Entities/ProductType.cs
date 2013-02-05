@@ -34,6 +34,10 @@ namespace KeWeiOMS.Domain
         /// 商品编号
         /// </summary>
         public virtual String SKU { get; set; }
+        /// <summary>
+        /// 商品编号
+        /// </summary>
+        public virtual String OldSKU { get; set; }
 
         /// <summary>
         /// 类别

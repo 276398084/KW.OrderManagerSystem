@@ -10,6 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
+
     public class PermissionItemController : BaseController
     {
         public ViewResult Index()
@@ -131,11 +132,20 @@ namespace KeWeiOMS.Web.Controllers
             return Json(tree);
         }
 
-        public JsonResult SelectList(string type)
+        public JsonResult SelectListByUser(int id)
         {
-            int id = GetCurrentAccount().Id;
-            if (type == ResourceCategoryEnum.Role.ToString())
-                id = GetCurrentAccount().RoleId;
+            return SelectList(ResourceCategoryEnum.User.ToString(), id);
+
+        }
+
+        public JsonResult SelectListByRole(int id)
+        {
+            return SelectList(ResourceCategoryEnum.Role.ToString(), id);
+
+        }
+
+        private JsonResult SelectList(string type, int id)
+        {
             IList<PermissionItemType> objList = NSession.CreateQuery("from PermissionItemType").List<PermissionItemType>();
             //获得这个类型的菜单权限
             List<PermissionScopeType> scopeList = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2 and TargetCategory =:p3").SetString("p1", type).SetInt32("p2", Convert.ToInt32(id)).SetString("p3", TargetCategoryEnum.Module.ToString()).List<PermissionScopeType>().ToList<PermissionScopeType>();
@@ -162,7 +172,6 @@ namespace KeWeiOMS.Web.Controllers
             }
             tree.Add(root);
             return Json(tree);
-
         }
 
         public List<SystemTree> ConvertToTree(List<PermissionItemType> fooList, List<PermissionScopeType> scopeList = null)

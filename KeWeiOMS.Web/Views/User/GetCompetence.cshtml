@@ -5,23 +5,38 @@
 <script type="text/javascript">
     $(function () {
         $('#tree1').tree({
-            url: '@Url.Action("SelectList", "Module")/User',
+            url: '@Url.Action("SelectListByUser", "Module")/@ViewData["uid"]',
+
             checkbox: true
         });
         $('#tree2').tree({
-            url: '@Url.Action("SelectList", "PermissionItem")/User',
+            url: '@Url.Action("SelectListByUser", "PermissionItem")/@ViewData["uid"]',
             checkbox: true
         });
     })
 
+    function getChecked(tree) {
+        alert("1");
+        var nodes = $('#' + tree).tree('getChecked');
+        var s = '';
+        for (var i = 0; i < nodes.length; i++) {
+            if (s != '') s += ',';
+            s += nodes[i].id;
+        }
+        return s;
+    }
+
 
 
 </script>
-<table style="width: 600px; height: 1000px;">
+
+<table style="width: 600px; height: 300px;">
     <tr>
         <td valign="top">
+
             <fieldset>
                 <legend>菜单管理</legend>
+
                 <div id="tree1"></div>
             </fieldset>
 

@@ -36,6 +36,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult ImportProduct(string fileName)
         {
             DataTable dt = OrderHelper.GetDataTable(fileName);
+            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 ProductType p = new ProductType { CreateOn = DateTime.Now };
@@ -49,9 +50,29 @@ namespace KeWeiOMS.Web.Controllers
                 p.Wide = Convert.ToInt16(dt.Rows[i]["宽"]);
                 p.High = Convert.ToInt16(dt.Rows[i]["高"]);
                 p.Location = dt.Rows[i]["库位"].ToString();
+                p.OldSKU = dt.Rows[i]["旧SKU"].ToString();
 
                 NSession.SaveOrUpdate(p);
                 NSession.Flush();
+
+                //
+                //在仓库中添加产品库存
+                //
+                foreach (var item in list)
+                {
+                    WarehouseStockType stock = new WarehouseStockType();
+                    stock.Pic = p.SPicUrl;
+                    stock.WId = item.Id;
+                    stock.Warehouse = item.WName;
+                    stock.PId = p.Id;
+                    stock.SKU = p.SKU;
+                    stock.Title = p.ProductName;
+                    stock.Qty = 0;
+                    stock.UpdateOn = DateTime.Now;
+                    NSession.SaveOrUpdate(stock);
+                    NSession.Flush();
+                }
+
             }
             return View();
         }

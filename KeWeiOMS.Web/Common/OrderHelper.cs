@@ -25,25 +25,10 @@ namespace KeWeiOMS.Web
             return ds.Tables[0];
         }
 
-        public static ResultInfo GetResult(string key, string info, string result, string field1, string field2, string field3, string field4)
-        {
-            ResultInfo r = new ResultInfo();
-            r.Field1 = field1;
-            r.Field2 = field2;
-            r.Field3 = field3;
-            r.Field4 = field4;
-            r.Key = key;
-            r.Info = info;
-            r.Result = result;
-            return r;
-        }
-
-        public static ResultInfo GetResult(string key, string info, string result)
-        {
-            return GetResult(key, info, result, "", "", "", "");
-        }
 
 
+
+        #region 订单数据导入
         public static List<ResultInfo> ImportBySMT(string AccountName, string fileName)
         {
             List<ResultInfo> results = new List<ResultInfo>();
@@ -203,6 +188,113 @@ namespace KeWeiOMS.Web
             return results;
         }
 
+
+        public static List<ResultInfo> ImportByB2C(string AccountName, string fileName)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            foreach (DataRow item in OrderHelper.GetDataTable(fileName).Rows)
+            {
+
+                string OrderExNo = item["订单编号"].ToString();
+                bool isExist = IsExist(OrderExNo);
+                if (isExist)
+                {
+                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    order.OrderNo = Utilities.GetOrderNo();
+                    order.OrderExNo = OrderExNo;
+                    order.Amount = Convert.ToDouble(item["金额"].ToString());
+                    order.Country = item["国家"].ToString();
+                    order.BuyerName = item["用户名"].ToString();
+                    order.CurrencyCode = "USD";
+                    order.Account = AccountName;
+                    order.GenerateOn = DateTime.Now;
+                    order.Platform = PlatformEnum.B2C.ToString();
+
+                    order.AddressId = CreateAddress(item["收件人"].ToString(), item["街道"].ToString(), item["城市"].ToString(), item["省"].ToString(), item["国家"].ToString(), item["国家"].ToString(), item["电话"].ToString(), item["电话"].ToString(), item["邮箱"].ToString(), item["邮编"].ToString(), 0);
+
+                    NSession.Save(order);
+                    NSession.Flush();
+
+
+                    CreateOrderPruduct(item["商品"].ToString(), item["商品"].ToString(), Convert.ToInt32(item["数量"]), "", "", 0, item["属性"].ToString(), order.Id, order.OrderNo);
+                    results.Add(GetResult(OrderExNo, "", "导入成功"));
+
+
+                }
+            }
+            return results;
+        }
+        #endregion
+
+        #region 订单数据ＡＰＩ同步
+        public static List<ResultInfo> APIByB2C(string AccountName, DateTime st, DateTime et)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+
+
+            //string s = OrderHelper.DownHtml("http://www.gamesalor.com/GetOrdersHandler.ashx?startTime=" + st.ToShortDateString() + "&endTime=" + et.ToShortDateString() + "", System.Text.Encoding.UTF8);
+
+            //System.Collections.Generic.List<Order> orders = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Order>>(s);
+
+
+            //foreach (Order foo in orders)
+            //{
+            //    Core.DoMain.OrderType order = null;
+            //    order = Core.DoMain.OrderType.find("OrderExNo='" + foo.GoodsDataWare.ItemNumber + "' and OrderForm='" + PlatformType.B2C.ToString() + "'").first(userType.CompanyCode);
+            //    if (order != null)
+            //    {
+            //        continue;
+            //    }
+
+            //    order = new Core.DoMain.OrderType();
+            //    OrderHelper.SetOrderBasic(account, userType, order, PlatformType.B2C);
+            //    OrderHelper.SetOrderInfomation(foo.GoodsDataWare.ItemNumber, cvt.ToDouble(foo.GoodsDataWare.McGross.ToString()), foo.GoodsDataWare.McCurrency, foo.GoodsDataWare.PaymentDate, foo.GoodsDataWare.PaymentDate, foo.GoodsDataWare.FirstName + " " + foo.GoodsDataWare.LastName, foo.GoodsDataWare.PayerEmail, foo.GoodsDataWare.AddressCountry, "客户付款账户" + foo.GoodsDataWare.Business + "  " + foo.GoodsDataWare.Memo, order);
+
+            //    order.TxnId = foo.GoodsDataWare.TxnId;
+
+
+            //    OMS.Core.DoMain.BuyerAddressType bat = new Core.DoMain.BuyerAddressType();
+            //    bat.Street = foo.GoodsDataWare.AddressStreet;
+            //    bat.City = foo.GoodsDataWare.AddressCity;
+            //    bat.StateOrProvince = foo.GoodsDataWare.AddressState;
+            //    bat.PostCode = foo.GoodsDataWare.AddressZip;
+            //    bat.Country = foo.GoodsDataWare.AddressCountry;
+            //    bat.CountryCode = foo.GoodsDataWare.AddressCountryCode;
+            //    bat.Email = foo.GoodsDataWare.AddressName;
+            //    bat.Phone = foo.GoodsDataWare.ContactPhone;
+            //    bat.BuyerCode = order.BuyerCode;
+            //    bat.ContactMan = foo.GoodsDataWare.AddressName;
+
+            //    order.Address = bat;
+            //    order.OrderGoods = new List<OrderGoodsType>();
+            //    foreach (GoodsDataOrder item in foo.GoodsDataOrderList)
+            //    {
+            //        List<OMS.Core.DoMain.OrderGoodsType> list = OrderHelper.GetItem(item.ItemID, item.Title, "", item.Quantity, cvt.ToDouble(item.Price.ToString()), item.Pic, ReplaceDedsc(item.Url));
+
+            //        order.OrderGoods.AddRange(list);
+            //    }
+            return results;
+        }
+
+        public static List<ResultInfo> APIByAmazon(string AccountName, DateTime st, DateTime et)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            return results;
+        }
+
+        public static List<ResultInfo> APIBySMT(string AccountName, DateTime st, DateTime et)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            return results;
+        }
+
+        public static List<ResultInfo> APIByEBay(string AccountName, DateTime st, DateTime et)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            return results;
+        }
+        #endregion
+
         #region 创建客户数据
         /// <summary>
         /// 创建客户数据
@@ -333,6 +425,61 @@ namespace KeWeiOMS.Web
             return false;
         }
         #endregion
+
+        #region 获得返回的数据
+        public static ResultInfo GetResult(string key, string info, string result, string field1, string field2, string field3, string field4)
+        {
+            ResultInfo r = new ResultInfo();
+            r.Field1 = field1;
+            r.Field2 = field2;
+            r.Field3 = field3;
+            r.Field4 = field4;
+            r.Key = key;
+            r.Info = info;
+            r.Result = result;
+            return r;
+        }
+
+        public static ResultInfo GetResult(string key, string info, string result)
+        {
+            return GetResult(key, info, result, "", "", "", "");
+        }
+        #endregion
+
+
+        static List<CountryType> countrys = new List<CountryType>();
+        static List<ProductType> products = new List<ProductType>();
+        static List<CurrencyType> currencys = new List<CurrencyType>();
+        public static bool ValiOrder(OrderType order)
+        {
+            bool resultValue = true;
+            order.ErrorInfo = "";
+
+            if (countrys.FindIndex(p => p.ECountry == order.Country || p.CountryCode == order.Country) == -1)
+            {
+                resultValue = false;
+                order.ErrorInfo += "国家:" + order.Country + " 不在系统的国家表中！";
+            }
+            if (currencys.FindIndex(p => p.CurrencyCode == order.CurrencyCode) == -1)
+            {
+                resultValue = false;
+                order.ErrorInfo += "货币:" + order.Country + " 不在系统的汇率表中！";
+            }
+
+            foreach (var item in order.Products)
+            {
+                if (products.FindIndex(p => p.SKU == item.SKU) == -1)
+                {
+                    resultValue = false;
+                    order.ErrorInfo += "商品SKU:" + order.Country + " 不在系统的商品中！";
+                }
+            }
+            NSession.SaveOrUpdate(order);
+            NSession.Flush();
+            return resultValue;
+
+
+        }
 
         public static Dictionary<string, string> GetDic(string fileName)
         {

@@ -179,5 +179,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual OrderAddressType AddressInfo { get; set; }
 
+        /// <summary>
+        /// 订单格式错误留言
+        /// </summary>
+        public virtual String ErrorInfo { get; set; }
+
     }
 }

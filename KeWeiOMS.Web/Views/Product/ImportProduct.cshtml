@@ -13,8 +13,10 @@
             'uploader': '/Home/SaveFile/',
             'multi': false,
             'onUploadSuccess': function (file, data, response) {
+
                 eval("data=" + data);
                 $('#fileName').val(data.SaveName);
+
                 formPost('c_form', '@Url.Action("ImportProduct", "Product")');
 
             }

@@ -123,27 +123,30 @@ namespace KeWeiOMS.Web.Controllers
             IList<ModuleType> objList = NSession.CreateQuery("from ModuleType").List<ModuleType>();
             IList<ModuleType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
 
-            SystemTree tree = new SystemTree { id = "0", text = "根目录" };
-            List<SystemTree> trees = new List<SystemTree>();
+
             foreach (ModuleType item in fristList)
             {
                 List<ModuleType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
                 item.children = fooList;
-                List<SystemTree> tree2 = ConvertToTree(fooList);
-                trees.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
-                GetChildren(objList, item, tree2);
+                GetChildren(objList, item);
             }
-            tree.children = trees;
+
+            return Json(new { total = fristList.Count, rows = fristList });
 
 
-            return Json(tree);
+        }
+        public JsonResult SelectListByRole(int id)
+        {
+            return SelectList(id, ResourceCategoryEnum.Role.ToString());
         }
 
-        public JsonResult SelectList(string type)
+        public JsonResult SelectListByUser(int id)
         {
-            int id = GetCurrentAccount().Id;
-            if (type == ResourceCategoryEnum.Role.ToString())
-                id = GetCurrentAccount().RoleId;
+            return SelectList(id, ResourceCategoryEnum.User.ToString());
+        }
+
+        private JsonResult SelectList(int id, string type)
+        {
             IList<ModuleType> objList = NSession.CreateQuery("from ModuleType").List<ModuleType>();
             //获得这个类型的菜单权限
             List<PermissionScopeType> scopeList = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2 and TargetCategory =:p3").SetString("p1", type).SetInt32("p2", id).SetString("p3", TargetCategoryEnum.Module.ToString()).List<PermissionScopeType>().ToList<PermissionScopeType>();
@@ -171,7 +174,6 @@ namespace KeWeiOMS.Web.Controllers
 
             tree.Add(root);
             return Json(tree);
-
         }
 
         public List<SystemTree> ConvertToTree(List<ModuleType> fooList, List<PermissionScopeType> scopeList = null)

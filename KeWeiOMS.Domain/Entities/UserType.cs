@@ -181,5 +181,15 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String CreateBy { get; set; }
 
+        /// <summary>
+        /// 菜单模块
+        /// </summary>
+        public virtual List<ModuleType> Modules { get; set; }
+
+        /// <summary>
+        /// 操作权限
+        /// </summary>
+        public virtual List<PermissionItemType> Permissions { get; set; }
+
     }
 }

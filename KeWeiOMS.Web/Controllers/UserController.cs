@@ -14,6 +14,7 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class UserController : BaseController
     {
+        // public ISession NSession = NHibernateHelper.CreateSession();
         public ViewResult Index()
         {
             return View();
@@ -26,8 +27,9 @@ namespace KeWeiOMS.Web.Controllers
             return View(u);
         }
 
-        public ActionResult GetCompetence()
+        public ActionResult GetCompetence(string id)
         {
+            ViewData["uid"] = id;
             return View();
         }
 
@@ -68,13 +70,46 @@ namespace KeWeiOMS.Web.Controllers
                 IList<UserType> list = NSession.CreateQuery(" from  UserType where Username=:p1 and Password=:p2").SetString("p1", user.Username).SetString("p2", user.Password).List<UserType>();
                 if (list.Count > 0)
                 {   //登录成功
+                    user = list[0];
+                    user.LastVisit = DateTime.Now;
+                    NSession.Update(user);
+                    NSession.Flush();
                     Session["account"] = list[0];
                     return RedirectToAction("Index", "Home");
                 }
             }
             ModelState.AddModelError("Username", "用户名或者密码出错。");
             return View();
+        }
 
+        public ActionResult SetMP(string m, string p, int uid)
+        {
+            string[] ms = m.Split(',');
+            string[] ps = p.Split(',');
+            PermissionScopeType sc = null;
+            foreach (var item in ms)
+            {
+                sc = new PermissionScopeType();
+                sc.ResourceCategory = ResourceCategoryEnum.User.ToString();
+                sc.ResourceId = uid;
+                sc.TargetCategory = TargetCategoryEnum.Module.ToString();
+                sc.TargetId = Convert.ToInt32(item);
+                NSession.Save(sc);
+                NSession.Flush();
+            }
+
+            foreach (var item in ms)
+            {
+                sc = new PermissionScopeType();
+                sc.ResourceCategory = ResourceCategoryEnum.User.ToString();
+                sc.ResourceId = uid;
+                sc.TargetCategory = TargetCategoryEnum.PermissionItem.ToString();
+                sc.TargetId = Convert.ToInt32(item);
+                NSession.Save(sc);
+                NSession.Flush();
+            }
+
+            return Json(new { IsSuccess = "true" });
         }
 
         /// <summary>
@@ -123,7 +158,6 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
             try
             {
                 UserType obj = GetById(id);
@@ -163,6 +197,9 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+
+
+        #region 验证码
         public void ValidateCode()
         {
             // 在此处放置用户代码以初始化页面
@@ -174,7 +211,6 @@ namespace KeWeiOMS.Web.Controllers
             CreateValidateCode(vnum);
 
         }
-
         private void CreateValidateCode(string vnum)
         {
             Bitmap Img = null;
@@ -245,7 +281,9 @@ namespace KeWeiOMS.Web.Controllers
             Session["__VCode"] = VNum;
             return VNum;
         }
+
         private static readonly string[] VcArray = new string[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+        #endregion
 
     }
 }

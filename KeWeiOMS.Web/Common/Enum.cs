@@ -40,7 +40,8 @@ namespace KeWeiOMS.Web
     public enum ResourceCategoryEnum
     {
         User,
-        Role
+        Role,
+        Department
     }
     public enum TargetCategoryEnum
     {
