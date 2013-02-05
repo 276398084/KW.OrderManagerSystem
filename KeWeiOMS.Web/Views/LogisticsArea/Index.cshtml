@@ -7,10 +7,15 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         $('#dg').datagrid({
-            url: '@Url.Action("List","LogisticsArea")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+            url: '@Url.Action("GetByLId","LogisticsArea")',
+            columns: [[
+               { field: 'AreaName', title: '分区名称', width: 100 },
+               {
+                   field: 'Id', title: '操作', width: 200, formatter: function (value) {
+                       return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'refrshCountry(' + value + ')\'>设置国家</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'GetFreightList(' + value + ')\'>设置运费</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'delArea(' + value + ')\'>删除</a>';
+                   }
+               }
+            ]]
         });
 
     });
@@ -51,6 +56,35 @@
             }
         }
 
+    function delArea(id)
+    {
+        var url = '@Url.Action("Delete", "LogisticsArea")/' + id;
+        delData(url, 'dg');
+    }
+    function refrshCountry(id)
+    {
+        var url_str = '@Url.Action("SetCountry","LogisticsAreaCountry")/'+id;
+        $('#setc_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '设置国家',
+                iconCls:'icon-save',
+                modal: true,
+                loadingMessage: '正在加载...',
+            });
+        }).dialog('open');
+    }
+    function GetFreightList(id) {
+        var url_str = '@Url.Action("SetFreight","LogisticsFreight")/' + id;
+        $('#setf_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '设置运费',
+                iconCls: 'icon-save',
+                modal: true,
+                loadingMessage: '正在加载...',
+            });
+        }).dialog('open');
+    }
+
     //获取选中行
     function getselectedRow() {
         var row = $('#dg').datagrid('getSelected');
@@ -73,8 +107,8 @@
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
            toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
+           fitColumns="true" singleSelect="true" fit="true">  
+@*        <thead>  
         <tr>
             <th field="Id" width="100">
                 主键
@@ -90,16 +124,17 @@
 
 
     	</tr>
-		</thead>
+		</thead>*@
 		</table>
         <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+@*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
         </div> 
         
     <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+    <div id="setc_dlg"></div>
+    <div id="setf_dlg"></div>
 
 </div>
 </body>

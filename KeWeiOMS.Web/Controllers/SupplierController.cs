@@ -36,6 +36,7 @@ namespace KeWeiOMS.Web.Controllers
                 }
               
                 NSession.Flush();
+                Session.Contents.Remove("SupplierProducts");
             }
             catch (Exception ee)
             {

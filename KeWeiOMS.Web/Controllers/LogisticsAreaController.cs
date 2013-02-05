@@ -12,8 +12,9 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class LogisticsAreaController : BaseController
     {
-        public ViewResult Index()
+        public ViewResult Index(int id)
         {
+             Session["lid"]= id;
             return View();
         }
 
@@ -25,9 +26,10 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public JsonResult Create(LogisticsAreaType obj)
         {
+            obj.LId = int.Parse(Session["lid"].ToString());
             try
             {
-                NSession.SaveOrUpdate(obj);
+                NSession.Save(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -66,6 +68,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(LogisticsAreaType obj)
         {
+            obj.LId = int.Parse(Session["lid"].ToString());
            
             try
             {
@@ -106,6 +109,18 @@ namespace KeWeiOMS.Web.Controllers
 			
             object count = NSession.CreateQuery("select count(Id) from LogisticsAreaType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+        /// <summary>
+        /// 根据LId获取
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public JsonResult GetByLId()
+        {
+            IList<LogisticsAreaType> objList = NSession.CreateQuery("from LogisticsAreaType c where c.LId=:lid")
+                .SetInt32("lid",int.Parse(Session["lid"].ToString()))
+                .List<LogisticsAreaType>();
+            return Json(objList,JsonRequestBehavior.AllowGet);
         }
 
     }

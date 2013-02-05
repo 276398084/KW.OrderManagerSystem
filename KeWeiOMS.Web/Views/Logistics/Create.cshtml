@@ -7,34 +7,42 @@
 <script type="text/javascript">
 
     $(function () {
-
-		
-        $('#c_CreateOn').datebox();
-
-
+        $('#c_CreateOn').datebox({ required: true });
+        $("#c_LogisticsName").validatebox({
+            required: true,
+        });
+        $("#c_LogisticsCode").validatebox({
+            required: true,
+        });
+        $('#c_HasTrackCode').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            data: checks
+        });
+        $('#c_HasTrackCode').combobox("setValue", 0);
     });
-    
 </script>
 
 @using (Html.BeginForm("Create", "Logistic", FormMethod.Post, new { id = "c_form" }))
 {
 <fieldset>
 <table class="editForm">
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.LogisticsName,"承运商名称:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsName,new{@id="c_LogisticsName"})
+            @Html.TextBoxFor(model => model.LogisticsName,new{@id="c_LogisticsName",required="true"})
 		</td>
 	</tr>
 
@@ -43,7 +51,7 @@
             @Html.LabelFor(model => model.LogisticsCode,"承运商代码:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="c_LogisticsCode"})
+            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="c_LogisticsCode",required="true"})
 		</td>
 	</tr>
 

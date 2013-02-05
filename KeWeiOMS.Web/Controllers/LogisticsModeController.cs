@@ -17,8 +17,9 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
+            ViewData["pid"] = id;
             return View();
         }
 
@@ -27,7 +28,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                NSession.SaveOrUpdate(obj);
+                NSession.Save(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -35,6 +36,12 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
+        }
+
+        public JsonResult GetMode(int id)
+        {
+            IList<LogisticsModeType> list = NSession.CreateQuery("from LogisticsModeType where ParentID=:id").SetInt32("id", id).List<LogisticsModeType>();
+            return Json(list,JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -59,6 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             LogisticsModeType obj = GetById(id);
+            ViewData["checked"] = obj.Discount;
             return View(obj);
         }
 
@@ -106,6 +114,12 @@ namespace KeWeiOMS.Web.Controllers
 			
             object count = NSession.CreateQuery("select count(Id) from LogisticsModeType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+        public JsonResult GetLogistics()
+        {
+            IList<LogisticsType> list = NSession.CreateQuery("from LogisticsType")
+                .List<LogisticsType>();
+            return Json(list,JsonRequestBehavior.AllowGet);
         }
 
     }

@@ -1,5 +1,4 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.SupplierType>
+﻿@model IEnumerable<KeWeiOMS.Domain.SupplierType>
 @{
     ViewBag.Title = "Index";
 }
@@ -33,16 +32,61 @@
 
     //新建
     function c_dlg() {
-		 window.location.href='@Url.Action("Create","Supplier")';
+        var url_str = '@Url.Action("Create","Supplier")';
+            $('#c_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '新建',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        addSupliersProduct();
+                        $('#c_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $.ajax({
+                            url: '/SuppliersProduct/DelSession'
+                        })
+                        $('#c_dlg').dialog('close');
+                    }
+                }]
+            });
+        }).dialog('open');;
     }
 
     //编辑框
     function e_dlg() {
         var id = getselectedRow();
         if (id != undefined) { 
-            window.location.href = '@Url.Action("Edit","Supplier")/' +id;
+            var url_str = '@Url.Action("Edit","Supplier")/' + id;
+            $('#e_dlg').load(url_str, function () {
+                $(this).dialog({
+                    title: '编辑',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '提交',
+                        iconCls: 'icon-ok',
+                        handler: function () {
+                            ajaxEdit();
+                            $('#c_dlg').dialog('close');
+                            $('#dg').datagrid('reload');
+                        }
+                    }, {
+                        text: '取消',
+                        handler: function () {
+                            $('#e_dlg').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');;
         }
-    }
+        }
 
 	//异步新建提交
         function ajaxAdd() {
@@ -72,6 +116,7 @@
                     }
                 }
             });
+           
         }
 		//异步修改提交
         function ajaxEdit() {
@@ -99,8 +144,10 @@
                             showType: 'slide'
                         });
                     }
+                    $('#dg').datagrid('reload');
                 }
             });
+            
         }
    
 
@@ -166,7 +213,7 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-@*            <th field="Id" width="100">
+@*         <th field="Id" width="100">
                 主键
             </th>*@
 

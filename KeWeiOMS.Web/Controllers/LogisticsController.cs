@@ -107,6 +107,12 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from LogisticsType ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+        public JsonResult ShowList()
+        { 
+            IList<LogisticsType> objList = NSession.CreateQuery("from LogisticsType") .List<LogisticsType>();
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        
+        }
 
     }
 }
