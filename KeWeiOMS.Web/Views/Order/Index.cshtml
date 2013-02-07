@@ -87,15 +87,15 @@
         function GeStatus(v, r, i) {
             var html = v + "<br/>";
             //if (r.IsPrint == 1)
-                html += "<img src='/Content/imgs/Print.gif'> ";
+            html += "<img src='/Content/imgs/Print.gif'> ";
             //if (r.IsMerger == 1)
-                html += "<img src='/Content/imgs/Merger.gif'> ";
+            html += "<img src='/Content/imgs/Merger.gif'> ";
             //if (r.IsSplit == 1)
-                html += "<img src='/Content/imgs/Split.gif'> ";
+            html += "<img src='/Content/imgs/Split.gif'> ";
             //if (r.IsOutOfStock == 1)
-                html += "<img src='/Content/imgs/OutOfStock.gif'> ";
+            html += "<img src='/Content/imgs/OutOfStock.gif'> ";
             //if (r.IsRepeat == 1)
-                html += "<img src='/Content/imgs/Repeat.gif'> ";
+            html += "<img src='/Content/imgs/Repeat.gif'> ";
             return html;
         }
 
@@ -109,12 +109,24 @@
             return html;
         }
 
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search,
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg')
+        }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
-            toolbar="#toolbar" rownumbers="true" singleselect="true" pagination="true">
+            toolbar="#toolbar" rownumbers="true"  pagination="true">
             <thead>
                 <tr>
+                    <th field="Id" width="60" checkbox="true">11
+                    </th>
+                    
                     <th field="OrderNo" width="100" formatter="GetOrder">订单编号
                     </th>
                     <th field="Status" width="150" formatter="GeStatus">订单状态
@@ -139,13 +151,21 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Sync()">订单同步</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Import()">订单导入</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
-
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'OrderExNo'">外部编号</div>
+            <div data-options="name:'TId'">流水交易号</div>
+            <div data-options="name:'BuyerName'">买家</div>
+            <div data-options="name:'BuyerEmail'">买家邮箱</div>
+            <div data-options="name:'LogisticMode'">发货方式</div>
+            <div data-options="name:'Country'">国家</div>
+            <div data-options="name:'ScanningBy'">扫描人</div>
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
         <div id="o_dlg"></div>

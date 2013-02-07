@@ -1,0 +1,129 @@
+Object Report
+	Version='5.6.12.215'
+	Title='你的报表标题'
+	Object Font
+		Name='宋体'
+		Size=105000,0
+		Weight=400
+		Charset=134
+	End
+	Object Printer
+		Size=256
+		Width=8
+		Height=3.2
+		LeftMargin=0
+		TopMargin=0
+		RightMargin=0
+		BottomMargin=0
+	End
+	Object DetailGrid
+		Object Recordset
+			SortFields='产品编号'
+			Items Field
+				Item
+					Name='产品编号'
+					DBFieldName='ItemSku'
+				End
+				Item
+					Name='产品名称'
+					DBFieldName='ItemName'
+				End
+				Item
+					Name='产品图片'
+					DBFieldName='ItemSmallImage'
+				End
+			End
+		End
+		Items Column
+			Item
+				Name='Column1'
+				Width=7.96396
+			End
+		End
+		Object ColumnContent
+			Height=0
+			Items ColumnContentCell
+				Item
+					Column='Column1'
+				End
+			End
+		End
+		Object ColumnTitle
+			Height=0
+			Items ColumnTitleCell
+				Item
+					GroupTitle=F
+					Column='Column1'
+					Text='Column1'
+				End
+			End
+		End
+		Items Group
+			Item
+				Name='Group1'
+				ByFields='产品编号'
+				Object GroupHeader
+					Height=3.1
+					PrintGridBorder=F
+					Items Control
+						Item
+							Type=Barcode
+							Name='Barcode1'
+							Left=0.396875
+							Top=2.01083
+							Width=3.81
+							Height=0.820208
+							CaptionPosition=None
+							DataField='产品编号'
+							Text='8888'
+						End
+						Item
+							Type=FieldBox
+							Name='FieldBox1'
+							Object Font
+								Name='宋体'
+								Size=150000,0
+								Bold=T
+								Charset=134
+							End
+							Left=0.608542
+							Top=0.211667
+							Width=3.20146
+							Height=1.00542
+							WordWrap=T
+							TextAlign=TopLeft
+							DataField='产品名称'
+						End
+						Item
+							Type=FieldBox
+							Name='FieldBox2'
+							Object Font
+								Name='宋体'
+								Size=105000,0
+								Bold=T
+								Charset=134
+							End
+							Left=4.60375
+							Top=2.01083
+							Width=2.38125
+							Height=0.820208
+							DataField='产品编号'
+						End
+						Item
+							Type=PictureBox
+							Name='PictureBox1'
+							Left=4.39208
+							Top=0.211667
+							Width=1.79917
+							Height=1.5875
+							DataField='产品图片'
+						End
+					End
+				End
+				Object GroupFooter
+					Height=0
+				End
+			End
+		End
+	End
+End

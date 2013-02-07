@@ -52,6 +52,8 @@ namespace CodeGenerator.Business
             return this.CodeText.ToString();
         }
 
+
+
         private void GetCodeEntity()
         {
 

@@ -23,6 +23,12 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult UnHandle()
+        {
+            return View();
+        }
+
+
 
         public ActionResult Import()
         {
@@ -145,13 +151,42 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult UnHandleList(int page, int rows, string sort, string order, string search)
         {
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType")
+            return List(page, rows, sort, order, search, 1);
+        }
+
+        public JsonResult List(int page, int rows, string sort, string order, string search, int isUn = 0)
+        {
+
+            string where = "";
+            string orderby = "";
+            string flag = "<>";
+            if (isUn == 1)
+                flag = "=";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where Status" + flag + "'待处理' and" + where;
+                }
+            }
+            if (where.Length == 0)
+            {
+                where = " where Status" + flag + "'待处理'";
+            }
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<OrderType>();
-            object count = NSession.CreateQuery("select count(Id) from OrderType ").UniqueResult();
+
+            object count = NSession.CreateQuery("select count(Id) from OrderType " + where + orderby).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

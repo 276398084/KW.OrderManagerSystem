@@ -124,7 +124,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows)
                 .List<CountryType>();
 
-            object count = NSession.CreateQuery("select count(Id) from CountryType ").UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from CountryType " + where + orderby).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

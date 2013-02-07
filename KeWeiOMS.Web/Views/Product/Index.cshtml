@@ -105,7 +105,15 @@
         function GetImg(v, r, i) {
             return '<img  src=' + v + '  height="64px" width="64px" />'
         }
-
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "Product")', 's_dlg', 'dg')
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search,
+            });
+        }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -113,13 +121,19 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-                    <th field="SKU" width="100">商品编号
+                    <th field="SKU" width="100">SKU
                     </th>
+                    <th field="OldSKU" width="100">旧
+                    </th>
+
                     <th field="Category" width="100">类别
                     </th>
                     <th field="SPicUrl" width="100" formatter='GetImg'>图片
                     </th>
                     <th field="ProductName" width="100">商品名称
+                    </th>
+
+                    <th field="Standard" width="100">规格
                     </th>
                     <th field="Price" width="60">Price
                     </th>
@@ -134,24 +148,28 @@
 
                     <th field="IsElectronic" width="100" formatter="getTrue">电子
                     </th>
-
                     <th field="HasBattery" width="100" formatter="getTrue">电池
                     </th>
-
                     <th field="Location" width="100">库位
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">批量导入</a>
+
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">复制</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="e_dlg();">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick=";">上传图片</a>
-        </div>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
 
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'OldSKU'">旧SKU</div>
+            <div data-options="name:'ProductName'">商品名称</div>
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
 

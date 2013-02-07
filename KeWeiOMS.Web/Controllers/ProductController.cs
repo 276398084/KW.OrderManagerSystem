@@ -41,6 +41,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 ProductType p = new ProductType { CreateOn = DateTime.Now };
                 p.SKU = dt.Rows[i]["SKU"].ToString();
+                p.Status = ProductStatusEnum.销售中.ToString();
                 p.ProductName = dt.Rows[i]["名称"].ToString();
                 p.Category = dt.Rows[i]["分类"].ToString();
                 p.Standard = dt.Rows[i]["规格"].ToString();
@@ -51,10 +52,7 @@ namespace KeWeiOMS.Web.Controllers
                 p.High = Convert.ToInt16(dt.Rows[i]["高"]);
                 p.Location = dt.Rows[i]["库位"].ToString();
                 p.OldSKU = dt.Rows[i]["旧SKU"].ToString();
-
                 NSession.SaveOrUpdate(p);
-                NSession.Flush();
-
                 //
                 //在仓库中添加产品库存
                 //
@@ -85,6 +83,7 @@ namespace KeWeiOMS.Web.Controllers
                 string filePath = Server.MapPath("~");
                 obj.CreateOn = DateTime.Now;
                 string pic = obj.PicUrl;
+                obj.Status = ProductStatusEnum.销售中.ToString();
                 obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
                 obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
                 Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
@@ -178,14 +177,30 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            IList<ProductType> objList = NSession.CreateQuery("from ProductType")
+            string where = "";
+            string orderby = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+
+            IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<ProductType>();
 
-            object count = NSession.CreateQuery("select count(Id) from ProductType ").UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from ProductType " + where + orderby).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

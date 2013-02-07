@@ -79,7 +79,7 @@
             this.txtCompany = new System.Windows.Forms.TextBox();
             this.lblCompany = new System.Windows.Forms.Label();
             this.btnBuilderEntity = new System.Windows.Forms.Button();
-            this.txtCode = new CodeGenerator.Doo.UcCodeView();
+            this.txtCode = new CodeGenerator.UcCodeView();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -168,7 +168,7 @@
             // btnSearchPage
             // 
             this.btnSearchPage.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSearchPage.Location = new System.Drawing.Point(957, 254);
+            this.btnSearchPage.Location = new System.Drawing.Point(954, 254);
             this.btnSearchPage.Name = "btnSearchPage";
             this.btnSearchPage.Size = new System.Drawing.Size(84, 23);
             this.btnSearchPage.TabIndex = 42;
@@ -720,7 +720,7 @@
         private System.Windows.Forms.Button btnSaveCode;
         private System.Windows.Forms.Button btnBuilder;
         private System.Windows.Forms.Button btnService;
-        private CodeGenerator.Doo.UcCodeView txtCode;
+        private CodeGenerator.UcCodeView txtCode;
         private System.Windows.Forms.RadioButton rbzhCN;
         private System.Windows.Forms.Button btnIService;
         private System.Windows.Forms.Button btnPdmDD;

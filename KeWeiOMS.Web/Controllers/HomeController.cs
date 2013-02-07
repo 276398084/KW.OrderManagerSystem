@@ -10,6 +10,7 @@ using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using System.Web.UI;
 using System.IO;
+using System.Data;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -22,11 +23,9 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-
         //
         // GET: /User/Create
         //
-
         public ActionResult Create()
         {
             return View();
@@ -69,8 +68,6 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-
-
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult SavePic(HttpPostedFileBase fileData)
         {
@@ -109,7 +106,6 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { Success = false, Message = "请选择要上传的文件！" }, JsonRequestBehavior.AllowGet);
             }
         }
-
 
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult SaveFile(HttpPostedFileBase fileData)
@@ -153,7 +149,55 @@ namespace KeWeiOMS.Web.Controllers
             fileData.SaveAs(saveName);
         }
 
+        public ActionResult PrintSetup(string ids, string type)
+        {
+            ViewData["ids"] = Session["ids"];
+            ViewData["type"] = type;
+            return View();
 
+        }
+
+        public ActionResult PostData(string ids)
+        {
+            Session["ids"] = ids;
+            Session["type"] = "ttt";
+            return Json(new { IsSuccess = "true" });
+        }
+
+        public ContentResult PrintData()
+        {
+            object obj = Session["data"];
+            return Content(obj.ToString(), "text/xml");
+        }
+
+        public ActionResult PrintDetail()
+        {
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = "select * from Orders";
+            IDataReader reader = command.ExecuteReader();
+            DataTable result = new DataTable();
+            DataTable schemaTable = reader.GetSchemaTable();
+            for (int i = 0; i < schemaTable.Rows.Count; i++)
+            {
+                result.Columns.Add(schemaTable.Rows[i][0].ToString());
+            }
+            while (reader.Read())
+            {
+                int fieldCount = reader.FieldCount;
+                object[] values = new Object[fieldCount];
+                for (int i = 0; i < fieldCount; i++)
+                {
+                    values[i] = reader.GetValue(i);
+                }
+                result.Rows.Add(values);
+            }
+            ds.Tables.Add(result);
+            Session["data"] = ds.GetXml();
+            ViewData["Data"] = "/Home/PrintData/";
+            ViewData["grf"] = "/Content/grf/p1.grf";
+            return View();
+        }
 
 
 

@@ -1,0 +1,48 @@
+﻿		
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+		
+		<div id="mm" style="width: 120px">
+            <#easySearch#>
+        </div>
+		
+		
+
+            function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search,
+                });
+            }
+            function ShowAdvanced() {
+                showSrarch('@Url.Action("Search", "<#ControllerRootName#>")', 's_dlg', 'dg')
+            }		
+		
+		
+		
+		
+		public JsonResult List(int page, int rows, string sort, string order, string search)
+        {
+            string where = "";
+            string orderby = "order by ECountry desc";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<<#ControllerRootName#>Type> objList = NSession.CreateQuery("from <#ControllerRootName#>Type " + where + orderby)
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows)
+                .List<<#ControllerRootName#>Type>();
+
+            object count = NSession.CreateQuery("select count(Id) from <#ControllerRootName#>Type " + where + orderby).UniqueResult();
+            return Json(new { total = count, rows = objList });
+        }

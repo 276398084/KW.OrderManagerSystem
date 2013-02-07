@@ -297,16 +297,15 @@
                     @Html.LabelFor(model => model.Summary, "简单描述:")
                 </td>
                 <td colspan="5">
-                    @Html.TextAreaFor(model => model.Summary, new { @id = "c_Summary", @style = "width:700px;height:200px;visibility:hidden;" })
+                    @Html.TextAreaFor(model => model.Summary, new { @id = "c_Summary", @style = "width:700px;height:200px;" })
                 </td>
             </tr>
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.PackMemo, "包装注意事项:")
                 </td>
                 <td colspan="5">
-                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:200px;visibility:hidden;" })
+                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:200px;" })
                 </td>
             </tr>
         </table>

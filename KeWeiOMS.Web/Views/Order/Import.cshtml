@@ -22,12 +22,13 @@
                 $('c_Import').clear();
             }
         });
-        $('#Platform').combotree({
+        $('#Platform').combobox({
             url: '/Account/Platform',
             valueField: 'id',
             textField: 'text',
             required: true,
             width: 150,
+            panelHeight:'auto',
             onChange: changePlatform
         });
 

@@ -644,6 +644,26 @@ namespace CodeGenerator
 
             return code;
         }
+
+        public bool BuilderEasySearchPage(string outputDirectory, bool overwrite)
+        {
+            string file = outputDirectory + "\\" + this.ProjectName + ".Web\\Views\\" + this.txtClassName.Text + "\\EasySearch.cshtml";
+            string code = this.BuilderEasySearchPage();
+            return Business.CodeGenerator.WriteCode(file, overwrite, code);
+        }
+
+        private string BuilderEasySearchPage()
+        {
+            string className = this.txtClassName.Text; ;
+            string file = Application.StartupPath + "\\Templates\\easyui\\Edit.txt";
+            string code = GetTemplate(file);
+            code = ReplaceAssemblyInfo(code);
+            Business.CodeGenerator codeGenerator = new Business.CodeGenerator(this.xmlDocument, this.txtCompany.Text, this.ProjectName, this.txtAuthor.Text, this.txtYearCreated.Text, this.txtDateCreated.Text, className, "", this.GetTableName(), this.GetDescription());
+
+            code = codeGenerator.ReplaceEasy(code);
+
+            return code;
+        }
         #endregion
 
         #region 生成创建页面
@@ -716,6 +736,19 @@ namespace CodeGenerator
             code = codeGenerator.ReplaceEasy(code);
             return code;
         }
+        private string BuilderEasySearch()
+        {
+            string className = this.txtClassName.Text;
+            string file = Application.StartupPath + "\\Templates\\easySearch.txt";
+            string code = GetTemplate(file);
+            code = ReplaceAssemblyInfo(code);
+
+            // 替换显示内容部分
+            Business.CodeGenerator codeGenerator = new Business.CodeGenerator(this.xmlDocument, this.txtCompany.Text, this.ProjectName, this.txtAuthor.Text, this.txtYearCreated.Text, this.txtDateCreated.Text, className, string.Empty, this.GetTableName(), this.GetDescription());
+
+            code = codeGenerator.ReplaceEasy(code);
+            return code;
+        }
         #endregion
 
 
@@ -769,22 +802,13 @@ namespace CodeGenerator
         private void btnIService_Click(object sender, EventArgs e)
         {
             this.SetControlState(false);
-            this.txtCode.txtContent.Text = string.Empty;
-            this.txtClassName.Text = this.GetClassName();
-
-            string file = Application.StartupPath + "\\Business.CodeGenerator\\Templates\\IService.txt";
-            string code = GetTemplate(file);
-            code = ReplaceAssemblyInfo(code);
+            this.txtCode.SettxtContent("c#", "");
+            string className = this.GetClassName();
+            this.txtClassName.Text = className;
+            this.txtFileName.Text = className + "easySearch.cs";
+            string code = this.BuilderEasySearch();
             this.txtCode.SettxtContent("c#", code);
-
-            this.txtClassName.Text = "I" + this.txtClassName.Text + "Service";
-            this.txtFileName.Text = this.txtClassName.Text;
-
-            this.btnCopyCode.Enabled = true;
-            this.btnSaveCode.Enabled = true;
             this.SetControlState();
-            this.txtClassName.Focus();
-            this.txtClassName.SelectAll();
         }
 
         private void btnTableColumns_Click(object sender, EventArgs e)
@@ -796,7 +820,7 @@ namespace CodeGenerator
             this.txtFileName.Text = this.txtClassName.Text + ".SQL";
 
             Business.CodeGenerator codeGenerator = new Business.CodeGenerator(this.xmlDocument, this.txtCompany.Text, this.ProjectName, this.txtAuthor.Text, this.txtYearCreated.Text, this.txtDateCreated.Text, this.GetClassName(), "Table", this.GetTableName(), this.GetDescription());
-            this.txtCode.SettxtContent("c#", codeGenerator.DBSQL());
+            //this.txtCode.SettxtContent("c#", codeGenerator);
 
             this.btnCopyCode.Enabled = true;
             this.btnSaveCode.Enabled = true;

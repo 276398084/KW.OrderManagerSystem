@@ -1,0 +1,37 @@
+﻿@{
+    ViewBag.Title = "PrintSetup";
+}
+
+<table>
+    <tr>
+
+        <td>打印类型</td>
+        <td>
+            <input type="text" id="PrintType" /></td>
+
+    </tr>
+    <tr>
+        <td>打印数据</td>
+        <td>
+            <textarea style="width: 600px; height: 300px;">@ViewData["ids"]</textarea></td>
+    </tr>
+    <tr>
+        <td>打印模板</td>
+        <td>
+            <input type="text" id="PrintTemp" /></td>
+    </tr>
+    <tr>
+        <td>回邮地址</td>
+        <td>
+            <input type="text" id="ReturnAddress" />
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <input type="button" onclick="window.open('/Home/PrintDetail/')" />
+        </td>
+    </tr>
+
+</table>
+
