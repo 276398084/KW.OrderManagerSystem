@@ -1,0 +1,134 @@
+﻿@model KeWeiOMS.Domain.NewGuideType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "NewGuide", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NewSku,"新SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NewSku,new{@id="c_NewSku"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OldSku,"旧SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OldSku,new{@id="c_OldSku"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="c_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Pic,"图片:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Pic,new{@id="c_Pic"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Url,"网址:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Url,new{@id="c_Url"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="c_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ColorSize,"规格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ColorSize,new{@id="c_ColorSize"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Remark,"备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Remark,new{@id="c_Remark"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsCheck,"采购标记:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsCheck,new{@id="c_IsCheck"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

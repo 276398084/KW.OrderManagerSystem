@@ -151,6 +151,7 @@
     <Compile Include="Controllers\LogisticsFreightController.cs" />
     <Compile Include="Controllers\LogisticsModeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\NewGuideController.cs" />
     <Compile Include="Controllers\OrderAddresController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -1208,6 +1209,11 @@
     <Content Include="Views\Home\PrintSetup.cshtml" />
     <Content Include="Views\Order\TodayIndex.cshtml" />
     <Content Include="Views\Home\PrintDesign.cshtml" />
+    <Content Include="Views\NewGuide\Create.cshtml" />
+    <Content Include="Views\NewGuide\Delete.cshtml" />
+    <Content Include="Views\NewGuide\Details.cshtml" />
+    <Content Include="Views\NewGuide\Edit.cshtml" />
+    <Content Include="Views\NewGuide\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
