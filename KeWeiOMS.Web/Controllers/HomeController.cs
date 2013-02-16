@@ -11,6 +11,8 @@ using FluentNHibernate.Cfg.Db;
 using System.Web.UI;
 using System.IO;
 using System.Data;
+using System.Text;
+using System.Data.SqlClient;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -30,6 +32,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
         public ActionResult Default()
         {
             return View();
@@ -44,6 +47,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(list);
         }
+
         public ActionResult OrderStatus()
         {
             List<object> list = new List<object>();
@@ -53,6 +57,17 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(list);
         }
+
+        public ActionResult PrintCategory()
+        {
+            List<object> list = new List<object>();
+            foreach (string item in Enum.GetNames(typeof(PrintCategoryEnum)))
+            {
+                list.Add(new { id = item, text = item });
+            }
+            return Json(list);
+        }
+
         public ActionResult ProductStatus()
         {
             List<object> list = new List<object>();
@@ -148,54 +163,92 @@ namespace KeWeiOMS.Web.Controllers
             saveName = filePath + Guid.NewGuid().ToString() + fileExtension; // 保存文件名称
             fileData.SaveAs(saveName);
         }
-
+        [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult PrintSetup(string ids, string type)
         {
             ViewData["ids"] = Session["ids"];
-            ViewData["type"] = type;
             return View();
 
         }
 
+        [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult PostData(string ids)
         {
             Session["ids"] = ids;
-            Session["type"] = "ttt";
+
             return Json(new { IsSuccess = "true" });
         }
 
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult SetPrintData(string m, string r, string d)
+        {
+            string sql = "";
+            sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,
+O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
+OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,
+R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',
+R.Country as 'RCountry',R.PostCode as 'RPostCode',R.Province as 'RProvince' from Orders O 
+left join OrderProducts OP on o.Id=op.OId
+left join OrderAddress OA on o.AddressId=oa.Id
+Left Join Products P ON OP.SKU=P.SKU
+left join ReturnAddress R On r.Id=" + r;
+            sql += " where O.OrderNo IN('" + d.Replace(",", "','") + "')";
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            ds.Tables[0].DefaultView.Sort = "Order Asc";
+            DataTable dt = ds.Tables[0].DefaultView.ToTable();
+            ds.Tables.Clear();
+            ds.Tables.Add(dt);
+            Session["data"] = ds.GetXml();
+            return Json(new { IsSuccess = "true" });
+        }
+
+        [OutputCache(Location = OutputCacheLocation.None)]
         public ContentResult PrintData()
         {
             object obj = Session["data"];
             return Content(obj.ToString(), "text/xml");
         }
 
-        public ActionResult PrintDetail()
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ContentResult PrintGrf(string Id)
         {
-            DataSet ds = new DataSet();
-            IDbCommand command = NSession.Connection.CreateCommand();
-            command.CommandText = "select * from Orders";
-            IDataReader reader = command.ExecuteReader();
-            DataTable result = new DataTable();
-            DataTable schemaTable = reader.GetSchemaTable();
-            for (int i = 0; i < schemaTable.Rows.Count; i++)
-            {
-                result.Columns.Add(schemaTable.Rows[i][0].ToString());
-            }
-            while (reader.Read())
-            {
-                int fieldCount = reader.FieldCount;
-                object[] values = new Object[fieldCount];
-                for (int i = 0; i < fieldCount; i++)
-                {
-                    values[i] = reader.GetValue(i);
-                }
-                result.Rows.Add(values);
-            }
-            ds.Tables.Add(result);
-            Session["data"] = ds.GetXml();
-            ViewData["Data"] = "/Home/PrintData/";
-            ViewData["grf"] = "/Content/grf/p1.grf";
+            NSession.Clear();
+            object obj = NSession.CreateQuery("select Content from PrintTemplateType where Id=" + Id).UniqueResult();
+            return Content(obj.ToString(), "text/xml", Encoding.Default);
+        }
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public JsonResult PrintSave(string Id)
+        {
+            NSession.Clear();
+            PrintTemplateType obj = NSession.Get<PrintTemplateType>(Convert.ToInt32(Id));
+
+            byte[] FormData = Request.BinaryRead(Request.TotalBytes);
+
+            obj.Content = System.Text.Encoding.Default.GetString(FormData);
+            NSession.Update(obj);
+            NSession.Flush();
+
+
+            return Json(new { IsSuccess = 1 });
+        }
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult PrintDesign(string Id)
+        {
+
+            ViewData["id"] = Id;
+
+            //object obj = NSession.CreateQuery("select Content from PrintTemplateType where Id=" + Id).UniqueResult();
+            return View();
+        }
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult PrintDetail(string Id)
+        {
+
+            ViewData["grf"] = Id;
             return View();
         }
 

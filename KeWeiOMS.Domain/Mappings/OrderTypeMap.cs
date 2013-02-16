@@ -50,7 +50,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.LogisticMode).Length(40);
             Map(x => x.ErrorInfo).Length(500);
             Map(x => x.Country).Length(40);
-            //Map(x => x.AddressId);
+            Map(x => x.AddressId);
             Map(x => x.Weight);
             Map(x => x.Freight);
             Map(x => x.GenerateOn);
@@ -61,7 +61,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Platform).Length(40);
             //HasMany<OrderProductType>(u => u.Products).AsSet().KeyColumn("OId").Cascade.All();
 
-            References<OrderAddressType>(x => x.AddressInfo).Column("AddressId");
+            //References<OrderAddressType>(x => x.AddressInfo).Column("AddressId");
         }
     }
 }

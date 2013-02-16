@@ -6,7 +6,7 @@
 //3、Version 等号后面的参数是插件安装包的版本号，如果有新版本插件安装包，应上传新版
 //   本 griectl.cab 到服务器对应目录，并更新这里的版本号。
 //4、更多详细信息请参考帮助中“报表插件(WEB报表)->在服务器部署插件安装包”部分
-var GridReportCodeBase = 'codebase="griectl.cab#Version=5,5,11,331"';
+var GridReportCodeBase = 'codebase="/Scripts/griectl.cab#Version=5,5,11,331"';
 
 //如果购买注册后，请用您的注册用户名与注册号替换下面变量中值
 var UserName = '';

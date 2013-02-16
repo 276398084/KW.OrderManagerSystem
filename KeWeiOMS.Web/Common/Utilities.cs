@@ -14,7 +14,6 @@ namespace KeWeiOMS.Web
     public class Utilities
     {
         public const string OrderNo = "OrderNo";
-
         public const string UserNo = "UserNo";
         public const string Start_Time = "_st";
         public const string End_Time = "_et";
@@ -22,6 +21,8 @@ namespace KeWeiOMS.Web
         public const string End_Int = "_ei";
         public const string End_String = "_es";
         public const string DDL_String = "_ds";
+
+        public const string CookieName = "KeWeiOMS_User";
 
         /// <summary>
         /// 大图片路劲
@@ -201,6 +202,77 @@ namespace KeWeiOMS.Web
                 }
             }
             return where;
+        }
+        /// <summary>
+        /// Create or Set Cookies Values
+        /// </summary>
+        /// <param name="Obj">[0]:Name,[1]:Value</param>
+        public static void CreateCookies(string u, string p)
+        {
+
+
+            try
+            {
+                HttpCookie cookie = new HttpCookie(CookieName)
+                {
+                    Expires = DateTime.Now.AddDays(1),
+                };
+                cookie.Value = u + "&" + p;
+                System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+            catch
+            {
+
+
+            }
+        }
+
+        /// <summary>
+        /// Get Cookies Values
+        /// </summary>
+        /// <param name="name">Cookies的Name</param>
+        /// <returns></returns>
+        public static string GetCookies()
+        {
+            try
+            {
+                HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[Utilities.CookieName];
+                return cookie.Value;
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+
+        /// <summary>
+        /// Clear Cookies Values
+        /// </summary>
+        /// <param name="name">Cookies的Name</param>
+        public static void ClearCookies()
+        {
+            HttpCookie cookie = new HttpCookie(Utilities.CookieName)
+            {
+                Expires = DateTime.Now.AddDays(-1)
+            };
+            System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
+        }
+
+        public static bool LoginByUser(string p, string u)
+        {
+            ISession NSession = NHibernateHelper.CreateSession();
+            IList<UserType> list = NSession.CreateQuery(" from  UserType where Username=:p1 and Password=:p2").SetString("p1", p).SetString("p2", u).List<UserType>();
+            if (list.Count > 0)
+            {   //登录成功
+                UserType user = list[0];
+                user.LastVisit = DateTime.Now;
+                NSession.Update(user);
+                NSession.Flush();
+                System.Web.HttpContext.Current.Session["account"] = user;
+                return true;
+            }
+            return false;
         }
 
     }

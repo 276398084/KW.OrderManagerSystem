@@ -28,12 +28,35 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult OrderReplace(string ids, string oldField, string newField, string FieldName)
+        {
+            //object obj = NSession.CreateQuery("update OrderType set :p0=:p1 where :p0=:p2").SetString("p0", FieldName).SetString("p1", newField).SetString("p2", oldField).UniqueResult();
+
+            IQuery Query = NSession.CreateQuery(string.Format("update OrderType set {0}='{1}' where {0}='{2}'", FieldName, newField, oldField));
+            int num = Query.ExecuteUpdate();
+            return Json(new { IsSuccess = "true" });
+        }
+
 
 
         public ActionResult Import()
         {
             return View();
         }
+
+        public ActionResult OrderVali()
+        {
+
+            IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Status='待处理'").List<OrderType>();
+
+            foreach (var order in orders)
+            {
+                OrderHelper.ValiOrder(order);
+            }
+            return Json(new { IsSuccess = "true" });
+        }
+
         [HttpPost]
         public ActionResult Import(FormCollection form)
         {
@@ -50,10 +73,13 @@ namespace KeWeiOMS.Web.Controllers
                 case PlatformEnum.Ebay:
                     break;
                 case PlatformEnum.Amazon:
+                    results = OrderHelper.ImportByAmazon(Account, file);
                     break;
                 case PlatformEnum.B2C:
+                    results = OrderHelper.ImportByB2C(Account, file);
                     break;
                 case PlatformEnum.Gmarket:
+                    results = OrderHelper.ImportByGmarket(Account, file);
                     break;
                 case PlatformEnum.LT:
                     break;
@@ -61,7 +87,39 @@ namespace KeWeiOMS.Web.Controllers
                     break;
             }
             return Json(new { IsSuccess = "true" });
+        }
 
+        [HttpPost]
+        public ActionResult Synchronous(FormCollection form)
+        {
+            string Platform = form["Platform"];
+            string Account = form["Account"];
+            string st = form["st"];
+            string et = form["et"];
+
+            List<ResultInfo> results = new List<ResultInfo>();
+            switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
+            {
+                case PlatformEnum.SMT:
+
+                    break;
+                case PlatformEnum.Ebay:
+                    break;
+                case PlatformEnum.Amazon:
+
+                    break;
+                case PlatformEnum.B2C:
+
+                    break;
+                case PlatformEnum.Gmarket:
+
+                    break;
+                case PlatformEnum.LT:
+                    break;
+                default:
+                    break;
+            }
+            return Json(new { IsSuccess = "true" });
         }
 
 

@@ -103,7 +103,7 @@
             return (undefined);
         }
         function GetImg(v, r, i) {
-            return '<img  src=' + v + '  height="64px" width="64px" />'
+            return '<img  src=' + v + '  height="64px" width="64px" />';
         }
         function ShowAdvanced() {
             showSrarch('@Url.Action("Search", "Product")', 's_dlg', 'dg')
@@ -111,7 +111,7 @@
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
             $("#dg").datagrid("load", {
-                search: search,
+                search: search
             });
         }
     </script>

@@ -112,11 +112,11 @@
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
             $("#dg").datagrid("load", {
-                search: search,
+                search: search
             });
         }
         function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg')
+            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
         }
     </script>
     <div region="center">

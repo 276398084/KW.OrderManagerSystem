@@ -67,16 +67,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                IList<UserType> list = NSession.CreateQuery(" from  UserType where Username=:p1 and Password=:p2").SetString("p1", user.Username).SetString("p2", user.Password).List<UserType>();
-                if (list.Count > 0)
-                {   //登录成功
-                    user = list[0];
-                    user.LastVisit = DateTime.Now;
-                    NSession.Update(user);
-                    NSession.Flush();
-                    Session["account"] = list[0];
-                    return RedirectToAction("Index", "Home");
-                }
+                bool iscon = Utilities.LoginByUser(user.Username, user.Password);
+                Utilities.CreateCookies(user.Username, user.Password);
+                return RedirectToAction("Index", "Home");
             }
             ModelState.AddModelError("Username", "用户名或者密码出错。");
             return View();

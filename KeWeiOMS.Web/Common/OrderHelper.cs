@@ -2,17 +2,33 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
+using eBay.Service.Core.Sdk;
+using eBay.Service.Core.Soap;
+using OrderType = KeWeiOMS.Domain.OrderType;
+using ProductType = KeWeiOMS.Domain.ProductType;
 
 namespace KeWeiOMS.Web
 {
     public class OrderHelper
     {
+
+        static OrderHelper()
+        {
+            
+            countrys = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
+            products = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
+            currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
+            logistics = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>().ToList();
+        }
+
         public static ISession NSession = NHibernateHelper.CreateSession();
 
         public static DataTable GetDataTable(string fileName)
@@ -226,55 +242,79 @@ namespace KeWeiOMS.Web
         }
         #endregion
 
-        #region 订单数据ＡＰＩ同步
-        public static List<ResultInfo> APIByB2C(string AccountName, DateTime st, DateTime et)
+
+        public static string DownHtml(string Url, Encoding myEncoding)
         {
-            List<ResultInfo> results = new List<ResultInfo>();
-
-
-            //string s = OrderHelper.DownHtml("http://www.gamesalor.com/GetOrdersHandler.ashx?startTime=" + st.ToShortDateString() + "&endTime=" + et.ToShortDateString() + "", System.Text.Encoding.UTF8);
-
-            //System.Collections.Generic.List<Order> orders = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Order>>(s);
-
-
-            //foreach (Order foo in orders)
-            //{
-            //    Core.DoMain.OrderType order = null;
-            //    order = Core.DoMain.OrderType.find("OrderExNo='" + foo.GoodsDataWare.ItemNumber + "' and OrderForm='" + PlatformType.B2C.ToString() + "'").first(userType.CompanyCode);
-            //    if (order != null)
-            //    {
-            //        continue;
-            //    }
-
-            //    order = new Core.DoMain.OrderType();
-            //    OrderHelper.SetOrderBasic(account, userType, order, PlatformType.B2C);
-            //    OrderHelper.SetOrderInfomation(foo.GoodsDataWare.ItemNumber, cvt.ToDouble(foo.GoodsDataWare.McGross.ToString()), foo.GoodsDataWare.McCurrency, foo.GoodsDataWare.PaymentDate, foo.GoodsDataWare.PaymentDate, foo.GoodsDataWare.FirstName + " " + foo.GoodsDataWare.LastName, foo.GoodsDataWare.PayerEmail, foo.GoodsDataWare.AddressCountry, "客户付款账户" + foo.GoodsDataWare.Business + "  " + foo.GoodsDataWare.Memo, order);
-
-            //    order.TxnId = foo.GoodsDataWare.TxnId;
-
-
-            //    OMS.Core.DoMain.BuyerAddressType bat = new Core.DoMain.BuyerAddressType();
-            //    bat.Street = foo.GoodsDataWare.AddressStreet;
-            //    bat.City = foo.GoodsDataWare.AddressCity;
-            //    bat.StateOrProvince = foo.GoodsDataWare.AddressState;
-            //    bat.PostCode = foo.GoodsDataWare.AddressZip;
-            //    bat.Country = foo.GoodsDataWare.AddressCountry;
-            //    bat.CountryCode = foo.GoodsDataWare.AddressCountryCode;
-            //    bat.Email = foo.GoodsDataWare.AddressName;
-            //    bat.Phone = foo.GoodsDataWare.ContactPhone;
-            //    bat.BuyerCode = order.BuyerCode;
-            //    bat.ContactMan = foo.GoodsDataWare.AddressName;
-
-            //    order.Address = bat;
-            //    order.OrderGoods = new List<OrderGoodsType>();
-            //    foreach (GoodsDataOrder item in foo.GoodsDataOrderList)
-            //    {
-            //        List<OMS.Core.DoMain.OrderGoodsType> list = OrderHelper.GetItem(item.ItemID, item.Title, "", item.Quantity, cvt.ToDouble(item.Price.ToString()), item.Pic, ReplaceDedsc(item.Url));
-
-            //        order.OrderGoods.AddRange(list);
-            //    }
-            return results;
+            try
+            {
+                WebClient client = new WebClient();
+                StreamReader readerOfStream = new StreamReader(client.OpenRead(Url), myEncoding);
+                return readerOfStream.ReadToEnd(); ;
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
+
+        #region 订单数据ＡＰＩ同步
+        //public static List<ResultInfo> APIByB2C(string AccountName, DateTime st, DateTime et)
+        //{
+        //    List<ResultInfo> results = new List<ResultInfo>();
+
+        //    string s = DownHtml("http://www.gamesalor.com/GetOrdersHandler.ashx?startTime=" + st.ToShortDateString() + "&endTime=" + et.ToShortDateString() + "", System.Text.Encoding.UTF8);
+
+        //    System.Collections.Generic.List<Order> orders = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Order>>(s);
+        //    foreach (Order foo in orders)
+        //    {
+        //        bool isExist = IsExist(foo.GoodsDataWare.ItemNumber);
+        //        if (isExist)
+        //        {
+
+        //            OrderType order = new OrderType
+        //                                  {
+        //                                      IsMerger = 0,
+        //                                      IsOutOfStock = 0,
+        //                                      IsRepeat = 0,
+        //                                      IsSplit = 0,
+        //                                      Status = OrderStatusEnum.待处理.ToString(),
+        //                                      IsPrint = 0,
+        //                                      CreateOn = DateTime.Now,
+        //                                      ScanningOn = DateTime.Now
+        //                                  };
+        //            order.OrderNo = Utilities.GetOrderNo();
+        //            order.CurrencyCode = foo.GoodsDataWare.McCurrency;
+        //            order.OrderExNo = foo.GoodsDataWare.ItemNumber;
+        //            order.Amount = Convert.ToDouble(foo.GoodsDataWare.McGross);
+        //            // order.BuyerMemo = dr["订单备注"].ToString();
+        //            order.Country = foo.GoodsDataWare.AddressCountry;
+        //            order.BuyerName = foo.GoodsDataWare.Business;
+        //            order.BuyerEmail = foo.GoodsDataWare.PayerEmail;
+        //            order.TId = "";
+        //            order.Account = AccountName;
+        //            order.GenerateOn = foo.GoodsDataWare.PaymentDate;
+        //            order.Platform = PlatformEnum.B2C.ToString();
+
+        //            order.AddressId = CreateAddress(foo.GoodsDataWare.AddressName, foo.GoodsDataWare.AddressStreet,
+        //                                            foo.GoodsDataWare.AddressCity, foo.GoodsDataWare.AddressState,
+        //                                            foo.GoodsDataWare.AddressCountry,
+        //                                            foo.GoodsDataWare.AddressCountryCode, foo.GoodsDataWare.ContactPhone,
+        //                                            foo.GoodsDataWare.ContactPhone, foo.GoodsDataWare.PayerEmail,
+        //                                            foo.GoodsDataWare.AddressZip, 0);
+        //            NSession.Save(order);
+        //            NSession.Flush();
+        //            foreach (GoodsDataOrder item in foo.GoodsDataOrderList)
+        //            {
+        //                CreateOrderPruduct(item.ItemID, item.Quantity, item.ItemID, "", 0, item.Url, order.Id,
+        //                                   order.OrderNo);
+        //            }
+        //            //  results.Add(GetResult(OrderExNo, "", "导入成功"));
+        //        }
+        //    }
+
+
+        //    return results;
+        //}
 
         public static List<ResultInfo> APIByAmazon(string AccountName, DateTime st, DateTime et)
         {
@@ -288,9 +328,106 @@ namespace KeWeiOMS.Web
             return results;
         }
 
-        public static List<ResultInfo> APIByEBay(string AccountName, DateTime st, DateTime et)
+        public static List<ResultInfo> APIByEbay(string AccountName, DateTime st, DateTime et)
         {
+            AccountType account =
+                NSession.CreateQuery("from AccountType where AccountName='" + AccountName + "'").List<AccountType>()[0];
             List<ResultInfo> results = new List<ResultInfo>();
+
+            ApiContext context = AppSettingHelper.GetGenericApiContext("US");
+            context.ApiCredential.eBayToken = account.ApiToken;
+            eBay.Service.Call.GetOrdersCall apicall = new eBay.Service.Call.GetOrdersCall(context);
+            apicall.IncludeFinalValueFee = true;
+            apicall.DetailLevelList.Add(eBay.Service.Core.Soap.DetailLevelCodeType.ReturnAll);
+            eBay.Service.Core.Soap.OrderTypeCollection m = null;
+            int i = 1;
+            do
+            {
+                apicall.Pagination = new eBay.Service.Core.Soap.PaginationType();
+                apicall.Pagination.PageNumber = i;
+                apicall.Pagination.EntriesPerPage = 50;
+                apicall.OrderRole = eBay.Service.Core.Soap.TradingRoleCodeType.Seller;
+                apicall.OrderStatus = eBay.Service.Core.Soap.OrderStatusCodeType.Completed;
+                apicall.ModTimeFrom = st;
+                apicall.ModTimeTo = et;
+                apicall.Execute();
+                m = apicall.OrderList;
+                for (int k = 0; k < m.Count; k++)
+                {
+                    eBay.Service.Core.Soap.OrderType ot = m[k];
+                    if (ot.OrderStatus == eBay.Service.Core.Soap.OrderStatusCodeType.Authenticated ||
+                        ot.OrderStatus == eBay.Service.Core.Soap.OrderStatusCodeType.CustomCode ||
+                        ot.OrderStatus == eBay.Service.Core.Soap.OrderStatusCodeType.Default ||
+                        ot.OrderStatus == eBay.Service.Core.Soap.OrderStatusCodeType.Inactive ||
+                        ot.OrderStatus == eBay.Service.Core.Soap.OrderStatusCodeType.InProcess)
+                    {
+                        //去除别的订单状态
+                        continue;
+                    }
+                    if (ot.PaidTime == DateTime.MinValue || ot.ShippedTime != DateTime.MinValue)
+                    {
+                        continue;
+                    }
+                    //查看是不是在订单系统里面存在
+                    bool isExist = IsExist(ot.OrderID);
+                    if (isExist)
+                    {
+                        OrderType order = new OrderType
+                                              {
+                                                  IsMerger = 0,
+                                                  IsOutOfStock = 0,
+                                                  IsRepeat = 0,
+                                                  IsSplit = 0,
+                                                  Status = OrderStatusEnum.待处理.ToString(),
+                                                  IsPrint = 0,
+                                                  CreateOn = DateTime.Now,
+                                                  ScanningOn = DateTime.Now
+                                              };
+                        order.OrderNo = Utilities.GetOrderNo();
+                        order.CurrencyCode = ot.AmountPaid.currencyID.ToString();
+                        order.OrderExNo = ot.OrderID;
+                        order.Amount = ot.AmountPaid.Value;
+                        // order.BuyerMemo = dr["订单备注"].ToString();
+                        order.Country = ot.ShippingAddress.CountryName;
+                        order.BuyerName = ot.BuyerUserID;
+                        order.BuyerEmail = ot.TransactionArray[0].Buyer.Email;
+                        order.BuyerMemo = ot.BuyerCheckoutMessage;
+                        order.TId = ot.ExternalTransaction[0].ExternalTransactionID;
+                        order.Account = AccountName;
+                        order.GenerateOn = ot.PaidTime;
+                        order.Platform = PlatformEnum.Ebay.ToString();
+
+                        order.AddressId = CreateAddress(ot.ShippingAddress.Name,
+                                                        (string.IsNullOrEmpty(ot.ShippingAddress.Street)
+                                                             ? ""
+                                                             : ot.ShippingAddress.Street) +
+                                                        (string.IsNullOrEmpty(ot.ShippingAddress.Street1)
+                                                             ? ""
+                                                             : ot.ShippingAddress.Street1) +
+                                                        (string.IsNullOrEmpty(ot.ShippingAddress.Street2)
+                                                             ? ""
+                                                             : ot.ShippingAddress.Street2),
+                                                        ot.ShippingAddress.CityName, ot.ShippingAddress.StateOrProvince,
+                                                        ot.ShippingAddress.CountryName,
+                                                        ot.ShippingAddress.Country.ToString(), ot.ShippingAddress.Phone,
+                                                        ot.ShippingAddress.Phone, ot.TransactionArray[0].Buyer.Email,
+                                                        ot.ShippingAddress.PostalCode, 0);
+                        NSession.Save(order);
+                        NSession.Flush();
+                        foreach (TransactionType item in ot.TransactionArray)
+                        {
+                            CreateOrderPruduct(item.Item.ItemID, item.QuantityPurchased, item.Variation.SKU,
+                                               item.Item.Title, 0,
+                                               "http://thumbs.ebaystatic.com/pict/" + item.Item.ItemID + "6464_1.jpg",
+                                               order.Id,
+                                               order.OrderNo);
+                        }
+
+                    }
+                }
+                i++;
+            } while (apicall.HasMoreOrders);
+
             return results;
         }
         #endregion
@@ -446,10 +583,12 @@ namespace KeWeiOMS.Web
         }
         #endregion
 
-
+        #region 订单验证
         static List<CountryType> countrys = new List<CountryType>();
         static List<ProductType> products = new List<ProductType>();
         static List<CurrencyType> currencys = new List<CurrencyType>();
+        static List<LogisticsModeType> logistics = new List<LogisticsModeType>();
+
         public static bool ValiOrder(OrderType order)
         {
             bool resultValue = true;
@@ -458,28 +597,93 @@ namespace KeWeiOMS.Web
             if (countrys.FindIndex(p => p.ECountry == order.Country || p.CountryCode == order.Country) == -1)
             {
                 resultValue = false;
-                order.ErrorInfo += "国家:" + order.Country + " 不在系统的国家表中！";
+                order.ErrorInfo += "国家不符 ";
             }
             if (currencys.FindIndex(p => p.CurrencyCode == order.CurrencyCode) == -1)
             {
                 resultValue = false;
-                order.ErrorInfo += "货币:" + order.Country + " 不在系统的汇率表中！";
+                order.ErrorInfo += "货币不符 ";
             }
-
+            if (logistics.FindIndex(p => p.LogisticsCode == order.LogisticMode) == -1)
+            {
+                resultValue = false;
+                order.ErrorInfo += "货运不符 ";
+            }
+            order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>();
             foreach (var item in order.Products)
             {
                 if (products.FindIndex(p => p.SKU == item.SKU) == -1)
                 {
                     resultValue = false;
-                    order.ErrorInfo += "商品SKU:" + order.Country + " 不在系统的商品中！";
+                    order.ErrorInfo += "SKU不符";
+                    break;
+
                 }
             }
+            NSession.Clear();
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             return resultValue;
 
 
         }
+        #endregion
+
+        #region 订单4项属性替换
+        public static bool ReplaceBySKU(string ids, string oldValue, string newValue)
+        {
+            string sql = "";
+            if (!string.IsNullOrEmpty(ids))
+            {
+                ids = " and OId in(" + ids + ")";
+
+            }
+            sql = "update OrderProductType set SKU='{0}' where SKU='{1}' {2}";
+            sql = string.Format(sql, oldValue, newValue, ids);
+            IQuery Query = NSession.CreateQuery(sql);
+            return Query.ExecuteUpdate() > 0;
+
+        }
+
+        public static bool ReplaceByCountry(string ids, string oldValue, string newValue)
+        {
+            string sql = "";
+            if (!string.IsNullOrEmpty(ids))
+            {
+                ids = " and OId in(" + ids + ")";
+
+            }
+
+            sql = "update OrdeType set Country='{0}' where SKU='{1}' {2}";
+            sql = string.Format(sql, oldValue, newValue, ids);
+            IQuery Query = NSession.CreateQuery(sql);
+            Query.ExecuteUpdate();
+            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where Country='{1}' {2}";
+            sql = string.Format(sql, oldValue, newValue, ids.Replace("OId", "Id"));
+            Query = NSession.CreateQuery(sql);
+            Query.ExecuteUpdate();
+            return true;
+        }
+
+        public static bool ReplaceByCurrencyOrLogistic(string ids, string oldValue, string newValue, int type)
+        {
+            string sql = "";
+            if (!string.IsNullOrEmpty(ids))
+            {
+                ids = " and Id in(" + ids + ")";
+
+            }
+            if (type == 1)
+                sql = "update OrderType set CurrencyCode='{0}' where CurrencyCode='{1}' {2}";
+            else
+                sql = "update OrderType set LogisticMode='{0}' where LogisticMode='{1}' {2}";
+
+            sql = string.Format(sql, oldValue, newValue, ids);
+            IQuery Query = NSession.CreateQuery(sql);
+            return Query.ExecuteUpdate() > 0;
+
+        }
+        #endregion
 
         public static Dictionary<string, string> GetDic(string fileName)
         {
@@ -498,4 +702,1730 @@ namespace KeWeiOMS.Web
 
 
     }
+    #region
+
+    public class Order
+    {
+        public Order() { }
+        public Order(GoodsDataWare goodsDataWare, List<GoodsDataOrder> goodsDataOrderList)
+        {
+            this.GoodsDataOrderList = goodsDataOrderList;
+            this.GoodsDataWare = goodsDataWare;
+        }
+
+        private GoodsDataWare goodsDataWare = new GoodsDataWare();
+        public GoodsDataWare GoodsDataWare
+        {
+            get { return goodsDataWare; }
+            set { goodsDataWare = value; }
+        }
+        private List<GoodsDataOrder> goodsDataOrderList = new List<GoodsDataOrder>();
+
+        public List<GoodsDataOrder> GoodsDataOrderList
+        {
+            get { return goodsDataOrderList; }
+            set { goodsDataOrderList = value; }
+        }
+    }
+
+    public class GoodsDataWare
+    {
+
+        /// <summary>
+        /// 商品编号
+        /// </summary>
+        private string _id = string.Empty;
+
+        /// <summary>
+        /// 错误信息
+        /// </summary>
+        private string _errinfo = string.Empty;
+
+        /// <summary>
+        /// TotalDiscount
+        /// </summary>
+        private decimal _totaldiscount = new System.Decimal();
+
+        /// <summary>
+        /// TotalCost
+        /// </summary>
+        private decimal _totalcost = new System.Decimal();
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        private int _quantity = new System.Int32();
+
+        /// <summary>
+        /// 日期
+        /// </summary>
+        private System.DateTime _updatetime = System.Convert.ToDateTime("1800-1-1");
+
+        /// <summary>
+        /// EMS
+        /// </summary>
+        private string _ems = string.Empty;
+
+        /// <summary>
+        /// 是否已发货
+        /// </summary>
+        private bool _issend = new System.Boolean();
+
+        /// <summary>
+        /// 发货日期
+        /// </summary>
+        private System.DateTime _senddatatime = new System.DateTime();
+
+        /// <summary>
+        /// 保护资格
+        /// </summary>
+        private string _protectioneligibility = string.Empty;
+
+        /// <summary>
+        /// 地址状态
+        /// </summary>
+        private string _addressstatus = string.Empty;
+
+        /// <summary>
+        /// 付款人标识
+        /// </summary>
+        private string _payerid = string.Empty;
+
+        /// <summary>
+        /// 地址街
+        /// </summary>
+        private string _addressstreet = string.Empty;
+
+        /// <summary>
+        /// 付款状态
+        /// </summary>
+        private string _paymentstatus = string.Empty;
+
+        /// <summary>
+        /// 字符集
+        /// </summary>
+        private string _charset = string.Empty;
+
+        /// <summary>
+        /// 地址邮编
+        /// </summary>
+        private string _addresszip = string.Empty;
+
+        /// <summary>
+        /// 名字
+        /// </summary>
+        private string _firstname = string.Empty;
+
+        /// <summary>
+        /// 地址国家代码
+        /// </summary>
+        private string _addresscountrycode = string.Empty;
+
+        /// <summary>
+        /// 地址名称
+        /// </summary>
+        private string _addressname = string.Empty;
+
+        /// <summary>
+        /// 自定义
+        /// </summary>
+        private string _custom = string.Empty;
+
+        /// <summary>
+        /// 付款人状态
+        /// </summary>
+        private string _payerstatus = string.Empty;
+
+        /// <summary>
+        /// 商务
+        /// </summary>
+        private string _business = string.Empty;
+
+        /// <summary>
+        /// 地址国家
+        /// </summary>
+        private string _addresscountry = string.Empty;
+
+        /// <summary>
+        /// 地址城市
+        /// </summary>
+        private string _addresscity = string.Empty;
+
+        /// <summary>
+        /// 验证
+        /// </summary>
+        private string _verifysign = string.Empty;
+
+        /// <summary>
+        /// 付款人电邮
+        /// </summary>
+        private string _payeremail = string.Empty;
+
+        /// <summary>
+        /// 事务处理标识
+        /// </summary>
+        private string _txnid = string.Empty;
+
+        /// <summary>
+        /// 付款方式
+        /// </summary>
+        private string _paymenttype = string.Empty;
+
+        /// <summary>
+        /// 付款人的营业名称
+        /// </summary>
+        private string _payerbusinessname = string.Empty;
+
+        /// <summary>
+        /// 姓
+        /// </summary>
+        private string _lastname = string.Empty;
+
+        /// <summary>
+        /// 地址状态
+        /// </summary>
+        private string _addressstate = string.Empty;
+
+        /// <summary>
+        /// 接收电子邮件
+        /// </summary>
+        private string _receiveremail = string.Empty;
+
+        /// <summary>
+        /// 接收器标识
+        /// </summary>
+        private string _receiverid = string.Empty;
+
+        /// <summary>
+        /// 事务处理类型
+        /// </summary>
+        private string _txntype = string.Empty;
+
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        private string _itemname = string.Empty;
+
+        /// <summary>
+        /// 货币
+        /// </summary>
+        private string _mccurrency = string.Empty;
+
+        /// <summary>
+        /// 项目编号
+        /// </summary>
+        private string _itemnumber = string.Empty;
+
+        /// <summary>
+        /// 居住国家
+        /// </summary>
+        private string _residencecountry = string.Empty;
+
+        /// <summary>
+        /// 交易标题
+        /// </summary>
+        private string _transactionsubject = string.Empty;
+
+        /// <summary>
+        /// NotifyVersion
+        /// </summary>
+        private string _notifyversion = string.Empty;
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        private string _memo = string.Empty;
+
+        /// <summary>
+        /// 联系电话
+        /// </summary>
+        private string _contactphone = string.Empty;
+
+        /// <summary>
+        /// Options
+        /// </summary>
+        private string _options = string.Empty;
+
+        /// <summary>
+        /// ReasonCode
+        /// </summary>
+        private string _reasoncode = string.Empty;
+
+        /// <summary>
+        /// ParentTxnId
+        /// </summary>
+        private string _parenttxnid = string.Empty;
+
+        /// <summary>
+        /// McGross
+        /// </summary>
+        private decimal _mcgross = new System.Decimal();
+
+        /// <summary>
+        /// 税
+        /// </summary>
+        private decimal _tax = new System.Decimal();
+
+        /// <summary>
+        /// McFee
+        /// </summary>
+        private decimal _mcfee = new System.Decimal();
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        private int _mcquantity = new System.Int32();
+
+        /// <summary>
+        /// PaymentFee
+        /// </summary>
+        private decimal _paymentfee = new System.Decimal();
+
+        /// <summary>
+        /// HandlingAmount
+        /// </summary>
+        private decimal _handlingamount = new System.Decimal();
+
+        /// <summary>
+        /// PaymentGross
+        /// </summary>
+        private decimal _paymentgross = new System.Decimal();
+
+        /// <summary>
+        /// 航运
+        /// </summary>
+        private decimal _shipping = new System.Decimal();
+
+        /// <summary>
+        /// 03:07:29 Nov 02, 2010 PDT
+        /// </summary>
+        private System.DateTime _paymentdate = new System.DateTime();
+
+        /// <summary>
+        /// 类 GoodsDataWare 的默认构造函数
+        /// </summary>
+        public GoodsDataWare() { }
+
+        /// <summary>
+        /// 类GoodsDataWare 的构造函数
+        /// </summary>
+        /// <param name="ErrInfo">错误信息</param>
+        /// <param name="TotalDiscount">TotalDiscount</param>
+        /// <param name="TotalCost">TotalCost</param>
+        /// <param name="Quantity">数量</param>
+        /// <param name="UpdateTime">日期</param>
+        /// <param name="EMS">EMS</param>
+        /// <param name="IsSend">是否已发货</param>
+        /// <param name="SendDataTime">发货日期</param>
+        /// <param name="ProtectionEligibility">保护资格</param>
+        /// <param name="AddressStatus">地址状态</param>
+        /// <param name="PayerId">付款人标识</param>
+        /// <param name="AddressStreet">地址街</param>
+        /// <param name="PaymentStatus">付款状态</param>
+        /// <param name="Charset">字符集</param>
+        /// <param name="AddressZip">地址邮编</param>
+        /// <param name="FirstName">名字</param>
+        /// <param name="AddressCountryCode">地址国家代码</param>
+        /// <param name="AddressName">地址名称</param>
+        /// <param name="Custom">自定义</param>
+        /// <param name="PayerStatus">付款人状态</param>
+        /// <param name="Business">商务</param>
+        /// <param name="AddressCountry">地址国家</param>
+        /// <param name="AddressCity">地址城市</param>
+        /// <param name="VerifySign">验证</param>
+        /// <param name="PayerEmail">付款人电邮</param>
+        /// <param name="TxnId">事务处理标识</param>
+        /// <param name="PaymentType">付款方式</param>
+        /// <param name="PayerBusinessName">付款人的营业名称</param>
+        /// <param name="LastName">姓</param>
+        /// <param name="AddressState">地址状态</param>
+        /// <param name="ReceiverEmail">接收电子邮件</param>
+        /// <param name="ReceiverId">接收器标识</param>
+        /// <param name="TxnType">事务处理类型</param>
+        /// <param name="ItemName">项目名称</param>
+        /// <param name="McCurrency">货币</param>
+        /// <param name="ItemNumber">项目编号</param>
+        /// <param name="ResidenceCountry">居住国家</param>
+        /// <param name="TransactionSubject">交易标题</param>
+        /// <param name="NotifyVersion">NotifyVersion</param>
+        /// <param name="Memo">备注</param>
+        /// <param name="ContactPhone">联系电话</param>
+        /// <param name="Options">Options</param>
+        /// <param name="ReasonCode">ReasonCode</param>
+        /// <param name="ParentTxnId">ParentTxnId</param>
+        /// <param name="McGross">McGross</param>
+        /// <param name="Tax">税</param>
+        /// <param name="McFee">McFee</param>
+        /// <param name="McQuantity">数量</param>
+        /// <param name="PaymentFee">PaymentFee</param>
+        /// <param name="HandlingAmount">HandlingAmount</param>
+        /// <param name="PaymentGross">PaymentGross</param>
+        /// <param name="Shipping">航运</param>
+        /// <param name="PaymentDate">03:07:29 Nov 02, 2010 PDT</param>
+        public GoodsDataWare(
+                    string ErrInfo,
+                    decimal TotalDiscount,
+                    decimal TotalCost,
+                    int Quantity,
+                    System.DateTime UpdateTime,
+                    string EMS,
+                    bool IsSend,
+                    System.DateTime SendDataTime,
+                    string ProtectionEligibility,
+                    string AddressStatus,
+                    string PayerId,
+                    string AddressStreet,
+                    string PaymentStatus,
+                    string Charset,
+                    string AddressZip,
+                    string FirstName,
+                    string AddressCountryCode,
+                    string AddressName,
+                    string Custom,
+                    string PayerStatus,
+                    string Business,
+                    string AddressCountry,
+                    string AddressCity,
+                    string VerifySign,
+                    string PayerEmail,
+                    string TxnId,
+                    string PaymentType,
+                    string PayerBusinessName,
+                    string LastName,
+                    string AddressState,
+                    string ReceiverEmail,
+                    string ReceiverId,
+                    string TxnType,
+                    string ItemName,
+                    string McCurrency,
+                    string ItemNumber,
+                    string ResidenceCountry,
+                    string TransactionSubject,
+                    string NotifyVersion,
+                    string Memo,
+                    string ContactPhone,
+                    string Options,
+                    string ReasonCode,
+                    string ParentTxnId,
+                    decimal McGross,
+                    decimal Tax,
+                    decimal McFee,
+                    int McQuantity,
+                    decimal PaymentFee,
+                    decimal HandlingAmount,
+                    decimal PaymentGross,
+                    decimal Shipping,
+                    System.DateTime PaymentDate) :
+            this()
+        {
+            this._errinfo = ErrInfo;
+            this._totaldiscount = TotalDiscount;
+            this._totalcost = TotalCost;
+            this._quantity = Quantity;
+            this._updatetime = UpdateTime;
+            this._ems = EMS;
+            this._issend = IsSend;
+            this._senddatatime = SendDataTime;
+            this._protectioneligibility = ProtectionEligibility;
+            this._addressstatus = AddressStatus;
+            this._payerid = PayerId;
+            this._addressstreet = AddressStreet;
+            this._paymentstatus = PaymentStatus;
+            this._charset = Charset;
+            this._addresszip = AddressZip;
+            this._firstname = FirstName;
+            this._addresscountrycode = AddressCountryCode;
+            this._addressname = AddressName;
+            this._custom = Custom;
+            this._payerstatus = PayerStatus;
+            this._business = Business;
+            this._addresscountry = AddressCountry;
+            this._addresscity = AddressCity;
+            this._verifysign = VerifySign;
+            this._payeremail = PayerEmail;
+            this._txnid = TxnId;
+            this._paymenttype = PaymentType;
+            this._payerbusinessname = PayerBusinessName;
+            this._lastname = LastName;
+            this._addressstate = AddressState;
+            this._receiveremail = ReceiverEmail;
+            this._receiverid = ReceiverId;
+            this._txntype = TxnType;
+            this._itemname = ItemName;
+            this._mccurrency = McCurrency;
+            this._itemnumber = ItemNumber;
+            this._residencecountry = ResidenceCountry;
+            this._transactionsubject = TransactionSubject;
+            this._notifyversion = NotifyVersion;
+            this._memo = Memo;
+            this._contactphone = ContactPhone;
+            this._options = Options;
+            this._reasoncode = ReasonCode;
+            this._parenttxnid = ParentTxnId;
+            this._mcgross = McGross;
+            this._tax = Tax;
+            this._mcfee = McFee;
+            this._mcquantity = McQuantity;
+            this._paymentfee = PaymentFee;
+            this._handlingamount = HandlingAmount;
+            this._paymentgross = PaymentGross;
+            this._shipping = Shipping;
+            this._paymentdate = PaymentDate;
+        }
+
+        /// <summary>
+        /// 类GoodsDataWare 的构造函数
+        /// </summary>
+        /// <param name="Id">商品编号</param>
+        /// <param name="ErrInfo">错误信息</param>
+        /// <param name="TotalDiscount">TotalDiscount</param>
+        /// <param name="TotalCost">TotalCost</param>
+        /// <param name="Quantity">数量</param>
+        /// <param name="UpdateTime">日期</param>
+        /// <param name="EMS">EMS</param>
+        /// <param name="IsSend">是否已发货</param>
+        /// <param name="SendDataTime">发货日期</param>
+        /// <param name="ProtectionEligibility">保护资格</param>
+        /// <param name="AddressStatus">地址状态</param>
+        /// <param name="PayerId">付款人标识</param>
+        /// <param name="AddressStreet">地址街</param>
+        /// <param name="PaymentStatus">付款状态</param>
+        /// <param name="Charset">字符集</param>
+        /// <param name="AddressZip">地址邮编</param>
+        /// <param name="FirstName">名字</param>
+        /// <param name="AddressCountryCode">地址国家代码</param>
+        /// <param name="AddressName">地址名称</param>
+        /// <param name="Custom">自定义</param>
+        /// <param name="PayerStatus">付款人状态</param>
+        /// <param name="Business">商务</param>
+        /// <param name="AddressCountry">地址国家</param>
+        /// <param name="AddressCity">地址城市</param>
+        /// <param name="VerifySign">验证</param>
+        /// <param name="PayerEmail">付款人电邮</param>
+        /// <param name="TxnId">事务处理标识</param>
+        /// <param name="PaymentType">付款方式</param>
+        /// <param name="PayerBusinessName">付款人的营业名称</param>
+        /// <param name="LastName">姓</param>
+        /// <param name="AddressState">地址状态</param>
+        /// <param name="ReceiverEmail">接收电子邮件</param>
+        /// <param name="ReceiverId">接收器标识</param>
+        /// <param name="TxnType">事务处理类型</param>
+        /// <param name="ItemName">项目名称</param>
+        /// <param name="McCurrency">货币</param>
+        /// <param name="ItemNumber">项目编号</param>
+        /// <param name="ResidenceCountry">居住国家</param>
+        /// <param name="TransactionSubject">交易标题</param>
+        /// <param name="NotifyVersion">NotifyVersion</param>
+        /// <param name="Memo">备注</param>
+        /// <param name="ContactPhone">联系电话</param>
+        /// <param name="Options">Options</param>
+        /// <param name="ReasonCode">ReasonCode</param>
+        /// <param name="ParentTxnId">ParentTxnId</param>
+        /// <param name="McGross">McGross</param>
+        /// <param name="Tax">税</param>
+        /// <param name="McFee">McFee</param>
+        /// <param name="McQuantity">数量</param>
+        /// <param name="PaymentFee">PaymentFee</param>
+        /// <param name="HandlingAmount">HandlingAmount</param>
+        /// <param name="PaymentGross">PaymentGross</param>
+        /// <param name="Shipping">航运</param>
+        /// <param name="PaymentDate">03:07:29 Nov 02, 2010 PDT</param>
+        public GoodsDataWare(
+                    string Id,
+                    string ErrInfo,
+                    decimal TotalDiscount,
+                    decimal TotalCost,
+                    int Quantity,
+                    System.DateTime UpdateTime,
+                    string EMS,
+                    bool IsSend,
+                    System.DateTime SendDataTime,
+                    string ProtectionEligibility,
+                    string AddressStatus,
+                    string PayerId,
+                    string AddressStreet,
+                    string PaymentStatus,
+                    string Charset,
+                    string AddressZip,
+                    string FirstName,
+                    string AddressCountryCode,
+                    string AddressName,
+                    string Custom,
+                    string PayerStatus,
+                    string Business,
+                    string AddressCountry,
+                    string AddressCity,
+                    string VerifySign,
+                    string PayerEmail,
+                    string TxnId,
+                    string PaymentType,
+                    string PayerBusinessName,
+                    string LastName,
+                    string AddressState,
+                    string ReceiverEmail,
+                    string ReceiverId,
+                    string TxnType,
+                    string ItemName,
+                    string McCurrency,
+                    string ItemNumber,
+                    string ResidenceCountry,
+                    string TransactionSubject,
+                    string NotifyVersion,
+                    string Memo,
+                    string ContactPhone,
+                    string Options,
+                    string ReasonCode,
+                    string ParentTxnId,
+                    decimal McGross,
+                    decimal Tax,
+                    decimal McFee,
+                    int McQuantity,
+                    decimal PaymentFee,
+                    decimal HandlingAmount,
+                    decimal PaymentGross,
+                    decimal Shipping,
+                    System.DateTime PaymentDate) :
+            this()
+        {
+            this._id = Id;
+            this._errinfo = ErrInfo;
+            this._totaldiscount = TotalDiscount;
+            this._totalcost = TotalCost;
+            this._quantity = Quantity;
+            this._updatetime = UpdateTime;
+            this._ems = EMS;
+            this._issend = IsSend;
+            this._senddatatime = SendDataTime;
+            this._protectioneligibility = ProtectionEligibility;
+            this._addressstatus = AddressStatus;
+            this._payerid = PayerId;
+            this._addressstreet = AddressStreet;
+            this._paymentstatus = PaymentStatus;
+            this._charset = Charset;
+            this._addresszip = AddressZip;
+            this._firstname = FirstName;
+            this._addresscountrycode = AddressCountryCode;
+            this._addressname = AddressName;
+            this._custom = Custom;
+            this._payerstatus = PayerStatus;
+            this._business = Business;
+            this._addresscountry = AddressCountry;
+            this._addresscity = AddressCity;
+            this._verifysign = VerifySign;
+            this._payeremail = PayerEmail;
+            this._txnid = TxnId;
+            this._paymenttype = PaymentType;
+            this._payerbusinessname = PayerBusinessName;
+            this._lastname = LastName;
+            this._addressstate = AddressState;
+            this._receiveremail = ReceiverEmail;
+            this._receiverid = ReceiverId;
+            this._txntype = TxnType;
+            this._itemname = ItemName;
+            this._mccurrency = McCurrency;
+            this._itemnumber = ItemNumber;
+            this._residencecountry = ResidenceCountry;
+            this._transactionsubject = TransactionSubject;
+            this._notifyversion = NotifyVersion;
+            this._memo = Memo;
+            this._contactphone = ContactPhone;
+            this._options = Options;
+            this._reasoncode = ReasonCode;
+            this._parenttxnid = ParentTxnId;
+            this._mcgross = McGross;
+            this._tax = Tax;
+            this._mcfee = McFee;
+            this._mcquantity = McQuantity;
+            this._paymentfee = PaymentFee;
+            this._handlingamount = HandlingAmount;
+            this._paymentgross = PaymentGross;
+            this._shipping = Shipping;
+            this._paymentdate = PaymentDate;
+        }
+
+        /// <summary>
+        /// 商品编号
+        /// </summary>
+        [System.ComponentModel.DataObjectFieldAttribute(true, true)]
+        public string Id
+        {
+            get
+            {
+                return this._id;
+            }
+            set
+            {
+                this._id = value;
+            }
+        }
+
+        /// <summary>
+        /// 错误信息
+        /// </summary>
+        public string ErrInfo
+        {
+            get
+            {
+                return this._errinfo;
+            }
+            set
+            {
+                this._errinfo = value;
+            }
+        }
+
+        /// <summary>
+        /// TotalDiscount
+        /// </summary>
+        public decimal TotalDiscount
+        {
+            get
+            {
+                return this._totaldiscount;
+            }
+            set
+            {
+                this._totaldiscount = value;
+            }
+        }
+
+        /// <summary>
+        /// TotalCost
+        /// </summary>
+        public decimal TotalCost
+        {
+            get
+            {
+                return this._totalcost;
+            }
+            set
+            {
+                this._totalcost = value;
+            }
+        }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int Quantity
+        {
+            get
+            {
+                return this._quantity;
+            }
+            set
+            {
+                this._quantity = value;
+            }
+        }
+
+        /// <summary>
+        /// 日期
+        /// </summary>
+        public System.DateTime UpdateTime
+        {
+            get
+            {
+                return this._updatetime;
+            }
+            set
+            {
+                this._updatetime = value;
+            }
+        }
+
+        /// <summary>
+        /// EMS
+        /// </summary>
+        public string EMS
+        {
+            get
+            {
+                return this._ems;
+            }
+            set
+            {
+                this._ems = value;
+            }
+        }
+
+        /// <summary>
+        /// 是否已发货
+        /// </summary>
+        public bool IsSend
+        {
+            get
+            {
+                return this._issend;
+            }
+            set
+            {
+                this._issend = value;
+            }
+        }
+
+        /// <summary>
+        /// 发货日期
+        /// </summary>
+        public System.DateTime SendDataTime
+        {
+            get
+            {
+                return this._senddatatime;
+            }
+            set
+            {
+                this._senddatatime = value;
+            }
+        }
+
+        /// <summary>
+        /// 保护资格
+        /// </summary>
+        public string ProtectionEligibility
+        {
+            get
+            {
+                return this._protectioneligibility;
+            }
+            set
+            {
+                this._protectioneligibility = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址状态
+        /// </summary>
+        public string AddressStatus
+        {
+            get
+            {
+                return this._addressstatus;
+            }
+            set
+            {
+                this._addressstatus = value;
+            }
+        }
+
+        /// <summary>
+        /// 付款人标识
+        /// </summary>
+        public string PayerId
+        {
+            get
+            {
+                return this._payerid;
+            }
+            set
+            {
+                this._payerid = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址街
+        /// </summary>
+        public string AddressStreet
+        {
+            get
+            {
+                return this._addressstreet;
+            }
+            set
+            {
+                this._addressstreet = value;
+            }
+        }
+
+        /// <summary>
+        /// 付款状态
+        /// </summary>
+        public string PaymentStatus
+        {
+            get
+            {
+                return this._paymentstatus;
+            }
+            set
+            {
+                this._paymentstatus = value;
+            }
+        }
+
+        /// <summary>
+        /// 字符集
+        /// </summary>
+        public string Charset
+        {
+            get
+            {
+                return this._charset;
+            }
+            set
+            {
+                this._charset = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址邮编
+        /// </summary>
+        public string AddressZip
+        {
+            get
+            {
+                return this._addresszip;
+            }
+            set
+            {
+                this._addresszip = value;
+            }
+        }
+
+        /// <summary>
+        /// 名字
+        /// </summary>
+        public string FirstName
+        {
+            get
+            {
+                return this._firstname;
+            }
+            set
+            {
+                this._firstname = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址国家代码
+        /// </summary>
+        public string AddressCountryCode
+        {
+            get
+            {
+                return this._addresscountrycode;
+            }
+            set
+            {
+                this._addresscountrycode = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址名称
+        /// </summary>
+        public string AddressName
+        {
+            get
+            {
+                return this._addressname;
+            }
+            set
+            {
+                this._addressname = value;
+            }
+        }
+
+        /// <summary>
+        /// 自定义
+        /// </summary>
+        public string Custom
+        {
+            get
+            {
+                return this._custom;
+            }
+            set
+            {
+                this._custom = value;
+            }
+        }
+
+        /// <summary>
+        /// 付款人状态
+        /// </summary>
+        public string PayerStatus
+        {
+            get
+            {
+                return this._payerstatus;
+            }
+            set
+            {
+                this._payerstatus = value;
+            }
+        }
+
+        /// <summary>
+        /// 商务
+        /// </summary>
+        public string Business
+        {
+            get
+            {
+                return this._business;
+            }
+            set
+            {
+                this._business = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址国家
+        /// </summary>
+        public string AddressCountry
+        {
+            get
+            {
+                return this._addresscountry;
+            }
+            set
+            {
+                this._addresscountry = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址城市
+        /// </summary>
+        public string AddressCity
+        {
+            get
+            {
+                return this._addresscity;
+            }
+            set
+            {
+                this._addresscity = value;
+            }
+        }
+
+        /// <summary>
+        /// 验证
+        /// </summary>
+        public string VerifySign
+        {
+            get
+            {
+                return this._verifysign;
+            }
+            set
+            {
+                this._verifysign = value;
+            }
+        }
+
+        /// <summary>
+        /// 付款人电邮
+        /// </summary>
+        public string PayerEmail
+        {
+            get
+            {
+                return this._payeremail;
+            }
+            set
+            {
+                this._payeremail = value;
+            }
+        }
+
+        /// <summary>
+        /// 事务处理标识
+        /// </summary>
+        public string TxnId
+        {
+            get
+            {
+                return this._txnid;
+            }
+            set
+            {
+                this._txnid = value;
+            }
+        }
+
+        /// <summary>
+        /// 付款方式
+        /// </summary>
+        public string PaymentType
+        {
+            get
+            {
+                return this._paymenttype;
+            }
+            set
+            {
+                this._paymenttype = value;
+            }
+        }
+
+        /// <summary>
+        /// 付款人的营业名称
+        /// </summary>
+        public string PayerBusinessName
+        {
+            get
+            {
+                return this._payerbusinessname;
+            }
+            set
+            {
+                this._payerbusinessname = value;
+            }
+        }
+
+        /// <summary>
+        /// 姓
+        /// </summary>
+        public string LastName
+        {
+            get
+            {
+                return this._lastname;
+            }
+            set
+            {
+                this._lastname = value;
+            }
+        }
+
+        /// <summary>
+        /// 地址状态
+        /// </summary>
+        public string AddressState
+        {
+            get
+            {
+                return this._addressstate;
+            }
+            set
+            {
+                this._addressstate = value;
+            }
+        }
+
+        /// <summary>
+        /// 接收电子邮件
+        /// </summary>
+        public string ReceiverEmail
+        {
+            get
+            {
+                return this._receiveremail;
+            }
+            set
+            {
+                this._receiveremail = value;
+            }
+        }
+
+        /// <summary>
+        /// 接收器标识
+        /// </summary>
+        public string ReceiverId
+        {
+            get
+            {
+                return this._receiverid;
+            }
+            set
+            {
+                this._receiverid = value;
+            }
+        }
+
+        /// <summary>
+        /// 事务处理类型
+        /// </summary>
+        public string TxnType
+        {
+            get
+            {
+                return this._txntype;
+            }
+            set
+            {
+                this._txntype = value;
+            }
+        }
+
+        /// <summary>
+        /// 项目名称
+        /// </summary>
+        public string ItemName
+        {
+            get
+            {
+                return this._itemname;
+            }
+            set
+            {
+                this._itemname = value;
+            }
+        }
+
+        /// <summary>
+        /// 货币
+        /// </summary>
+        public string McCurrency
+        {
+            get
+            {
+                return this._mccurrency;
+            }
+            set
+            {
+                this._mccurrency = value;
+            }
+        }
+
+        /// <summary>
+        /// 项目编号
+        /// </summary>
+        public string ItemNumber
+        {
+            get
+            {
+                return this._itemnumber;
+            }
+            set
+            {
+                this._itemnumber = value;
+            }
+        }
+
+        /// <summary>
+        /// 居住国家
+        /// </summary>
+        public string ResidenceCountry
+        {
+            get
+            {
+                return this._residencecountry;
+            }
+            set
+            {
+                this._residencecountry = value;
+            }
+        }
+
+        /// <summary>
+        /// 交易标题
+        /// </summary>
+        public string TransactionSubject
+        {
+            get
+            {
+                return this._transactionsubject;
+            }
+            set
+            {
+                this._transactionsubject = value;
+            }
+        }
+
+        /// <summary>
+        /// NotifyVersion
+        /// </summary>
+        public string NotifyVersion
+        {
+            get
+            {
+                return this._notifyversion;
+            }
+            set
+            {
+                this._notifyversion = value;
+            }
+        }
+
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Memo
+        {
+            get
+            {
+                return this._memo;
+            }
+            set
+            {
+                this._memo = value;
+            }
+        }
+
+        /// <summary>
+        /// 联系电话
+        /// </summary>
+        public string ContactPhone
+        {
+            get
+            {
+                return this._contactphone;
+            }
+            set
+            {
+                this._contactphone = value;
+            }
+        }
+
+        /// <summary>
+        /// Options
+        /// </summary>
+        public string Options
+        {
+            get
+            {
+                return this._options;
+            }
+            set
+            {
+                this._options = value;
+            }
+        }
+
+        /// <summary>
+        /// ReasonCode
+        /// </summary>
+        public string ReasonCode
+        {
+            get
+            {
+                return this._reasoncode;
+            }
+            set
+            {
+                this._reasoncode = value;
+            }
+        }
+
+        /// <summary>
+        /// ParentTxnId
+        /// </summary>
+        public string ParentTxnId
+        {
+            get
+            {
+                return this._parenttxnid;
+            }
+            set
+            {
+                this._parenttxnid = value;
+            }
+        }
+
+        /// <summary>
+        /// McGross
+        /// </summary>
+        public decimal McGross
+        {
+            get
+            {
+                return this._mcgross;
+            }
+            set
+            {
+                this._mcgross = value;
+            }
+        }
+
+        /// <summary>
+        /// 税
+        /// </summary>
+        public decimal Tax
+        {
+            get
+            {
+                return this._tax;
+            }
+            set
+            {
+                this._tax = value;
+            }
+        }
+
+        /// <summary>
+        /// McFee
+        /// </summary>
+        public decimal McFee
+        {
+            get
+            {
+                return this._mcfee;
+            }
+            set
+            {
+                this._mcfee = value;
+            }
+        }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int McQuantity
+        {
+            get
+            {
+                return this._mcquantity;
+            }
+            set
+            {
+                this._mcquantity = value;
+            }
+        }
+
+        /// <summary>
+        /// PaymentFee
+        /// </summary>
+        public decimal PaymentFee
+        {
+            get
+            {
+                return this._paymentfee;
+            }
+            set
+            {
+                this._paymentfee = value;
+            }
+        }
+
+        /// <summary>
+        /// HandlingAmount
+        /// </summary>
+        public decimal HandlingAmount
+        {
+            get
+            {
+                return this._handlingamount;
+            }
+            set
+            {
+                this._handlingamount = value;
+            }
+        }
+
+        /// <summary>
+        /// PaymentGross
+        /// </summary>
+        public decimal PaymentGross
+        {
+            get
+            {
+                return this._paymentgross;
+            }
+            set
+            {
+                this._paymentgross = value;
+            }
+        }
+
+        /// <summary>
+        /// 航运
+        /// </summary>
+        public decimal Shipping
+        {
+            get
+            {
+                return this._shipping;
+            }
+            set
+            {
+                this._shipping = value;
+            }
+        }
+
+        /// <summary>
+        /// 03:07:29 Nov 02, 2010 PDT
+        /// </summary>
+        public System.DateTime PaymentDate
+        {
+            get
+            {
+                return this._paymentdate;
+            }
+            set
+            {
+                this._paymentdate = value;
+            }
+        }
+
+
+    }
+
+
+    /// <summary>
+    /// 库存管理的实体类
+    /// </summary>
+
+    public class GoodsDataOrder
+    {
+
+        /// <summary>
+        /// 商品编号
+        /// </summary>
+        private string _id = string.Empty;
+
+        /// <summary>
+        /// PId
+        /// </summary>
+        private string _pid = string.Empty;
+
+        /// <summary>
+        /// 商品名称
+        /// </summary>
+        private string _title = string.Empty;
+
+        /// <summary>
+        /// 链接
+        /// </summary>
+        private string _url = string.Empty;
+
+        /// <summary>
+        /// 图片
+        /// </summary>
+        private string _pic = string.Empty;
+
+        /// <summary>
+        /// 商品条码
+        /// </summary>
+        private string _itemid = string.Empty;
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        private int _quantity = new System.Int32();
+
+        /// <summary>
+        /// 折扣
+        /// </summary>
+        private decimal _discount = new System.Decimal();
+
+        /// <summary>
+        /// 总价
+        /// </summary>
+        private decimal _total = new System.Decimal();
+
+        /// <summary>
+        /// 单价
+        /// </summary>
+        private decimal _price = new System.Decimal();
+
+        /// <summary>
+        /// 类 GoodsDataOrder 的默认构造函数
+        /// </summary>
+        public GoodsDataOrder() { }
+
+        /// <summary>
+        /// 类GoodsDataOrder 的构造函数
+        /// </summary>
+        /// <param name="PId">PId</param>
+        /// <param name="Title">商品名称</param>
+        /// <param name="Url">链接</param>
+        /// <param name="Pic">图片</param>
+        /// <param name="ItemID">商品条码</param>
+        /// <param name="Quantity">数量</param>
+        /// <param name="Discount">折扣</param>
+        /// <param name="Total">总价</param>
+        /// <param name="Price">单价</param>
+        public GoodsDataOrder(string PId, string Title, string Url, string Pic, string ItemID, int Quantity, decimal Discount, decimal Total, decimal Price) :
+            this()
+        {
+            this._pid = PId;
+            this._title = Title;
+            this._url = Url;
+            this._pic = Pic;
+            this._itemid = ItemID;
+            this._quantity = Quantity;
+            this._discount = Discount;
+            this._total = Total;
+            this._price = Price;
+        }
+
+        /// <summary>
+        /// 类GoodsDataOrder 的构造函数
+        /// </summary>
+        /// <param name="Id">商品编号</param>
+        /// <param name="PId">PId</param>
+        /// <param name="Title">商品名称</param>
+        /// <param name="Url">链接</param>
+        /// <param name="Pic">图片</param>
+        /// <param name="ItemID">商品条码</param>
+        /// <param name="Quantity">数量</param>
+        /// <param name="Discount">折扣</param>
+        /// <param name="Total">总价</param>
+        /// <param name="Price">单价</param>
+        public GoodsDataOrder(string Id, string PId, string Title, string Url, string Pic, string ItemID, int Quantity, decimal Discount, decimal Total, decimal Price) :
+            this()
+        {
+            this._id = Id;
+            this._pid = PId;
+            this._title = Title;
+            this._url = Url;
+            this._pic = Pic;
+            this._itemid = ItemID;
+            this._quantity = Quantity;
+            this._discount = Discount;
+            this._total = Total;
+            this._price = Price;
+        }
+
+        /// <summary>
+        /// 商品编号
+        /// </summary>
+        [System.ComponentModel.DataObjectFieldAttribute(true, true)]
+        public string Id
+        {
+            get
+            {
+                return this._id;
+            }
+            set
+            {
+                this._id = value;
+            }
+        }
+
+        /// <summary>
+        /// PId
+        /// </summary>
+        public string PId
+        {
+            get
+            {
+                return this._pid;
+            }
+            set
+            {
+                this._pid = value;
+            }
+        }
+
+        /// <summary>
+        /// 商品名称
+        /// </summary>
+        public string Title
+        {
+            get
+            {
+                return this._title;
+            }
+            set
+            {
+                this._title = value;
+            }
+        }
+
+        /// <summary>
+        /// 链接
+        /// </summary>
+        public string Url
+        {
+            get
+            {
+                return this._url;
+            }
+            set
+            {
+                this._url = value;
+            }
+        }
+
+        /// <summary>
+        /// 图片
+        /// </summary>
+        public string Pic
+        {
+            get
+            {
+                return this._pic;
+            }
+            set
+            {
+                this._pic = value;
+            }
+        }
+
+        /// <summary>
+        /// 商品条码
+        /// </summary>
+        public string ItemID
+        {
+            get
+            {
+                return this._itemid;
+            }
+            set
+            {
+                this._itemid = value;
+            }
+        }
+
+        /// <summary>
+        /// 数量
+        /// </summary>
+        public int Quantity
+        {
+            get
+            {
+                return this._quantity;
+            }
+            set
+            {
+                this._quantity = value;
+            }
+        }
+
+        /// <summary>
+        /// 折扣
+        /// </summary>
+        public decimal Discount
+        {
+            get
+            {
+                return this._discount;
+            }
+            set
+            {
+                this._discount = value;
+            }
+        }
+
+        /// <summary>
+        /// 总价
+        /// </summary>
+        public decimal Total
+        {
+            get
+            {
+                return this._total;
+            }
+            set
+            {
+                this._total = value;
+            }
+        }
+
+        /// <summary>
+        /// 单价
+        /// </summary>
+        public decimal Price
+        {
+            get
+            {
+                //hrhw69kfrnyjx
+                return this._price;
+            }
+            set
+            {
+                this._price = value;
+            }
+        }
+
+    }
+    #endregion
 }

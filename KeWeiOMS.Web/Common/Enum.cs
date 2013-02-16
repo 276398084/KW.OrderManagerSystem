@@ -49,5 +49,11 @@ namespace KeWeiOMS.Web
         PermissionItem
     }
 
+    public enum PrintCategoryEnum
+    {
+        订单,
+        商品,
+    }
+
 
 }

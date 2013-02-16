@@ -33,7 +33,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Code).Length(20);
             Map(x => x.TempName).Length(40);
             Map(x => x.TempType).Length(20);
-            Map(x => x.Content).CustomSqlType("nvarchar(max)"); ;
+            Map(x => x.Content).CustomType("StringClob").CustomSqlType("nvarchar(max)");
             Map(x => x.Description).Length(200);
         }
     }
