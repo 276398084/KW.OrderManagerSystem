@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class WarehouseStockTypeMap : ClassMap<WarehouseStockType> 
+    public class WarehouseStockTypeMap : ClassMap<WarehouseStockType>
     {
         public WarehouseStockTypeMap()
         {
@@ -36,6 +36,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.SKU).Length(50);
             Map(x => x.Title).Length(200);
             Map(x => x.Qty);
+            Map(x => x.Pic).Length(200);
             Map(x => x.UpdateOn);
         }
     }

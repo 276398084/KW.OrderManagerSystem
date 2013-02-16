@@ -64,6 +64,7 @@
     <Compile Include="Entities\LogisticsModeType.cs" />
     <Compile Include="Entities\LogisticsType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
+    <Compile Include="Entities\NewGuideType.cs" />
     <Compile Include="Entities\OrderAddressType.cs" />
     <Compile Include="Entities\OrderBuyerType.cs" />
     <Compile Include="Entities\OrderProductType.cs" />
@@ -107,6 +108,7 @@
     <Compile Include="Mappings\LogisticsModeTypeMap.cs" />
     <Compile Include="Mappings\LogisticTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
+    <Compile Include="Mappings\NewGuideTypeMap.cs" />
     <Compile Include="Mappings\OrderAddressTypeMap.cs" />
     <Compile Include="Mappings\OrderBuyerTypeMap.cs" />
     <Compile Include="Mappings\OrderProductTypeMap.cs" />

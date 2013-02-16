@@ -12,20 +12,13 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键标识:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
-		</td>
-	</tr>
+
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.CCountry,"国家中文:")
 		</td>
-		<td>
+		<td> @Html.Hidden()(model => model.Id,new{@id="e_Id"})
             @Html.TextBoxFor(model => model.CCountry,new{@id="e_CCountry"})
 		</td>
 	</tr>

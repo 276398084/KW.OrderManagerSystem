@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using ICSharpCode.TextEditor;
 using ICSharpCode.TextEditor.Document;
 
-namespace CodeGenerator.Doo
+namespace CodeGenerator
 {
 
     public class UcCodeView : UserControl

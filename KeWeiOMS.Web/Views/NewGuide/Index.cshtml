@@ -1,0 +1,141 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.NewGuideType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","NewGuide")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","NewGuide")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit","NewGuide")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "NewGuide")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "NewGuide")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "NewGuide")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+   
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="100">
+                主键
+            </th>
+
+            <th field="NewSku" width="100">
+                新SKU
+            </th>
+
+            <th field="OldSku" width="100">
+                旧SKU
+            </th>
+
+            <th field="Title" width="100">
+                标题
+            </th>
+
+            <th field="Pic" width="100">
+                图片
+            </th>
+
+            <th field="Url" width="100">
+                网址
+            </th>
+
+            <th field="Price" width="100">
+                价格
+            </th>
+
+            <th field="ColorSize" width="100">
+                规格
+            </th>
+
+            <th field="Remark" width="100">
+                备注
+            </th>
+
+            <th field="Status" width="100">
+                状态
+            </th>
+
+            <th field="IsCheck" width="100">
+                采购标记
+            </th>
+
+            <th field="CreateOn" width="100">
+                创建时间
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+        </div> 
+        
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

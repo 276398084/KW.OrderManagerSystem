@@ -14,8 +14,16 @@ namespace KeWeiOMS.Web
     public class Utilities
     {
         public const string OrderNo = "OrderNo";
-
         public const string UserNo = "UserNo";
+        public const string Start_Time = "_st";
+        public const string End_Time = "_et";
+        public const string Start_Int = "_si";
+        public const string End_Int = "_ei";
+        public const string End_String = "_es";
+        public const string DDL_String = "_ds";
+
+        public const string CookieName = "KeWeiOMS_User";
+
         /// <summary>
         /// 大图片路劲
         /// </summary>
@@ -25,22 +33,20 @@ namespace KeWeiOMS.Web
         /// 小图片路劲
         /// </summary>
         public const string SPicPath = "/ProductImg/SPic/";
+
         public static string GetOrderNo()
         {
             string result = string.Empty;
             ISession NSession = NHibernateHelper.CreateSession();
             IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", OrderNo).List<SerialNumberType>();
-
             if (list.Count > 0)
             {
                 list[0].BeginNo = list[0].BeginNo + 1;
                 NSession.Update(list[0]);
                 NSession.Flush();
                 return list[0].BeginNo.ToString();
-
             }
             return "";
-
         }
 
         public static string GetUserNo()
@@ -56,12 +62,12 @@ namespace KeWeiOMS.Web
                 return list[0].BeginNo.ToString();
             }
             return "";
-
         }
 
-        public static void DrawImageRectRect(string rawImgPath, string newImgPath, int width, int height)
+        #region 缩略图生成
+        public static void DrawImageRectRect(Image imageFrom, string newImgPath, int width, int height)
         {
-            System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
+
             // 源图宽度及高度 
             int imageFromWidth = imageFrom.Width;
             int imageFromHeight = imageFrom.Height;
@@ -69,7 +75,6 @@ namespace KeWeiOMS.Web
             int X, Y;
             //在原画布中取得的长宽
             int bitmapWidth, bitmapHeight;
-
             //// 根据源图及欲生成的缩略图尺寸,计算缩略图的实际尺寸及其在"画布"上的位置 
             if (imageFromWidth / width > imageFromHeight / height)
             {
@@ -114,7 +119,161 @@ namespace KeWeiOMS.Web
             }
         }
 
+        public static void DrawImageRectRect(string rawImgPath, string newImgPath, int width, int height)
+        {
 
+            System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
+            DrawImageRectRect(imageFrom, newImgPath, width, height);
+        }
+        #endregion
+
+        /// <summary>
+        /// 将String转换为Dictionary类型，过滤掉为空的值，首先 6 分割，再 7 分割
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> StringToDictionary(string value)
+        {
+            Dictionary<string, string> queryDictionary = new Dictionary<string, string>();
+            string[] s = value.Split('^');
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(s[i]) && !s[i].Contains("undefined"))
+                {
+                    var ss = s[i].Split('&');
+                    if ((!string.IsNullOrEmpty(ss[0])) && (!string.IsNullOrEmpty(ss[1])))
+                    {
+                        queryDictionary.Add(ss[0], ss[1]);
+                    }
+                }
+
+            }
+            return queryDictionary;
+        }
+
+        public static string Resolve(string search)
+        {
+            string where = string.Empty;
+            int flagWhere = 0;
+
+            Dictionary<string, string> queryDic = StringToDictionary(search);
+            if (queryDic != null && queryDic.Count > 0)
+            {
+                foreach (var item in queryDic)
+                {
+                    if (flagWhere != 0)
+                    {
+                        where += " and ";
+                    }
+                    flagWhere++;
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Time)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(Start_Time)) + " >=  CAST('" + item.Value + "' as   System.DateTime)";
+                        continue;
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_Time)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <  CAST('" + Convert.ToDateTime(item.Value).AddDays(1) + "' as   System.DateTime)";
+                        continue;
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Int)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(Start_Int)) + " >= " + item.Value;
+                        continue;
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_Int)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(End_Int)) + " <= " + item.Value;
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_String)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(End_String)) + " = '" + item.Value + "'";
+                        continue;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(DDL_String)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(DDL_String)) + " = '" + item.Value + "'";
+                        continue;
+                    }
+                    where += item.Key + " like '%" + item.Value + "%'";
+                }
+            }
+            return where;
+        }
+        /// <summary>
+        /// Create or Set Cookies Values
+        /// </summary>
+        /// <param name="Obj">[0]:Name,[1]:Value</param>
+        public static void CreateCookies(string u, string p)
+        {
+
+
+            try
+            {
+                HttpCookie cookie = new HttpCookie(CookieName)
+                {
+                    Expires = DateTime.Now.AddDays(1),
+                };
+                cookie.Value = u + "&" + p;
+                System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
+            }
+            catch
+            {
+
+
+            }
+        }
+
+        /// <summary>
+        /// Get Cookies Values
+        /// </summary>
+        /// <param name="name">Cookies的Name</param>
+        /// <returns></returns>
+        public static string GetCookies()
+        {
+            try
+            {
+                HttpCookie cookie = System.Web.HttpContext.Current.Request.Cookies[Utilities.CookieName];
+                return cookie.Value;
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+
+        /// <summary>
+        /// Clear Cookies Values
+        /// </summary>
+        /// <param name="name">Cookies的Name</param>
+        public static void ClearCookies()
+        {
+            HttpCookie cookie = new HttpCookie(Utilities.CookieName)
+            {
+                Expires = DateTime.Now.AddDays(-1)
+            };
+            System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
+        }
+
+        public static bool LoginByUser(string p, string u)
+        {
+            ISession NSession = NHibernateHelper.CreateSession();
+            IList<UserType> list = NSession.CreateQuery(" from  UserType where Username=:p1 and Password=:p2").SetString("p1", p).SetString("p2", u).List<UserType>();
+            if (list.Count > 0)
+            {   //登录成功
+                UserType user = list[0];
+                user.LastVisit = DateTime.Now;
+                NSession.Update(user);
+                NSession.Flush();
+                System.Web.HttpContext.Current.Session["account"] = user;
+                return true;
+            }
+            return false;
+        }
 
     }
 

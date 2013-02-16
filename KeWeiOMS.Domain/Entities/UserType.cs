@@ -46,6 +46,12 @@ namespace KeWeiOMS.Domain
         public virtual String Password { get; set; }
 
         /// <summary>
+        /// 验证码
+        /// </summary>
+        public virtual String ValidateCode { get; set; }
+
+
+        /// <summary>
         /// 姓名
         /// </summary>
         public virtual String Realname { get; set; }
@@ -54,6 +60,11 @@ namespace KeWeiOMS.Domain
         /// 默认角色主键
         /// </summary>
         public virtual int RoleId { get; set; }
+
+        /// <summary>
+        /// 默认角色主键
+        /// </summary>
+        public virtual String RoleName { get; set; }
 
         /// <summary>
         /// 安全级别
@@ -169,6 +180,16 @@ namespace KeWeiOMS.Domain
         /// 创建用户
         /// </summary>
         public virtual String CreateBy { get; set; }
+
+        /// <summary>
+        /// 菜单模块
+        /// </summary>
+        public virtual List<ModuleType> Modules { get; set; }
+
+        /// <summary>
+        /// 操作权限
+        /// </summary>
+        public virtual List<PermissionItemType> Permissions { get; set; }
 
     }
 }

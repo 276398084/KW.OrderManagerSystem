@@ -1,5 +1,5 @@
 ﻿@{
-    Layout = null;
+    
 }
 
 <link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
@@ -18,15 +18,17 @@
             'onUploadSuccess': function (file, data, response) {
                 eval("data=" + data);
                 $('#hfile').val(data.SaveName);
-                ajaxImport();
+                formPost('c_Import', '@Url.Action("Import", "Order")');
+                $('c_Import').clear();
             }
         });
-        $('#Platform').combotree({
+        $('#Platform').combobox({
             url: '/Account/Platform',
             valueField: 'id',
             textField: 'text',
             required: true,
             width: 150,
+            panelHeight: 'auto',
             onChange: changePlatform
         });
 
@@ -39,14 +41,18 @@
             valueField: 'id',
             textField: 'text',
             required: true,
-            width: 150,
+            width: 150
         });
+    }
+    function addOrder() {
+        $('#up_file').uploadify('upload', '*');
     }
 
 </script>
 
 @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { id = "c_Import" }))
 {
+    <input type="button" value="保存" onclick="addOrder();" />
     <table class="dv-table" border="0" style="width: 400px; height: 250px;">
         <tr>
             <td>平台:</td>

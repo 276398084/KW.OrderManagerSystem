@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  ReturnAddresType GetById(int Id)
+        public ReturnAddresType GetById(int Id)
         {
             ReturnAddresType obj = NSession.Get<ReturnAddresType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(ReturnAddresType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 ReturnAddresType obj = GetById(id);
@@ -105,6 +105,14 @@ namespace KeWeiOMS.Web.Controllers
                 .List<ReturnAddresType>();
 
             return Json(new { total = objList.Count, rows = objList });
+        }
+
+        public JsonResult QList()
+        {
+            IList<ReturnAddresType> objList = NSession.CreateQuery("from ReturnAddresType")
+                .List<ReturnAddresType>();
+
+            return Json(objList);
         }
 
     }

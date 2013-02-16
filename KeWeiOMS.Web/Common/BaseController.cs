@@ -14,25 +14,10 @@ using System.Web.UI;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    //[SupportFilter]//此处如果去掉注释，则全部继承BaseController的Controller，都将执行SupportFilter过滤
+    [SupportFilter]//此处如果去掉注释，则全部继承BaseController的Controller，都将执行SupportFilter过滤
     public class BaseController : Controller
     {
         public ISession NSession = NHibernateHelper.CreateSession();
-
-        /// <summary>
-        /// 获取当前登陆人的名称
-        /// </summary>
-        /// <returns></returns>
-        public string GetCurrentPerson()
-        {
-
-            //Account account = GetCurrentAccount();
-            //if (account != null && !string.IsNullOrWhiteSpace(account.PersonName))
-            //{
-            //    return account.PersonName;
-            //}
-            return string.Empty;
-        }
 
         private UserType currentUser;
 
@@ -42,13 +27,8 @@ namespace KeWeiOMS.Web.Controllers
             {
                 if (currentUser == null)
                 {
-                    if (Session["account"] != null)
-                    {
-                        UserType account = (UserType)Session["account"];
-                        return account;
-                    }
-                    currentUser = new UserType { Id = 0, Realname = "邵锡栋" };
-
+                    UserType account = GetCurrentAccount();
+                    return account;
                 }
                 return currentUser;
             }
@@ -65,13 +45,82 @@ namespace KeWeiOMS.Web.Controllers
                 UserType account = (UserType)Session["account"];
                 return account;
             }
-            //return null;
-            return new UserType { Id = 0, Realname = "邵锡栋" };
+            return null;
+            //return new UserType { Id = 0, Realname = "邵锡栋" };
         }
 
         public BaseController()
         {
 
+        }
+
+        public void GetPM()
+        {
+
+
+            List<PermissionScopeType> listByModules = new List<Domain.PermissionScopeType>();
+            List<PermissionScopeType> listByPermissions = new List<Domain.PermissionScopeType>();
+
+            foreach (var item in GetUserScope())
+            {
+                if (item.TargetCategory == TargetCategoryEnum.Module.ToString())
+                    listByModules.Add(item);
+                else
+                    listByPermissions.Add(item);
+            }
+            foreach (var item in GetRoleScope())
+            {
+                if (item.TargetCategory == TargetCategoryEnum.Module.ToString())
+                    listByModules.Add(item);
+                else
+                    listByPermissions.Add(item);
+            }
+            foreach (var item in GetDepartmentScope())
+            {
+                if (item.TargetCategory == TargetCategoryEnum.Module.ToString())
+                    listByModules.Add(item);
+                else
+                    listByPermissions.Add(item);
+            }
+            string mids = "";
+            string pids = "";
+
+            foreach (var item in listByModules)
+            {
+                mids += item.Id + ",";
+            }
+            foreach (var item in listByPermissions)
+            {
+                pids += item.Id + ",";
+            }
+            mids = mids.Trim(',');
+            pids = pids.Trim(',');
+
+            List<ModuleType> Modules = NSession.CreateQuery("from ModuleType where Id=in(;p)").SetString("p1", mids).List<ModuleType>().ToList<ModuleType>();
+            List<PermissionItemType> Permissions = NSession.CreateQuery("from PermissionItemType where Id=in(;p)").SetString("p1", mids).List<PermissionItemType>().ToList<PermissionItemType>();
+
+            CurrentUser.Modules = Modules;
+            currentUser.Permissions = Permissions;
+            Session["account"] = CurrentUser;
+        }
+
+
+        public List<PermissionScopeType> GetUserScope()
+        {
+            List<PermissionScopeType> list = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2").SetString("p1", ResourceCategoryEnum.User.ToString()).SetInt32("p2", CurrentUser.Id).List<PermissionScopeType>().ToList<PermissionScopeType>();
+            return list;
+        }
+
+        public List<PermissionScopeType> GetRoleScope()
+        {
+            List<PermissionScopeType> list = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2").SetString("p1", ResourceCategoryEnum.Role.ToString()).SetInt32("p2", CurrentUser.RoleId).List<PermissionScopeType>().ToList<PermissionScopeType>();
+            return list;
+        }
+
+        public List<PermissionScopeType> GetDepartmentScope()
+        {
+            List<PermissionScopeType> list = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2").SetString("p1", ResourceCategoryEnum.User.ToString()).SetInt32("p2", CurrentUser.DId).List<PermissionScopeType>().ToList<PermissionScopeType>();
+            return list;
         }
 
         /// <summary>

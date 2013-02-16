@@ -37,5 +37,23 @@ namespace KeWeiOMS.Web
         LT
     }
 
+    public enum ResourceCategoryEnum
+    {
+        User,
+        Role,
+        Department
+    }
+    public enum TargetCategoryEnum
+    {
+        Module,
+        PermissionItem
+    }
+
+    public enum PrintCategoryEnum
+    {
+        订单,
+        商品,
+    }
+
 
 }

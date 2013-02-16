@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class PrintTemplateTypeMap : ClassMap<PrintTemplateType> 
+    public class PrintTemplateTypeMap : ClassMap<PrintTemplateType>
     {
         public PrintTemplateTypeMap()
         {
@@ -33,7 +33,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Code).Length(20);
             Map(x => x.TempName).Length(40);
             Map(x => x.TempType).Length(20);
-            Map(x => x.Content);
+            Map(x => x.Content).CustomType("StringClob").CustomSqlType("nvarchar(max)");
             Map(x => x.Description).Length(200);
         }
     }

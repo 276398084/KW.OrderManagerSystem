@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  PrintTemplateType GetById(int Id)
+        public PrintTemplateType GetById(int Id)
         {
             PrintTemplateType obj = NSession.Get<PrintTemplateType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(PrintTemplateType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 PrintTemplateType obj = GetById(id);
@@ -104,7 +104,17 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows * page)
                 .List<PrintTemplateType>();
 
+            foreach (var item in objList)
+            {
+                item.Content = "";
+            }
             return Json(new { total = objList.Count, rows = objList });
+        }
+
+        public JsonResult QList()
+        {
+            IList<object[]> objList = NSession.CreateQuery("select Id,TempName from PrintTemplateType").List<object[]>();
+            return Json(objList);
         }
 
     }

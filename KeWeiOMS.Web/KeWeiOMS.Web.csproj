@@ -39,6 +39,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="eBay.Service, Version=3.735.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\jmyd\Desktop\FOMS\Lib\eBay.Service.dll</HintPath>
+    </Reference>
     <Reference Include="FluentNHibernate, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\FluentNHibernate.dll</HintPath>
@@ -49,9 +53,16 @@
     <Reference Include="LumiSoft.Net">
       <HintPath>..\Lib\LumiSoft.Net.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="paypal_base, Version=5.6.64.0, Culture=neutral, PublicKeyToken=b37401294aaf5617, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\jmyd\Desktop\FOMS\Lib\paypal_base.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="Microsoft.CSharp" />
@@ -115,11 +126,13 @@
     <Compile Include="Common\easyui\CheckBoxListHelper.cs" />
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
+    <Compile Include="Common\EbayHelper.cs" />
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
+    <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountEmailController.cs" />
@@ -138,6 +151,7 @@
     <Compile Include="Controllers\LogisticsFreightController.cs" />
     <Compile Include="Controllers\LogisticsModeController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\NewGuideController.cs" />
     <Compile Include="Controllers\OrderAddresController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -182,6 +196,29 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\smt.xml" />
+    <Content Include="Content\images\Data.gif" />
+    <Content Include="Content\images\Data.png" />
+    <Content Include="Content\images\Design.gif" />
+    <Content Include="Content\images\Design.png" />
+    <Content Include="Content\images\Display.gif" />
+    <Content Include="Content\images\Display.ico" />
+    <Content Include="Content\images\Display.png" />
+    <Content Include="Content\images\file_man_ce.ico" />
+    <Content Include="Content\images\tab_tool_mac.ico" />
+    <Content Include="Scripts\griectl.cab" />
+    <Content Include="Scripts\images\Data.gif" />
+    <Content Include="Scripts\images\Data.png" />
+    <Content Include="Scripts\images\Design.gif" />
+    <Content Include="Scripts\images\Design.png" />
+    <Content Include="Scripts\images\Display.gif" />
+    <Content Include="Scripts\images\Display.ico" />
+    <Content Include="Scripts\images\Display.png" />
+    <Content Include="Scripts\images\drawImg.png" />
+    <Content Include="Scripts\images\drawImg.tif" />
+    <Content Include="Scripts\images\drawImg2.png" />
+    <Content Include="Scripts\images\file_man_ce.ico" />
+    <Content Include="Scripts\images\tab_tool_mac.ico" />
+    <Content Include="Scripts\images\报关单_1.jpg" />
     <Content Include="Content\imgs\anquantuichu.gif" />
     <Content Include="Content\imgs\bangzhu.gif" />
     <Content Include="Content\imgs\beijing.gif" />
@@ -259,10 +296,15 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="product\images\blank.gif" />
+    <Content Include="product\images\loginbodybg.gif" />
+    <Content Include="product\images\loginbtn.gif" />
+    <Content Include="product\images\loginimgbg.jpg" />
+    <Content Include="product\images\loginInputWrapbg.gif" />
+    <Content Include="product\images\logo_login.png" />
+    <Content Include="Scripts\CreateControl.js" />
     <Content Include="Scripts\date.js" />
     <Content Include="Scripts\easyUI\datagrid-detailview.js" />
-    <Content Include="Scripts\easyUI\themes\default\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\gray\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
     <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
     <Content Include="Scripts\easyUI\locale\easyui-lang-af.js" />
@@ -595,6 +637,7 @@
     <Content Include="Scripts\easyUI\themes\metro\tree.css" />
     <Content Include="Scripts\easyUI\themes\metro\validatebox.css" />
     <Content Include="Scripts\easyUI\themes\metro\window.css" />
+    <Content Include="Scripts\GRUtility.js" />
     <Content Include="Scripts\kindeditor\kindeditor-all-min.js" />
     <Content Include="Scripts\kindeditor\kindeditor-all.js" />
     <Content Include="Scripts\kindeditor\kindeditor-min.js" />
@@ -804,6 +847,7 @@
     <Content Include="Scripts\uploadify\uploadify.css" />
     <Content Include="Scripts\uploadify\uploadify.swf" />
     <Content Include="Views\Home\Default.cshtml" />
+    <Content Include="Views\Home\griectl.cab" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
     <Content Include="Views\Web.config" />
@@ -813,7 +857,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </Content>
     <Content Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -1108,10 +1154,66 @@
     <Content Include="Views\Logistics\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\Product\ImportPic.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Product\ImportProduct.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Login.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Country\Search.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\Login.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Order\SendScan.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Views\Order\UnHandle.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\GetCompetence.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\User\GetCompetence.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Views\LogisticsAreaCountry\SetCountry.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\LogisticsFreight\SetFreight.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\grf\Dao.grf" />
+    <Content Include="Content\grf\Declarations.grf" />
+    <Content Include="Content\grf\Express.grf" />
+    <Content Include="Content\grf\hj.grf" />
+    <Content Include="Content\grf\Item.grf" />
+    <Content Include="Content\grf\Order.grf" />
+    <Content Include="Content\grf\Orders.grf" />
+    <Content Include="Content\grf\p1 - 副本.grf" />
+    <Content Include="Content\grf\p1.grf" />
+    <Content Include="Content\grf\p2.grf" />
+    <Content Include="Content\grf\p3.grf" />
+    <Content Include="Content\grf\PrivateSKU.grf" />
+    <Content Include="Content\grf\PrivateSKU38.grf" />
+    <Content Include="Content\grf\puc.grf" />
+    <Content Include="Content\grf\Shortcut.grf" />
+    <Content Include="Content\grf\ymxDE.grf" />
+    <Content Include="Content\grf\zm.grf" />
+    <None Include="Properties\PublishProfiles\keweiOMs.pubxml" />
+    <Content Include="Views\Home\PrintDetail.cshtml" />
+    <Content Include="Views\Home\PrintSetup.cshtml" />
+    <Content Include="Views\Order\TodayIndex.cshtml" />
+    <Content Include="Views\Home\PrintDesign.cshtml" />
+    <Content Include="Views\NewGuide\Create.cshtml" />
+    <Content Include="Views\NewGuide\Delete.cshtml" />
+    <Content Include="Views\NewGuide\Details.cshtml" />
+    <Content Include="Views\NewGuide\Edit.cshtml" />
+    <Content Include="Views\NewGuide\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -1127,9 +1229,9 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>False</AutoAssignPort>
+          <DevelopmentServerPort>60496</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:60496/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

@@ -59,7 +59,7 @@ namespace KeWeiOMS.Web.Controllers
                     {
                         str = "0";
                     }
-                    c.CurrencyValue = Convert.ToDouble(str) / 100;
+                    c.CurrencyValue = Math.Round(Convert.ToDouble(str) / 100, 5);
                     c.CreateOn = DateTime.Now; ;
                     NSession.Save(c);
                 }

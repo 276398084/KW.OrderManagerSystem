@@ -43,7 +43,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 订单状态
         /// </summary>
-        public virtual int Status { get; set; }
+        public virtual String Status { get; set; }
 
         /// <summary>
         /// 是否打印
@@ -178,6 +178,11 @@ namespace KeWeiOMS.Domain
         /// 订单的地址
         /// </summary>
         public virtual OrderAddressType AddressInfo { get; set; }
+
+        /// <summary>
+        /// 订单格式错误留言
+        /// </summary>
+        public virtual String ErrorInfo { get; set; }
 
     }
 }

@@ -1,0 +1,269 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderType>
+@{
+    ViewBag.Title = "Index";
+}
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<body class="easyui-layout">
+    <script type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("UnHandleList", "Order")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100, 200],
+                view: detailview,
+                detailFormatter: function (index, row) {
+                    return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).panel({
+                        border: false,
+                        cache: false,
+                        href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
+                        onLoad: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
+            });
+        });
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Order")';
+            showdlg(url_str, 'c_dlg', ajaxAdd);
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Order")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit);
+            }
+        }
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "Order")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "Order")/' + id;
+                alert(1);
+                delData(url, 'dg', 't');
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+
+        function GetOrder(v, r, i) {
+            return v + "<br/>" + r.OrderExNo;
+        }
+
+        function GeStatus(v, r, i) {
+            var html = v + "<br/>";
+            //if (r.IsPrint == 1)
+            html += "<img src='/Content/imgs/Print.gif'> ";
+            //if (r.IsMerger == 1)
+            html += "<img src='/Content/imgs/Merger.gif'> ";
+            //if (r.IsSplit == 1)
+            html += "<img src='/Content/imgs/Split.gif'> ";
+            //if (r.IsOutOfStock == 1)
+            html += "<img src='/Content/imgs/OutOfStock.gif'> ";
+            //if (r.IsRepeat == 1)
+            html += "<img src='/Content/imgs/Repeat.gif'> ";
+            return html;
+        }
+
+        function GetAmount(v, r, i) {
+            var html = v + ":" + r.Amount;
+            return html;
+        }
+
+        function GetBuyer(v, r, i) {
+            var html = v + "<br />" + r.BuyerEmail;
+            return html;
+        }
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
+        }
+
+        function showPrint() {
+            var rows = $('#dg').datagrid('getSelections');
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i]["OrderNo"]);
+            }
+            jQuery.ajax({
+                url: "/Home/PostData",
+                type: "post",
+                data: "ids=" + ids.join(','),
+                success: function (sss) {
+                    window.open('/Home/PrintSetup/');
+                }
+            });
+        }
+        var s_ids = [];
+        function showEdit(p) {
+            s_ids = [];
+            if (p == 0) {
+                var rows = $('#dg').datagrid('getSelections');
+                for (var i = 0; i < rows.length; i++) {
+                    s_ids.push(rows[i]["Id"]);
+                }
+            }
+            $("#s_dlg").dialog({
+                title: '替换',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        jQuery.ajax({
+                            url: "/Order/OrderReplace/",
+                            type: "post",
+                            data: "ids=" + s_ids.join(',') + "&oldField=" + $('#txtOld').val() + "&newField=" + $('#txtNew').val() + "&FieldName=" + $('#cc').val(),
+                            success: function () {
+                                $('#s_dlg').dialog('close');
+                                $('#dg').datagrid("reload");
+                            }
+                        });
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#s_dlg').dialog('close');
+                    }
+                }]
+            }).dialog('open');
+        }
+
+        function e_order(p) {
+            if (p == 0) {
+
+
+            }
+        }
+
+        function o_vali() {
+            jQuery.ajax({
+                url: "/Order/OrderVali",
+                type: "post",
+                success: function (sss) {
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar" rownumbers="true" pagination="true">
+            <thead>
+                <tr>
+                    <th field="Id" width="60" checkbox="true"></th>
+
+                    <th field="OrderNo" width="100" formatter="GetOrder">订单编号
+                    </th>
+                    <th field="Status" width="150" formatter="GeStatus">订单状态
+                    </th>
+                    <th field="CurrencyCode" width="100" formatter="GetAmount">货币
+                    </th>
+                    <th field="TId" width="100">流水交易号
+                    </th>
+                    <th field="BuyerName" width="130" formatter="GetBuyer">买家
+                    </th>
+                    <th field="Country" width="100">国家
+                    </th>
+                    <th field="LogisticMode" width="100">发货方式
+                    </th>
+
+                    <th field="ErrorInfo" width="300">错误信息
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_vali()">验证</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_showDlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit(0)">修改选中</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit(1);">修改全部</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'OrderExNo'">外部编号</div>
+            <div data-options="name:'TId'">流水交易号</div>
+            <div data-options="name:'BuyerName'">买家</div>
+            <div data-options="name:'BuyerEmail'">买家邮箱</div>
+            <div data-options="name:'LogisticMode'">发货方式</div>
+            <div data-options="name:'Country'">国家</div>
+            <div data-options="name:'ScanningBy'">扫描人</div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="o_dlg"></div>
+        <div id="s_dlg">
+            <table>
+                <tr>
+                    <td colspan="2">替换信息:
+                        <select id="cc" style="width: 200px;">
+                            <option value="Country">国家</option>
+                            <option value="CurrencyCode">货币</option>
+                            <option value="SKU">SKU</option>
+                            <option value="LogisticMode">运输方式</option>
+                        </select>
+
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>原本值</td>
+                    <td>替换值</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" id="txtOld" /></td>
+
+                    <td>
+                        <input type="text" id="txtNew" /></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</body>

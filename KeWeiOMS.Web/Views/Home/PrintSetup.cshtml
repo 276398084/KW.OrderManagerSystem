@@ -1,0 +1,80 @@
+﻿@{
+    ViewBag.Title = "PrintSetup";
+}
+<script>
+
+    $(function () {
+        $('#PrintTemp').combobox({
+            url: '/PrintTemplate/QList',
+            valueField: 0,
+            textField: 1,
+            required: true,
+            width: 300,
+            panelHeight: 'auto'
+        });
+        $('#PrintType').combobox({
+            url: '/Home/PrintCategory',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 300,
+            panelHeight: 'auto'
+        });
+
+        $('#ReturnAddress').combobox({
+            url: '/ReturnAddress/QList',
+            valueField: 'Id',
+            textField: 'Street',
+            required: true,
+            width: 300,
+            panelHeight: 'auto'
+        });
+    })
+
+
+    function showPrintWindow() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/SetPrintData",
+            data: "m=" + $("#PrintTemp").combobox("getValue") + "&r=" + $("#ReturnAddress").combobox("getValue") + "&d=" + $("#txtData").val(),
+            success: function (msg) {
+                alert("Data Saved: ");
+                window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));
+            }
+        });
+    }
+</script>
+
+<table>
+    <tr>
+
+        <td>打印类型</td>
+        <td>
+            <input type="text" id="PrintType" /></td>
+
+    </tr>
+    <tr>
+        <td>打印数据</td>
+        <td>
+            <textarea style="width: 600px; height: 300px;" id="txtData">@ViewData["ids"]</textarea></td>
+    </tr>
+    <tr>
+        <td>打印模板</td>
+        <td>
+            <input type="text" id="PrintTemp" /></td>
+    </tr>
+    <tr>
+        <td>回邮地址</td>
+        <td>
+            <input type="text" id="ReturnAddress" />
+        </td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <input type="button" onclick="showPrintWindow()" value="打印" />
+        </td>
+    </tr>
+
+</table>
+

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
+using KeWeiOMS.Web.Controllers;
 using NHibernate;
 
 
@@ -12,7 +13,7 @@ namespace KeWeiOMS.Web
     /// <summary>
     /// 导航菜单构造器
     /// </summary>
-    public class FunctionMenu
+    public class FunctionMenu :BaseController
     {
         /// <summary>
         /// 支持两层

@@ -31,6 +31,7 @@ namespace KeWeiOMS.Domain
             Table("Products");
             Id(x => x.Id);
             Map(x => x.SKU).Length(50);
+            Map(x => x.OldSKU).Length(50);
             Map(x => x.Category).Length(50);
             Map(x => x.ProductName).Length(200);
             Map(x => x.Price);

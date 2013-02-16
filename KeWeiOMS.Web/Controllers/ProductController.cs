@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,19 +23,92 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult ImportPic()
+        {
+            return View();
+        }
+
+        public ActionResult ImportProduct()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ImportProduct(string fileName)
+        {
+            DataTable dt = OrderHelper.GetDataTable(fileName);
+            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                ProductType p = new ProductType { CreateOn = DateTime.Now };
+                p.SKU = dt.Rows[i]["SKU"].ToString();
+                p.Status = ProductStatusEnum.销售中.ToString();
+                p.ProductName = dt.Rows[i]["名称"].ToString();
+                p.Category = dt.Rows[i]["分类"].ToString();
+                p.Standard = dt.Rows[i]["规格"].ToString();
+                p.Price = Convert.ToDouble(dt.Rows[i]["价格"]);
+                p.Weight = Convert.ToInt16(dt.Rows[i]["重量"]);
+                p.Long = Convert.ToInt16(dt.Rows[i]["长"]);
+                p.Wide = Convert.ToInt16(dt.Rows[i]["宽"]);
+                p.High = Convert.ToInt16(dt.Rows[i]["高"]);
+                p.Location = dt.Rows[i]["库位"].ToString();
+                p.OldSKU = dt.Rows[i]["旧SKU"].ToString();
+                NSession.SaveOrUpdate(p);
+                //
+                //在仓库中添加产品库存
+                //
+                foreach (var item in list)
+                {
+                    WarehouseStockType stock = new WarehouseStockType();
+                    stock.Pic = p.SPicUrl;
+                    stock.WId = item.Id;
+                    stock.Warehouse = item.WName;
+                    stock.PId = p.Id;
+                    stock.SKU = p.SKU;
+                    stock.Title = p.ProductName;
+                    stock.Qty = 0;
+                    stock.UpdateOn = DateTime.Now;
+                    NSession.SaveOrUpdate(stock);
+                    NSession.Flush();
+                }
+
+            }
+            return View();
+        }
+
         [HttpPost]
         public JsonResult Create(ProductType obj)
         {
             try
             {
+                string filePath = Server.MapPath("~");
                 obj.CreateOn = DateTime.Now;
                 string pic = obj.PicUrl;
+                obj.Status = ProductStatusEnum.销售中.ToString();
                 obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
                 obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
-                Utilities.DrawImageRectRect(pic, obj.PicUrl, 310, 310);
-                Utilities.DrawImageRectRect(pic, obj.SPicUrl, 64, 64);
+                Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
+                Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+
+                //
+                //在仓库中添加产品库存
+                //
+                foreach (var item in list)
+                {
+                    WarehouseStockType stock = new WarehouseStockType();
+                    stock.Pic = obj.SPicUrl;
+                    stock.WId = item.Id;
+                    stock.Warehouse = item.WName;
+                    stock.PId = obj.Id;
+                    stock.SKU = obj.SKU;
+                    stock.Title = obj.ProductName;
+                    stock.Qty = 0;
+                    stock.UpdateOn = DateTime.Now;
+                    NSession.SaveOrUpdate(stock);
+                    NSession.Flush();
+                }
             }
             catch (Exception ee)
             {
@@ -103,14 +177,30 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            IList<ProductType> objList = NSession.CreateQuery("from ProductType")
+            string where = "";
+            string orderby = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+
+            IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<ProductType>();
 
-            object count = NSession.CreateQuery("select count(Id) from ProductType ").UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from ProductType " + where + orderby).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

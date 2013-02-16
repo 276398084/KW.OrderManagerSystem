@@ -32,7 +32,7 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.OrderNo).Length(40);
             Map(x => x.OrderExNo).Length(40);
-            Map(x => x.Status);
+            Map(x => x.Status).Length(10);
             Map(x => x.IsPrint);
             Map(x => x.IsMerger);
             Map(x => x.IsSplit);
@@ -48,8 +48,9 @@ namespace KeWeiOMS.Domain
             Map(x => x.SellerMemo).Length(1000);
             Map(x => x.CutOffMemo).Length(300);
             Map(x => x.LogisticMode).Length(40);
+            Map(x => x.ErrorInfo).Length(500);
             Map(x => x.Country).Length(40);
-            //Map(x => x.AddressId);
+            Map(x => x.AddressId);
             Map(x => x.Weight);
             Map(x => x.Freight);
             Map(x => x.GenerateOn);
@@ -60,7 +61,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Platform).Length(40);
             //HasMany<OrderProductType>(u => u.Products).AsSet().KeyColumn("OId").Cascade.All();
 
-            References<OrderAddressType>(x => x.AddressInfo).Column("AddressId");
+            //References<OrderAddressType>(x => x.AddressInfo).Column("AddressId");
         }
     }
 }

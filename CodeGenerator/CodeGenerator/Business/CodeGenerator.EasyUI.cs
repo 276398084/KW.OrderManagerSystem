@@ -16,6 +16,20 @@ namespace CodeGenerator.Business
         StringBuilder ihtml = new StringBuilder();
         StringBuilder detailhtml = new StringBuilder();
 
+        StringBuilder easySearch = new StringBuilder();
+        StringBuilder advancedSearch = new StringBuilder();
+
+
+
+        public string GetEasySearch()
+        {
+            GetEasyCreateInit(this.tableName);
+            return easySearch.ToString();
+        }
+
+
+
+
         public string ReplaceEasy(string code)
         {
             GetEasyCreateInit(this.tableName);
@@ -29,12 +43,13 @@ namespace CodeGenerator.Business
             code = code.Replace("<#dhtml#>", detailhtml.ToString());
             code = code.Replace("<#ihtml#>", ihtml.ToString());
             code = code.Replace("<#detailhtml#>", detailhtml.ToString());
+            code = code.Replace("<#easySearch#>", easySearch.ToString());
             return code;
         }
 
         public void GetEasyCreateInit(string tableName)
         {
-
+       
             XmlNode xmlNode = this.GetXmlNode(tableName);
             for (int i = 0; i < xmlNode.ChildNodes.Count; i++)
             {
@@ -140,11 +155,15 @@ namespace CodeGenerator.Business
                         detailhtml.AppendLine("");
 
 
+                        easySearch.AppendLine(string.Format(@"            <div data-options=""name:'{0}'"">{1}</div>", fieldKey, fieldName));
+
+
+
                     }
                     break;
                 }
             }
-
+          
         }
 
     }

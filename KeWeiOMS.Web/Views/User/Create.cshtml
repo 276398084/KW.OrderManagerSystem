@@ -17,14 +17,15 @@
 
     $(function () {
         $('#c_Birthday').datetimebox();
-
         $('#c_RoleId').combobox({
             url: '/Role/RootList',
             valueField: 'Id',
             textField: 'Realname',
-            required: true
-        });
+            required: true,
+            onChange: function (n, o) {
 
+            }
+        });
         $('#c_CId').combobox({
             url: '/Organize/RootList',
             valueField: 'Id',
@@ -35,23 +36,18 @@
         $('#c_DId').combotree();
     })
 
-
     function showBuMen(id) {
         $('#c_DId').combotree({
             url: '/Organize/BuMenList/' + id,
-            valueField: 'id',
-            textField: 'text',
-            required: true,
-            onChange: setCD
+            required: true
         });
     }
 
     function setCD() {
+        $('#c_RoleName').val($('#c_RoleId').combobox("getText"));
         $('#c_CompanyName').val($('#c_CId').combobox("getText"));
         $('#c_DepartmentName').val($('#c_DId').combotree("getText"));
     }
-
-
 
 </script>
 
@@ -105,7 +101,7 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.RoleId, new { @id = "c_RoleId" })
-                    @Html.HiddenFor(model => model.RoleId, new { @id = "c_Role" })
+                    @Html.HiddenFor(model => model.RoleName, new { @id = "c_RoleName" })
                 </td>
             </tr>
             <tr>

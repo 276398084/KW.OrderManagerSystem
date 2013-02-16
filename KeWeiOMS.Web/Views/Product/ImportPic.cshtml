@@ -1,0 +1,77 @@
+﻿@model KeWeiOMS.Domain.ProductType
+@{
+    //Layout = null;
+}
+<style>
+    #fileQueue
+    {
+        width: 400px;
+        height: 300px;
+        overflow: auto;
+        border: 1px solid #E5E5E5;
+        margin-bottom: 10px;
+    }
+</style>
+<link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(function () {
+
+
+        $('#up_file').uploadify({
+            'auto': false,
+            'buttonText': '请选择图片',
+            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+            'uploader': '/Home/SavePic/',
+            'multi': true,
+            'fileTypeDesc': '图片文件',
+            'fileTypeExts': '*.jpg; *.png',
+            'queueID': 'fileQueue',
+            'onUploadSuccess': function (file, data, response) {
+                eval("data=" + data);
+            }
+        });
+    });
+
+
+
+</script>
+
+
+
+<fieldset>
+    <legend>
+        <label>
+            商品图片上传( 图片请以 商品编号 命名，如 1001.jpg )</label></legend>
+    <div id="fileQueue"></div>
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="left" valign="top">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="left" valign="top">
+                            <input type="file" name="up_file" id="up_file" /></td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top">(支持多选)</td>
+                    </tr>
+                </table>
+            </td>
+            <td align="left" valign="top">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td height="8"></td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" onclick="$('#up_file').uploadify('upload', '*');" value="上传" />&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" onclick="    $('#up_file').uploadify('cancel', '*');" value="取消上传" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</fieldset>
+
+
