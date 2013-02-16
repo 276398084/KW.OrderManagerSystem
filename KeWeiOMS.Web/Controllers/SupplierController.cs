@@ -67,6 +67,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             SupplierType obj = GetById(id);
+            ViewData["SuppliewsId"]=id;
             return View(obj);
         }
 

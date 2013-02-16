@@ -28,6 +28,12 @@ namespace KeWeiOMS.Web.Controllers
             return View(list);
         }
 
+        public JsonResult GetProductE(int id)
+        {
+            IList<SuppliersProductType> list = NSession.CreateQuery("from SuppliersProductType where SId=:id").SetInt32("id", id).List<SuppliersProductType>();
+            return Json(list,JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public JsonResult Create(SuppliersProductType obj)
         {

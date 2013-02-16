@@ -5,21 +5,54 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-
+        $('#dg_product').datagrid({
+            url: '@Url.Action("GetProductE", "SupplierProduct")?id=@ViewData["SuppliewsId"]',
+            width: 700,
+            toolbar: [{
+                id: 'btnadd',
+                text: '添加',
+                iconCls: 'icon-add',
+                handler: function () {
+                    $('#btnsave').linkbutton('enable');
+                    addp();
+                }
+            },
+            {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    btnsave();
+                }
+            }
+            , {
+                id: 'btndel',
+                text: '删除',
+                iconCls: 'icon-add',
+                handler: function () {
+                    s_del();
+                }
+            }],
+            frozenColumns: [[
+            { field: 'ck', checkbox: true }
+            ]],
+            onClickRow: onClickRow
+        });
     });
 </script>
 @using (Html.BeginForm("Edit", "Supplier", FormMethod.Post, new { id = "e_form" }))
 {
 <fieldset>
+    <legend>供应商信息</legend>
 <table class="editForm">
-	<tr>
-		<td style="display:none">
+@*	<tr>
+		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
-		<td style="display:none">
+		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
 		<td>
@@ -85,7 +118,26 @@
 	</tr>
 
 
-    
 </table>
+</fieldset>
+<fieldset>
+        <legend>产品信息</legend>
+        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true">
+            <thead>
+                <tr>
+                    <th field="SKU" width="200" data-options="editor:'text'">
+                        SKU
+                    </th>
+
+                    <th field="Price" width="200" data-options="editor:'text'">
+                        价格
+                    </th>
+
+                    <th field="Web"  width="200" data-options="editor:'text'">
+                        Web
+                    </th>
+                </tr>
+            </thead>
+        </table>
 </fieldset>
 }
