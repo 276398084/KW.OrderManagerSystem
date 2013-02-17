@@ -38,6 +38,11 @@
                 title: '新建',
                 modal: true,
                 loadingMessage: '正在加载...',
+                onClose: function () {
+                    $.ajax({
+                        url: '/SuppliersProduct/DelSession'
+                    })
+                },
                 buttons: [{
                     text: '提交',
                     iconCls: 'icon-ok',
@@ -49,9 +54,6 @@
                 }, {
                     text: '取消',
                     handler: function () {
-                        $.ajax({
-                            url: '/SuppliersProduct/DelSession'
-                        })
                         $('#c_dlg').dialog('close');
                     }
                 }]
@@ -62,19 +64,25 @@
     //编辑框
     function e_dlg() {
         var id = getselectedRow();
-        if (id != undefined) { 
+        if (id != undefined)
+        { 
             var url_str = '@Url.Action("Edit","Supplier")/' + id;
             $('#e_dlg').load(url_str, function () {
                 $(this).dialog({
                     title: '编辑',
                     modal: true,
                     loadingMessage: '正在加载...',
+                    onClose: function () {
+                        $.ajax({
+                            url: '/SuppliersProduct/EDelSession'
+                        })
+                    },
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-                            ajaxEdit();
-                            $('#c_dlg').dialog('close');
+                            editSupliersProduct();
+                            $('#e_dlg').dialog('close');
                             $('#dg').datagrid('reload');
                         }
                     }, {
@@ -88,7 +96,7 @@
         }
         }
 
-	//异步新建提交
+@*	//异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
                 url: '@Url.Action("Create","Supplier")',
@@ -148,7 +156,7 @@
                 }
             });
             
-        }
+        }*@
    
 
     //删除

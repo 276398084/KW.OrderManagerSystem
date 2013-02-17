@@ -20,7 +20,7 @@
             panelHeight: 50,
             data: checks
         });
-        $('#c_HasTrackCode').combobox("setValue", 0);
+        $('#c_HasTrackCode').combobox("setValue", 1);
     });
 </script>
 
@@ -82,14 +82,14 @@
 		</td>
 	</tr>
 
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.CreateOn,"添加时间:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
 		</td>
-	</tr>
+	</tr>*@
 
 
 </table>

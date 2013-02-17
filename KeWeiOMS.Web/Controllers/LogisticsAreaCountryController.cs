@@ -115,18 +115,28 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult GetUnCountryByAreaCode()
+        public JsonResult GetUnCountryByAreaCode(string sort,string order)
         {
-            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id not in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)")
+            string orderby = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = "order by " + sort + " " + order;
+            }
+            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id not in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)"+orderby)
               .SetInt32("cid", int.Parse(Session["cid"].ToString()))
               .List<CountryType>();
             return Json(new { total = list.Count, rows = list });
 
         }
         [HttpPost]
-        public JsonResult GetCountryByAreaCode()
+        public JsonResult GetCountryByAreaCode(string sort, string order)
         {
-            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)")
+            string orderby = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = "order by " + sort + " " + order;
+            }
+            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)" + orderby)
              .SetInt32("cid", int.Parse(Session["cid"].ToString()))
              .List<CountryType>();
             return Json(new { total = list.Count, rows = list });

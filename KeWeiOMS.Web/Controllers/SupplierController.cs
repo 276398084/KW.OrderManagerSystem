@@ -34,9 +34,7 @@ namespace KeWeiOMS.Web.Controllers
                     item.SId =id;
                     NSession.Save(item);
                 }
-              
                 NSession.Flush();
-                Session.Contents.Remove("SupplierProducts");
             }
             catch (Exception ee)
             {
@@ -68,17 +66,42 @@ namespace KeWeiOMS.Web.Controllers
         {
             SupplierType obj = GetById(id);
             ViewData["SuppliewsId"]=id;
+            IList<SuppliersProductType> list = NSession.CreateQuery("from SuppliersProductType where SId=:id")
+                .SetInt32("id",id)
+                .List<SuppliersProductType>();
+            //List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
+            //if (list == null)
+            //    list = new List<SuppliersProductType>();
+            //foreach (var item in objlist)
+            //{
+            //    list.Add(item);
+            //}
+            Session["SupplierProducts"] = list;
+            Session["edit"] =id;
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(SupplierType obj)
+        public ActionResult EditE(SupplierType obj)
         {
            
             try
             {
                 NSession.Update(obj);
+                int id =obj.Id;
+                IList<SuppliersProductType> li = NSession.CreateQuery("from SuppliersProductType where SId=:id")
+                .SetInt32("id",int.Parse(Session["edit"].ToString())).List<SuppliersProductType>();
+                foreach (var item in li)
+                {
+                    NSession.Delete(item);
+                }
+                List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
+                foreach (var item in list)
+                {
+                    item.SId = id;
+                    NSession.Save(item);
+                }
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -115,6 +138,12 @@ namespace KeWeiOMS.Web.Controllers
 			
             object count = NSession.CreateQuery("select count(Id) from SupplierType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        public JsonResult GetProductE(int id)
+        {
+            IList<SuppliersProductType> list = NSession.CreateQuery("from SuppliersProductType where SId=:id").SetInt32("id", id).List<SuppliersProductType>();
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
     }

@@ -16,13 +16,6 @@
         $("#c_LogisticsCode").validatebox({
             required: true
         });
-        $('#e_Discount').combobox({
-            valueField: 0,
-            textField: 1,
-            panelHeight: 50,
-            data: checks
-        });
-        $('#e_Discount').combobox("setValue", '@ViewData["checked"]');
     });
 </script>
 @using (Html.BeginForm("Edit", "LogisticsMode", FormMethod.Post, new { id = "me_form" }))
