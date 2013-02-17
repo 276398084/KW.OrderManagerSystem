@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class OrderProductTypeMap : ClassMap<OrderProductType> 
+    public class OrderProductTypeMap : ClassMap<OrderProductType>
     {
         public OrderProductTypeMap()
         {

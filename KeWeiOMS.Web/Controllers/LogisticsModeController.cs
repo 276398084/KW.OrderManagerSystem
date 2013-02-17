@@ -41,7 +41,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult GetMode(int id)
         {
             IList<LogisticsModeType> list = NSession.CreateQuery("from LogisticsModeType where ParentID=:id").SetInt32("id", id).List<LogisticsModeType>();
-            return Json(list,JsonRequestBehavior.AllowGet);
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  LogisticsModeType GetById(int Id)
+        public LogisticsModeType GetById(int Id)
         {
             LogisticsModeType obj = NSession.Get<LogisticsModeType>(Id);
             if (obj == null)
@@ -74,7 +74,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(LogisticsModeType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -85,13 +85,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 LogisticsModeType obj = GetById(id);
@@ -111,15 +111,24 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<LogisticsModeType>();
-			
+
             object count = NSession.CreateQuery("select count(Id) from LogisticsModeType ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+
+        public JsonResult ALLList()
+        {
+            IList<LogisticsModeType> objList = NSession.CreateQuery("from LogisticsModeType")
+                .List<LogisticsModeType>();
+
+            return Json(new { total = objList.Count, rows = objList });
+        }
+
         public JsonResult GetLogistics()
         {
             IList<LogisticsType> list = NSession.CreateQuery("from LogisticsType")
                 .List<LogisticsType>();
-            return Json(list,JsonRequestBehavior.AllowGet);
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
     }

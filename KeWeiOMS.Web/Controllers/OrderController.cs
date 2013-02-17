@@ -31,7 +31,6 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult OrderReplace(string ids, string oldField, string newField, string FieldName)
         {
-            //object obj = NSession.CreateQuery("update OrderType set :p0=:p1 where :p0=:p2").SetString("p0", FieldName).SetString("p1", newField).SetString("p2", oldField).UniqueResult();
 
             IQuery Query = NSession.CreateQuery(string.Format("update OrderType set {0}='{1}' where {0}='{2}'", FieldName, newField, oldField));
             int num = Query.ExecuteUpdate();
@@ -62,27 +61,29 @@ namespace KeWeiOMS.Web.Controllers
         {
             string Platform = form["Platform"];
             string Account = form["Account"];
+            AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             string file = form["hfile"];
             DataTable dt = OrderHelper.GetDataTable(file);
             List<ResultInfo> results = new List<ResultInfo>();
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
             {
                 case PlatformEnum.SMT:
-                    results = OrderHelper.ImportBySMT(Account, file);
+                    results = OrderHelper.ImportBySMT(account, file);
                     break;
                 case PlatformEnum.Ebay:
                     break;
                 case PlatformEnum.Amazon:
-                    results = OrderHelper.ImportByAmazon(Account, file);
+                    results = OrderHelper.ImportByAmazon(account, file);
                     break;
                 case PlatformEnum.B2C:
-                    results = OrderHelper.ImportByB2C(Account, file);
+                    results = OrderHelper.ImportByB2C(account, file);
                     break;
                 case PlatformEnum.Gmarket:
-                    results = OrderHelper.ImportByGmarket(Account, file);
+                    results = OrderHelper.ImportByGmarket(account, file);
                     break;
                 case PlatformEnum.LT:
                     break;
+
                 default:
                     break;
             }
@@ -90,34 +91,31 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Synchronous(FormCollection form)
+        public ActionResult Synchronous(string Platform, int Account, DateTime st, DateTime et)
         {
-            string Platform = form["Platform"];
-            string Account = form["Account"];
-            string st = form["st"];
-            string et = form["et"];
+
+            AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
+
 
             List<ResultInfo> results = new List<ResultInfo>();
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
             {
-                case PlatformEnum.SMT:
 
-                    break;
                 case PlatformEnum.Ebay:
+                    results = OrderHelper.APIByEbay(account, st, et);
                     break;
                 case PlatformEnum.Amazon:
 
                     break;
                 case PlatformEnum.B2C:
-
+                    results = OrderHelper.APIByB2C(account, st, et);
                     break;
                 case PlatformEnum.Gmarket:
-
-                    break;
                 case PlatformEnum.LT:
-                    break;
+                case PlatformEnum.SMT:
                 default:
-                    break;
+                    return Json(new { ErrorMsg = "该平台没有同步功能！" });
+
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -171,6 +169,8 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             OrderType obj = GetById(id);
+            obj.AddressInfo = NSession.Get<OrderAddressType>(obj.AddressId);
+            ViewData["id"] = id;
             return View(obj);
         }
 
@@ -181,6 +181,8 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+                NSession.Update(obj.AddressInfo);
+                obj.Country = obj.AddressInfo.Country;
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -232,7 +234,7 @@ namespace KeWeiOMS.Web.Controllers
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
-                    where = " where Status" + flag + "'待处理' and" + where;
+                    where = " where Status" + flag + "'待处理' and " + where;
                 }
             }
             if (where.Length == 0)

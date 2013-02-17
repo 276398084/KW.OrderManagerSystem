@@ -27,8 +27,20 @@
             onClickRow: onClickRow
         });
 
+        $('#c_CurrencyCode').combogrid({
+            panelWidth: 360,
+            value: 'USD',
+            idField: 'CurrencyCode',
+            textField: 'CurrencyName',
+            url: '/Currency/List',
+            fit: true,
+            columns: [[
+                { field: 'CurrencyName', title: '货币', width: 150 },
+                { field: 'CurrencyCode', title: '代码', width: 100 },
+                { field: 'CurrencyValue', title: '汇率', width: 100 }
 
-
+            ]]
+        });
         $('#c_Country').combogrid({
             panelWidth: 360,
             value: 'USD',
@@ -51,7 +63,7 @@
     });
 
     function changeCountry(n, o) {
-        $('#c_Country').valueOf(n);
+        //$('#c_Country').valueOf(n);
     }
 
     var editIndex = undefined;
@@ -252,9 +264,7 @@
                 <td>
                     @Html.TextBoxFor(model => model.LogisticMode, new { @id = "c_LogisticMode" })
                 </td>
-                <td>
-                    @Html.LabelFor(model => model.Country, "国家:")
-                </td>
+                <td></td>
                 <td>
 
 
@@ -323,7 +333,7 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.AddressInfo.Country, new { @id = "c_Country" })
-                    @Html.TextBoxFor(model => model.AddressInfo.CountryCode, new { @id = "c_CountryCode" })
+                    @Html.HiddenFor()(model => model.AddressInfo.CountryCode, new { @id = "c_CountryCode" })
                 </td>
             </tr>
 

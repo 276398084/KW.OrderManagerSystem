@@ -176,6 +176,17 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = "true" });
         }
+        public JsonResult ListQ(string q)
+        {
+
+
+            IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU like '%" + q + "%'")
+                .SetFirstResult(0)
+                .SetMaxResults(10)
+                .List<ProductType>();
+
+            return Json(new { total = objList.Count, rows = objList });
+        }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
@@ -206,8 +217,6 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult HasExist(string sku)
         {
-
-
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
             if (Convert.ToInt32(count) > 0)
             {
@@ -215,13 +224,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             else
             {
-
                 return Json(new { IsSuccess = "true" });
             }
         }
-
-
-
     }
 }
 

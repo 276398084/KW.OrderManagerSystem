@@ -198,7 +198,7 @@ left join ReturnAddress R On r.Id=" + r;
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
             da.Fill(ds);
-            ds.Tables[0].DefaultView.Sort = "Order Asc";
+            ds.Tables[0].DefaultView.Sort = "OrderNo Asc";
             DataTable dt = ds.Tables[0].DefaultView.ToTable();
             ds.Tables.Clear();
             ds.Tables.Add(dt);

@@ -847,7 +847,6 @@
     <Content Include="Scripts\uploadify\uploadify.css" />
     <Content Include="Scripts\uploadify\uploadify.swf" />
     <Content Include="Views\Home\Default.cshtml" />
-    <Content Include="Views\Home\griectl.cab" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
     <Content Include="Views\Web.config" />

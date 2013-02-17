@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class AccountTypeMap : ClassMap<AccountType> 
+    public class AccountTypeMap : ClassMap<AccountType>
     {
         public AccountTypeMap()
         {

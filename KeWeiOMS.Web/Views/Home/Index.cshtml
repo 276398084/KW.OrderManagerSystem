@@ -15,7 +15,6 @@
             var tabTitle = $(this).children('.nav').text();
             var url = $(this).attr("rel");
             var parentmenu = $(this).attr("ref");
-
             addTab(parentmenu + '-' + tabTitle, url);
             $('.easyui-accordion li div').removeClass("selected");
             $(this).parent().addClass("selected");
@@ -154,8 +153,7 @@
 
 </script>
 <style type="text/css">
-    a
-    {
+    a {
         color: Black;
         text-decoration: none;
     }
@@ -182,9 +180,7 @@
                 <li><a href="#">
                     <img src="/Content/imgs/anquantuichu.gif" alt="" border="0" /></a></li>
                 <li class="zi"><a href="#" id="loginOut" class="v1">安全退出</a></li>
-                <li><a href="#">
-                    <img src="/Content/imgs/bangzhu.gif" border="0"></a></li>
-                <li class="zi"><a href="#" class="v1">帮助中心</a></li>
+
                 <li><a href="#">
                     <img src="/Content/imgs/duanxinxi.gif" alt="" border="0" /></a></li>
                 <li class="zi"><a href="#" class="v1">短消息（0）</a></li>
@@ -192,7 +188,7 @@
         </div>
     </div>
 
-    <div region="west" split="true" title="功能菜单" style="width: 180px; padding: 1px; overflow: hidden;">
+    <div region="west" split="true" title="功能菜单" style="width: 170px; padding: 1px; overflow: hidden;">
         @{
             Html.RenderPartial("Nav", FunctionMenu.GetFunctionMenus());
         }

@@ -27,6 +27,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+               
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
