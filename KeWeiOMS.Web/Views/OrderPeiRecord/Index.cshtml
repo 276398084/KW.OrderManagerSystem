@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<<#ViewDataTypeName#>>
+@model IEnumerable<KeWeiOMS.Domain.OrderPeiRecordType>
 @{
     ViewBag.Title = "Index";
 }
@@ -7,7 +7,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         $('#dg').datagrid({
-            url: '@Url.Action("List","<#ControllerRootName#>")',
+            url: '@Url.Action("List","OrderPeiRecord")',
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
@@ -18,13 +18,13 @@
 
 	//新建
         function c_dlg() {
-            var url_str = '@Url.Action("Create","<#ControllerRootName#>")';
+            var url_str = '@Url.Action("Create","OrderPeiRecord")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
         function e_dlg() {
-            var url = '@Url.Action("Edit","<#ControllerRootName#>")/' + id;
+            var url = '@Url.Action("Edit","OrderPeiRecord")/' + id;
             if (id != undefined) {
                 var url = '@Url.Action("Edit", "Module")/' + id;
                 showdlg(url, 'e_dlg', ajaxEdit)
@@ -33,18 +33,18 @@
 
         //异步新建提交
         function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "<#ControllerRootName#>")', 'c_dlg', 'dg');
+            formPost('c_form', '@Url.Action("Create", "OrderPeiRecord")', 'c_dlg', 'dg');
         }
         //异步修改提交
         function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "<#ControllerRootName#>")', 'e_dlg', 'dg');
+            formPost('e_form', '@Url.Action("Edit", "OrderPeiRecord")', 'e_dlg', 'dg');
         }
         //删除
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
 
-                var url = '@Url.Action("Delete", "<#ControllerRootName#>")/' + id;
+                var url = '@Url.Action("Delete", "OrderPeiRecord")/' + id;
                 alert(1);
                 delData(url, 'dg');
 
@@ -75,7 +75,7 @@
                 });
       }
     function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "<#ControllerRootName#>")', 's_dlg', 'dg');
+    showSrarch('@Url.Action("Search", "OrderPeiRecord")', 's_dlg', 'dg');
       }		
 
 </script>
@@ -85,7 +85,35 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-<#ihtml#>
+            <th field="Id" width="100">
+                主键
+            </th>
+
+            <th field="OId" width="100">
+                订单ID
+            </th>
+
+            <th field="OrderNo" width="100">
+                订单
+            </th>
+
+            <th field="CreateOn" width="100">
+                扫描时间
+            </th>
+
+            <th field="PeiBy" width="100">
+                配货人
+            </th>
+
+            <th field="ValiBy" width="100">
+                检验人
+            </th>
+
+            <th field="ScanBy" width="100">
+                扫描人
+            </th>
+
+
     	</tr>
 		</thead>
 		</table>
@@ -97,7 +125,14 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div> 
 		<div id="mm" style="width: 120px">
-            <#easySearch#>
+                        <div data-options="name:'Id'">主键</div>
+            <div data-options="name:'OId'">订单ID</div>
+            <div data-options="name:'OrderNo'">订单</div>
+            <div data-options="name:'CreateOn'">扫描时间</div>
+            <div data-options="name:'PeiBy'">配货人</div>
+            <div data-options="name:'ValiBy'">检验人</div>
+            <div data-options="name:'ScanBy'">扫描人</div>
+
         </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>

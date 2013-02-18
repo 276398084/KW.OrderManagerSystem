@@ -46,23 +46,6 @@
             }],
             onClickRow: onClickRow
         });
-        $('#e_Country').combogrid({
-            panelWidth: 360,
-
-            idField: 'ECountry',
-            textField: 'ECountry',
-            url: '/Country/ListALL',
-            fit: true,
-            mode: 'remote',
-            columns: [[
-                { field: 'CCountry', title: '中文', width: 150 },
-                { field: 'ECountry', title: '英文', width: 100 },
-                { field: 'CountryCode', title: '简码', width: 100 }
-            ]],
-            onChange: changeCountry
-        });
-
-
 
         $('#e_CurrencyCode').combogrid({
             panelWidth: 360,
@@ -80,7 +63,6 @@
 
         $('#e_LogisticMode').combogrid({
             panelWidth: 360,
-
             idField: 'LogisticsCode',
             textField: 'LogisticsName',
             url: '/LogisticsMode/ALLList',
@@ -93,13 +75,26 @@
             ]]
 
         });
-
-
-
     });
 
-    function changeCountry(n, o) {
-        $('#e_Country').valueOf(n);
+
+    function changeCountry(v) {
+
+        $('#e_Country').combogrid({
+            panelWidth: 360,
+            idField: 'ECountry',
+            textField: 'ECountry',
+            url: '/Country/ListALL',
+            fit: true,
+            columns: [[
+                { field: 'CCountry', title: '中文', width: 150 },
+                { field: 'ECountry', title: '英文', width: 100 },
+                { field: 'CountryCode', title: '简码', width: 100 }
+            ]]
+
+        });
+        $('#btn').unbind("focus");
+        $('#e_Country').combogrid('setValue', v);
     }
 
     var editIndex = undefined;
@@ -118,7 +113,6 @@
             });
 
             editIndex = undefined;
-
             return true;
 
         } else {
@@ -159,7 +153,6 @@
 
     function addOrder() {
         formPost('e_form', '@Url.Action("Edit", "Order")');
-
     }
 
 </script>
@@ -185,7 +178,13 @@
                     @Html.HiddenFor(model => model.IsRepeat)
                     @Html.HiddenFor(model => model.IsSplit)
                     @Html.HiddenFor(model => model.Platform)
-                    @Html.HiddenFor(model => model.Amount)
+                    @Html.HiddenFor(model => model.ScanningOn)
+                    @Html.HiddenFor(model => model.ScanningBy)
+                    @Html.HiddenFor(model => model.GenerateOn)
+                    @Html.HiddenFor(model => model.Freight)
+                    @Html.HiddenFor(model => model.Weight)
+                    @Html.HiddenFor(model => model.CreateOn)
+                    @Html.HiddenFor(model => model.Status)
                 </td>
                 <td>
                     @Html.LabelFor(model => model.OrderExNo, "外部编号:")
@@ -276,8 +275,8 @@
                                 fit: true,
                                 columns: [[
                                     { field: 'SKU', title: 'SKU', width: 100 },
-                                    { field: 'Title', title: 'Title', width: 200 },
-                                    { field: 'ItemDesc', title: '规格', width: 100 }
+                                    { field: 'ProductName', title: 'Title', width: 200 },
+                                    { field: 'Standard', title: '规格', width: 100 }
 
                                 ]]
 							}
@@ -377,8 +376,8 @@
                     @Html.LabelFor(model => model.AddressInfo.Country, "国家:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.AddressInfo.Country, new { @id = "e_Country" })
-                    @Html.TextBoxFor(model => model.AddressInfo.CountryCode, new { @id = "e_CountryCode" })
+                    @Html.TextBoxFor(model => model.AddressInfo.Country, new { @id = "e_Country", @onfocus = "changeCountry(this.value);" })
+                    @Html.HiddenFor(model => model.AddressInfo.CountryCode, new { @id = "e_CountryCode" })
                 </td>
             </tr>
 

@@ -1,0 +1,90 @@
+﻿@model KeWeiOMS.Domain.OrderPackRecordType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		        $('#c_PackBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#c_ScanBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_PackOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "OrderPackRecord", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OId,"订单ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OId,new{@id="c_OId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PackBy,"包装人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PackBy,new{@id="c_PackBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ScanBy,"扫描人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ScanBy,new{@id="c_ScanBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PackOn,"包装时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PackOn,new{@id="c_PackOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

@@ -36,9 +36,24 @@ namespace KeWeiOMS.Domain
         public virtual int WId { get; set; }
 
         /// <summary>
+        /// 入库仓库
+        /// </summary>
+        public virtual string WName { get; set; }
+
+        /// <summary>
         /// 商品
         /// </summary>
         public virtual String SKU { get; set; }
+
+        /// <summary>
+        /// 入库类型
+        /// </summary>
+        public virtual String InType { get; set; }
+
+        /// <summary>
+        /// 留言
+        /// </summary>
+        public virtual String Memo { get; set; }
 
         /// <summary>
         /// 数量

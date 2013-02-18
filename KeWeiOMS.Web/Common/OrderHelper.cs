@@ -620,6 +620,10 @@ namespace KeWeiOMS.Web
                 }
             }
             NSession.Clear();
+            if (resultValue)
+            {
+                order.Status = OrderStatusEnum.已处理.ToString();
+            }
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             return resultValue;
@@ -634,11 +638,15 @@ namespace KeWeiOMS.Web
             string sql = "";
             if (!string.IsNullOrEmpty(ids))
             {
-                ids = " and OId in(" + ids + ")";
-
+                ids = " and OId in(" + ids + ") ";
             }
-            sql = "update OrderProductType set SKU='{0}' where SKU='{1}' {2}";
-            sql = string.Format(sql, oldValue, newValue, ids);
+            if (!string.IsNullOrEmpty(oldValue))
+            {
+                oldValue = " and SKU='" + oldValue + "' ";
+            }
+
+            sql = "update OrderProductType set SKU='{0}' where 1=1  {1} {2}";
+            sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
 
@@ -649,18 +657,23 @@ namespace KeWeiOMS.Web
             string sql = "";
             if (!string.IsNullOrEmpty(ids))
             {
-                ids = " and OId in(" + ids + ")";
+                ids = "  Id in(" + ids + ")";
 
             }
+            if (!string.IsNullOrEmpty(oldValue))
+            {
+                oldValue = " and Country='" + oldValue + "' ";
+            }
 
-            sql = "update OrdeType set Country='{0}' where SKU='{1}' {2}";
-            sql = string.Format(sql, oldValue, newValue, ids);
+            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where 1=1 and Id in(select AddressId from OrderType where  {2}  )  {1}";
+            sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
-            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where Country='{1}' {2}";
-            sql = string.Format(sql, oldValue, newValue, ids.Replace("OId", "Id"));
+            sql = "update OrderType set Country='{0}' where 1=1 and {1} {2}";
+            sql = string.Format(sql, newValue, oldValue, ids.Replace("OId", "Id"));
             Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
+
             return true;
         }
 
@@ -672,12 +685,25 @@ namespace KeWeiOMS.Web
                 ids = " and Id in(" + ids + ")";
 
             }
-            if (type == 1)
-                sql = "update OrderType set CurrencyCode='{0}' where CurrencyCode='{1}' {2}";
-            else
-                sql = "update OrderType set LogisticMode='{0}' where LogisticMode='{1}' {2}";
+            if (!string.IsNullOrEmpty(oldValue))
+            {
+                if (type == 1)
+                {
+                    oldValue = " and CurrencyCode='" + oldValue + "' ";
 
-            sql = string.Format(sql, oldValue, newValue, ids);
+                }
+                else
+                {
+                    oldValue = " and LogisticMode='" + oldValue + "' ";
+                }
+
+            }
+            if (type == 1)
+                sql = "update OrderType set CurrencyCode='{0}' where 1=1 {1} {2}";
+            else
+                sql = "update OrderType set LogisticMode='{0}' where 1=1 {1} {2}";
+
+            sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
 

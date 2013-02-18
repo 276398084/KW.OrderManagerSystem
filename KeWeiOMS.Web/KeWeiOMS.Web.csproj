@@ -155,6 +155,8 @@
     <Compile Include="Controllers\OrderAddresController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\OrderPackRecordController.cs" />
+    <Compile Include="Controllers\OrderPeiRecordController.cs" />
     <Compile Include="Controllers\OrderProductController.cs" />
     <Compile Include="Controllers\OrderRecordController.cs" />
     <Compile Include="Controllers\OrganizeController.cs" />
@@ -1214,6 +1216,19 @@
     <Content Include="Views\NewGuide\Edit.cshtml" />
     <Content Include="Views\NewGuide\Index.cshtml" />
     <Content Include="Views\NewGuide\Copy.cshtml" />
+    <Content Include="Views\Order\PeiScan.cshtml" />
+    <Content Include="Views\Order\JiScan.cshtml" />
+    <Content Include="Views\Order\QueScan.cshtml" />
+    <Content Include="Views\OrderPackRecord\Create.cshtml" />
+    <Content Include="Views\OrderPackRecord\Delete.cshtml" />
+    <Content Include="Views\OrderPackRecord\Details.cshtml" />
+    <Content Include="Views\OrderPackRecord\Edit.cshtml" />
+    <Content Include="Views\OrderPackRecord\Index.cshtml" />
+    <Content Include="Views\OrderPeiRecord\Create.cshtml" />
+    <Content Include="Views\OrderPeiRecord\Delete.cshtml" />
+    <Content Include="Views\OrderPeiRecord\Details.cshtml" />
+    <Content Include="Views\OrderPeiRecord\Edit.cshtml" />
+    <Content Include="Views\OrderPeiRecord\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

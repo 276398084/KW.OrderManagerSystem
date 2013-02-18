@@ -145,14 +145,14 @@
             });
         }
         var s_ids = [];
-        function showEdit(p) {
+        function showEdit() {
             s_ids = [];
-            if (p == 0) {
-                var rows = $('#dg').datagrid('getSelections');
-                for (var i = 0; i < rows.length; i++) {
-                    s_ids.push(rows[i]["Id"]);
-                }
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
             }
+
+            $('#s_dlg').show();
             $("#s_dlg").dialog({
                 title: '替换',
                 modal: true,
@@ -161,10 +161,11 @@
                     text: '提交',
                     iconCls: 'icon-ok',
                     handler: function () {
+                        
                         jQuery.ajax({
                             url: "/Order/OrderReplace/",
                             type: "post",
-                            data: "ids=" + s_ids.join(',') + "&oldField=" + $('#txtOld').val() + "&newField=" + $('#txtNew').val() + "&FieldName=" + $('#cc').val(),
+                            data: "ids=" + s_ids.join(',') + "&oldField=" + $('#txtOld').val() + "&newField=" + $('#txtNew').combogrid("getValue") + "&FieldName=" + $('#cc').combobox("getValue"),
                             success: function () {
                                 $('#s_dlg').dialog('close');
                                 $('#dg').datagrid("reload");
@@ -226,11 +227,10 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_vali()">验证</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_vali()">验证订单</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit(0)">修改选中</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit(1);">修改全部</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
@@ -248,7 +248,96 @@
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
         <div id="o_dlg"></div>
-        <div id="s_dlg">
+        <script type="text/javascript">
+            $(function () {
+                $('#cc').combobox({
+                    panelHeight: 'auto',
+                    onChange: changeText
+                });
+                $('#txtNew').combogrid({
+                    panelWidth: 360,
+                    idField: 'ECountry',
+                    textField: 'ECountry',
+                    url: '/Country/ListALL',
+                    fit: true,
+                    columns: [[
+                        { field: 'CCountry', title: '中文', width: 150 },
+                        { field: 'ECountry', title: '英文', width: 100 },
+                        { field: 'CountryCode', title: '简码', width: 100 }
+                    ]]
+
+                });
+            });
+
+
+            function changeText(n, o) {
+                if (n == "Country") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 360,
+                        idField: 'ECountry',
+                        textField: 'ECountry',
+                        url: '/Country/ListALL',
+                        fit: true,
+                        columns: [[
+                            { field: 'CCountry', title: '中文', width: 150 },
+                            { field: 'ECountry', title: '英文', width: 100 },
+                            { field: 'CountryCode', title: '简码', width: 100 }
+                        ]]
+
+                    });
+                }
+                if (n == "SKU") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 410,
+                        mode: 'remote',
+                        idField: 'SKU',
+                        textField: 'SKU',
+                        url: '/Product/ListQ',
+                        fit: true,
+                        columns: [[
+                            { field: 'SKU', title: 'SKU', width: 100 },
+                            { field: 'ProductName', title: 'Title', width: 200 },
+                            { field: 'Standard', title: '规格', width: 100 }
+
+                        ]]
+
+                    });
+                }
+                if (n == "LogisticMode") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 360,
+                        idField: 'LogisticsCode',
+                        textField: 'LogisticsName',
+                        url: '/LogisticsMode/ALLList',
+                        fit: true,
+                        columns: [[
+                            { field: 'LogisticsName', title: '名称', width: 250 },
+                            { field: 'LogisticsCode', title: '代码', width: 100 }
+
+
+                        ]]
+
+                    });
+                }
+                if (n == "CurrencyCode") {
+                    $('#txtNew').combogrid({
+                        panelWidth: 360,
+
+                        idField: 'CurrencyCode',
+                        textField: 'CurrencyCode',
+                        url: '/Currency/List',
+                        fit: true,
+                        columns: [[
+                            { field: 'CurrencyName', title: '货币', width: 150 },
+                            { field: 'CurrencyCode', title: '代码', width: 100 },
+                            { field: 'CurrencyValue', title: '汇率', width: 100 }
+                        ]]
+                    });
+                }
+            }
+
+        </script>
+        <div id="s_dlg" style="display: none">
             <table>
                 <tr>
                     <td colspan="2">替换信息:

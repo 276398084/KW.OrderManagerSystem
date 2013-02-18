@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// StockInTypeMap
-    /// 入库记录表
+    /// OrderPeiRecordTypeMap
+    /// 配货记录表
     /// 
     /// 修改纪录
     /// 
@@ -24,22 +24,18 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class StockInTypeMap : ClassMap<StockInType>
+    public class OrderPeiRecordTypeMap : ClassMap<OrderPeiRecordType> 
     {
-        public StockInTypeMap()
+        public OrderPeiRecordTypeMap()
         {
-            Table("StockIn");
+            Table("OrderPeiRecord");
             Id(x => x.Id);
-            Map(x => x.WId);
-            Map(x => x.SKU).Length(50);
-            Map(x => x.WName).Length(50);
-            Map(x => x.InType).Length(50);
-            Map(x => x.Memo).Length(400);
-            Map(x => x.Qty);
-            Map(x => x.Price);
-            Map(x => x.SourceQty);
-            Map(x => x.CreateBy).Length(50);
+            Map(x => x.OId);
+            Map(x => x.OrderNo).Length(50);
             Map(x => x.CreateOn);
+            Map(x => x.PeiBy).Length(50);
+            Map(x => x.ValiBy).Length(50);
+            Map(x => x.ScanBy).Length(50);
         }
     }
 }

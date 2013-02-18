@@ -1,0 +1,100 @@
+﻿@model KeWeiOMS.Domain.OrderPeiRecordType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_CreateOn').datebox();
+
+        $('#e_PeiBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#e_ValiBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#e_ScanBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "OrderPeiRecord", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OId,"订单ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OId,new{@id="e_OId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"扫描时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PeiBy,"配货人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PeiBy,new{@id="e_PeiBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ValiBy,"检验人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ValiBy,new{@id="e_ValiBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ScanBy,"扫描人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ScanBy,new{@id="e_ScanBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

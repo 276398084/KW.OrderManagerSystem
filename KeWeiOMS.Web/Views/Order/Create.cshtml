@@ -41,6 +41,21 @@
 
             ]]
         });
+        $('#c_LogisticMode').combogrid({
+            panelWidth: 360,
+
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+
+
+            ]]
+
+        });
         $('#c_Country').combogrid({
             panelWidth: 360,
             value: 'USD',

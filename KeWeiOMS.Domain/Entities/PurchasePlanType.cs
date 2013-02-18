@@ -66,6 +66,16 @@ namespace KeWeiOMS.Domain
         public virtual String Suppliers { get; set; }
 
         /// <summary>
+        /// 产品链接
+        /// </summary>
+        public virtual String ProductUrl { get; set; }
+
+        /// <summary>
+        /// 图片链接
+        /// </summary>
+        public virtual String PicUrl { get; set; }
+
+        /// <summary>
         /// 供应商ID
         /// </summary>
         public virtual int SId { get; set; }

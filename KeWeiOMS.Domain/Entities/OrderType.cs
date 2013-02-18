@@ -141,6 +141,11 @@ namespace KeWeiOMS.Domain
         public virtual double Freight { get; set; }
 
         /// <summary>
+        /// 运输条码
+        /// </summary>
+        public virtual string TrackCode { get; set; }
+
+        /// <summary>
         /// 生成时间
         /// </summary>
         public virtual DateTime GenerateOn { get; set; }
