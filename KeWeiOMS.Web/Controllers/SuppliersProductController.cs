@@ -35,6 +35,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+               
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -153,7 +154,6 @@ namespace KeWeiOMS.Web.Controllers
         }
         public void EDelSession()
         {
-            Session.Contents.Remove("edit");
             Session.Contents.Remove("SupplierProducts");
         }
         [HttpPost]

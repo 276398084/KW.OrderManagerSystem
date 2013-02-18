@@ -77,7 +77,6 @@ namespace KeWeiOMS.Web.Controllers
             //    list.Add(item);
             //}
             Session["SupplierProducts"] = list;
-            Session["edit"] =id;
             return View(obj);
         }
 
@@ -91,7 +90,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Update(obj);
                 int id =obj.Id;
                 IList<SuppliersProductType> li = NSession.CreateQuery("from SuppliersProductType where SId=:id")
-                .SetInt32("id",int.Parse(Session["edit"].ToString())).List<SuppliersProductType>();
+                .SetInt32("id",id).List<SuppliersProductType>();
                 foreach (var item in li)
                 {
                     NSession.Delete(item);
@@ -120,6 +119,12 @@ namespace KeWeiOMS.Web.Controllers
             {
                 SupplierType obj = GetById(id);
                 NSession.Delete(obj);
+                IList<SuppliersProductType> li = NSession.CreateQuery("from SuppliersProductType where SId=:id")
+.SetInt32("id", id).List<SuppliersProductType>();
+                foreach (var item in li)
+                {
+                    NSession.Delete(item);
+                }
                 NSession.Flush();
             }
             catch (Exception ee)
