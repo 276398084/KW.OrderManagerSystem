@@ -4,33 +4,32 @@
 }
 <script type="text/javascript">
     $(function () {
-        //这里写加载下拉列表、修改编辑控件的初始化值
-        $('#dg_product').datagrid({
-            url: '@Url.Action("GetProductE", "SupplierProduct")?id=@ViewData["SuppliewsId"]',
+        $('#dg_producte').datagrid({
+            url: '@Url.Action("GetProductE", "Supplier")/@ViewData["SuppliewsId"]',
             width: 700,
             toolbar: [{
-                id: 'btnadd',
+                id: 'btnaddE',
                 text: '添加',
                 iconCls: 'icon-add',
                 handler: function () {
-                    $('#btnsave').linkbutton('enable');
-                    addp();
+                    $('#btnsaveE').linkbutton('enable');
+                    addpE();
                 }
             },
             {
-                id: 'btnsave',
+                id: 'btnsaveE',
                 text: '保存',
                 iconCls: 'icon-save',
                 handler: function () {
-                    btnsave();
+                    btnsaveE();
                 }
             }
             , {
-                id: 'btndel',
+                id: 'btndelE',
                 text: '删除',
                 iconCls: 'icon-add',
                 handler: function () {
-                    s_del();
+                    s_delE();
                 }
             }],
             frozenColumns: [[
@@ -39,20 +38,117 @@
             onClickRow: onClickRow
         });
     });
+
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dg_producte').datagrid('validateRow', editIndex)) {
+            $('#dg_producte').datagrid('endEdit', editIndex);
+
+            $.post("/SuppliersProduct/SaveE/", $('#dg_producte').datagrid("getRows")[editIndex], function (rsp) {
+                if (rsp.IsSuccess) {
+                    $.messager.show("提示", "提交成功！");
+                }
+            }, "JSON").error(function () {
+                $.messager.show("提示", "提交错误了！");
+            });
+
+            editIndex = undefined;
+
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dg_producte').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dg_producte').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+
+    function addpE() {
+        if (endEditing()) {
+            $('#dg_producte').datagrid('appendRow', {});
+            editIndex = $('#dg_producte').datagrid('getRows').length - 1;
+            $('#dg_producte').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function btnsaveE() {
+        if (endEditing()) {
+            $('#dg_producte').datagrid('acceptChanges');
+        }
+    }
+
+    function s_delE() {
+        var rows = $('#dg_producte').datagrid('getSelections');
+        $.ajax({
+            url: '/SuppliersProduct/DelProductE?id=' + rows[0].SKU,
+        });
+        var row = $('#dg_producte').datagrid('getSelected');
+        var index = $('#dg_producte').datagrid('getRowIndex', row);
+        $('#dg_producte').datagrid('deleteRow', index);
+
+    }
+    function accept() {
+        if (endEditing()) {
+            $('#dg_producte').datagrid('acceptChanges');
+        }
+    }
+
+    function editSupliersProduct() {
+        $('#e_form').form('submit', {
+            url: '@Url.Action("EditE","Supplier")',
+          onSubmit: function () {
+              return $(this).form('validate');
+          },
+          success: function (result) {
+              var result = eval('(' + result + ')');
+              if (result.errorMsg) {
+                  $.messager.show({
+                      title: '提示',
+                      msg: '保存失败:' + result.errorMsg,
+                      timeout: 0,
+                      showType: 'slide'
+                  });
+              } else {
+                  $('#e_dlg').dialog('close');
+                  $('#dg').datagrid('reload');
+                  $.messager.show({
+                      title: '提示',
+                      msg: '保存成功',
+                      timeout: 2000,
+                      showType: 'slide'
+                  });
+              }
+              $('#dg').datagrid('reload');
+          }
+      });
+
+        }
+
 </script>
 @using (Html.BeginForm("Edit", "Supplier", FormMethod.Post, new { id = "e_form" }))
 {
 <fieldset>
     <legend>供应商信息</legend>
 <table class="editForm">
-@*	<tr>
-		<td>
+	<tr>
+		@*<td>
             @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
-	</tr>*@
+	</tr>
 
 	<tr>
 		<td>
@@ -116,13 +212,11 @@
             @Html.TextBoxFor(model => model.Memo,new{@id="e_Memo"})
 		</td>
 	</tr>
-
-
 </table>
 </fieldset>
 <fieldset>
         <legend>产品信息</legend>
-        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true">
+        <table id="dg_producte" class="easyui-datagrid" rownumbers="true" singleselect="true">
             <thead>
                 <tr>
                     <th field="SKU" width="200" data-options="editor:'text'">

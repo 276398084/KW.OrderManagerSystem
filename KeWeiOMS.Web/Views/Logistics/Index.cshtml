@@ -47,14 +47,7 @@
                         columns: [[
                                 { field: 'LogisticsName', title: '承运商', width: 200 },
                                 { field: 'LogisticsCode', title: '承运商代码', width: 100 },
-                                {
-                                    field: 'Discount', title: '折扣', width: 100, formatter: function (value) {
-                                        if (value == "1")
-                                            return "是";
-                                        else
-                                            return "否";
-                                    }
-                                },
+                                {field: 'Discount', title: '折扣', width: 100},
                                {
                                    field: 'Id', title: '操作', width: 100, formatter: function (value) {
                                        return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'delMode(' + value + ')\'>删除</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'editMode(' + row.Id + ',' + value + ')\'>修改</a>';

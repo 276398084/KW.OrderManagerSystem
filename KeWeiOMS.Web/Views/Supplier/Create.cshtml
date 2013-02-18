@@ -8,7 +8,6 @@
             required: true,
         });
         $('#dg_product').datagrid({
-            // url: '@Url.Action("List", "OrderProduct")',
             width: 700,
             toolbar: [{
                 id: 'btnadd',
@@ -123,7 +122,7 @@
                                           showType: 'slide'
                                       });
                                   } else {
-                                      $('#e_dlg').dialog('close');
+                                      $('#c_dlg').dialog('close');
                                       $('#dg').datagrid('reload');
                                       $.messager.show({
                                           title: '提示',

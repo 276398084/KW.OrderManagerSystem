@@ -28,17 +28,14 @@ namespace KeWeiOMS.Web.Controllers
             return View(list);
         }
 
-        public JsonResult GetProductE(int id)
-        {
-            IList<SuppliersProductType> list = NSession.CreateQuery("from SuppliersProductType where SId=:id").SetInt32("id", id).List<SuppliersProductType>();
-            return Json(list,JsonRequestBehavior.AllowGet);
-        }
+
 
         [HttpPost]
         public JsonResult Create(SuppliersProductType obj)
         {
             try
             {
+               
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -76,11 +73,12 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = "true" });
         }
-        public void DelProduct(int id) 
+        public void DelProduct(string id) 
         {
             List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
             SuppliersProductType findOne = list.Find(p => p.SKU ==id.ToString());
             list.Remove(findOne);
+            Session["SupplierProducts"] = list;
         }
         public void DelSession() {
             Session.Contents.Remove("SupplierProducts");
@@ -153,6 +151,44 @@ namespace KeWeiOMS.Web.Controllers
 
             object count = NSession.CreateQuery("select count(Id) from SuppliersProductType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+        public void EDelSession()
+        {
+            Session.Contents.Remove("SupplierProducts");
+        }
+        [HttpPost]
+        public JsonResult SaveE(SuppliersProductType obj)
+        {
+            try
+            {
+                List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
+                if (list == null)
+                    list = new List<SuppliersProductType>();
+                SuppliersProductType findOne = list.Find(p => p.SKU == obj.SKU);
+                if (findOne != null)
+                {
+                    // findOne = obj;
+                    list.Remove(findOne);
+                    list.Add(obj);
+                }
+                else
+                {
+                    list.Add(obj);
+                }
+                Session["SupplierProducts"] = list;
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = "true" });
+        }
+        public void DelProductE(string id)
+        {
+            List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
+            SuppliersProductType findOne = list.Find(p => p.SKU == id.ToString());
+            list.Remove(findOne);
+            Session["SupplierProducts"] = list;
         }
 
     }

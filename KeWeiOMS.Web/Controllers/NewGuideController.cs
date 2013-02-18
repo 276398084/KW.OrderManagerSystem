@@ -27,18 +27,19 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "Âá∫Èîô‰∫Ü" });
+                return Json(new { errorMsg = "≥ˆ¥Ì¡À" });
             }
             return Json(new { IsSuccess = "true" });
         }
 
         /// <summary>
-        /// Ê†πÊçÆIdËé∑Âèñ
+        /// ∏˘æ›IdªÒ»°
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -47,7 +48,7 @@ namespace KeWeiOMS.Web.Controllers
             NewGuideType obj = NSession.Get<NewGuideType>(Id);
             if (obj == null)
             {
-                throw new Exception("ËøîÂõûÂÆû‰Ωì‰∏∫Á©∫");
+                throw new Exception("∑µªÿ µÃÂŒ™ø’");
             }
             else
             {
@@ -74,7 +75,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "Âá∫Èîô‰∫Ü" });
+                return Json(new { errorMsg = "≥ˆ¥Ì¡À" });
             }
             return Json(new { IsSuccess = "true" });
            
@@ -92,7 +93,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "Âá∫Èîô‰∫Ü" });
+                return Json(new { errorMsg = "≥ˆ¥Ì¡À" });
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -111,12 +112,13 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+                obj.CreateOn = DateTime.Now;
                 NSession.Save(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "Âá∫Èîô‰∫Ü" });
+                return Json(new { errorMsg = "≥ˆ¥Ì¡À" });
             }
             return Json(new { IsSuccess = "true" });
 
