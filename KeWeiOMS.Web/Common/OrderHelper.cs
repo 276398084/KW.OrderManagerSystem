@@ -22,7 +22,7 @@ namespace KeWeiOMS.Web
 
         static OrderHelper()
         {
-            
+
             countrys = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
             products = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
             currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
@@ -45,7 +45,7 @@ namespace KeWeiOMS.Web
 
 
         #region 订单数据导入
-        public static List<ResultInfo> ImportBySMT(string AccountName, string fileName)
+        public static List<ResultInfo> ImportBySMT(AccountType account, string fileName)
         {
             List<ResultInfo> results = new List<ResultInfo>();
             foreach (DataRow dr in GetDataTable(fileName).Rows)
@@ -72,7 +72,7 @@ namespace KeWeiOMS.Web
                     order.BuyerName = dr["买家名称"].ToString();
                     order.BuyerEmail = dr["买家邮箱"].ToString();
                     order.TId = "";
-                    order.Account = AccountName;
+                    order.Account = account.AccountName;
                     order.GenerateOn = Convert.ToDateTime(dr["付款时间"]);
                     order.Platform = PlatformEnum.SMT.ToString();
                     //舍弃原来的客户表
@@ -118,7 +118,7 @@ namespace KeWeiOMS.Web
             return results;
         }
 
-        public static List<ResultInfo> ImportByAmazon(string AccountName, string fileName)
+        public static List<ResultInfo> ImportByAmazon(AccountType account, string fileName)
         {
             List<ResultInfo> results = new List<ResultInfo>();
             CsvReader csv = new CsvReader(fileName, Encoding.Default);
@@ -143,7 +143,7 @@ namespace KeWeiOMS.Web
                     order.BuyerName = item["buyer-name"];
                     order.BuyerEmail = item["buyer-email"];
                     order.TId = "";
-                    order.Account = AccountName;
+                    order.Account = account.AccountName;
                     order.GenerateOn = Convert.ToDateTime(item["payments-date"]);
                     order.Platform = PlatformEnum.Amazon.ToString();
 
@@ -161,7 +161,7 @@ namespace KeWeiOMS.Web
             return results;
         }
 
-        public static List<ResultInfo> ImportByGmarket(string AccountName, string fileName)
+        public static List<ResultInfo> ImportByGmarket(AccountType account, string fileName)
         {
             List<ResultInfo> results = new List<ResultInfo>();
             CsvReader csv = new CsvReader(fileName, Encoding.Default);
@@ -186,7 +186,7 @@ namespace KeWeiOMS.Web
                     order.BuyerName = item["Customer"];
                     // order.BuyerEmail = item["buyer-email"];
                     order.TId = item["Order no."];
-                    order.Account = AccountName;
+                    order.Account = account.AccountName;
                     order.GenerateOn = Convert.ToDateTime(item["Payment Complete"]);
                     order.Platform = PlatformEnum.Gmarket.ToString();
 
@@ -205,7 +205,7 @@ namespace KeWeiOMS.Web
         }
 
 
-        public static List<ResultInfo> ImportByB2C(string AccountName, string fileName)
+        public static List<ResultInfo> ImportByB2C(AccountType account, string fileName)
         {
             List<ResultInfo> results = new List<ResultInfo>();
             foreach (DataRow item in OrderHelper.GetDataTable(fileName).Rows)
@@ -222,7 +222,7 @@ namespace KeWeiOMS.Web
                     order.Country = item["国家"].ToString();
                     order.BuyerName = item["用户名"].ToString();
                     order.CurrencyCode = "USD";
-                    order.Account = AccountName;
+                    order.Account = account.AccountName;
                     order.GenerateOn = DateTime.Now;
                     order.Platform = PlatformEnum.B2C.ToString();
 
@@ -258,80 +258,79 @@ namespace KeWeiOMS.Web
         }
 
         #region 订单数据ＡＰＩ同步
-        //public static List<ResultInfo> APIByB2C(string AccountName, DateTime st, DateTime et)
-        //{
-        //    List<ResultInfo> results = new List<ResultInfo>();
+        public static List<ResultInfo> APIByB2C(AccountType account, DateTime st, DateTime et)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
 
-        //    string s = DownHtml("http://www.gamesalor.com/GetOrdersHandler.ashx?startTime=" + st.ToShortDateString() + "&endTime=" + et.ToShortDateString() + "", System.Text.Encoding.UTF8);
+            string s = DownHtml("http://www.gamesalor.com/GetOrdersHandler.ashx?startTime=" + st.ToShortDateString() + "&endTime=" + et.ToShortDateString() + "", System.Text.Encoding.UTF8);
 
-        //    System.Collections.Generic.List<Order> orders = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Order>>(s);
-        //    foreach (Order foo in orders)
-        //    {
-        //        bool isExist = IsExist(foo.GoodsDataWare.ItemNumber);
-        //        if (isExist)
-        //        {
+            System.Collections.Generic.List<Order> orders = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Collections.Generic.List<Order>>(s);
+            foreach (Order foo in orders)
+            {
+                bool isExist = IsExist(foo.GoodsDataWare.ItemNumber);
+                if (isExist)
+                {
 
-        //            OrderType order = new OrderType
-        //                                  {
-        //                                      IsMerger = 0,
-        //                                      IsOutOfStock = 0,
-        //                                      IsRepeat = 0,
-        //                                      IsSplit = 0,
-        //                                      Status = OrderStatusEnum.待处理.ToString(),
-        //                                      IsPrint = 0,
-        //                                      CreateOn = DateTime.Now,
-        //                                      ScanningOn = DateTime.Now
-        //                                  };
-        //            order.OrderNo = Utilities.GetOrderNo();
-        //            order.CurrencyCode = foo.GoodsDataWare.McCurrency;
-        //            order.OrderExNo = foo.GoodsDataWare.ItemNumber;
-        //            order.Amount = Convert.ToDouble(foo.GoodsDataWare.McGross);
-        //            // order.BuyerMemo = dr["订单备注"].ToString();
-        //            order.Country = foo.GoodsDataWare.AddressCountry;
-        //            order.BuyerName = foo.GoodsDataWare.Business;
-        //            order.BuyerEmail = foo.GoodsDataWare.PayerEmail;
-        //            order.TId = "";
-        //            order.Account = AccountName;
-        //            order.GenerateOn = foo.GoodsDataWare.PaymentDate;
-        //            order.Platform = PlatformEnum.B2C.ToString();
+                    OrderType order = new OrderType
+                                          {
+                                              IsMerger = 0,
+                                              IsOutOfStock = 0,
+                                              IsRepeat = 0,
+                                              IsSplit = 0,
+                                              Status = OrderStatusEnum.待处理.ToString(),
+                                              IsPrint = 0,
+                                              CreateOn = DateTime.Now,
+                                              ScanningOn = DateTime.Now
+                                          };
+                    order.OrderNo = Utilities.GetOrderNo();
+                    order.CurrencyCode = foo.GoodsDataWare.McCurrency;
+                    order.OrderExNo = foo.GoodsDataWare.ItemNumber;
+                    order.Amount = Convert.ToDouble(foo.GoodsDataWare.McGross);
+                    // order.BuyerMemo = dr["订单备注"].ToString();
+                    order.Country = foo.GoodsDataWare.AddressCountry;
+                    order.BuyerName = foo.GoodsDataWare.Business;
+                    order.BuyerEmail = foo.GoodsDataWare.PayerEmail;
+                    order.TId = "";
+                    order.Account = account.AccountName;
+                    order.GenerateOn = foo.GoodsDataWare.PaymentDate;
+                    order.Platform = PlatformEnum.B2C.ToString();
 
-        //            order.AddressId = CreateAddress(foo.GoodsDataWare.AddressName, foo.GoodsDataWare.AddressStreet,
-        //                                            foo.GoodsDataWare.AddressCity, foo.GoodsDataWare.AddressState,
-        //                                            foo.GoodsDataWare.AddressCountry,
-        //                                            foo.GoodsDataWare.AddressCountryCode, foo.GoodsDataWare.ContactPhone,
-        //                                            foo.GoodsDataWare.ContactPhone, foo.GoodsDataWare.PayerEmail,
-        //                                            foo.GoodsDataWare.AddressZip, 0);
-        //            NSession.Save(order);
-        //            NSession.Flush();
-        //            foreach (GoodsDataOrder item in foo.GoodsDataOrderList)
-        //            {
-        //                CreateOrderPruduct(item.ItemID, item.Quantity, item.ItemID, "", 0, item.Url, order.Id,
-        //                                   order.OrderNo);
-        //            }
-        //            //  results.Add(GetResult(OrderExNo, "", "导入成功"));
-        //        }
-        //    }
+                    order.AddressId = CreateAddress(foo.GoodsDataWare.AddressName, foo.GoodsDataWare.AddressStreet,
+                                                    foo.GoodsDataWare.AddressCity, foo.GoodsDataWare.AddressState,
+                                                    foo.GoodsDataWare.AddressCountry,
+                                                    foo.GoodsDataWare.AddressCountryCode, foo.GoodsDataWare.ContactPhone,
+                                                    foo.GoodsDataWare.ContactPhone, foo.GoodsDataWare.PayerEmail,
+                                                    foo.GoodsDataWare.AddressZip, 0);
+                    NSession.Save(order);
+                    NSession.Flush();
+                    foreach (GoodsDataOrder item in foo.GoodsDataOrderList)
+                    {
+                        CreateOrderPruduct(item.ItemID, item.Quantity, item.ItemID, "", 0, item.Url, order.Id,
+                                           order.OrderNo);
+                    }
+                    //  results.Add(GetResult(OrderExNo, "", "导入成功"));
+                }
+            }
 
 
-        //    return results;
-        //}
+            return results;
+        }
 
-        public static List<ResultInfo> APIByAmazon(string AccountName, DateTime st, DateTime et)
+        public static List<ResultInfo> APIByAmazon(AccountType account, DateTime st, DateTime et)
         {
             List<ResultInfo> results = new List<ResultInfo>();
             return results;
         }
 
-        public static List<ResultInfo> APIBySMT(string AccountName, DateTime st, DateTime et)
+        public static List<ResultInfo> APIBySMT(AccountType account, DateTime st, DateTime et)
         {
             List<ResultInfo> results = new List<ResultInfo>();
             return results;
         }
 
-        public static List<ResultInfo> APIByEbay(string AccountName, DateTime st, DateTime et)
+        public static List<ResultInfo> APIByEbay(AccountType account, DateTime st, DateTime et)
         {
-            AccountType account =
-                NSession.CreateQuery("from AccountType where AccountName='" + AccountName + "'").List<AccountType>()[0];
+
             List<ResultInfo> results = new List<ResultInfo>();
 
             ApiContext context = AppSettingHelper.GetGenericApiContext("US");
@@ -393,7 +392,7 @@ namespace KeWeiOMS.Web
                         order.BuyerEmail = ot.TransactionArray[0].Buyer.Email;
                         order.BuyerMemo = ot.BuyerCheckoutMessage;
                         order.TId = ot.ExternalTransaction[0].ExternalTransactionID;
-                        order.Account = AccountName;
+                        order.Account = account.AccountName;
                         order.GenerateOn = ot.PaidTime;
                         order.Platform = PlatformEnum.Ebay.ToString();
 
@@ -621,6 +620,10 @@ namespace KeWeiOMS.Web
                 }
             }
             NSession.Clear();
+            if (resultValue)
+            {
+                order.Status = OrderStatusEnum.已处理.ToString();
+            }
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             return resultValue;
@@ -635,11 +638,15 @@ namespace KeWeiOMS.Web
             string sql = "";
             if (!string.IsNullOrEmpty(ids))
             {
-                ids = " and OId in(" + ids + ")";
-
+                ids = " and OId in(" + ids + ") ";
             }
-            sql = "update OrderProductType set SKU='{0}' where SKU='{1}' {2}";
-            sql = string.Format(sql, oldValue, newValue, ids);
+            if (!string.IsNullOrEmpty(oldValue))
+            {
+                oldValue = " and SKU='" + oldValue + "' ";
+            }
+
+            sql = "update OrderProductType set SKU='{0}' where 1=1  {1} {2}";
+            sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
 
@@ -650,18 +657,23 @@ namespace KeWeiOMS.Web
             string sql = "";
             if (!string.IsNullOrEmpty(ids))
             {
-                ids = " and OId in(" + ids + ")";
+                ids = "  Id in(" + ids + ")";
 
             }
+            if (!string.IsNullOrEmpty(oldValue))
+            {
+                oldValue = " and Country='" + oldValue + "' ";
+            }
 
-            sql = "update OrdeType set Country='{0}' where SKU='{1}' {2}";
-            sql = string.Format(sql, oldValue, newValue, ids);
+            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where 1=1 and Id in(select AddressId from OrderType where  {2}  )  {1}";
+            sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
-            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where Country='{1}' {2}";
-            sql = string.Format(sql, oldValue, newValue, ids.Replace("OId", "Id"));
+            sql = "update OrderType set Country='{0}' where 1=1 and {1} {2}";
+            sql = string.Format(sql, newValue, oldValue, ids.Replace("OId", "Id"));
             Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
+
             return true;
         }
 
@@ -673,12 +685,25 @@ namespace KeWeiOMS.Web
                 ids = " and Id in(" + ids + ")";
 
             }
-            if (type == 1)
-                sql = "update OrderType set CurrencyCode='{0}' where CurrencyCode='{1}' {2}";
-            else
-                sql = "update OrderType set LogisticMode='{0}' where LogisticMode='{1}' {2}";
+            if (!string.IsNullOrEmpty(oldValue))
+            {
+                if (type == 1)
+                {
+                    oldValue = " and CurrencyCode='" + oldValue + "' ";
 
-            sql = string.Format(sql, oldValue, newValue, ids);
+                }
+                else
+                {
+                    oldValue = " and LogisticMode='" + oldValue + "' ";
+                }
+
+            }
+            if (type == 1)
+                sql = "update OrderType set CurrencyCode='{0}' where 1=1 {1} {2}";
+            else
+                sql = "update OrderType set LogisticMode='{0}' where 1=1 {1} {2}";
+
+            sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
 

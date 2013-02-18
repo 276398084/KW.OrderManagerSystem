@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class CountryController : BaseController
+    public class OrderPackRecordController : BaseController
     {
         public ViewResult Index()
         {
@@ -22,13 +22,8 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Search()
-        {
-            return View();
-        }
-
         [HttpPost]
-        public JsonResult Create(CountryType obj)
+        public JsonResult Create(OrderPackRecordType obj)
         {
             try
             {
@@ -47,9 +42,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public CountryType GetById(int Id)
+        public  OrderPackRecordType GetById(int Id)
         {
-            CountryType obj = NSession.Get<CountryType>(Id);
+            OrderPackRecordType obj = NSession.Get<OrderPackRecordType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -63,15 +58,15 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            CountryType obj = GetById(id);
+            OrderPackRecordType obj = GetById(id);
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(CountryType obj)
+        public ActionResult Edit(OrderPackRecordType obj)
         {
-
+           
             try
             {
                 NSession.Update(obj);
@@ -82,16 +77,16 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-
+           
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
+          
             try
             {
-                CountryType obj = GetById(id);
+                OrderPackRecordType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -102,10 +97,10 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows, string sort, string order, string search)
+		public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
-            string orderby = "order by ECountry desc";
+            string orderby = "";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
@@ -119,20 +114,13 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<CountryType> objList = NSession.CreateQuery("from CountryType " + where + orderby)
+            IList<OrderPackRecordType> objList = NSession.CreateQuery("from OrderPackRecordType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
-                .List<CountryType>();
+                .List<OrderPackRecordType>();
 
-            object count = NSession.CreateQuery("select count(Id) from CountryType " + where).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from OrderPackRecordType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
-        }
-
-        public JsonResult ListALL(string q)
-        {
-            IList<CountryType> objList = NSession.CreateQuery("from CountryType where ECountry like '%" + q + "%' order by ECountry asc")
-                .List<CountryType>();
-            return Json(new { total = objList.Count, rows = objList });
         }
 
     }

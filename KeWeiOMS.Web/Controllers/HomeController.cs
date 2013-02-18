@@ -183,7 +183,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult SetPrintData(string m, string r, string d)
         {
             string sql = "";
-            sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,
+            sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,
 O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
 OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,
 R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',
@@ -197,9 +197,15 @@ left join ReturnAddress R On r.Id=" + r;
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+          
             da.Fill(ds);
-            ds.Tables[0].DefaultView.Sort = "Order Asc";
+            ds.Tables[0].DefaultView.Sort = "OrderNo Asc";
             DataTable dt = ds.Tables[0].DefaultView.ToTable();
+            dt.Columns.Add("PrintName");
+            foreach (DataRow dr in dt.Rows)
+            {
+                dr["PrintName"] = CurrentUser.Realname;
+            }
             ds.Tables.Clear();
             ds.Tables.Add(dt);
             Session["data"] = ds.GetXml();

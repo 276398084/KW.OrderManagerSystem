@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -33,7 +33,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { errorMsg = "出错� });
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -75,7 +75,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { errorMsg = "出错� });
             }
             return Json(new { IsSuccess = "true" });
            
@@ -93,7 +93,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { errorMsg = "出错� });
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -118,7 +118,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { errorMsg = "出错� });
             }
             return Json(new { IsSuccess = "true" });
 

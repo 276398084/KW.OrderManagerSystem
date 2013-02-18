@@ -10,11 +10,10 @@ namespace KeWeiOMS.Web
         待处理 = 0,
         已处理 = 1,
         待拣货 = 2,
-        待出库 = 3,
-        待包装 = 4,
-        待发货 = 5,
-        已发货 = 6,
-        已完成 = 7
+        待包装 = 3,
+        待发货 = 4,
+        已发货 = 5,
+        已完成 = 6
     }
 
     public enum ProductStatusEnum

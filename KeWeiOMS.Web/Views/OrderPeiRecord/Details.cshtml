@@ -1,0 +1,58 @@
+﻿@model KeWeiOMS.Domain.OrderPeiRecordType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.OrderPeiRecordType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.OrderPeiRecordType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">订单ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OId)
+    </div>
+
+    <div class="display-label">订单</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderNo)
+    </div>
+
+    <div class="display-label">扫描时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">配货人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PeiBy)
+    </div>
+
+    <div class="display-label">检验人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ValiBy)
+    </div>
+
+    <div class="display-label">扫描人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ScanBy)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

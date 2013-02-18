@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  WarehouseStockType GetById(int Id)
+        public WarehouseStockType GetById(int Id)
         {
             WarehouseStockType obj = NSession.Get<WarehouseStockType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(WarehouseStockType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 WarehouseStockType obj = GetById(id);
@@ -97,14 +97,30 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            IList<WarehouseStockType> objList = NSession.CreateQuery("from WarehouseStockType")
+            string where = "";
+            string orderby = "order by SKU desc";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<WarehouseStockType> objList = NSession.CreateQuery("from WarehouseStockType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<WarehouseStockType>();
-			
-            object count = NSession.CreateQuery("select count(Id) from WarehouseStockType ").UniqueResult();
+
+            object count = NSession.CreateQuery("select count(Id) from WarehouseStockType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

@@ -1,0 +1,104 @@
+﻿@model KeWeiOMS.Domain.OrderPeiRecordType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+        $('#c_PeiBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#c_ValiBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#c_ScanBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "OrderPeiRecord", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OId,"订单ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OId,new{@id="c_OId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"扫描时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PeiBy,"配货人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PeiBy,new{@id="c_PeiBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ValiBy,"检验人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ValiBy,new{@id="c_ValiBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ScanBy,"扫描人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ScanBy,new{@id="c_ScanBy"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

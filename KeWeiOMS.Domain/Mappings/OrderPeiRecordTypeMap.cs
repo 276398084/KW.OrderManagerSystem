@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// OrderProductTypeMap
-    /// 订单商品表
+    /// OrderPeiRecordTypeMap
+    /// 配货记录表
     /// 
     /// 修改纪录
     /// 
@@ -24,22 +24,18 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class OrderProductTypeMap : ClassMap<OrderProductType>
+    public class OrderPeiRecordTypeMap : ClassMap<OrderPeiRecordType> 
     {
-        public OrderProductTypeMap()
+        public OrderPeiRecordTypeMap()
         {
-            Table("OrderProducts");
+            Table("OrderPeiRecord");
             Id(x => x.Id);
             Map(x => x.OId);
-            Map(x => x.OrderNo).Length(40);
-            Map(x => x.ExSKU).Length(40);
-            Map(x => x.Title).Length(400);
-            Map(x => x.Qty);
-            Map(x => x.SKU).Length(40);
-            Map(x => x.Remark).Length(400);
-            Map(x => x.Standard).Length(400);
-            Map(x => x.Price);
-            Map(x => x.Url).Length(200);
+            Map(x => x.OrderNo).Length(50);
+            Map(x => x.CreateOn);
+            Map(x => x.PeiBy).Length(50);
+            Map(x => x.ValiBy).Length(50);
+            Map(x => x.ScanBy).Length(50);
         }
     }
 }

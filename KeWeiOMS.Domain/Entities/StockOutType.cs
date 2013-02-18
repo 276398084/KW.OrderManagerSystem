@@ -41,6 +41,16 @@ namespace KeWeiOMS.Domain
         public virtual String SKU { get; set; }
 
         /// <summary>
+        /// 出库类型
+        /// </summary>
+        public virtual String OutType { get; set; }
+
+        /// <summary>
+        /// Memo
+        /// </summary>
+        public virtual String Memo { get; set; }
+
+        /// <summary>
         /// 数量
         /// </summary>
         public virtual int Qty { get; set; }
@@ -54,6 +64,10 @@ namespace KeWeiOMS.Domain
         /// 仓库ID
         /// </summary>
         public virtual int WId { get; set; }
+
+        /// 仓库ID
+        /// </summary>
+        public virtual string WName { get; set; }
 
         /// <summary>
         /// 出库人

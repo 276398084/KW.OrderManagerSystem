@@ -36,6 +36,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.Qty);
             Map(x => x.Freight);
             Map(x => x.ProductName).Length(200);
+            Map(x => x.ProductUrl).Length(300);
+            Map(x => x.PicUrl).Length(300);
             Map(x => x.Suppliers).Length(50);
             Map(x => x.SId);
             Map(x => x.LogisticsMode).Length(50);

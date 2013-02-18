@@ -67,6 +67,8 @@
     <Compile Include="Entities\NewGuideType.cs" />
     <Compile Include="Entities\OrderAddressType.cs" />
     <Compile Include="Entities\OrderBuyerType.cs" />
+    <Compile Include="Entities\OrderPackRecordType.cs" />
+    <Compile Include="Entities\OrderPeiRecordType.cs" />
     <Compile Include="Entities\OrderProductType.cs" />
     <Compile Include="Entities\OrderRecordType.cs" />
     <Compile Include="Entities\OrderType.cs" />
@@ -111,6 +113,8 @@
     <Compile Include="Mappings\NewGuideTypeMap.cs" />
     <Compile Include="Mappings\OrderAddressTypeMap.cs" />
     <Compile Include="Mappings\OrderBuyerTypeMap.cs" />
+    <Compile Include="Mappings\OrderPackRecordTypeMap.cs" />
+    <Compile Include="Mappings\OrderPeiRecordTypeMap.cs" />
     <Compile Include="Mappings\OrderProductTypeMap.cs" />
     <Compile Include="Mappings\OrderRecordTypeMap.cs" />
     <Compile Include="Mappings\OrderTypeMap.cs" />

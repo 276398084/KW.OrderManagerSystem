@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class StockInTypeMap : ClassMap<StockInType> 
+    public class StockInTypeMap : ClassMap<StockInType>
     {
         public StockInTypeMap()
         {
@@ -32,6 +32,9 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.WId);
             Map(x => x.SKU).Length(50);
+            Map(x => x.WName).Length(50);
+            Map(x => x.InType).Length(50);
+            Map(x => x.Memo).Length(400);
             Map(x => x.Qty);
             Map(x => x.Price);
             Map(x => x.SourceQty);

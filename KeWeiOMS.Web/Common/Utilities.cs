@@ -21,17 +21,8 @@ namespace KeWeiOMS.Web
         public const string End_Int = "_ei";
         public const string End_String = "_es";
         public const string DDL_String = "_ds";
-
         public const string CookieName = "KeWeiOMS_User";
-
-        /// <summary>
-        /// 大图片路劲
-        /// </summary>
         public const string BPicPath = "/ProductImg/BPic/";
-
-        /// <summary>
-        /// 小图片路劲
-        /// </summary>
         public const string SPicPath = "/ProductImg/SPic/";
 
         public static string GetOrderNo()
@@ -63,6 +54,8 @@ namespace KeWeiOMS.Web
             }
             return "";
         }
+
+
 
         #region 缩略图生成
         public static void DrawImageRectRect(Image imageFrom, string newImgPath, int width, int height)
@@ -203,6 +196,9 @@ namespace KeWeiOMS.Web
             }
             return where;
         }
+
+        #region 登陆和Cookie
+
         /// <summary>
         /// Create or Set Cookies Values
         /// </summary>
@@ -270,6 +266,78 @@ namespace KeWeiOMS.Web
                 NSession.Update(user);
                 NSession.Flush();
                 System.Web.HttpContext.Current.Session["account"] = user;
+                return true;
+            }
+            return false;
+        }
+        #endregion
+
+
+        public static bool StockOut(int wid, string sku, int num, string outType, string user, string memo, string orderNo)
+        {
+            ISession NSession = NHibernateHelper.CreateSession();
+            IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).SetString("p2", sku).List<WarehouseStockType>();
+            if (list.Count > 0)
+            {
+                WarehouseStockType ws = list[0];
+                ws.Qty = ws.Qty - num;
+                NSession.SaveOrUpdate(ws);
+                NSession.Flush();
+
+                StockOutType stockOutType = new StockOutType();
+                stockOutType.CreateBy = user;
+                stockOutType.CreateOn = DateTime.Now;
+                stockOutType.OrderNo = orderNo;
+                stockOutType.Qty = num;
+                stockOutType.SKU = sku;
+                stockOutType.OutType = outType;
+                stockOutType.SourceQty = ws.Qty;
+                stockOutType.WId = wid;
+                stockOutType.Memo = memo;
+                NSession.Save(stockOutType);
+                NSession.Flush();
+                return true;
+            }
+            return false;
+        }
+        public static bool StockIn(int wid, string sku, int num, double price, string InType, string user, string memo)
+        {
+            ISession NSession = NHibernateHelper.CreateSession();
+            IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).SetString("p2", sku).List<WarehouseStockType>();
+            if (list.Count > 0)
+            {
+                WarehouseStockType ws = list[0];
+                ws.Qty = ws.Qty + num;
+                NSession.SaveOrUpdate(ws);
+                NSession.Flush();
+                if (price != 0)
+                {
+                    IList<ProductType> foo =
+                        NSession.CreateQuery(" from ProductType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).
+                            SetString("p2", sku).List<ProductType>();
+                    if (foo.Count > 0)
+                    {
+                        ProductType p = foo[0];
+                        p.Price = price;
+                        NSession.SaveOrUpdate(p);
+                        NSession.Flush();
+
+                    }
+                }
+
+                StockInType stockInType = new StockInType();
+                stockInType.Price = price;
+                stockInType.Qty = num;
+                stockInType.SKU = sku;
+                stockInType.WId = wid;
+                stockInType.InType = InType;
+                stockInType.Memo = memo;
+                stockInType.WName = ws.Warehouse;
+                stockInType.SourceQty = ws.Qty;
+                stockInType.CreateBy = user;
+                stockInType.CreateOn = DateTime.Now;
+                NSession.SaveOrUpdate(stockInType);
+                NSession.Flush();
                 return true;
             }
             return false;

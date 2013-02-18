@@ -50,6 +50,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.LogisticMode).Length(40);
             Map(x => x.ErrorInfo).Length(500);
             Map(x => x.Country).Length(40);
+            Map(x => x.TrackCode).Length(50);
             Map(x => x.AddressId);
             Map(x => x.Weight);
             Map(x => x.Freight);
