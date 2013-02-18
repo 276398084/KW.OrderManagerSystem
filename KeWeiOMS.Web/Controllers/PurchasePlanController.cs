@@ -27,6 +27,9 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.CreateOn = DateTime.Now;
+                obj.CreateBy = CurrentUser.Realname;
+                obj.BuyBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -69,6 +72,8 @@ namespace KeWeiOMS.Web.Controllers
            
             try
             {
+                PurchasePlanType ob = GetById(obj.Id);
+                obj.CreateOn = ob.CreateOn;
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -97,15 +102,25 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows,string sort,string order)
         {
-            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType")
+            string orderby = "";
+            if(!string.IsNullOrEmpty(sort)&&!string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType" + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<PurchasePlanType>();
 			
             object count = NSession.CreateQuery("select count(Id) from PurchasePlanType ").UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+        public JsonResult SearchSKU(string id)
+        {
+            IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU=:sku").SetString("sku", id).List<ProductType>();
+            return Json(obj,JsonRequestBehavior.AllowGet);
         }
 
     }

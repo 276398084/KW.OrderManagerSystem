@@ -33,22 +33,22 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "鍑洪敊浜 });
+                return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
         }
 
         /// <summary>
-        /// 鏍规嵁Id鑾峰彇
+        /// 根据Id获取
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  NewGuideType GetById(int Id)
+        public NewGuideType GetById(int Id)
         {
             NewGuideType obj = NSession.Get<NewGuideType>(Id);
             if (obj == null)
             {
-                throw new Exception("杩斿洖瀹炰綋涓虹┖");
+                throw new Exception("返回实体为空");
             }
             else
             {
@@ -67,7 +67,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(NewGuideType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -75,16 +75,16 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "鍑洪敊浜 });
+                return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 NewGuideType obj = GetById(id);
@@ -93,7 +93,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "鍑洪敊浜 });
+                return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -118,7 +118,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "鍑洪敊浜 });
+                return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
 
