@@ -90,6 +90,13 @@
         function getHtml(v) {
             return '<a href="javascript:void(0);" onclick="g_dlg(' + v + ')">权限和菜单</a>'
         }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search,
+
+            });
+        }
 
     </script>
     <div region="center">
@@ -100,53 +107,64 @@
                 <tr>
                     <th field="Id" width="100" formatter="getHtml">操作
                     </th>
-                    <th field="Code" width="100">编号
+                    <th field="Code" width="100" sortable="true">编号
                     </th>
 
-                    <th field="Username" width="100">登录名
+                    <th field="Username" width="100" sortable="true">登录名
                     </th>
 
-                    <th field="Realname" width="100">姓名
+                    <th field="Realname" width="100" sortable="true">姓名
                     </th>
 
-                    <th field="RoleName" width="100">职位
+                    <th field="RoleName" width="100" sortable="true">职位
                     </th>
 
-                    <th field="DepartmentName" width="100">部门名称
+                    <th field="DepartmentName" width="100" sortable="true">部门名称
                     </th>
 
-                    <th field="Gender" width="100">性别
+                    <th field="Gender" width="100" sortable="true">性别
                     </th>
 
-                    <th field="Telephone" width="100">电话
+                    <th field="Telephone" width="100" sortable="true">电话
                     </th>
 
-                    <th field="Mobile" width="100">手机
+                    <th field="Mobile" width="100" sortable="true">手机
                     </th>
 
-                    <th field="Birthday" width="100">出生日期
+                    <th field="Birthday" width="100" sortable="true">出生日期
                     </th>
 
-                    <th field="Email" width="100">电子邮件
+                    <th field="Email" width="100" sortable="true">电子邮件
                     </th>
 
-                    <th field="HomeAddress" width="100">家庭住址
+                    <th field="HomeAddress" width="100" sortable="true">家庭住址
                     </th>
 
-                    <th field="LastVisit" width="100" formatter="getDate">最后访问时间
+                    <th field="LastVisit" width="100" formatter="getDate" sortable="true">最后访问时间
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
-
-
-
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+                     <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Code'">编号</div>
+            <div data-options="name:'Username'">登陆名</div>
+            <div data-options="name:'Realname'">姓名</div>
+            <div data-options="name:'RoleName'">职位</div>
+            <div data-options="name:'DepartmentName'">部门名称</div>
+            <div data-options="name:'Telephone'">电话</div>
+            <div data-options="name:'Mobile'">手机</div>
+            <div data-options="name:'Birthday'">出生日期</div>
+            <div data-options="name:'Email'">电子邮件</div>
+            <div data-options="name:'HomeAddress'">家庭住址</div>
+            <div data-options="name:'LastVisit'">最后访问时间</div>
 
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
         <div id="g_dlg"></div>

@@ -192,13 +192,27 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows,string sort,string order,string search)
         {
-            IList<UserType> objList = NSession.CreateQuery("from UserType")
+            string orderby = "";
+            string where="";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<UserType> objList = NSession.CreateQuery("from UserType "+ where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<UserType>();
-            object count = NSession.CreateQuery("select count(Id) from UserType ").UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from UserType "+ where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

@@ -37,8 +37,18 @@
             data: [{ id: 0, text: "已采购" }, { id: 1, text: "已发货" }, { id: 2, text: "已收到" }]
         });
 
+        $('#c_Suppliers').combobox({
+            url: '@Url.Action("GetSuppliers","PurchasePlan")',
+            valueField: 'SuppliersName',
+            textField: 'SuppliersName',
+        });
 
-
+        $('#c_PlanNo').validatebox({
+            required:true
+        })
+        $('#c_SKU').validatebox({
+            required: true
+        })
     });
     function SeachSKU() {
         var sku = $("#c_SKU").attr("value");
@@ -119,11 +129,16 @@
 		<td>
             @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
 		</td>
-        		<td>
+@*        		<td>
             @Html.LabelFor(model => model.BuyOn,"采购时间:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.BuyOn,new{@id="c_BuyOn"})
+		</td>*@        		<td>
+            @Html.LabelFor(model => model.SendOn,"发货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SendOn,new{@id="c_SendOn"})
 		</td>
 	</tr>
 
@@ -134,11 +149,11 @@
 		<td>
             @Html.TextBoxFor(model => model.Freight,new{@id="c_Freight"})
 		</td>
-        		<td>
-            @Html.LabelFor(model => model.SendOn,"发货时间:")
+        <td>
+            @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SendOn,new{@id="c_SendOn"})
+            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="c_ReceiveOn"})
 		</td>
 	</tr>
 
@@ -149,12 +164,7 @@
 		<td>
             @Html.TextBoxFor(model => model.ProductName,new{@id="c_ProductName"})
 		</td>
-        		<td>
-            @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="c_ReceiveOn"})
-		</td>
+
 	</tr>
 
 	<tr>
@@ -167,10 +177,10 @@
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.SId,"供应商ID:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.SId,new{@id="c_SId"})
 		</td>
 	</tr>

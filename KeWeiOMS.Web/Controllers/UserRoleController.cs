@@ -99,11 +99,11 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows)
         {
-            IList<UserRoleType> objList = NSession.CreateQuery("from UserRoleType")
+            IList<UserRoleType> objList = NSession.CreateQuery("")
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<UserRoleType>();
-
+            object count = NSession.CreateQuery("from UserRoleType").UniqueResult();
             return Json(new { total = objList.Count, rows = objList });
         }
 

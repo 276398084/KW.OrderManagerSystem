@@ -27,7 +27,16 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                if (obj.SendOn < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.SendOn = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.ReceiveOn < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.ReceiveOn = Convert.ToDateTime("2000-01-01");
+                }
                 obj.CreateOn = DateTime.Now;
+                obj.BuyOn = DateTime.Now;
                 obj.CreateBy = CurrentUser.Realname;
                 obj.BuyBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
@@ -118,6 +127,11 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult SearchSKU(string id)
         {
             IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU=:sku").SetString("sku", id).List<ProductType>();
+            return Json(obj,JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetSuppliers()
+        {
+            IList<SupplierType> obj = NSession.CreateQuery("from SupplierType").List<SupplierType>();
             return Json(obj,JsonRequestBehavior.AllowGet);
         }
 
