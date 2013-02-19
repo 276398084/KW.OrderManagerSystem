@@ -33,22 +33,22 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "³ö´íÁË" });
+                return Json(new { errorMsg = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" });
             }
             return Json(new { IsSuccess = "true" });
         }
 
         /// <summary>
-        /// ¸ù¾ÝId»ñÈ¡
+        /// ï¿½ï¿½ï¿½ï¿½Idï¿½ï¿½È¡
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  NewGuideType GetById(int Id)
+        public NewGuideType GetById(int Id)
         {
             NewGuideType obj = NSession.Get<NewGuideType>(Id);
             if (obj == null)
             {
-                throw new Exception("·µ»ØÊµÌåÎª¿Õ");
+                throw new Exception("ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½Îªï¿½ï¿½");
             }
             else
             {
@@ -67,7 +67,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(NewGuideType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -75,16 +75,16 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "³ö´íÁË" });
+                return Json(new { errorMsg = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 NewGuideType obj = GetById(id);
@@ -93,7 +93,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "³ö´íÁË" });
+                return Json(new { errorMsg = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" });
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -118,7 +118,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "³ö´íÁË" });
+                return Json(new { errorMsg = "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" });
             }
             return Json(new { IsSuccess = "true" });
 

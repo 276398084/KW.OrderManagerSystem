@@ -32,6 +32,17 @@
 
 
     });
+    function SeachSKU() {
+        var sku = $("#c_SKU").attr("value");
+        $.getJSON('@Url.Action("SearchSKU","PurchasePlan")/' + sku, function (json) {
+            if (json)
+            { 
+                $("#c_ProductName").attr("value", json[0].ProductName);
+                $("#c_PicUrl").attr("value", json[0].PicUrl);
+                $("#c_ProductUrl").attr("value", json[0].SPicUrl);
+            }
+        })
+    }
     
 </script>
 
@@ -39,14 +50,14 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
 		<td>
@@ -55,6 +66,12 @@
 		<td>
             @Html.TextBoxFor(model => model.PlanNo,new{@id="c_PlanNo"})
 		</td>
+        		<td>
+            @Html.LabelFor(model => model.PicUrl,"图片链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PicUrl,new{@id="c_PicUrl"})
+		</td>
 	</tr>
 
 	<tr>
@@ -62,7 +79,13 @@
             @Html.LabelFor(model => model.SKU,"SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU",onblur="SeachSKU()"})
+		</td>
+        <td>
+            @Html.LabelFor(model => model.ProductUrl,"产品链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductUrl,new{@id="c_ProductUrl" })
 		</td>
 	</tr>
 
@@ -82,6 +105,12 @@
 		<td>
             @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
 		</td>
+        		<td>
+            @Html.LabelFor(model => model.BuyOn,"采购时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyOn,new{@id="c_BuyOn"})
+		</td>
 	</tr>
 
 	<tr>
@@ -91,6 +120,12 @@
 		<td>
             @Html.TextBoxFor(model => model.Freight,new{@id="c_Freight"})
 		</td>
+        		<td>
+            @Html.LabelFor(model => model.SendOn,"发货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SendOn,new{@id="c_SendOn"})
+		</td>
 	</tr>
 
 	<tr>
@@ -99,6 +134,12 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.ProductName,new{@id="c_ProductName"})
+		</td>
+        		<td>
+            @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="c_ReceiveOn"})
 		</td>
 	</tr>
 
@@ -155,7 +196,7 @@
             @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
 		</td>
 	</tr>
-
+@*	
 	<tr>
 		<td>
             @Html.LabelFor(model => model.BuyBy,"采购人:")
@@ -165,7 +206,7 @@
 		</td>
 	</tr>
 
-	<tr>
+<tr>
 		<td>
             @Html.LabelFor(model => model.CreateBy,"生成人:")
 		</td>
@@ -208,7 +249,7 @@
 		<td>
             @Html.TextBoxFor(model => model.ReceiveOn,new{@id="c_ReceiveOn"})
 		</td>
-	</tr>
+	</tr>*@
 
 
 </table>

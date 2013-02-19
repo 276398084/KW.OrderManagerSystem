@@ -29,16 +29,24 @@
 
 
     });
+
+    function SeachSKU() {
+        var sku = $("#e_SKU").attr("value");
+        $.getJSON('@Url.Action("SearchSKU","PurchasePlan")/' + sku, function (json) {
+            if (json) {
+                $("#e_ProductName").attr("value", json[0].ProductName);
+                $("#e_PicUrl").attr("value", json[0].PicUrl);
+                $("#e_ProductUrl").attr("value", json[0].SPicUrl);
+            }
+        })
+    }
 </script>
 @using (Html.BeginForm("Edit", "PurchasePlan", FormMethod.Post, new { id = "e_form" }))
 {
 <fieldset>
 <table class="editForm">
 	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
+		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
 	</tr>
@@ -50,6 +58,12 @@
 		<td>
             @Html.TextBoxFor(model => model.PlanNo,new{@id="e_PlanNo"})
 		</td>
+        		<td>
+            @Html.LabelFor(model => model.PicUrl,"图片链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PicUrl,new{@id="e_PicUrl"})
+		</td>
 	</tr>
 
 	<tr>
@@ -57,7 +71,13 @@
             @Html.LabelFor(model => model.SKU,"SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU",onblur="SeachSKU()"})
+		</td>
+        <td>
+            @Html.LabelFor(model => model.ProductUrl,"产品链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductUrl,new{@id="e_ProductUrl" })
 		</td>
 	</tr>
 
@@ -77,6 +97,12 @@
 		<td>
             @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
 		</td>
+        		<td>
+            @Html.LabelFor(model => model.BuyOn,"采购时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyOn,new{@id="e_BuyOn"})
+		</td>
 	</tr>
 
 	<tr>
@@ -86,6 +112,12 @@
 		<td>
             @Html.TextBoxFor(model => model.Freight,new{@id="e_Freight"})
 		</td>
+        		<td>
+            @Html.LabelFor(model => model.SendOn,"发货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn"})
+		</td>
 	</tr>
 
 	<tr>
@@ -94,6 +126,12 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.ProductName,new{@id="e_ProductName"})
+		</td>
+        		<td>
+            @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="e_ReceiveOn"})
 		</td>
 	</tr>
 
@@ -148,60 +186,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.BuyBy,"采购人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.BuyBy,new{@id="e_BuyBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateBy,"生成人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateOn,"生成时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.BuyOn,"采购时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.BuyOn,new{@id="e_BuyOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SendOn,"发货时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="e_ReceiveOn"})
 		</td>
 	</tr>
 

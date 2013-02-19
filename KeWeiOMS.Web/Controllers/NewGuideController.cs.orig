@@ -26,7 +26,11 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult Create(NewGuideType obj)
         {
             try
+<<<<<<< HEAD
             {
+=======
+            {
+>>>>>>> kewei/ttt
                 obj.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
@@ -96,6 +100,7 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
+<<<<<<< HEAD
 <<<<<<< HEAD
         }
 
@@ -233,6 +238,83 @@ namespace KeWeiOMS.Web.Controllers
 
             object count = NSession.CreateQuery("select count(Id) from NewGuideType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
+>>>>>>> kewei/ttt
+=======
+        }
+
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult Copy(int id)
+        {
+            NewGuideType obj = GetById(id);
+            return View(obj);
+        }
+
+        [HttpPost]
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult Copy(NewGuideType obj)
+        {
+
+            try
+            {
+<<<<<<< HEAD
+                obj.CreateOn = DateTime.Now;
+=======
+>>>>>>> kewei/ttt
+                NSession.Save(obj);
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = "true" });
+
+        }
+
+        //public JsonResult List(int page, int rows, string sort, string order)
+        //{
+        //    string orderby = "";
+        //    if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+        //    {
+        //        orderby = "order by " + sort + " " + order;
+        //    }
+        //    IList<NewGuideType> objList = NSession.CreateQuery("from NewGuideType " + orderby)
+        //        .SetFirstResult(rows * (page - 1))
+        //        .SetMaxResults(rows * page)
+        //        .List<NewGuideType>();
+
+        //    object count = NSession.CreateQuery("select count(Id) from NewGuideType ").UniqueResult();
+        //    return Json(new { total = count, rows = objList });
+        //}
+
+        public JsonResult List(int page, int rows, string sort, string order, string search)
+        {
+            string where = "";
+            string orderby = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<NewGuideType> objList = NSession.CreateQuery("from NewGuideType " + where + orderby)
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows)
+                .List<NewGuideType>();
+
+            object count = NSession.CreateQuery("select count(Id) from NewGuideType " + where).UniqueResult();
+            return Json(new { total = count, rows = objList });
+<<<<<<< HEAD
+>>>>>>> kewei/ttt
+=======
+>>>>>>> KeWeiOMS/jmyd2
 >>>>>>> kewei/ttt
         }
 
