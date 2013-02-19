@@ -22,8 +22,8 @@
             valueField: 'Id',
             textField: 'Realname',
             required: true,
-            onChange: function (n, o) {
-
+            onSelect: function (n, o) {
+                $('#c_RoleName').val($('#c_RoleId').combobox("getText"));
             }
         });
         $('#c_CId').combobox({
@@ -34,19 +34,13 @@
             onChange: showBuMen
         });
         $('#c_DId').combotree();
-    })
+    });
 
     function showBuMen(id) {
         $('#c_DId').combotree({
             url: '/Organize/BuMenList/' + id,
             required: true
         });
-    }
-
-    function setCD() {
-        $('#c_RoleName').val($('#c_RoleId').combobox("getText"));
-        $('#c_CompanyName').val($('#c_CId').combobox("getText"));
-        $('#c_DepartmentName').val($('#c_DId').combotree("getText"));
     }
 
 </script>
@@ -68,9 +62,6 @@
                 <td>
                     @Html.TextBoxFor(model => model.Username, new { @id = "c_Username", })
                 </td>
-            </tr>
-
-            <tr>
             </tr>
 
             <tr>

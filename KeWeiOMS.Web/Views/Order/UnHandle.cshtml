@@ -9,15 +9,18 @@
             $('#dg').datagrid({
                 url: '@Url.Action("UnHandleList", "Order")',
                 pageNumber: 1,
-                fitColumns: true,
                 nowrap: false,
                 pageSize: 20,
-                width: 1100,
                 height: 500,
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Edit", "Order")/' + r.Id);
+                },
                 detailFormatter: function (index, row) {
-                    return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                    var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '</b></div>';
+                    return html;
                 },
                 onExpandRow: function (index, row) {
                     $('#ddv-' + index).panel({
@@ -31,6 +34,16 @@
                     $('#dg').datagrid('fixDetailRowHeight', index);
                 }
             });
+
+            $('#Platform').combobox({
+                url: '/Account/Platform/1',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 150,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
         });
 
         //新建
@@ -38,6 +51,14 @@
             var url_str = '@Url.Action("Create", "Order")';
             showdlg(url_str, 'c_dlg', ajaxAdd);
         }
+        $('#Platform').combobox({
+            url: '/Account/Platform',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150,
+            panelHeight: 'auto'
+        });
 
         //编辑框
         function e_dlg() {
@@ -59,9 +80,7 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "Order")/' + id;
-                alert(1);
                 delData(url, 'dg', 't');
             }
         }
@@ -121,6 +140,16 @@
 
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            var a = $('#Account').combobox("getText");
+            if (a != "ALL") {
+                search += "Account_es&" + a + "^";
+            }
+            var b = $('#Platform').combobox("getText");
+            if (b != "ALL") {
+                search += "Platform_es&" + b + "^";
+            }
+
+
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -161,7 +190,7 @@
                     text: '提交',
                     iconCls: 'icon-ok',
                     handler: function () {
-                        
+
                         jQuery.ajax({
                             url: "/Order/OrderReplace/",
                             type: "post",
@@ -195,8 +224,21 @@
                 }
             });
         }
+        function changePlatform(n, o) {
+            $('#Account').combotree({
+                url: '/Account/AccountList/' + n,
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 150
+            });
+        }
 
-
+        function getOrderDate(v, r, i) {
+            var html = "下:" + getDate(r.GenerateOn);
+            html += "同:" + getDate(r.CreateOn);
+            return html;
+        }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -218,6 +260,8 @@
                     </th>
                     <th field="LogisticMode" width="100">发货方式
                     </th>
+                    <th field="GenerateOn" width="200" formatter="getOrderDate">时间
+                    </th>
                     <th field="Account" width="100" formatter="getAccount">账户
                     </th>
 
@@ -231,7 +275,10 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
+           
+            平台：
+            <input type="text" id="Platform" />
+            账户<input type="text" id="Account" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>

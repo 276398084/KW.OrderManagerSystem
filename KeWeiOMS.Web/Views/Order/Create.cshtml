@@ -3,7 +3,27 @@
   
 }
 <script type="text/javascript">
-
+    $.extend($.fn.datagrid.defaults.editors, {
+        combogrid: {
+            init: function (container, options) {
+                var input = $('<input type="text" class="datagrid-editable-input">').appendTo(container);
+                input.combogrid(options);
+                return input;
+            },
+            destroy: function (target) {
+                $(target).combogrid('destroy');
+            },
+            getValue: function (target) {
+                return $(target).combogrid('getValue');
+            },
+            setValue: function (target, value) {
+                $(target).combogrid('setValue', value);
+            },
+            resize: function (target, width) {
+                $(target).combogrid('resize', width);
+            }
+        }
+    });
     $(function () {
         $('#dg_product').datagrid({
             // url: '@Url.Action("List", "OrderProduct")',
@@ -13,7 +33,7 @@
                 text: '添加',
                 iconCls: 'icon-add',
                 handler: function () {
-                    $('#btnsave').linkbutton('enable');
+
                     addp();
                 }
             }, {
@@ -21,7 +41,19 @@
                 text: '删除',
                 iconCls: 'icon-add',
                 handler: function () {
-                    s_del();
+                    if (editIndex == undefined) {
+                        return;
+                    }
+                    $('#dg_product').datagrid('cancelEdit', editIndex)
+                            .datagrid('deleteRow', editIndex);
+                    editIndex = undefined;
+                }
+            }, {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    accept();
                 }
             }],
             onClickRow: onClickRow
@@ -83,17 +115,11 @@
 
     var editIndex = undefined;
     function endEditing() {
-        if (editIndex == undefined) { return true }
+        if (editIndex == undefined) {
+            return true;
+        }
         if ($('#dg_product').datagrid('validateRow', editIndex)) {
             $('#dg_product').datagrid('endEdit', editIndex);
-
-            $.post("/OrderProduct/Save/", $('#dg_product').datagrid("getRows")[editIndex], function (rsp) {
-                if (rsp.IsSuccess) {
-                    $.messager.show("提示", "提交成功！");
-                }
-            }, "JSON").error(function () {
-                $.messager.show("提示", "提交错误了！");
-            });
 
             editIndex = undefined;
 
@@ -118,7 +144,7 @@
 
     function addp() {
         if (endEditing()) {
-            $('#dg_product').datagrid('appendRow', {});
+            $('#dg_product').datagrid('appendRow', { Qty: 1, Price: 0 });
             editIndex = $('#dg_product').datagrid('getRows').length - 1;
             $('#dg_product').datagrid('selectRow', editIndex)
                     .datagrid('beginEdit', editIndex);
@@ -136,6 +162,15 @@
     }
 
     function addOrder() {
+        var effectRow = new Object();
+        effectRow["rows"] = JSON.stringify($('#dg_product').datagrid("getRows"));
+        $.post("/OrderProduct/Save/", effectRow, function (rsp) {
+            if (rsp.IsSuccess) {
+                $.messager.show("提示", "提交成功！");
+            }
+        }, "JSON").error(function () {
+            $.messager.show("提示", "提交错误了！");
+        });
         formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg', 't');
         $('c_form').clear();
     }
@@ -239,28 +274,29 @@
                         editor:{
 							type:'combogrid',
 							options:{
-								panelWidth: 360,
+								panelWidth: 410,
                                 mode: 'remote',
                                 idField: 'SKU',
                                 textField: 'SKU',
-                                url: '/Products/ListQ',
+                                url: '/Product/ListQ',
                                 fit: true,
+                                required:true,
                                 columns: [[
-                                    { field: 'SKU', title: '货币', width: 150 },
-                                    { field: 'Title', title: '代码', width: 100 },
-                                    { field: 'ItemDesc', title: '汇率', width: 100 }
+                                    { field: 'SKU', title: 'SKU', width: 100 },
+                                    { field: 'ProductName', title: 'Title', width: 200 },
+                                    { field: 'Standard', title: '规格', width: 100 }
 
                                 ]]
 							}
 						}
                         ">SKU
                     </th>
-                    <th field="Qty" width="80" data-options="editor:'text'">数量
+                    <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
                     </th>
                     <th field="Remark" width="100" data-options="editor:'text'">描述
                     </th>
 
-                    <th field="Price" width="80" data-options="editor:'text'">价格
+                    <th field="Price" width="80" data-options="editor:{ type: 'numberbox', options: { precision: 5 }}">价格
                     </th>
 
                     <th field="Url" width="100" data-options="editor:'text'">网址
@@ -348,7 +384,7 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.AddressInfo.Country, new { @id = "c_Country" })
-                    @Html.HiddenFor()(model => model.AddressInfo.CountryCode, new { @id = "c_CountryCode" })
+                    @Html.HiddenFor(model => model.AddressInfo.CountryCode, new { @id = "c_CountryCode" })
                 </td>
             </tr>
 

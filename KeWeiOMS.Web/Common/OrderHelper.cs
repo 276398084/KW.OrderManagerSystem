@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web
                     order.OrderNo = Utilities.GetOrderNo();
                     order.CurrencyCode = "USD";
                     order.OrderExNo = OrderExNo;
-                    order.Amount = Convert.ToDouble(dr["订单金额"]);
+                    order.Amount = Utilities.ToDouble(dr["订单金额"].ToString());
                     order.BuyerMemo = dr["订单备注"].ToString();
                     order.Country = dr["收货国家"].ToString();
                     order.BuyerName = dr["买家名称"].ToString();
@@ -105,7 +105,7 @@ namespace KeWeiOMS.Web
                         System.Text.RegularExpressions.Match mc4 = r4.Match(Str);
                         System.Text.RegularExpressions.Match mc5 = r5.Match(Str);
                         System.Text.RegularExpressions.Match mc6 = r6.Match(Str);
-                        CreateOrderPruduct(mc3.Groups["sku"].Value, Convert.ToInt32(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo);
+                        CreateOrderPruduct(mc3.Groups["sku"].Value, Utilities.ToInt(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo);
                     }
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
                 }
@@ -122,7 +122,7 @@ namespace KeWeiOMS.Web
         {
             List<ResultInfo> results = new List<ResultInfo>();
             CsvReader csv = new CsvReader(fileName, Encoding.Default);
-            csv.CellSeparator = '\t';
+
             List<Dictionary<string, string>> lsitss = csv.ReadAllData();
 
             foreach (Dictionary<string, string> item in lsitss)
@@ -137,7 +137,7 @@ namespace KeWeiOMS.Web
                     order.OrderNo = Utilities.GetOrderNo();
                     // order.CurrencyCode = "USD";
                     order.OrderExNo = item["order-id"];
-                    //order.Amount = Convert.ToDouble(dr["订单金额"]);
+                    //order.Amount =Utilities.ToDouble(dr["订单金额"]);
                     // order.BuyerMemo = dr["订单备注"].ToString();
                     order.Country = item["ship-country"];
                     order.BuyerName = item["buyer-name"];
@@ -150,7 +150,7 @@ namespace KeWeiOMS.Web
                     order.AddressId = CreateAddress(item["recipient-name"], item["ship-address-1"] + item["ship-address-2"] + item["ship-address-3"], item["ship-city"], item["ship-state"], item["ship-country"], item["ship-country"], item["buyer-phone-number"], item["buyer-phone-number"], item["buyer-email"], item["ship-postal-code"], 0);
                     NSession.Save(order);
                     NSession.Flush();
-                    CreateOrderPruduct(item["sku"], Convert.ToInt32(item["quantity-purchased"]), item["sku"], "", 0, "", order.Id, order.OrderNo);
+                    CreateOrderPruduct(item["sku"], Utilities.ToInt(item["quantity-purchased"]), item["sku"], "", 0, "", order.Id, order.OrderNo);
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
                 }
                 else
@@ -165,36 +165,41 @@ namespace KeWeiOMS.Web
         {
             List<ResultInfo> results = new List<ResultInfo>();
             CsvReader csv = new CsvReader(fileName, Encoding.Default);
-            csv.CellSeparator = '\t';
-            List<Dictionary<string, string>> lsitss = csv.ReadAllData();
 
+            List<Dictionary<string, string>> lsitss = csv.ReadAllData();
+            Dictionary<string, int> listOrder = new Dictionary<string, int>();
             foreach (Dictionary<string, string> item in lsitss)
             {
                 if (item.Count < 10)//判断列数
                     continue;
                 string OrderExNo = item["Cart no."];
+                if (listOrder.ContainsKey(OrderExNo))
+                {
+                    CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", listOrder[OrderExNo], OrderExNo);
+                }
                 bool isExist = IsExist(OrderExNo);
                 if (isExist)
                 {
                     OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo();
-                    // order.CurrencyCode = "USD";
+                    order.CurrencyCode = item["Currency"];
                     order.OrderExNo = OrderExNo;
-                    //order.Amount = Convert.ToDouble(dr["订单金额"]);
+                    order.Amount = Utilities.ToDouble(item["Total Price"]);
                     order.BuyerMemo = item["Memo to Seller"];
                     order.Country = item["Nation"];
                     order.BuyerName = item["Customer"];
-                    // order.BuyerEmail = item["buyer-email"];
+                    order.BuyerEmail = "";
                     order.TId = item["Order no."];
                     order.Account = account.AccountName;
                     order.GenerateOn = Convert.ToDateTime(item["Payment Complete"]);
                     order.Platform = PlatformEnum.Gmarket.ToString();
-
+                    order.BuyerMemo = item["Memo to Seller"];
                     order.AddressId = CreateAddress(item["Recipient"], item["Address"], "", "", item["Nation"], item["Nation"], item["Recipient Phone number"], item["Recipient mobile Phone number"], "", item["Postal code"], 0);
                     NSession.Save(order);
                     NSession.Flush();
-                    CreateOrderPruduct(item["Item code"], item["Option Code"], Convert.ToInt32(item["Qty."]), item["Item"], "", 0, "", order.Id, order.OrderNo);
+                    CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", order.Id, order.OrderNo);
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
+                    listOrder.Add(OrderExNo, order.Id);
                 }
                 else
                 {
@@ -218,7 +223,7 @@ namespace KeWeiOMS.Web
                     OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo();
                     order.OrderExNo = OrderExNo;
-                    order.Amount = Convert.ToDouble(item["金额"].ToString());
+                    order.Amount = Utilities.ToDouble(item["金额"].ToString());
                     order.Country = item["国家"].ToString();
                     order.BuyerName = item["用户名"].ToString();
                     order.CurrencyCode = "USD";
@@ -232,7 +237,7 @@ namespace KeWeiOMS.Web
                     NSession.Flush();
 
 
-                    CreateOrderPruduct(item["商品"].ToString(), item["商品"].ToString(), Convert.ToInt32(item["数量"]), "", "", 0, item["属性"].ToString(), order.Id, order.OrderNo);
+                    CreateOrderPruduct(item["商品"].ToString(), item["商品"].ToString(), Utilities.ToInt(item["数量"].ToString()), "", "", 0, item["属性"].ToString(), order.Id, order.OrderNo);
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
 
 
@@ -285,10 +290,10 @@ namespace KeWeiOMS.Web
                     order.OrderNo = Utilities.GetOrderNo();
                     order.CurrencyCode = foo.GoodsDataWare.McCurrency;
                     order.OrderExNo = foo.GoodsDataWare.ItemNumber;
-                    order.Amount = Convert.ToDouble(foo.GoodsDataWare.McGross);
-                    // order.BuyerMemo = dr["订单备注"].ToString();
+                    order.Amount = Utilities.ToDouble(foo.GoodsDataWare.McGross.ToString());
+                    order.BuyerMemo = "客户付款账户" + foo.GoodsDataWare.Business + "  " + foo.GoodsDataWare.Memo;
                     order.Country = foo.GoodsDataWare.AddressCountry;
-                    order.BuyerName = foo.GoodsDataWare.Business;
+                    order.BuyerName = foo.GoodsDataWare.FirstName + " " + foo.GoodsDataWare.LastName;
                     order.BuyerEmail = foo.GoodsDataWare.PayerEmail;
                     order.TId = "";
                     order.Account = account.AccountName;
@@ -545,6 +550,7 @@ namespace KeWeiOMS.Web
             product.Url = url;
             product.OId = oid;
             product.OrderNo = orderNo;
+            product.Remark = remark;
             NSession.Save(product);
             NSession.Flush();
         }

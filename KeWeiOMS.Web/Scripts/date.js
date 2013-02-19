@@ -79,7 +79,7 @@ function formPost(form, url, dlg, dg, t) {
 
 function delData(url, dg, t) {
     if (url) {
-        alert('2' + url);
+
         $.messager.confirm('确认', '确定删除?', function (r) {
             if (r) {
                 $.post(url, function () {
@@ -167,3 +167,19 @@ function showSrarch(url, dlg, dg) {
     $('#' + dlg).dialog("open");
 };
 
+$.fn.panel.defaults.onBeforeDestroy = function () {
+    var frame = $('iframe', this);
+    try {
+        if (frame.length > 0) {
+            for (var i = 0; i < frame.length; i++) {
+                frame[i].contentWindow.document.write('');
+                frame[i].contentWindow.close();
+            }
+            frame.remove();
+            if ($.browser.msie) {
+                CollectGarbage();
+            }
+        }
+    } catch (e) {
+    }
+};

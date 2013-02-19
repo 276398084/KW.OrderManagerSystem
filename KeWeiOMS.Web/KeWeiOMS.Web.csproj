@@ -207,6 +207,8 @@
     <Content Include="Content\images\Display.png" />
     <Content Include="Content\images\file_man_ce.ico" />
     <Content Include="Content\images\tab_tool_mac.ico" />
+    <Content Include="Scripts\easyUI\jquery.portal.js" />
+    <Content Include="Scripts\easyUI\themes\portal.css" />
     <Content Include="Scripts\griectl.cab" />
     <Content Include="Scripts\images\Data.gif" />
     <Content Include="Scripts\images\Data.png" />
