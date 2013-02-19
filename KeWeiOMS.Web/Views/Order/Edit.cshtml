@@ -41,7 +41,24 @@
                 text: '删除',
                 iconCls: 'icon-add',
                 handler: function () {
-                    s_del();
+                    $.messager.confirm("您确定要删除吗？", function (r) {
+                        if (r) {
+                            if (editIndex == undefined) {
+                                return;
+                            }
+                            $('#dg_product').datagrid('cancelEdit', editIndex)
+                                .datagrid('deleteRow', editIndex);
+                            editIndex = undefined;
+                        }
+                    });
+
+                }
+            }, {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    accept();
                 }
             }],
             onClickRow: onClickRow
@@ -77,9 +94,7 @@
         });
     });
 
-
     function changeCountry(v) {
-
         $('#e_Country').combogrid({
             panelWidth: 360,
             idField: 'ECountry',
@@ -124,7 +139,7 @@
         if (editIndex != index) {
             if (endEditing()) {
                 $('#dg_product').datagrid('selectRow', index)
-                        .datagrid('beginEdit', index);
+                    .datagrid('beginEdit', index);
                 editIndex = index;
             } else {
                 $('#dg_product').datagrid('selectRow', editIndex);
@@ -134,15 +149,11 @@
 
     function addp() {
         if (endEditing()) {
-            $('#dg_product').datagrid('appendRow', {});
+            $('#dg_product').datagrid('appendRow', { Qty: 1, Price: 0 });
             editIndex = $('#dg_product').datagrid('getRows').length - 1;
             $('#dg_product').datagrid('selectRow', editIndex)
-                    .datagrid('beginEdit', editIndex);
+                .datagrid('beginEdit', editIndex);
         }
-    }
-
-    function s_del() {
-
     }
 
     function accept() {
@@ -154,13 +165,42 @@
     function addOrder() {
         formPost('e_form', '@Url.Action("Edit", "Order")');
     }
+    function splitOrder() {
+        showProduct("拆分", function () {
+            alert('');
+        });
+    }
 
+    function showProduct(title, handle) {
+        $('#dg_p').datagrid({
+            url: '@Url.Action("List", "OrderProduct")/@ViewData["id"]',
+            width: 700
+        });
+        $('#dlg').dialog({
+            title: title,
+            modal: true,
+            loadingMessage: '正在加载...',
+            buttons: [{
+                text: '提交',
+                iconCls: 'icon-ok',
+                handler: handle
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('# + dlg').dialog('close');
+                }
+            }]
+        }).dialog('open');
+    }
 </script>
 
 
 @using (Html.BeginForm("Create", "Order", FormMethod.Post, new { id = "e_form" }))
 {
-    <input type="button" value="保存" onclick="addOrder();" />
+    <a href="#" class="easyui-linkbutton" onclick="addOrder();">保存</a>  
+    <a href="#" class="easyui-linkbutton" onclick="splitOrder();">拆分</a>  
+    <a href="#" class="easyui-linkbutton" onclick="addOrder();">重发</a>  
+    
     <fieldset>
         <legend>订单信息</legend>
         <table class="editForm">
@@ -178,6 +218,7 @@
                     @Html.HiddenFor(model => model.IsRepeat)
                     @Html.HiddenFor(model => model.IsSplit)
                     @Html.HiddenFor(model => model.Platform)
+                    @Html.HiddenFor(model => model.Account)
                     @Html.HiddenFor(model => model.ScanningOn)
                     @Html.HiddenFor(model => model.ScanningBy)
                     @Html.HiddenFor(model => model.GenerateOn)
@@ -259,10 +300,8 @@
                 <tr>
                     <th field="ExSKU" width="80" data-options="editor:'text'">ExSKU
                     </th>
-
                     <th field="Title" width="100" data-options="editor:'text'">名称
                     </th>
-
                     <th field="SKU" width="80" data-options="
                         editor:{
 							type:'combogrid',
@@ -271,6 +310,7 @@
                                 mode: 'remote',
                                 idField: 'SKU',
                                 textField: 'SKU',
+                          required:true,
                                 url: '/Product/ListQ',
                                 fit: true,
                                 columns: [[
@@ -283,13 +323,12 @@
 						}
                         ">SKU
                     </th>
-                    <th field="Qty" width="80" data-options="editor:'text'">数量
+                    <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
                     </th>
                     <th field="Remark" width="100" data-options="editor:'text'">描述
                     </th>
-
-                    <th field="Price" width="80" data-options="editor:'text'">价格
-                    </th>
+                    <th field="Price" width="80" data-options="editor:{ type: 'numberbox', options: { precision: 5 }}">
+                    价格
 
                     <th field="Url" width="100" data-options="editor:'text'">网址
                     </th>
@@ -340,8 +379,6 @@
                 </td>
             </tr>
 
-
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.AddressInfo.Street, "街道:")
@@ -380,11 +417,29 @@
                     @Html.HiddenFor(model => model.AddressInfo.CountryCode, new { @id = "e_CountryCode" })
                 </td>
             </tr>
-
-
-
-
         </table>
     </fieldset>
    
 }
+
+<div id="dlg">
+    <table id="dg_p" class="easyui-datagrid" rownumbers="true" singleselect="true">
+        <thead>
+            <tr>
+                <th data-options="field:'Id',checkbox:true"></th>
+                <th field="ExSKU" width="80">ExSKU
+                </th>
+                <th field="Title" width="100">名称
+                </th>
+                <th field="SKU" width="80">SKU
+                </th>
+                <th field="Qty" width="80">数量
+                </th>
+                <th field="Remark" width="100">描述
+                </th>
+
+            </tr>
+        </thead>
+    </table>
+</div>
+

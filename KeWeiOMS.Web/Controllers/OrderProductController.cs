@@ -46,27 +46,13 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Save(OrderProductType obj)
+        public JsonResult Save(string rows)
         {
             try
             {
+                List<OrderProductType> orders = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
 
-        
-                List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
-                if (list == null)
-                    list = new List<OrderProductType>();
-                OrderProductType findOne = list.Find(p => p.SKU == obj.SKU);
-                if (findOne != null)
-                {
-                    // findOne = obj;
-                    list.Remove(findOne);
-                    list.Add(obj);
-                }
-                else
-                {
-                    list.Add(obj);
-                }
-                Session["OrderProducts"] = list;
+                Session["OrderProducts"] = orders;
             }
             catch (Exception ee)
             {

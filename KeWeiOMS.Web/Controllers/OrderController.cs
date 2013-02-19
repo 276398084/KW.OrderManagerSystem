@@ -110,7 +110,7 @@ namespace KeWeiOMS.Web.Controllers
             string Account = form["Account"];
             AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             string file = form["hfile"];
-            DataTable dt = OrderHelper.GetDataTable(file);
+
             List<ResultInfo> results = new List<ResultInfo>();
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
             {
@@ -397,7 +397,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult List(int page, int rows, string sort, string order, string search, int isUn = 0)
         {
             string where = "";
-            string orderby = "";
+            string orderby = " order by Id Desc";
             string flag = "<>";
             if (isUn == 1)
                 flag = "=";
@@ -423,7 +423,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows)
                 .List<OrderType>();
 
-            object count = NSession.CreateQuery("select count(Id) from OrderType " + where + orderby).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from OrderType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

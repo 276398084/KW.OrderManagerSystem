@@ -38,6 +38,17 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+
+                OrganizeType obj1 = NSession.Get<OrganizeType>(obj.DId);
+                if (obj1 != null)
+                {
+                    obj.DepartmentName = obj1.ShortName;
+                }
+                OrganizeType obj2 = NSession.Get<OrganizeType>(obj.CId);
+                if (obj2 != null)
+                {
+                    obj.CompanyName = obj2.ShortName;
+                }
                 obj.CreateOn = DateTime.Now;
                 obj.LastVisit = DateTime.Now;
 
@@ -55,6 +66,13 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Login()
         {
             return View();
+        }
+
+        public ActionResult LogOff()
+        {
+            Utilities.ClearCookies();
+            return View("Login");
+
         }
 
         [HttpPost]
@@ -137,6 +155,16 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+                OrganizeType obj1 = NSession.Get<OrganizeType>(obj.DId);
+                if (obj1 != null)
+                {
+                    obj.DepartmentName = obj1.ShortName;
+                }
+                OrganizeType obj2 = NSession.Get<OrganizeType>(obj.CId);
+                if (obj2 != null)
+                {
+                    obj.CompanyName = obj2.ShortName;
+                }
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -170,8 +198,8 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<UserType>();
-
-            return Json(new { total = objList.Count, rows = objList });
+            object count = NSession.CreateQuery("select count(Id) from UserType ").UniqueResult();
+            return Json(new { total = count, rows = objList });
         }
 
         public JsonResult QList(string Id)

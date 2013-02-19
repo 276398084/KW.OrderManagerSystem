@@ -9,10 +9,11 @@
     {
         <tr>
             <td>
-                <img /></td>
+                <img src="@Url.Content("/ProductImg/SPic/" + p.SKU + ".png")" width="64px" height="64px" /></td>
             <td>ExSKU:@p.ExSKU</td>
             <td>SKU:@p.SKU</td>
             <td>Qty:@p.Qty</td>
+            <td>规格: @p.Standard</td>
             <td>描述: @p.Remark</td>
         </tr>
     }

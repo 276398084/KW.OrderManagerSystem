@@ -22,9 +22,15 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Platform()
+        public ActionResult Platform(string Id)
         {
             List<object> list = new List<object>();
+            if (Id == "1")
+            {
+
+                list.Add(new { id = "ALL", text = "ALL" });
+            }
+
             foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
             {
                 list.Add(new { id = item, text = item });
@@ -37,6 +43,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<AccountType> list1 = NSession.CreateQuery(" from AccountType where Platform=:p").SetString("p", id).List<AccountType>();
             List<object> list = new List<object>();
+            list.Add(new { id = "ALL", text = "ALL" });
             foreach (var item in list1)
             {
                 list.Add(new { id = item.Id, text = item.AccountName });

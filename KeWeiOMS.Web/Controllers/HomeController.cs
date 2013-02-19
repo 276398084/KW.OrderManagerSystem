@@ -38,7 +38,7 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Platform()
+        public ActionResult Platform(string Id)
         {
             List<object> list = new List<object>();
             foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
@@ -48,7 +48,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(list);
         }
 
-        public ActionResult OrderStatus()
+        public ActionResult OrderStatus(string Id)
         {
             List<object> list = new List<object>();
             foreach (string item in Enum.GetNames(typeof(OrderStatusEnum)))
@@ -99,7 +99,6 @@ namespace KeWeiOMS.Web.Controllers
                     IList<ProductType> list = NSession.CreateQuery(" from ProductType where SKU='" + fileName + "' ").List<ProductType>();
                     if (list.Count > 0)
                     {
-
                         list[0].PicUrl = Utilities.BPicPath + list[0].SKU + ".jpg";
                         list[0].SPicUrl = Utilities.SPicPath + list[0].SKU + ".png";
                         Utilities.DrawImageRectRect(saveName, filePath + list[0].PicUrl, 310, 310);
@@ -107,7 +106,6 @@ namespace KeWeiOMS.Web.Controllers
                         NSession.SaveOrUpdate(list[0]);
                         NSession.Flush();
                     }
-
                     return Json(new { Success = true, FileName = fileName, SaveName = filePath + saveName });
                 }
                 catch (Exception ex)
@@ -197,7 +195,7 @@ left join ReturnAddress R On r.Id=" + r;
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
-          
+
             da.Fill(ds);
             ds.Tables[0].DefaultView.Sort = "OrderNo Asc";
             DataTable dt = ds.Tables[0].DefaultView.ToTable();

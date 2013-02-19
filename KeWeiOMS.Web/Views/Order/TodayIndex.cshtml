@@ -9,12 +9,22 @@
             $('#dg').datagrid({
                 url: '@Url.Action("List", "Order")',
                 pageNumber: 1,
+
+                nowrap: false,
                 pageSize: 20,
+
+                height: 500,
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
-                detailFormatter: function (index, row) {
-                    return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Edit", "Order")/' + r.Id);
                 },
+                detailFormatter: function (index, row) {
+                    var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '</b></div>';
+                    return html;
+                },
+
                 onExpandRow: function (index, row) {
                     $('#ddv-' + index).panel({
                         border: false,
@@ -27,20 +37,46 @@
                     $('#dg').datagrid('fixDetailRowHeight', index);
                 }
             });
+
+            $('#Platform').combobox({
+                url: '/Account/Platform',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
+            $('#OrderStatus').combobox({
+                url: '/Home/OrderStatus',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto'
+            });
         });
 
         //新建
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Order")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
+            showdlg(url_str, 'c_dlg', ajaxAdd);
         }
+        $('#Platform').combobox({
+            url: '/Account/Platform',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150,
+            panelHeight: 'auto'
+        });
 
         //编辑框
         function e_dlg() {
             var id = getselectedRow();
             if (id != undefined) {
                 var url = '@Url.Action("Edit", "Order")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
+                showdlg(url, 'e_dlg', ajaxEdit);
             }
         }
         //异步新建提交
@@ -55,9 +91,8 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "Order")/' + id;
-                alert(1);
+
                 delData(url, 'dg', 't');
             }
         }
@@ -86,16 +121,16 @@
 
         function GeStatus(v, r, i) {
             var html = v + "<br/>";
-            //if (r.IsPrint == 1)
-            html += "<img src='/Content/imgs/Print.gif'> ";
-            //if (r.IsMerger == 1)
-            html += "<img src='/Content/imgs/Merger.gif'> ";
-            //if (r.IsSplit == 1)
-            html += "<img src='/Content/imgs/Split.gif'> ";
-            //if (r.IsOutOfStock == 1)
-            html += "<img src='/Content/imgs/OutOfStock.gif'> ";
-            //if (r.IsRepeat == 1)
-            html += "<img src='/Content/imgs/Repeat.gif'> ";
+            if (r.IsPrint == 1)
+                html += "<img src='/Content/imgs/Print.gif'> ";
+            if (r.IsMerger == 1)
+                html += "<img src='/Content/imgs/Merger.gif'> ";
+            if (r.IsSplit == 1)
+                html += "<img src='/Content/imgs/Split.gif'> ";
+            if (r.IsOutOfStock == 1)
+                html += "<img src='/Content/imgs/OutOfStock.gif'> ";
+            if (r.IsRepeat == 1)
+                html += "<img src='/Content/imgs/Repeat.gif'> ";
             return html;
         }
 
@@ -109,50 +144,151 @@
             return html;
         }
 
+        function getAccount(v, r, i) {
+
+            var html = v + "<br />" + r.Platform;
+            return html;
+        }
+
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            var a = $('#Account').combobox("getText");
+            if (a != "ALL") {
+                search += "Account_es&" + a + "^";
+            }
+            var b = $('#Platform').combobox("getText");
+            if (b != "ALL") {
+                search += "Platform_es&" + b + "^";
+            }
+            var c = $('#OrderStatus').combobox("getText");
+            if (c != "ALL") {
+                search += "Status_es&" + c + "^";
+            }
+
             $("#dg").datagrid("load", {
-                search: search,
+                search: search
             });
         }
         function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg')
+            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
+        }
+
+        function showPrint() {
+            var rows = $('#dg').datagrid('getSelections');
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i]["OrderNo"]);
+            }
+            jQuery.ajax({
+                url: "/Home/PostData",
+                type: "post",
+                data: "ids=" + ids.join(','),
+                success: function (sss) {
+                    window.open('/Home/PrintSetup/');
+                }
+            });
+        }
+        var s_ids = [];
+        function showEdit() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+
+            $('#s_dlg').show();
+            $("#s_dlg").dialog({
+                title: '替换',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+
+                        jQuery.ajax({
+                            url: "/Order/OrderReplace/",
+                            type: "post",
+                            data: "ids=" + s_ids.join(',') + "&oldField=" + $('#txtOld').val() + "&newField=" + $('#txtNew').combogrid("getValue") + "&FieldName=" + $('#cc').combobox("getValue"),
+                            success: function () {
+                                $('#s_dlg').dialog('close');
+                                $('#dg').datagrid("reload");
+                            }
+                        });
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#s_dlg').dialog('close');
+                    }
+                }]
+            }).dialog('open');
+        }
+
+        function e_order() {
+            var id = getselectedRow();
+            window.open('@Url.Action("Edit", "Order")/' + id);
+        }
+
+
+        function changePlatform(n, o) {
+            $('#Account').combotree({
+                url: '/Account/AccountList/' + n,
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 150
+            });
+        }
+
+        function getOrderDate(v, r, i) {
+            var html = "下:" + getDate(r.GenerateOn);
+            html += "同:" + getDate(r.CreateOn);
+            if (r.ScanningBy != "")
+                html += "扫:" + getDate(r.ScanningOn);
+            return html;
         }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
-            toolbar="#toolbar" rownumbers="true" singleselect="true" pagination="true">
+            toolbar="#toolbar" rownumbers="true" pagination="true">
             <thead>
                 <tr>
-                    <th field="Id" width="60" checkbox="true">11
-                    </th>
-                    
+                    <th field="Id" width="60" checkbox="true"></th>
+
                     <th field="OrderNo" width="100" formatter="GetOrder">订单编号
                     </th>
                     <th field="Status" width="150" formatter="GeStatus">订单状态
                     </th>
                     <th field="CurrencyCode" width="100" formatter="GetAmount">货币
                     </th>
-                    <th field="TId" width="100">流水交易号
-                    </th>
+
                     <th field="BuyerName" width="130" formatter="GetBuyer">买家
                     </th>
-                    <th field="Country" width="100">国家
+                    <th field="Country" width="80">国家
                     </th>
                     <th field="LogisticMode" width="100">发货方式
                     </th>
-                    <th field="Weight" width="30">重量
+                    <th field="GenerateOn" width="200" formatter="getOrderDate">时间
                     </th>
-                    <th field="Freight" width="30">运费
+                    <th field="Account" width="100" formatter="getAccount">账户
                     </th>
-                    <th field="BuyerMemo" width="100">留言
+
+                    <th field="ErrorInfo" width="250">错误信息
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
+            平台：
+            <input type="text" id="Platform" />
+            账户<input type="text" id="Account" />
+            状态<input type="text" id="OrderStatus" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
@@ -165,11 +301,10 @@
             <div data-options="name:'LogisticMode'">发货方式</div>
             <div data-options="name:'Country'">国家</div>
             <div data-options="name:'ScanningBy'">扫描人</div>
-
-
         </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
         <div id="o_dlg"></div>
+
     </div>
 </body>

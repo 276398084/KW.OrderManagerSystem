@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Json;
+using System.Text;
 using System.Web;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
@@ -15,6 +18,7 @@ namespace KeWeiOMS.Web
     {
         public const string OrderNo = "OrderNo";
         public const string UserNo = "UserNo";
+        public const string PlanNo = "PlanNo";
         public const string Start_Time = "_st";
         public const string End_Time = "_et";
         public const string Start_Int = "_si";
@@ -24,35 +28,68 @@ namespace KeWeiOMS.Web
         public const string CookieName = "KeWeiOMS_User";
         public const string BPicPath = "/ProductImg/BPic/";
         public const string SPicPath = "/ProductImg/SPic/";
+        public static object obj1 = new object();
+        public static object obj2 = new object();
+        public static object obj3 = new object();
 
         public static string GetOrderNo()
         {
-            string result = string.Empty;
-            ISession NSession = NHibernateHelper.CreateSession();
-            IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", OrderNo).List<SerialNumberType>();
-            if (list.Count > 0)
+            lock (obj1)
             {
-                list[0].BeginNo = list[0].BeginNo + 1;
-                NSession.Update(list[0]);
-                NSession.Flush();
-                return list[0].BeginNo.ToString();
+                string result = string.Empty;
+                ISession NSession = NHibernateHelper.CreateSession();
+                IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", OrderNo).List<SerialNumberType>();
+                if (list.Count > 0)
+                {
+                    list[0].BeginNo = list[0].BeginNo + 1;
+                    NSession.Update(list[0]);
+                    NSession.Flush();
+                    return list[0].BeginNo.ToString();
+                }
+                return "";
             }
-            return "";
+
         }
 
         public static string GetUserNo()
         {
-            string result = string.Empty;
-            ISession NSession = NHibernateHelper.CreateSession();
-            IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", UserNo).List<SerialNumberType>();
-            if (list.Count > 0)
+            lock (obj2)
             {
-                list[0].BeginNo = list[0].BeginNo + 1;
-                NSession.Update(list[0]);
-                NSession.Flush();
-                return list[0].BeginNo.ToString();
+                string result = string.Empty;
+                ISession NSession = NHibernateHelper.CreateSession();
+                IList<SerialNumberType> list =
+                    NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", UserNo).List
+                        <SerialNumberType>();
+                if (list.Count > 0)
+                {
+                    list[0].BeginNo = list[0].BeginNo + 1;
+                    NSession.Update(list[0]);
+                    NSession.Flush();
+                    return list[0].BeginNo.ToString();
+                }
+                return "";
             }
-            return "";
+        }
+
+        public static string GetPlanNo()
+        {
+            lock (obj3)
+            {
+                string result = string.Empty;
+                ISession NSession = NHibernateHelper.CreateSession();
+
+                IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", PlanNo).List<SerialNumberType>();
+                if (list.Count > 0)
+                {
+                    list[0].BeginNo = list[0].BeginNo + 1;
+                    NSession.Update(list[0]);
+                    NSession.Flush();
+                    return list[0].BeginNo.ToString();
+                }
+                return "";
+
+            }
+
         }
 
 
@@ -253,6 +290,7 @@ namespace KeWeiOMS.Web
                 Expires = DateTime.Now.AddDays(-1)
             };
             System.Web.HttpContext.Current.Response.Cookies.Add(cookie);
+            System.Web.HttpContext.Current.Session["account"] = null;
         }
 
         public static bool LoginByUser(string p, string u)
@@ -343,7 +381,66 @@ namespace KeWeiOMS.Web
             return false;
         }
 
+        public static int ToInt(string str)
+        {
+            try
+            {
+                return Convert.ToInt32(str);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+        }
+        public static double ToDouble(string str)
+        {
+            try
+            {
+                return Convert.ToDouble(str);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+        }
+
+        /// <summary>
+        /// 生成Json格式
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string ToJsonStr<T>(T obj)
+        {
+            DataContractJsonSerializer json = new DataContractJsonSerializer(obj.GetType());
+            using (MemoryStream stream = new MemoryStream())
+            {
+                json.WriteObject(stream, obj);
+                string szJson = Encoding.UTF8.GetString(stream.ToArray());
+                return szJson;
+            }
+        }
+        /// <summary>
+        /// 将JSON 字符转换为对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static T ToJsonObject<T>(string str)
+        {
+            T obj = Activator.CreateInstance<T>();
+            using (MemoryStream ms = new MemoryStream(Encoding.Default.GetBytes(str)))
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+                return (T)serializer.ReadObject(ms);
+            }
+        }
+
     }
+
+
 
     public class ResultInfo
     {

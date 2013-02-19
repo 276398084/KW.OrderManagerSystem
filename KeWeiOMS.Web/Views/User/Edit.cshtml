@@ -11,7 +11,9 @@
             valueField: 'Id',
             textField: 'Realname',
             required: true,
-           
+            onSelect: function (n, o) {
+                $('#c_RoleName').val($('#c_RoleId').combobox("getText"));
+            }
         });
         $('#e_CId').combobox({
             url: '/Organize/RootList',
@@ -21,7 +23,7 @@
             onChange: showBuMen
         });
         $('#e_DId').combotree();
-    })
+    });
 
     function showBuMen(id) {
         $('#e_DId').combotree({
