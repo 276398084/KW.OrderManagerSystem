@@ -72,8 +72,6 @@ namespace KeWeiOMS.Web.Controllers
            
             try
             {
-                PurchasePlanType ob = GetById(obj.Id);
-                obj.CreateOn = ob.CreateOn;
                 NSession.Update(obj);
                 NSession.Flush();
             }

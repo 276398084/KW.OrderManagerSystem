@@ -26,12 +26,19 @@
                 { field: 'Qty', title: '数量', width: 30, sortable: true },
                 { field: 'Freight', title: '运费', width: 30, sortable: true },
                 { field: 'Suppliers', title: '供应商', width: 100, sortable: true },
-                { field: 'Status', title: '状态', width: 100, sortable: true },
+                {
+                    field: 'Status', title: '状态', width: 100, sortable: true,
+                    formatter: function (value) {
+                        if (value == 0) { return "已采购" }
+                        if (value == 1) { return "已发货" }
+                        if (value == 2) { return "已收到" }
+                    }
+                },
                 { field: 'BuyBy', title: '采购人', width: 100, sortable: true },
                 {
                     field:'CreateOn',title: '时间', width: 100, sortable: true,
-                    formatter: function (v, r, i) {
-                        return '创建时间:' + v+ "<br>" + '采购时间:' + r.BuyOn + "<br>" + '发货时间:' + r.SendOn + "<br>" + '采购时间:' + r.ReceiveOn + "<br>";
+                    formatter:function (v, r, i) {
+                        return '创建时间:' + getDate(v) + "<br>" + '采购时间:' + getDate(r.BuyOn) + "<br>" + '发货时间:' + getDate(r.SendOn) + "<br>" + '采购时间:' + getDate(r.ReceiveOn) + "<br>";
                     }
                 },
 
