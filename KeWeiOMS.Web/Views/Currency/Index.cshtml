@@ -211,7 +211,13 @@
                 });
                 return (undefined);
             }
+            function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search,
 
+                });
+            }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -220,16 +226,16 @@
             <thead>
                 <tr>
 
-                    <th field="CurrencyName" width="100">货币
+                    <th field="CurrencyName" width="100" sortable="true">货币
                     </th>
 
-                    <th field="CurrencyCode" width="100">符号
+                    <th field="CurrencyCode" width="100" sortable="true">符号
                     </th>
                     
-                    <th field="CurrencyValue" width="100">值
+                    <th field="CurrencyValue" width="100" sortable="true">值
                     </th>
 
-                    <th field="CreateOn" width="100" formatter="getDate">更新时间
+                    <th field="CreateOn" width="100" formatter="getDate" sortable="true">更新时间
                     </th>
 
 
@@ -241,8 +247,14 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
-
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'CurrencyName'">货币</div>
+            <div data-options="name:'CurrencyCode'">符号</div>
+            <div data-options="name:'CurrencyValue'">值</div>
+            <div data-options="name:'CreateOn'">更新时间</div>
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
 

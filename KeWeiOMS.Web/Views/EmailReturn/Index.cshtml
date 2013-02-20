@@ -68,7 +68,13 @@
         });
         return (undefined);
     }
-   
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search,
+
+        });
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -76,35 +82,35 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*            <th field="Id" width="100">
                 主键
-            </th>
+            </th>*@
 
-            <th field="REmail" width="100">
+            <th field="REmail" width="100" sortable="true">
                 回复邮箱
             </th>
 
-            <th field="Subject" width="100">
-                主机
+            <th field="Subject" width="100" sortable="true">
+                主题
             </th>
 
-            <th field="Content" width="100">
+            <th field="Content" width="100" sortable="true">
                 内容
             </th>
 
-            <th field="MyEmail" width="100">
+            <th field="MyEmail" width="100" sortable="true">
                 我们的邮箱
             </th>
 
-            <th field="EId" width="100">
+            <th field="EId" width="100" sortable="true">
                 回复的邮件Id
             </th>
 
-            <th field="CreateOn" width="100" formatter="getDate">
+            <th field="CreateOn" width="100" formatter="getDate" sortable="true">
                 回复时间
             </th>
 
-            <th field="CreateBy" width="100" formatter="getDate">
+            <th field="CreateBy" width="100" formatter="getDate" sortable="true">
                 回复人
             </th>
 
@@ -116,7 +122,17 @@
 @*        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
-        </div> 
+                    <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'REmail'">回复邮箱</div>
+            <div data-options="name:'Subject'">主题</div>
+            <div data-options="name:'Content'">内容</div>
+            <div data-options="name:'MyEmail'">我们的邮箱</div>
+            <div data-options="name:'EId'">回复邮件Id</div>
+            <div data-options="name:'CreateOn'">回复时间</div>
+            <div data-options="name:'CreateBy'">回复人</div>
+        </div>
         
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>

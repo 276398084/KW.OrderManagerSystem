@@ -18,10 +18,10 @@
 <fieldset>
 <table class="editForm">
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.Id,"主键标识:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
 	</tr>

@@ -188,7 +188,13 @@
             function ShowWin(id) {
                 window.open('/Home/PrintDesign/' + id);
             }
+            function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search,
 
+                });
+            }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -199,16 +205,16 @@
                     <th field="Id" width="100" formatter="ShowEdit">编辑
                     </th>
 
-                    <th field="Code" width="100">模板代码
+                    <th field="Code" width="100" sortable="true">模板代码
                     </th>
 
-                    <th field="TempName" width="100">模板名称
+                    <th field="TempName" width="100" sortable="true">模板名称
                     </th>
 
-                    <th field="TempType" width="100">模板分类
+                    <th field="TempType" width="100" sortable="true">模板分类
                     </th>
 
-                    <th field="Description" width="100">描述
+                    <th field="Description" width="100" sortable="true">描述
                     </th>
 
 
@@ -219,9 +225,14 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
-
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
-
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Code'">模板代码</div>
+            <div data-options="name:'TempName'">模板名称</div>
+            <div data-options="name:'TempType'">模板分类</div>
+            <div data-options="name:'Description'">描述</div>
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
 

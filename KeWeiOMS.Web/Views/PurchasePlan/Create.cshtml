@@ -34,6 +34,7 @@
             valueField:'id',
             textField:'text',
             panelHeight: 80,
+            editable:false,
             data: [{ id: 0, text: "已采购" }, { id: 1, text: "已发货" }, { id: 2, text: "已收到" }]
         });
 
@@ -114,7 +115,7 @@
 		<td>
             @Html.TextBoxFor(model => model.Price,new{@id="c_Price"})
 		</td>
-        		<td>
+         <td>
             @Html.LabelFor(model => model.Status,"状态:")
 		</td>
 		<td>

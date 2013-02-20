@@ -202,7 +202,13 @@
         });
         return (undefined);
     }
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search,
 
+        });
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -218,11 +224,11 @@
                 主题
             </th>*@
 
-            <th field="Title" width="100">
+            <th field="Title" width="100" sortable="true">
                 标题
             </th>
 
-            <th field="Content" width="300">
+            <th field="Content" width="300" sortable="true">
                 内容
             </th>
 
@@ -234,8 +240,12 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true"  onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
+                    <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Title'">标题</div>
+            <div data-options="name:'Content'">内容</div>
+        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
     <div id="d_dlg"></div>
