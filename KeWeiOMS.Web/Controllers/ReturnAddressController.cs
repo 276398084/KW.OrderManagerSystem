@@ -97,14 +97,28 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows,string sort,string order,string search)
         {
-            IList<ReturnAddresType> objList = NSession.CreateQuery("from ReturnAddresType")
+            string orderby = "";
+            string where = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<ReturnAddresType> objList = NSession.CreateQuery("from ReturnAddresType"+where+orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<ReturnAddresType>();
-
-            return Json(new { total = objList.Count, rows = objList });
+            object count = NSession.CreateQuery("select count(Id) from ReturnAddresType" + where).UniqueResult();
+            return Json(new { total =count, rows = objList });
         }
 
         public JsonResult QList()

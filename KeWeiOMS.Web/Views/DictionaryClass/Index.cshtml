@@ -255,6 +255,13 @@
                     $('#dg1').datagrid('acceptChanges');
                 }
             }
+            function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search,
+
+                });
+            }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -262,13 +269,13 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-                    <th field="ClassName" width="100">分类
+                    <th field="ClassName" width="100" sortable="true">分类
                     </th>
 
-                    <th field="Code" width="100">代码
+                    <th field="Code" width="100" sortable="true">代码
                     </th>
 
-                    <th field="AllowDelete" width="100">系统内置
+                    <th field="AllowDelete" width="100" sortable="true">系统内置
                     </th>
                     <th field="Id" width="100" formatter="ShowOp">操作
                     </th>
@@ -280,6 +287,12 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'ClassName'">分类</div>
+            <div data-options="name:'Code'">代码</div>
+            <div data-options="name:'AllowDelete'">系统内置</div>
         </div>
 
         <div id="c_dlg"></div>

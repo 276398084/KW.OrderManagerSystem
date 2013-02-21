@@ -7,7 +7,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         $('#dg').datagrid({
-            url: '@Url.Action("List","StockIn")',
+            url: '@Url.Action("List", "StockIn")',
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
@@ -17,13 +17,13 @@
 
     //新建
     function c_dlg() {
-        var url_str = '@Url.Action("Create","StockIn")';
-		
+        var url_str = '@Url.Action("Create", "StockIn")';
+
         $('#c_dlg').load(url_str, function () {
             $(this).dialog({
                 title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
+                modal: true,
+                loadingMessage: '正在加载...',
                 buttons: [{
                     text: '提交',
                     iconCls: 'icon-ok',
@@ -44,17 +44,17 @@
     function e_dlg() {
         var id = getselectedRow();
         if (id != undefined) {
-            var url = '@Url.Action("Edit","StockIn")/' + id;
+            var url = '@Url.Action("Edit", "StockIn")/' + id;
             $('#e_dlg').load(url, function () {
                 $(this).dialog({
                     title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
+                    modal: true,
+                    loadingMessage: '正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-							ajaxEdit();
+                            ajaxEdit();
                         }
                     }, {
                         text: '取消',
@@ -67,51 +67,51 @@
         }
     }
 
-	//异步新建提交
-        function ajaxAdd() {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create","StockIn")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
-                    } else {
-                        $('#c_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
+    //异步新建提交
+    function ajaxAdd() {
+        $('#c_form').form('submit', {
+            url: '@Url.Action("Create", "StockIn")',
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.errorMsg) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存失败:' + result.errorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                } else {
+                    $('#c_dlg').dialog('close');
+                    $('#dg').datagrid('reload');
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存成功',
+                        timeout: 2000,
+                        showType: 'slide'
+                    });
                 }
-            });
+            }
+        });
         }
-		//异步修改提交
+        //异步修改提交
         function ajaxEdit() {
             $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","StockIn")',
+                url: '@Url.Action("Edit", "StockIn")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
                     var result = eval('(' + result + ')');
                     if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#e_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -125,63 +125,69 @@
                 }
             });
         }
-   
 
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","StockIn")/' + id;
-                    $.post(url, function () {
-                    }).success(function (data) {
-                        var msgstr = "删除成功";
-                        if (data != true) {
-                            msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
 
-                        $('#dg').datagrid('reload');
-                    }) .error(function () {
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                $.messager.confirm('确认', '确定删除?', function (r) {
+                    if (r) {
+                        var url = '@Url.Action("Delete", "StockIn")/' + id;
+                        $.post(url, function () {
+                        }).success(function (data) {
+                            var msgstr = "删除成功";
+                            if (data != true) {
+                                msgstr = "删除失败" + data;
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 0,
+                                    showType: 'slide'
+                                });
+                            } else {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
+                            }
+
+                            $('#dg').datagrid('reload');
+                        }).error(function () {
                             $.messager.alert('错误', '删除发生错误');
                         });
 
-                }
-            });
-        }
-    }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+                    }
+                });
             }
         }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-   
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search,
+
+            });
+        }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -189,35 +195,35 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*            <th field="Id" width="100">
                 主键
-            </th>
+            </th>*@
 
-            <th field="WId" width="100">
+            <th field="WId" width="100" sortable="true">
                 入库仓库Id
             </th>
 
-            <th field="SKU" width="100">
+            <th field="SKU" width="100" sortable="true">
                 商品
             </th>
 
-            <th field="Qty" width="100">
+            <th field="Qty" width="100" sortable="true">
                 数量
             </th>
 
-            <th field="Price" width="100">
+            <th field="Price" width="100" sortable="true">
                 金额
             </th>
 
-            <th field="SourceQty" width="100">
+            <th field="SourceQty" width="100" sortable="true">
                 原有库存
             </th>
 
-            <th field="CreateBy" width="100">
+            <th field="CreateBy" width="100" sortable="true">
                 入库人
             </th>
 
-            <th field="CreateOn" width="100">
+            <th field="CreateOn" width="100"formatter="getDate" sortable="true">
                 入库时间
             </th>
 
@@ -229,8 +235,17 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
+        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'WId'">入库仓库Id</div>
+            <div data-options="name:'SKU'">商品</div>
+            <div data-options="name:'Qty'">数量</div>
+            <div data-options="name:'Price'">金额</div>
+            <div data-options="name:'SourceQty'">原有库存</div>
+            <div data-options="name:'CreateBy'">入库人</div>
+            <div data-options="name:'CreateOn'">入库时间</div>
+        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 

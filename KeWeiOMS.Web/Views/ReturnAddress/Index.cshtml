@@ -182,6 +182,13 @@
         return (undefined);
     }
    
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search,
+
+        });
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -189,47 +196,47 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*            <th field="Id" width="100">
                 主键
-            </th>
+            </th>*@
 
-            <th field="RetuanName" width="100">
+            <th field="RetuanName" width="100" sortable="true">
                 发件人
             </th>
 
-            <th field="Phone" width="100">
+            <th field="Phone" width="100" sortable="true">
                 手机
             </th>
 
-            <th field="Tel" width="100">
+            <th field="Tel" width="100" sortable="true">
                 电话
             </th>
 
-            <th field="PostCode" width="100">
+            <th field="PostCode" width="100" sortable="true">
                 邮编
             </th>
 
-            <th field="Street" width="100">
+            <th field="Street" width="100" sortable="true">
                 街道
             </th>
 
-            <th field="County" width="100">
+            <th field="County" width="100" sortable="true">
                 区
             </th>
 
-            <th field="City" width="100">
+            <th field="City" width="100" sortable="true">
                 市
             </th>
 
-            <th field="Province" width="100">
+            <th field="Province" width="100" sortable="true">
                 省
             </th>
 
-            <th field="Country" width="100">
+            <th field="Country" width="100" sortable="true">
                 国家
             </th>
 
-            <th field="CountryCode" width="100">
+            <th field="CountryCode" width="100" sortable="true">
                 国家代码
             </th>
 
@@ -241,8 +248,20 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
+        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'RetuanName'">发件人</div>
+            <div data-options="name:'Phone'">手机</div>
+            <div data-options="name:'Tel'">电话</div>
+            <div data-options="name:'PostCode'">邮编</div>
+            <div data-options="name:'Street'">街道</div>
+            <div data-options="name:'County'">区</div>
+            <div data-options="name:'City'">市</div>
+            <div data-options="name:'Province'">省</div>
+            <div data-options="name:'Country'">国家</div>
+            <div data-options="name:'CountryCode'">国家代码</div>
+    </div>   
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 

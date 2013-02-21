@@ -97,15 +97,29 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(int page, int rows,string sort ,string order,string search)
         {
-            IList<PaypalAccountType> objList = NSession.CreateQuery("from PaypalAccountType")
+            string orderby = "";
+            string where = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<PaypalAccountType> objList = NSession.CreateQuery("from PaypalAccountType"+where+orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<PaypalAccountType>();
 
-            object count = NSession.CreateQuery("select count(Id) from StockOutType ").UniqueResult();
-            return Json(new { total = objList.Count, rows = objList });
+            object count = NSession.CreateQuery("select count(Id) from  PaypalAccountType " + where).UniqueResult();
+            return Json(new { total =count, rows = objList });
         }
 
     }

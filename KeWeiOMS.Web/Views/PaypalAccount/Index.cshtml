@@ -182,6 +182,13 @@
         return (undefined);
     }
    
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search,
+
+        });
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -189,27 +196,27 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*            <th field="Id" width="100">
                 主键标识
-            </th>
+            </th>*@
 
-            <th field="AccountName" width="100">
+            <th field="AccountName" width="100" sortable="true">
                 账户名称
             </th>
 
-            <th field="AppKey" width="100">
+            <th field="AppKey" width="100" sortable="true">
                 Key
             </th>
 
-            <th field="AppPwd" width="100">
+            <th field="AppPwd" width="100" sortable="true">
                 密钥
             </th>
 
-            <th field="AppToken" width="100">
+            <th field="AppToken" width="100" sortable="true">
                 会话
             </th>
 
-            <th field="Status" width="100">
+            <th field="Status" width="100" sortable="true">
                 状态
             </th>
 
@@ -221,8 +228,16 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'AccountName'">帐户名称</div>
+            <div data-options="name:'AppKey'">Key</div>
+            <div data-options="name:'AppPwd'">密钥</div>
+            <div data-options="name:'AppToken'">会话</div>
+            <div data-options="name:'Status'">状态</div>
+        </div>
+
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 
