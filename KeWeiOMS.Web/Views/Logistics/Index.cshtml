@@ -47,7 +47,7 @@
                         columns: [[
                                 { field: 'LogisticsName', title: '承运商', width: 200 },
                                 { field: 'LogisticsCode', title: '承运商代码', width: 100 },
-                                {field: 'Discount', title: '折扣', width: 100},
+                                { field: 'Discount', title: '折扣', width: 100 },
                                {
                                    field: 'Id', title: '操作', width: 100, formatter: function (value) {
                                        return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'delMode(' + value + ')\'>删除</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'editMode(' + row.Id + ',' + value + ')\'>修改</a>';
@@ -83,8 +83,8 @@
         //编辑框
         function e_dlg() {
             var url = '@Url.Action("Edit", "Logistics")/' + id;
-        if (id != undefined) {
-            var url = '@Url.Action("Edit", "Module")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
             showdlg(url, 'e_dlg', ajaxEdit)
         }
     }
@@ -92,10 +92,10 @@
     //异步新建提交
     function ajaxAdd() {
         formPost('c_form', '@Url.Action("Create", "Logistics")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "Logistics")', 'e_dlg', 'dg');
+    }
+    //异步修改提交
+    function ajaxEdit() {
+        formPost('e_form', '@Url.Action("Edit", "Logistics")', 'e_dlg', 'dg');
         }
         //删除
         function del(id) {
@@ -131,13 +131,13 @@
         function addMode(id) {
             var url_str = '@Url.Action("Create", "LogisticsMode")?id=' + id;
             showdlg(url_str, 'm_dlg', ajaxAddM)
-         }
+        }
         function ajaxAddM() {
             formPost('m_form', '@Url.Action("Create", "LogisticsMode")', 'm_dlg', 'modedg');
             $("#dg").datagrid("reload");
         }
         //修改明细
-        function editMode(pid,id) {
+        function editMode(pid, id) {
             var url_str = '@Url.Action("Edit", "LogisticsMode")?id=' + id;
             showdlg(url_str, 'me_dlg', ajaxUpdM)
         }
@@ -149,7 +149,7 @@
         function delMode(id) {
             if (id != undefined) {
                 var url = '@Url.Action("Delete", "LogisticsMode")/' + id;
-                delData(url,'dg');
+                delData(url, 'dg');
             }
         }
 
@@ -158,45 +158,38 @@
         <table id="dg" class="easyui-datagrid"
             toolbar="#toolbar"
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
-            @*        <thead>  
-        <tr>
-            <th field="Id" width="100">
-                主键
-            </th>
+            <thead>
+                <tr>
+                    <th field="Id" width="100">主键
+                    </th>
 
-            <th field="LogisticsName" width="100">
-                承运商名称
-            </th>
+                    <th field="LogisticsName" width="100">承运商名称
+                    </th>
 
-            <th field="LogisticsCode" width="100">
-                承运商代码
-            </th>
+                    <th field="LogisticsCode" width="100">承运商代码
+                    </th>
 
-            <th field="HasTrackCode" width="100">
-                是否有追踪码
-            </th>
+                    <th field="HasTrackCode" width="100">是否有追踪码
+                    </th>
 
-            <th field="CodeLength" width="100">
-                追踪码长度
-            </th>
+                    <th field="CodeLength" width="100">追踪码长度
+                    </th>
 
-            <th field="Remark" width="100">
-                备注
-            </th>
+                    <th field="Remark" width="100">备注
+                    </th>
 
-            <th field="CreateOn" width="100">
-                添加时间
-            </th>
+                    <th field="CreateOn" width="100">添加时间
+                    </th>
 
 
-    	</tr>
-		</thead>*@
+                </tr>
+            </thead>
 
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
-            @*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
         </div>
 
         <div id="c_dlg"></div>

@@ -35,6 +35,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.ExSKU).Length(40);
             Map(x => x.Title).Length(400);
             Map(x => x.Qty);
+            Map(x => x.IsQue);
             Map(x => x.SKU).Length(40);
             Map(x => x.Remark).Length(400);
             Map(x => x.Standard).Length(400);

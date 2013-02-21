@@ -3,7 +3,7 @@
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-    <script language="javascript" type="text/javascript">
+    <script type="text/javascript">
         $(function () {
             $('#dg').datagrid({
                 url: '@Url.Action("List", "Country")',
@@ -179,11 +179,11 @@
             function doSearch() {
                 search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 $("#dg").datagrid("load", {
-                    search: search,
+                    search: search
                 });
             }
             function ShowAdvanced() {
-                showSrarch('@Url.Action("Search", "NewGuide")', 's_dlg', 'dg')
+                showSrarch('@Url.Action("Search", "NewGuide")', 's_dlg', 'dg');
             }
 
     </script>

@@ -178,7 +178,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult SetPrintData(string m, string r, string d)
+        public ActionResult SetPrintData(string m, string r, string d, string t)
         {
             string sql = "";
             sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,
@@ -196,14 +196,20 @@ left join ReturnAddress R On r.Id=" + r;
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
 
+
+
             da.Fill(ds);
             ds.Tables[0].DefaultView.Sort = "OrderNo Asc";
+            if (t == "多物品订单")
+                ds.Tables[0].DefaultView.RowFilter = " GCount >1";
             DataTable dt = ds.Tables[0].DefaultView.ToTable();
             dt.Columns.Add("PrintName");
             foreach (DataRow dr in dt.Rows)
             {
                 dr["PrintName"] = CurrentUser.Realname;
             }
+            //标记打印
+            NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where OrderNo in ('" + d.Replace(",", "','") + "')").ExecuteUpdate();
             ds.Tables.Clear();
             ds.Tables.Add(dt);
             Session["data"] = ds.GetXml();
@@ -215,6 +221,18 @@ left join ReturnAddress R On r.Id=" + r;
         {
             object obj = Session["data"];
             return Content(obj.ToString(), "text/xml");
+        }
+
+        public ContentResult PrintOrder(int Id)
+        {
+
+            string sql = "select * from Orders O left join OrderAddress OA ON O.AddressId=OA.Id  where O.id=" + Id;
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            return Content(ds.GetXml(), "text/xml");
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
@@ -229,9 +247,7 @@ left join ReturnAddress R On r.Id=" + r;
         {
             NSession.Clear();
             PrintTemplateType obj = NSession.Get<PrintTemplateType>(Convert.ToInt32(Id));
-
             byte[] FormData = Request.BinaryRead(Request.TotalBytes);
-
             obj.Content = System.Text.Encoding.Default.GetString(FormData);
             NSession.Update(obj);
             NSession.Flush();
@@ -242,7 +258,6 @@ left join ReturnAddress R On r.Id=" + r;
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult PrintDesign(string Id)
         {
-
             ViewData["id"] = Id;
 
             //object obj = NSession.CreateQuery("select Content from PrintTemplateType where Id=" + Id).UniqueResult();

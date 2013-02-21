@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web;
+using System.Xml.Serialization;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
@@ -181,6 +182,17 @@ namespace KeWeiOMS.Web
             return queryDictionary;
         }
 
+        public static string XmlSerialize<T>(T obj)
+        {
+            string xmlString = string.Empty;
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                xmlSerializer.Serialize(ms, obj);
+                xmlString = Encoding.UTF8.GetString(ms.ToArray());
+            }
+            return xmlString;
+        }
         public static string Resolve(string search)
         {
             string where = string.Empty;
@@ -198,12 +210,12 @@ namespace KeWeiOMS.Web
                     flagWhere++;
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Time)) //需要查询的列名
                     {
-                        where += item.Key.Remove(item.Key.IndexOf(Start_Time)) + " >=  CAST('" + item.Value + "' as   System.DateTime)";
+                        where += item.Key.Remove(item.Key.IndexOf(Start_Time)) + " >= '" + item.Value + "'";
                         continue;
                     }
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_Time)) //需要查询的列名
                     {
-                        where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <  CAST('" + Convert.ToDateTime(item.Value).AddDays(1) + "' as   System.DateTime)";
+                        where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <=  '" + item.Value + "'";
                         continue;
                     }
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Int)) //需要查询的列名
@@ -405,39 +417,6 @@ namespace KeWeiOMS.Web
             }
 
         }
-
-        /// <summary>
-        /// 生成Json格式
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string ToJsonStr<T>(T obj)
-        {
-            DataContractJsonSerializer json = new DataContractJsonSerializer(obj.GetType());
-            using (MemoryStream stream = new MemoryStream())
-            {
-                json.WriteObject(stream, obj);
-                string szJson = Encoding.UTF8.GetString(stream.ToArray());
-                return szJson;
-            }
-        }
-        /// <summary>
-        /// 将JSON 字符转换为对象
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="str"></param>
-        /// <returns></returns>
-        public static T ToJsonObject<T>(string str)
-        {
-            T obj = Activator.CreateInstance<T>();
-            using (MemoryStream ms = new MemoryStream(Encoding.Default.GetBytes(str)))
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
-                return (T)serializer.ReadObject(ms);
-            }
-        }
-
     }
 
 

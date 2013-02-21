@@ -36,7 +36,7 @@
         $.ajax({
             type: "POST",
             url: "/Home/SetPrintData",
-            data: "m=" + $("#PrintTemp").combobox("getValue") + "&r=" + $("#ReturnAddress").combobox("getValue") + "&d=" + $("#txtData").val(),
+            data: "t=" + $("#PrintType").combobox("getValue") + "&m=" + $("#PrintTemp").combobox("getValue") + "&r=" + $("#ReturnAddress").combobox("getValue") + "&d=" + $("#txtData").val(),
             success: function (msg) {
 
                 window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));

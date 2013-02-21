@@ -23,8 +23,13 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
+    [Serializable]
     public class OrderType
     {
+        public OrderType()
+        {
+
+        }
         /// <summary>
         /// 主键
         /// </summary>
@@ -49,6 +54,16 @@ namespace KeWeiOMS.Domain
         /// 是否打印
         /// </summary>
         public virtual int IsPrint { get; set; }
+
+        /// <summary>
+        /// 是否打印
+        /// </summary>
+        public virtual int IsLiu { get; set; }
+
+        /// <summary>
+        /// 失效订单
+        /// </summary>
+        public virtual int IsError { get; set; }
 
         /// <summary>
         /// 合并订单
@@ -177,11 +192,13 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 订单的产品
         /// </summary>
+
         public virtual IList<OrderProductType> Products { get; set; }
 
         /// <summary>
         /// 订单的地址
         /// </summary>
+
         public virtual OrderAddressType AddressInfo { get; set; }
 
         /// <summary>

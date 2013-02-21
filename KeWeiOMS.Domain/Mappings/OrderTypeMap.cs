@@ -34,6 +34,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.OrderExNo).Length(40);
             Map(x => x.Status).Length(10);
             Map(x => x.IsPrint);
+            Map(x => x.IsLiu);
+            Map(x => x.IsError);
             Map(x => x.IsMerger);
             Map(x => x.IsSplit);
             Map(x => x.IsOutOfStock);
@@ -60,9 +62,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.ScanningBy).Length(40);
             Map(x => x.Account).Length(40);
             Map(x => x.Platform).Length(40);
-            //HasMany<OrderProductType>(u => u.Products).AsSet().KeyColumn("OId").Cascade.All();
 
-            //References<OrderAddressType>(x => x.AddressInfo).Column("AddressId");
         }
     }
 }

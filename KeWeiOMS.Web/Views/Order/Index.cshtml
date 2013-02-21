@@ -9,10 +9,8 @@
             $('#dg').datagrid({
                 url: '@Url.Action("List", "Order")',
                 pageNumber: 1,
-
                 nowrap: false,
                 pageSize: 20,
-
                 height: 500,
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
@@ -24,7 +22,6 @@
                     html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '</b></div>';
                     return html;
                 },
-
                 onExpandRow: function (index, row) {
                     $('#ddv-' + index).panel({
                         border: false,
@@ -39,7 +36,7 @@
             });
 
             $('#Platform').combobox({
-                url: '/Account/Platform',
+                url: '/Account/Platform/1',
                 valueField: 'id',
                 textField: 'text',
                 required: true,
@@ -54,6 +51,14 @@
                 required: true,
                 width: 100,
                 panelHeight: 'auto'
+            });
+
+            $('#IsPrint').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checkPrint,
+                width: 100
             });
         });
 
@@ -121,7 +126,7 @@
 
         function GeStatus(v, r, i) {
             var html = v + "<br/>";
-            if (r.IsPrint == 1)
+            if (r.IsPrint >= 1)
                 html += "<img src='/Content/imgs/Print.gif'> ";
             if (r.IsMerger == 1)
                 html += "<img src='/Content/imgs/Merger.gif'> ";
@@ -153,18 +158,33 @@
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
             var a = $('#Account').combobox("getText");
-            if (a != "ALL") {
+            if (a != "ALL" && a != "") {
                 search += "Account_es&" + a + "^";
             }
             var b = $('#Platform').combobox("getText");
-            if (b != "ALL") {
+            if (b != "ALL" && b != "") {
                 search += "Platform_es&" + b + "^";
             }
             var c = $('#OrderStatus').combobox("getText");
-            if (c != "ALL") {
+            if (c != "ALL" && c != "") {
                 search += "Status_es&" + c + "^";
             }
-
+            var d = $('#IsPrint').combobox("getValue");
+            if (d != "ALL" && d != "" && d != "0") {
+                if (d == "1") {
+                    search += "IsPrint_ei&0^";
+                } else {
+                    search += "IsPrint_si&1^";
+                }
+            }
+            var e = $('#CreateOn_st').combobox("getValue");
+            if (e != "ALL" && e != "" && e != "0") {
+                search += "CreateOn_st&" + e + "^";
+            }
+            var f = $('#CreateOn_et').combobox("getValue");
+            if (f != "ALL" && f != "" && f != "0") {
+                search += "CreateOn_et&" + f + "^";
+            }
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -205,7 +225,6 @@
                     text: '提交',
                     iconCls: 'icon-ok',
                     handler: function () {
-
                         jQuery.ajax({
                             url: "/Order/OrderReplace/",
                             type: "post",
@@ -230,6 +249,77 @@
             window.open('@Url.Action("Edit", "Order")/' + id);
         }
 
+        function reSend() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            $.messager.confirm("提示", "确定要重新发货吗？一共是" + s_ids.length + "条订单", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/ReSend",
+                        type: "post",
+                        data: "o=" + s_ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+        }
+
+        function exportZM() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            var postUrl = "/Order/ExportDown";
+            jQuery.ajax({
+                url: "/Order/ExportZM",
+                type: "post",
+                data: "o=" + s_ids.join(','),
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
+
+        function o_Error(parameters) {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            $.messager.confirm("确定要作废这" + s_ids.length + "条订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/ErrorOrder",
+                        type: "post",
+                        data: "o=" + s_ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+
+        }
+
+
         function o_vali() {
             jQuery.ajax({
                 url: "/Order/OrderVali",
@@ -251,9 +341,9 @@
 
         function getOrderDate(v, r, i) {
             var html = "下:" + getDate(r.GenerateOn);
-            html += "同:" + getDate(r.CreateOn);
+            html += "<br/>同:" + getDate(r.CreateOn);
             if (r.ScanningBy != "")
-                html += "扫:" + getDate(r.ScanningOn);
+                html += "<br/>扫:" + getDate(r.ScanningOn);
             return html;
         }
     </script>
@@ -263,14 +353,12 @@
             <thead>
                 <tr>
                     <th field="Id" width="60" checkbox="true"></th>
-
                     <th field="OrderNo" width="100" formatter="GetOrder">订单编号
                     </th>
                     <th field="Status" width="150" formatter="GeStatus">订单状态
                     </th>
                     <th field="CurrencyCode" width="100" formatter="GetAmount">货币
                     </th>
-
                     <th field="BuyerName" width="130" formatter="GetBuyer">买家
                     </th>
                     <th field="Country" width="80">国家
@@ -281,22 +369,25 @@
                     </th>
                     <th field="Account" width="100" formatter="getAccount">账户
                     </th>
-
                     <th field="ErrorInfo" width="250">错误信息
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_vali()">验证订单</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Error()">标记失效</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
-            平台：
-            <input type="text" id="Platform" />
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="reSend();">重新发货</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportZM();">中美导出</a><br />
+            平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
             状态<input type="text" id="OrderStatus" />
+            打印状态:<input type="text" id="IsPrint" />
+            开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
+            结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
@@ -307,6 +398,7 @@
             <div data-options="name:'BuyerName'">买家</div>
             <div data-options="name:'BuyerEmail'">买家邮箱</div>
             <div data-options="name:'LogisticMode'">发货方式</div>
+            <div data-options="name:'TrackCode'">追踪号</div>
             <div data-options="name:'Country'">国家</div>
             <div data-options="name:'ScanningBy'">扫描人</div>
         </div>

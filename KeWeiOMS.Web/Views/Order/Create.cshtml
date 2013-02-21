@@ -83,10 +83,7 @@
             columns: [[
                 { field: 'LogisticsName', title: '名称', width: 250 },
                 { field: 'LogisticsCode', title: '代码', width: 100 }
-
-
             ]]
-
         });
         $('#c_Country').combogrid({
             panelWidth: 360,
@@ -100,13 +97,9 @@
                 { field: 'CCountry', title: '中文', width: 150 },
                 { field: 'ECountry', title: '英文', width: 100 },
                 { field: 'CountryCode', title: '简码', width: 100 }
-
             ]],
             onChange: changeCountry
         });
-
-
-
     });
 
     function changeCountry(n, o) {
@@ -129,7 +122,6 @@
             return false;
         }
     }
-
     function onClickRow(index) {
         if (editIndex != index) {
             if (endEditing()) {
@@ -141,7 +133,6 @@
             }
         }
     }
-
     function addp() {
         if (endEditing()) {
             $('#dg_product').datagrid('appendRow', { Qty: 1, Price: 0 });
@@ -150,17 +141,11 @@
                     .datagrid('beginEdit', editIndex);
         }
     }
-
-    function s_del() {
-
-    }
-
     function accept() {
         if (endEditing()) {
             $('#dg_product').datagrid('acceptChanges');
         }
     }
-
     function addOrder() {
         var effectRow = new Object();
         effectRow["rows"] = JSON.stringify($('#dg_product').datagrid("getRows"));
@@ -293,12 +278,12 @@
                     </th>
                     <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
                     </th>
+                     <th field="Standard" width="80" data-options="editor:'text'">规格
+                    </th>
                     <th field="Remark" width="100" data-options="editor:'text'">描述
                     </th>
-
                     <th field="Price" width="80" data-options="editor:{ type: 'numberbox', options: { precision: 5 }}">价格
                     </th>
-
                     <th field="Url" width="100" data-options="editor:'text'">网址
                     </th>
                 </tr>

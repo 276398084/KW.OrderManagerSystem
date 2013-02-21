@@ -1,30 +1,29 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.OrderPeiRecordType>
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderPeiRecordType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","OrderPeiRecord")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "OrderPeiRecord")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
         });
 
-    });
 
-
-	//新建
+        //新建
         function c_dlg() {
-            var url_str = '@Url.Action("Create","OrderPeiRecord")';
+            var url_str = '@Url.Action("Create", "OrderPeiRecord")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
         function e_dlg() {
-            var url = '@Url.Action("Edit","OrderPeiRecord")/' + id;
+            var url = '@Url.Action("Edit", "OrderPeiRecord")/' + id;
             if (id != undefined) {
                 var url = '@Url.Action("Edit", "Module")/' + id;
                 showdlg(url, 'e_dlg', ajaxEdit)
@@ -45,97 +44,79 @@
             if (id != undefined) {
 
                 var url = '@Url.Action("Delete", "OrderPeiRecord")/' + id;
-            
+
                 delData(url, 'dg');
 
             }
         }
 
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
             }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
         }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-     function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                $("#dg").datagrid("load", {
-                    search: search,
-                });
-      }
-    function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "OrderPeiRecord")', 's_dlg', 'dg');
-      }		
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "OrderPeiRecord")', 's_dlg', 'dg');
+        }
 
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-            <th field="Id" width="100">
-                主键
-            </th>
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="OId" width="100">订单ID
+                    </th>
+                    <th field="OrderNo" width="100">订单
+                    </th>
+                    <th field="PeiBy" width="100">配货人
+                    </th>
 
-            <th field="OId" width="100">
-                订单ID
-            </th>
+                    <th field="ValiBy" width="100">检验人
+                    </th>
 
-            <th field="OrderNo" width="100">
-                订单
-            </th>
+                    <th field="ScanBy" width="100">扫描人
+                    </th>
 
-            <th field="CreateOn" width="100">
-                扫描时间
-            </th>
-
-            <th field="PeiBy" width="100">
-                配货人
-            </th>
-
-            <th field="ValiBy" width="100">
-                检验人
-            </th>
-
-            <th field="ScanBy" width="100">
-                扫描人
-            </th>
-
-
-    	</tr>
-		</thead>
-		</table>
+                    <th field="CreateOn" width="100" formatter="getDate">扫描时间
+                    </th>
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
-        </div> 
-		<div id="mm" style="width: 120px">
-                        <div data-options="name:'Id'">主键</div>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Id'">主键</div>
             <div data-options="name:'OId'">订单ID</div>
             <div data-options="name:'OrderNo'">订单</div>
             <div data-options="name:'CreateOn'">扫描时间</div>
             <div data-options="name:'PeiBy'">配货人</div>
             <div data-options="name:'ValiBy'">检验人</div>
             <div data-options="name:'ScanBy'">扫描人</div>
-
         </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
 
-</div>
+    </div>
 </body>

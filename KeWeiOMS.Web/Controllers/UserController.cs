@@ -119,7 +119,6 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(sc);
                 NSession.Flush();
             }
-
             return Json(new { IsSuccess = "true" });
         }
 

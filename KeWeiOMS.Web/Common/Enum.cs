@@ -13,7 +13,8 @@ namespace KeWeiOMS.Web
         待包装 = 3,
         待发货 = 4,
         已发货 = 5,
-        已完成 = 6
+        已完成 = 6,
+        作废订单=7
     }
 
     public enum ProductStatusEnum
@@ -51,7 +52,8 @@ namespace KeWeiOMS.Web
     public enum PrintCategoryEnum
     {
         订单,
-        商品,
+        多物品订单,
+        商品
     }
 
 

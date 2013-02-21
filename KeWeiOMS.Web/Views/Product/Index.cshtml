@@ -78,10 +78,8 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "Product")/' + id;
-            
-                delData(url, 'dg', 't');
+                delData(url, 'dg');
             }
         }
 
