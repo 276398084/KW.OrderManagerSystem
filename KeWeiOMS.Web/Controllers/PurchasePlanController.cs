@@ -109,19 +109,28 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows,string sort,string order)
+        public JsonResult List(int page, int rows,string sort,string order,string search)
         {
             string orderby = "";
+            string where = "";
             if(!string.IsNullOrEmpty(sort)&&!string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
             }
-            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType" + orderby)
+            if(!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType"+where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<PurchasePlanType>();
-			
-            object count = NSession.CreateQuery("select count(Id) from PurchasePlanType ").UniqueResult();
+
+            object count = NSession.CreateQuery("select count(Id) from PurchasePlanType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
         public JsonResult SearchSKU(string id)

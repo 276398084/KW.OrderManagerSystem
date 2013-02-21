@@ -181,7 +181,13 @@
         });
         return (undefined);
     }
-   
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search,
+
+        });
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -189,35 +195,35 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*            <th field="Id" width="100">
                 主键
-            </th>
+            </th>*@
 
-            <th field="OrderNo" width="100">
+            <th field="OrderNo" width="100" sortable="true">
                 订单编号
             </th>
 
-            <th field="SKU" width="100">
+            <th field="SKU" width="100" sortable="true">
                 SKU
             </th>
 
-            <th field="Qty" width="100">
+            <th field="Qty" width="100" sortable="true">
                 数量
             </th>
 
-            <th field="SourceQty" width="100">
+            <th field="SourceQty" width="100" sortable="true">
                 原有库存
             </th>
 
-            <th field="WId" width="100">
+            <th field="WId" width="100" sortable="true">
                 仓库ID
             </th>
 
-            <th field="CreateBy" width="100">
+            <th field="CreateBy" width="100" sortable="true">
                 出库人
             </th>
 
-            <th field="CreateOn" width="100">
+            <th field="CreateOn" width="100" formatter="getDate" sortable="true">
                 出库时间
             </th>
 
@@ -229,8 +235,17 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
+        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'Qty'">数量</div>
+            <div data-options="name:'SourceQty'">原有库存</div>
+            <div data-options="name:'WId'">仓库ID</div>
+            <div data-options="name:'CreateBy'">出库人</div>
+            <div data-options="name:'CreateOn'">出库时间</div>
+        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 

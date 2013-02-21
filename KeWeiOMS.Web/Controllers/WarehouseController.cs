@@ -97,9 +97,23 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List()
+        public JsonResult List(string sort, string order, string search)
         {
-            IList<WarehouseType> objList = NSession.CreateQuery("from WarehouseType")
+            string orderby = "";
+            string where = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<WarehouseType> objList = NSession.CreateQuery("from WarehouseType" + where + orderby)
 
                 .List<WarehouseType>();
 

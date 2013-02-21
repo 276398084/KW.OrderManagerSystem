@@ -180,7 +180,13 @@
                 });
                 return (undefined);
             }
+            function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search,
 
+                });
+            }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -189,22 +195,22 @@
             <thead>
                 <tr>
 
-                    <th field="OrganizeId" width="100">组织机构主键
+                    <th field="OrganizeId" width="100" sortable="true">组织机构主键
                     </th>
 
-                    <th field="Realname" width="100">角色名称
+                    <th field="Realname" width="100" sortable="true">角色名称
                     </th>
 
-                    <th field="SortCode" width="100">排序码
+                    <th field="SortCode" width="100" sortable="true">排序码
                     </th>
 
-                    <th field="Description" width="100">描述
+                    <th field="Description" width="100" sortable="true">描述
                     </th>
 
-                    <th field="CreateOn" width="100" formatter="getDate">创建日期
+                    <th field="CreateOn" width="100" formatter="getDate" sortable="true">创建日期
                     </th>
 
-                    <th field="CreateBy" width="100">创建用户
+                    <th field="CreateBy" width="100" sortable="true">创建用户
                     </th>
 
 
@@ -215,8 +221,16 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
-
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrganizeId'">组织机构主键</div>
+            <div data-options="name:'Realname'">角色名称</div>
+            <div data-options="name:'SortCode'">排序码</div>
+            <div data-options="name:'Description'">描述</div>
+            <div data-options="name:'CreateOn'">创建日期</div>
+            <div data-options="name:'CreateBy'">创建用户</div>
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
 

@@ -14,7 +14,7 @@
             columns: [[
                 { field: 'PlanNo', title: '计划编号', width: 100, sortable: true },
                 {
-                    field: 'PicUrl', title: '图片', width: 130,
+                    field: 'PicUrl', title: '图片', width: 130, sortable: true,
                     formatter: function (v, r, i) {
                         return '<a href="' + r.ProductUrl + '" target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="160px" width="160px" /></a></br>(SKU:'+r.SKU+')'+r.ProductName
                     }
@@ -214,7 +214,13 @@
         });
         return (undefined);
     }
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search,
 
+        });
+    }
    
 </script>
 <div region="center">
@@ -310,8 +316,29 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
+        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'PlanNo'">计划编号</div>
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'ProductName'">名称</div>
+            <div data-options="name:'PicUrl'">图片</div>
+            <div data-options="name:'Price'">单价</div>
+            <div data-options="name:'Qty'">数量</div>
+            <div data-options="name:'Freight'">运费</div>
+            <div data-options="name:'Suppliers'">供应商</div>
+            <div data-options="name:'LogisticsMode'">发货方式</div>
+            <div data-options="name:'TrackCode'">运单号</div>
+            <div data-options="name:'PostStatus'">物流状态</div>
+            <div data-options="name:'Status'">状态</div>
+            <div data-options="name:'BuyBy'">采购人</div>
+            <div data-options="name:'CreateBy'">生成人</div>
+            <div data-options="name:'CreateOn'">创建时间</div>
+            <div data-options="name:'BuyOn'">采购时间</div>
+            <div data-options="name:'SendOn'">发货时间</div>
+            <div data-options="name:'ReceiveOn'">到货时间</div>
+
+        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 

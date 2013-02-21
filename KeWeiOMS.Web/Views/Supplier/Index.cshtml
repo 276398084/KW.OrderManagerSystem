@@ -213,7 +213,13 @@
         });
         return (undefined);
     }
-   
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search,
+
+        });
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -225,31 +231,31 @@
                 主键
             </th>*@
 
-            <th field="SuppliersName" width="100">
+            <th field="SuppliersName" width="100" sortable="true">
                 供应商
             </th>
 
-            <th field="QQ" width="100">
+            <th field="QQ" width="100" sortable="true">
                 QQ
             </th>
 
-            <th field="WW" width="100">
+            <th field="WW" width="100" sortable="true">
                 旺旺
             </th>
 
-            <th field="Phone" width="100">
+            <th field="Phone" width="100" sortable="true">
                 电话
             </th>
 
-            <th field="Tel" width="100">
+            <th field="Tel" width="100" sortable="true">
                 手机
             </th>
 
-            <th field="Web" width="100">
+            <th field="Web" width="100" sortable="true">
                 网址
             </th>
 
-            <th field="Memo" width="100">
+            <th field="Memo" width="100" sortable="true">
                 备注
             </th>
 
@@ -261,8 +267,19 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'SuppliersName'">供应商</div>
+            <div data-options="name:'QQ'">QQ</div>
+            <div data-options="name:'WW'">旺旺</div>
+            <div data-options="name:'Phone'">电话</div>
+            <div data-options="name:'Tel'">手机</div>
+            <div data-options="name:'Telephone'">电话</div>
+            <div data-options="name:'Mobile'">手机</div>
+            <div data-options="name:'Web'">网址</div>
+            <div data-options="name:'Memo'">备注</div>
+        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 

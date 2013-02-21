@@ -182,6 +182,13 @@
             });
             return (undefined);
         }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search,
+
+            });
+        }
 
     </script>
     <div region="center">
@@ -259,8 +266,28 @@
             @*      <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
+       <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
-
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Subject'">标题</div>
+            <div data-options="name:'Content'">内容</div>
+            <div data-options="name:'BuyerCode'">买家ID</div>
+            <div data-options="name:'BuyerEmail'">买家Email</div>
+            <div data-options="name:'MessageId'">消息ID</div>
+            <div data-options="name:'MessageType'">消息类型</div>
+            <div data-options="name:'OrderNo'">订单ID</div>
+            <div data-options="name:'SKU'">产品SKU</div>
+            <div data-options="name:'Title'">产品标题</div>
+            <div data-options="name:'ProductUrl'">产品链接</div>
+            <div data-options="name:'ProductPrice'">产品价格</div>
+            <div data-options="name:'Account'">账户</div>
+            <div data-options="name:'Platform'">平台</div>
+            <div data-options="name:'Status'">状态</div>
+            <div data-options="name:'ReplyBy'">回复人员</div>
+            <div data-options="name:'GenerateOn'">邮件生成时间</div>
+            <div data-options="name:'CreateOn'">同步时间</div>
+            <div data-options="name:'ReplyOn'">回复时间</div>
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
 
