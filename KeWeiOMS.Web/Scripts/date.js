@@ -64,12 +64,7 @@ function formPost(form, url, dlg, dg, t) {
                     showType: 'slide'
                 });
             } else {
-                $.messager.show({
-                    title: '提示',
-                    msg: '保存成功',
-                    timeout: 2000,
-                    showType: 'slide'
-                });
+                alert("操作成功");
                 if (dlg) {
                     $('#' + dlg).dialog('close');
                 }

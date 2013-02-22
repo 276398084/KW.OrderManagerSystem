@@ -646,12 +646,12 @@ namespace KeWeiOMS.Web
             bool resultValue = true;
             order.ErrorInfo = "";
 
-            if (countrys.FindIndex(p => p.ECountry == order.Country || p.CountryCode == order.Country) == -1)
+            if (countrys.FindIndex(p => p.ECountry == order.Country || p.CountryCode.ToUpper() == order.Country.ToUpper()) == -1)
             {
                 resultValue = false;
                 order.ErrorInfo += "国家不符 ";
             }
-            if (currencys.FindIndex(p => p.CurrencyCode == order.CurrencyCode) == -1)
+            if (currencys.FindIndex(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper()) == -1)
             {
                 resultValue = false;
                 order.ErrorInfo += "货币不符 ";

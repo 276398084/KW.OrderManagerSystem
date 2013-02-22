@@ -101,7 +101,6 @@
                 delData(url, 'dg', 't');
             }
         }
-
         //获取选中行
         function getselectedRow() {
             var row = $('#dg').datagrid('getSelected');
@@ -215,7 +214,6 @@
             for (var i = 0; i < rows.length; i++) {
                 s_ids.push(rows[i]["Id"]);
             }
-
             $('#s_dlg').show();
             $("#s_dlg").dialog({
                 title: '替换',
@@ -304,7 +302,7 @@
                 $.messager.alert("请选择一条数据");
                 return;
             }
-            $.messager.confirm("确定要作废这" + s_ids.length + "条订单吗？", function (r) {
+            $.messager.confirm("提示", "确定要作废这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
                         url: "/Order/ErrorOrder",
@@ -321,9 +319,15 @@
 
 
         function o_vali() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
             jQuery.ajax({
                 url: "/Order/OrderVali",
                 type: "post",
+                data: "o=" + s_ids.join(','),
                 success: function (sss) {
                     $('#dg').datagrid("reload");
                 }
@@ -377,7 +381,7 @@
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Error()">标记失效</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="reSend();">重新发货</a>
