@@ -7,16 +7,30 @@
 <script type="text/javascript">
 
     $(function () {
+        $('#c_LogisticsMode').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
 
-		        $('#c_BuyBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
+
+            ]]
+
+        });
+
+        $('#c_BuyBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
 
         $('#c_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
+            url: 'User/UserSrc',
+            editable: true
+        });
 
 
         $('#c_CreateOn').datebox();
@@ -33,7 +47,7 @@
         $('#c_Status').combobox({
             valueField:'id',
             textField:'text',
-            panelHeight: 80,
+            panelHeight: 'auto',
             editable:false,
             data: [{ id: 0, text: "已采购" }, { id: 1, text: "已发货" }, { id: 2, text: "已收到" }]
         });
@@ -42,17 +56,34 @@
             url: '@Url.Action("GetSuppliers","PurchasePlan")',
             valueField: 'SuppliersName',
             textField: 'SuppliersName',
+            panelHeight: 'auto'
         });
 
         $('#c_PlanNo').validatebox({
             required:true
         })
-        $('#c_SKU').validatebox({
-            required: true
+        $('#c_SKU').combogrid({
+            required: true,
+                    panelWidth: 410,
+                    mode: 'remote',
+                    idField: 'SKU',
+                    textField: 'SKU',
+                    onChange: function (sku) {
+                        SeachSKU(sku)
+                    },
+                    required: true,
+                    url: '/Product/ListQ',
+                    fit: true,
+                    columns: [[
+                        { field: 'SKU', title: 'SKU', width: 100 },
+                        { field: 'ProductName', title: 'Title', width: 200 },
+                        { field: 'Standard', title: '规格', width: 100 }
+
+                    ]]
+  
         })
     });
-    function SeachSKU() {
-        var sku = $("#c_SKU").attr("value");
+    function SeachSKU(sku) {
         $.getJSON('@Url.Action("SearchSKU","PurchasePlan")/' + sku, function (json) {
             if (json)
             { 
@@ -98,7 +129,7 @@
             @Html.LabelFor(model => model.SKU,"SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU",onblur="SeachSKU()"})
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU", onblur="SeachSKU()"})
 		</td>
         <td>
             @Html.LabelFor(model => model.ProductUrl,"产品链接:")
