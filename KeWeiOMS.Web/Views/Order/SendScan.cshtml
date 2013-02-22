@@ -140,9 +140,9 @@
     }
 
     function getOrder(str) {
-        //var tc = document.getElementById('tc');
-        //tc.ReadCheng();
-        zl = 258; //tc.Value;
+        var tc = document.getElementById('tc');
+        tc.ReadCheng();
+        zl = tc.Value;
         jQuery.ajax({
             url: "/Order/GetOrderBySend/",
             type: "post",

@@ -68,7 +68,7 @@
             panelWidth: 360,
             idField: 'CurrencyCode',
             textField: 'CurrencyCode',
-            url: '/Currency/List',
+            url: '/Currency/QList',
             fit: true,
             columns: [[
                 { field: 'CurrencyName', title: '货币', width: 150 },
@@ -265,7 +265,7 @@
                 <td>
                     @Html.LabelFor(model => model.OrderNo, "订单编号:")
                 </td>
-                 
+
                 <td>
                     @Html.TextBoxFor(model => model.OrderNo, new { @id = "e_OrderNo" })
                     @Html.HiddenFor(model => model.Id, new { @id = "e_Id" })
@@ -417,9 +417,15 @@
                 <td>
                     @Html.LabelFor(model => model.AddressInfo.Addressee, "收件人:")
                 </td>
-                <td colspan="3">
+                <td>
                     @Html.HiddenFor(model => model.AddressInfo.Id)
                     @Html.TextBoxFor(model => model.AddressInfo.Addressee, new { @id = "e_Addressee" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.PostCode, "邮编:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.PostCode, new { @id = "e_PostCode" })
                 </td>
             </tr>
 

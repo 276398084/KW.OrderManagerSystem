@@ -131,7 +131,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page,int rows,string sort,string order,string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string orderby = "";
             string where = "";
@@ -147,12 +147,22 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<CurrencyType> objList = NSession.CreateQuery("from CurrencyType"+where+orderby)
+            IList<CurrencyType> objList = NSession.CreateQuery("from CurrencyType" + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<CurrencyType>();
             object count = NSession.CreateQuery("select count(Id) from CurrencyType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        public JsonResult QList()
+        {
+
+            IList<CurrencyType> objList = NSession.CreateQuery("from CurrencyType")
+
+                .List<CurrencyType>();
+
+            return Json(new { total = objList.Count, rows = objList });
         }
 
     }

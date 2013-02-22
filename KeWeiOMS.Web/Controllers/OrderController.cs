@@ -24,6 +24,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult Create()
         {
+            ViewData["OrderNO"] = Utilities.GetOrderNo();
             return View();
         }
         public ActionResult UnHandle()
@@ -78,16 +79,11 @@ namespace KeWeiOMS.Web.Controllers
                     break;
                 default:
                     break;
-
             }
             IQuery Query = NSession.CreateQuery(string.Format("update OrderType set {0}='{1}' where {0}='{2}'", fieldName, newField, oldField));
             int num = Query.ExecuteUpdate();
             return Json(new { IsSuccess = "true" });
         }
-
-
-
-
 
         public ActionResult Import()
         {
@@ -197,8 +193,13 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.AddressInfo.CountryCode = obj.AddressInfo.Country;
+                obj.AddressInfo.Email = obj.BuyerEmail;
                 NSession.Save(obj.AddressInfo);
+
                 obj.AddressId = obj.AddressInfo.Id;
+                obj.Country = obj.AddressInfo.Country;
+                obj.Status = OrderStatusEnum.待处理.ToString();
                 obj.GenerateOn = obj.ScanningOn = obj.CreateOn = DateTime.Now;
                 List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
                 NSession.Save(obj);
@@ -289,10 +290,13 @@ namespace KeWeiOMS.Web.Controllers
                 obj.Country = obj.AddressInfo.Country;
                 NSession.Update(obj);
                 NSession.Flush();
+                NSession.CreateQuery("delete from OrderProductType where OId=" + obj.Id).ExecuteUpdate();
                 List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
                 foreach (OrderProductType orderProductType in list)
                 {
-                    NSession.Update(orderProductType);
+                    orderProductType.OId = obj.Id;
+                    orderProductType.OrderNo = obj.OrderNo;
+                    NSession.Save(orderProductType);
                     NSession.Flush();
                 }
             }

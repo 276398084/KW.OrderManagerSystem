@@ -60,6 +60,14 @@
                 data: checkPrint,
                 width: 100
             });
+            $('#IsQue').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checks,
+                width: 100
+            });
+
         });
 
         //新建
@@ -184,6 +192,14 @@
             if (f != "ALL" && f != "" && f != "0") {
                 search += "CreateOn_et&" + f + "^";
             }
+            var g = $('#IsQue').combobox("getValue");
+            if (g != "ALL" && g != "" && g != "0") {
+
+                search += "IsOutOfStock_si&1^";
+
+            }
+
+
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -344,8 +360,8 @@
         }
 
         function getOrderDate(v, r, i) {
-            var html = "下:" + getDate(r.GenerateOn);
-            html += "<br/>同:" + getDate(r.CreateOn);
+            var html = "";
+            html += "同:<b>" + getDate(r.CreateOn) + "</b>";
             if (r.ScanningBy != "")
                 html += "<br/>扫:" + getDate(r.ScanningOn);
             return html;
@@ -373,15 +389,13 @@
                     </th>
                     <th field="Account" width="100" formatter="getAccount">账户
                     </th>
-                    <th field="ErrorInfo" width="250">错误信息
-                    </th>
+
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_Error()">标记失效</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
-
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="reSend();">重新发货</a>
@@ -390,6 +404,7 @@
             账户<input type="text" id="Account" />
             状态<input type="text" id="OrderStatus" />
             打印状态:<input type="text" id="IsPrint" />
+            缺货:<input type="text" id="IsQue" />
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
@@ -399,6 +414,7 @@
             <div data-options="name:'OrderNo'">订单编号</div>
             <div data-options="name:'OrderExNo'">外部编号</div>
             <div data-options="name:'TId'">流水交易号</div>
+            <div data-options="name:'SKU_OrderProduct'">SKU</div>
             <div data-options="name:'BuyerName'">买家</div>
             <div data-options="name:'BuyerEmail'">买家邮箱</div>
             <div data-options="name:'LogisticMode'">发货方式</div>

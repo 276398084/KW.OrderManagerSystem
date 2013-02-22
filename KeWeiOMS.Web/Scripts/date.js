@@ -38,7 +38,6 @@ function getTrue(value) {
 
 var checks = [["1", "是"], ["0", "否"]];
 
-
 var checkSex = '[["男"],["女"]]';
 
 var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];

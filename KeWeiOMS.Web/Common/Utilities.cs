@@ -208,6 +208,11 @@ namespace KeWeiOMS.Web
                         where += " and ";
                     }
                     flagWhere++;
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains("SKU_OrderProduct")) //需要查询的列名
+                    {
+                        where += " Id in (select OId from OrderProductType where SKU='" + item.Value + "')";
+                        continue;
+                    }
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Time)) //需要查询的列名
                     {
                         where += item.Key.Remove(item.Key.IndexOf(Start_Time)) + " >= '" + item.Value + "'";

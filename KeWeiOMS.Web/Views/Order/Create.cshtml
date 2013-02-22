@@ -64,7 +64,7 @@
             value: 'USD',
             idField: 'CurrencyCode',
             textField: 'CurrencyName',
-            url: '/Currency/List',
+            url: '/Currency/QList',
             fit: true,
             columns: [[
                 { field: 'CurrencyName', title: '货币', width: 150 },
@@ -88,7 +88,7 @@
         $('#c_Country').combogrid({
             panelWidth: 360,
             value: 'USD',
-            idField: 'CountryCode',
+            idField: 'ECountry',
             textField: 'ECountry',
             url: '/Country/ListALL',
             fit: true,
@@ -100,7 +100,27 @@
             ]],
             onChange: changeCountry
         });
+        $('#c_Platform').combobox({
+            url: '/Account/Platform',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $("#c_OrderNo").val('@ViewData["OrderNO"]');
     });
+
+    function changePlatform(n, o) {
+        $('#c_Account').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150
+        });
+    }
 
     function changeCountry(n, o) {
         //$('#c_Country').valueOf(n);
@@ -146,6 +166,7 @@
             $('#dg_product').datagrid('acceptChanges');
         }
     }
+
     function addOrder() {
         var effectRow = new Object();
         effectRow["rows"] = JSON.stringify($('#dg_product').datagrid("getRows"));
@@ -163,7 +184,7 @@
 </script>
 
 
-@using (Html.BeginForm("Create", "Order", FormMethod.Post, new { id = "c_form"}))
+@using (Html.BeginForm("Create", "Order", FormMethod.Post, new { id = "c_form" }))
 {
     <input type="button" value="保存" onclick="addOrder();" />
     <fieldset>
@@ -175,8 +196,8 @@
                     @Html.LabelFor(model => model.OrderNo, "订单编号:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.Id, new { @id = "c_Id" })
-                    @Html.HiddenFor(model => model.OrderNo, new { @id = "c_OrderNo" })
+                    @Html.HiddenFor(model => model.Id, new { @id = "c_Id" })
+                    @Html.TextBoxFor(model => model.OrderNo, new { @id = "c_OrderNo", @readonly = "true" })
                 </td>
                 <td>
                     @Html.LabelFor(model => model.OrderExNo, "外部编号:")
@@ -200,7 +221,20 @@
                     @Html.TextBoxFor(model => model.TId, new { @id = "c_TId" })
                 </td>
             </tr>
-
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Platform, "平台:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Platform, new { @id = "c_Platform" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Account, "账户:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Account, new { @id = "c_Account" })
+                </td>
+            </tr>
             <tr>
                 <td>
                     @Html.LabelFor(model => model.BuyerName, "买家:")
@@ -251,10 +285,8 @@
                 <tr>
                     <th field="ExSKU" width="80" data-options="editor:'text'">ExSKU
                     </th>
-
                     <th field="Title" width="100" data-options="editor:'text'">名称
                     </th>
-
                     <th field="SKU" width="80" data-options="
                         editor:{
 							type:'combogrid',
@@ -278,7 +310,7 @@
                     </th>
                     <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
                     </th>
-                     <th field="Standard" width="80" data-options="editor:'text'">规格
+                    <th field="Standard" width="80" data-options="editor:'text'">规格
                     </th>
                     <th field="Remark" width="100" data-options="editor:'text'">描述
                     </th>
@@ -302,18 +334,21 @@
                 </td>
                 <td></td>
                 <td>
-
-
                     @Html.HiddenFor(model => model.AddressId, new { @id = "c_AddressId" })
                 </td>
             </tr>
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.AddressInfo.Addressee, "收件人:")
                 </td>
-                <td colspan="3">
+                <td>
                     @Html.TextBoxFor(model => model.AddressInfo.Addressee, new { @id = "c_Addressee" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.PostCode, "邮编:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.PostCode, new { @id = "e_PostCode" })
                 </td>
             </tr>
 

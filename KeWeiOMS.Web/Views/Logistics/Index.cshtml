@@ -13,23 +13,23 @@
                 pageList: [20, 40, 60, 80, 100],
                 view: detailview,
                 columns: [[
-                   { field: 'LogisticsName', title: '³ÐÔËÉÌ', width: 100 ,sortable:true},
-                   { field: 'LogisticsCode', title: '³ÐÔËÉÌ´úÂë', width: 100, sortable: true },
+                   { field: 'LogisticsName', title: 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', width: 100 ,sortable:true},
+                   { field: 'LogisticsCode', title: 'ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½', width: 100, sortable: true },
                    {
-                       field: 'HasTrackCode', title: 'ÊÇ·ñÓÐ×·×ÙÂë', width: 100,sortable:true, formatter: function (value) {
+                       field: 'HasTrackCode', title: 'ï¿½Ç·ï¿½ï¿½ï¿½×·ï¿½ï¿½ï¿½ï¿½', width: 100,sortable:true, formatter: function (value) {
                            if (value == "1")
-                               return "ÊÇ";
+                               return "ï¿½ï¿½";
                            else
-                               return "·ñ";
+                               return "ï¿½ï¿½";
                        }
                    },
-                   { field: 'CodeLength', title: '×·×ÙÂë³¤¶È', width: 100, sortable: true },
+                   { field: 'CodeLength', title: '×·ï¿½ï¿½ï¿½ë³¤ï¿½ï¿½', width: 100, sortable: true },
                    {
-                       field: 'ReMark', title: '±¸×¢', width: 100, sortable: true
+                       field: 'ReMark', title: 'ï¿½ï¿½×¢', width: 100, sortable: true
                    },
                    {
-                       field: 'Id', title: '²Ù×÷', width: 200, formatter: function (value) {
-                           return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'del(' + value + ')\'>É¾³ý</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'addMode(' + value + ')\'>Ìí¼ÓÃ÷Ï¸</a>  <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'seeArea(' + value + ')\'>²é¿´·ÖÇø</a>';
+                       field: 'Id', title: 'ï¿½ï¿½ï¿½ï¿½', width: 200, formatter: function (value) {
+                           return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'del(' + value + ')\'>É¾ï¿½ï¿½</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'addMode(' + value + ')\'>ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸</a>  <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'seeArea(' + value + ')\'>ï¿½é¿´ï¿½ï¿½ï¿½ï¿½</a>';
                        }
                    }
                 ]],
@@ -45,12 +45,12 @@
                         height: 'auto',
                         url: '@Url.Action("GetMode", "LogisticsMode")' + "/" + row.Id,
                         columns: [[
-                                { field: 'LogisticsName', title: '³ÐÔËÉÌ', width: 200 },
-                                { field: 'LogisticsCode', title: '³ÐÔËÉÌ´úÂë', width: 100 },
-                                {field: 'Discount', title: 'ÕÛ¿Û', width: 100},
+                                { field: 'LogisticsName', title: 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', width: 200 },
+                                { field: 'LogisticsCode', title: 'ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½', width: 100 },
+                                {field: 'Discount', title: 'ï¿½Û¿ï¿½', width: 100},
                                {
-                                   field: 'Id', title: '²Ù×÷', width: 100, formatter: function (value) {
-                                       return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'delMode(' + value + ')\'>É¾³ý</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'editMode(' + row.Id + ',' + value + ')\'>ÐÞ¸Ä</a>';
+                                   field: 'Id', title: 'ï¿½ï¿½ï¿½ï¿½', width: 100, formatter: function (value) {
+                                       return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'delMode(' + value + ')\'>É¾ï¿½ï¿½</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'editMode(' + row.Id + ',' + value + ')\'>ï¿½Þ¸ï¿½</a>';
                                    }
                                }
 
@@ -74,13 +74,13 @@
         });
 
 
-        //ÐÂ½¨
+        //ï¿½Â½ï¿½
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Logistics")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
-        //±à¼­¿ò
+        //ï¿½à¼­ï¿½ï¿½
         function e_dlg() {
             var url = '@Url.Action("Edit", "Logistics")/' + id;
         if (id != undefined) {
@@ -89,15 +89,15 @@
         }
     }
 
-    //Òì²½ÐÂ½¨Ìá½»
+    //ï¿½ì²½ï¿½Â½ï¿½ï¿½á½»
     function ajaxAdd() {
         formPost('c_form', '@Url.Action("Create", "Logistics")', 'c_dlg', 'dg');
         }
-        //Òì²½ÐÞ¸ÄÌá½»
+        //ï¿½ì²½ï¿½Þ¸ï¿½ï¿½á½»
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "Logistics")', 'e_dlg', 'dg');
         }
-        //É¾³ý
+        //É¾ï¿½ï¿½
         function del(id) {
             if (id != undefined) {
 
@@ -106,7 +106,7 @@
             }
         }
 
-        //»ñÈ¡Ñ¡ÖÐÐÐ
+        //ï¿½ï¿½È¡Ñ¡ï¿½ï¿½ï¿½ï¿½
         function getselectedRow() {
             var row = $('#dg').datagrid('getSelected');
             if (row != undefined) {
@@ -116,8 +116,8 @@
                 }
             }
             $.messager.show({
-                title: 'ÌáÊ¾',
-                msg: 'ÇëÑ¡ÔñÐÐ',
+                title: 'ï¿½ï¿½Ê¾',
+                msg: 'ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½',
                 timeout: 3000,
                 showType: 'slide'
             });
@@ -127,7 +127,7 @@
         function seeArea(id) {
             window.open('@Url.Action("Index", "LogisticsArea")?id=' + id)
         }
-        //Ìí¼ÓÃ÷Ï¸
+        //ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸
         function addMode(id) {
             var url_str = '@Url.Action("Create", "LogisticsMode")?id=' + id;
             showdlg(url_str, 'm_dlg', ajaxAddM)
@@ -136,7 +136,7 @@
             formPost('m_form', '@Url.Action("Create", "LogisticsMode")', 'm_dlg', 'modedg');
             $("#dg").datagrid("reload");
         }
-        //ÐÞ¸ÄÃ÷Ï¸
+        //ï¿½Þ¸ï¿½ï¿½ï¿½Ï¸
         function editMode(pid,id) {
             var url_str = '@Url.Action("Edit", "LogisticsMode")?id=' + id;
             showdlg(url_str, 'me_dlg', ajaxUpdM)
@@ -145,7 +145,7 @@
             formPost('me_form', '@Url.Action("Edit", "LogisticsMode")', 'me_dlg', 'modedg');
             $("#dg").datagrid("reload");
         }
-        //É¾³ýÃ÷Ï¸
+        //É¾ï¿½ï¿½ï¿½ï¿½Ï¸
         function delMode(id) {
             if (id != undefined) {
                 var url = '@Url.Action("Delete", "LogisticsMode")/' + id;
@@ -168,31 +168,31 @@
             @*        <thead>  
         <tr>
             <th field="Id" width="100">
-                Ö÷¼ü
+                ï¿½ï¿½ï¿½ï¿½
             </th>
 
             <th field="LogisticsName" width="100">
-                ³ÐÔËÉÌÃû³Æ
+                ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             </th>
 
             <th field="LogisticsCode" width="100">
-                ³ÐÔËÉÌ´úÂë
+                ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½
             </th>
 
             <th field="HasTrackCode" width="100">
-                ÊÇ·ñÓÐ×·×ÙÂë
+                ï¿½Ç·ï¿½ï¿½ï¿½×·ï¿½ï¿½ï¿½ï¿½
             </th>
 
             <th field="CodeLength" width="100">
-                ×·×ÙÂë³¤¶È
+                ×·ï¿½ï¿½ï¿½ë³¤ï¿½ï¿½
             </th>
 
             <th field="Remark" width="100">
-                ±¸×¢
+                ï¿½ï¿½×¢
             </th>
 
             <th field="CreateOn" width="100">
-                Ìí¼ÓÊ±¼ä
+                ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
             </th>
 
 
@@ -201,17 +201,17 @@
 
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">ÐÂ½¨</a>
-            @*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">±à¼­</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">É¾³ý</a>  *@
-            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'²éÑ¯¹Ø¼ü×Ö',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">ï¿½Â½ï¿½</a>
+            @*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">ï¿½à¼­</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">É¾ï¿½ï¿½</a>  *@
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'ï¿½ï¿½Ñ¯ï¿½Ø¼ï¿½ï¿½ï¿½',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
-            <div data-options="name:'LogisticsName'">³ÐÔËÉÌÃû³Æ</div>
-            <div data-options="name:'LogisticsCode'">³ÐÔËÉÌ´úÂë</div>
-            <div data-options="name:'CodeLength'">×·×ÙÂë³¤¶È</div>
-            <div data-options="name:'Remark'">±¸×¢</div>
-            <div data-options="name:'CreateOn'">Ìí¼ÓÊ±¼ä</div>
+            <div data-options="name:'LogisticsName'">ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½</div>
+            <div data-options="name:'LogisticsCode'">ï¿½ï¿½ï¿½ï¿½ï¿½Ì´ï¿½ï¿½ï¿½</div>
+            <div data-options="name:'CodeLength'">×·ï¿½ï¿½ï¿½ë³¤ï¿½ï¿½</div>
+            <div data-options="name:'Remark'">ï¿½ï¿½×¢</div>
+            <div data-options="name:'CreateOn'">ï¿½ï¿½ï¿½Ê±ï¿½ï¿½</div>
         </div>
 
         <div id="c_dlg"></div>
