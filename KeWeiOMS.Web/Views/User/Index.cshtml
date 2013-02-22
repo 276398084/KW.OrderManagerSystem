@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KeWeiOMS.Domain.UserType>
+@model IEnumerable<KeWeiOMS.Domain.UserType>
 @{
     ViewBag.Title = "Index";
 }
@@ -15,7 +15,7 @@
 
         function c_dlg() {
             var url_str = '@Url.Action("Create", "User")';
-            showdlg(url_str, 'c_dlg', ajaxAdd);
+            showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
@@ -30,7 +30,7 @@
         function g_dlg(id) {
             var url_str = '@Url.Action("GetCompetence", "User")/' + id;
             uid = id;
-            showdlg(url_str, 'g_dlg', SetUser);
+            showdlg(url_str, 'g_dlg', SetUser)
         }
         var uid = "";
         function SetUser() {

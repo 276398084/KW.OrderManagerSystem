@@ -5,6 +5,21 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
+        $('#e_LogisticsMode').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+
+
+            ]]
+
+        });
+
 	        $('#e_BuyBy').combobox({
           url: 'User/UserSrc',
           editable: true
@@ -37,7 +52,7 @@
         $('#e_Suppliers').combobox({
             url: '@Url.Action("GetSuppliers","PurchasePlan")',
             valueField: 'SuppliersName',
-                    textField: 'SuppliersName',
+                    textField: 'SuppliersName'
                 });
         $('#e_PlanNo').validatebox({
             required: true
@@ -45,12 +60,36 @@
         $('#e_SKU').validatebox({
             required: true
         })
+        $('#e_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            onChange: function (sku) {
+                SeachSKU(sku)
+            },
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+
+            ]]
+
+        })
+        $('#e_SKU').combogrid("setText",'@ViewData["sku"]');
+
     });
 
-    function SeachSKU() {
-        var sku = $("#e_SKU").attr("value");
+
+
+    function SeachSKU(sku) {
         $.getJSON('@Url.Action("SearchSKU","PurchasePlan")/' + sku, function (json) {
-            if (json) {
+            if (json)
+            { 
                 $("#e_ProductName").attr("value", json[0].ProductName);
                 $("#e_PicUrl").attr("value", json[0].PicUrl);
                 $("#e_ProductUrl").attr("value", json[0].SPicUrl);
@@ -88,7 +127,7 @@
             @Html.LabelFor(model => model.SKU,"SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU",onblur="SeachSKU()"})
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
 		</td>
         <td>
             @Html.LabelFor(model => model.ProductUrl,"产品链接:")

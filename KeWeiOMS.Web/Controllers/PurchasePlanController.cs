@@ -71,6 +71,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             PurchasePlanType obj = GetById(id);
+            ViewData["sku"] = obj.SKU;
             return View(obj);
         }
 
