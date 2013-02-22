@@ -5,19 +5,11 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-        $('#e_LogisticsMode').combogrid({
-            panelWidth: 360,
-            idField: 'LogisticsCode',
-            textField: 'LogisticsName',
-            url: '/LogisticsMode/ALLList',
-            fit: true,
-            columns: [[
-                { field: 'LogisticsName', title: '名称', width: 250 },
-                { field: 'LogisticsCode', title: '代码', width: 100 }
-
-
-            ]]
-
+        $('#e_LogisticsMode').combobox({
+            url: '@Url.Action("PruchasePlanList","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto'
         });
 
 	        $('#e_BuyBy').combobox({

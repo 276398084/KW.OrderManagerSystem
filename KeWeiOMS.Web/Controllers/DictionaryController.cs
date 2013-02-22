@@ -104,6 +104,15 @@ namespace KeWeiOMS.Web.Controllers
                 .List<DictionaryType>();
             return Json(new { total = objList.Count, rows = objList });
         }
+
+        public JsonResult PruchasePlanList()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode","Stock.Plan")
+                .List<DictionaryType>();
+
+            return Json(objList,JsonRequestBehavior.AllowGet);
+        }
     }
 }
 

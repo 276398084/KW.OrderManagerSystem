@@ -7,19 +7,11 @@
 <script type="text/javascript">
 
     $(function () {
-        $('#c_LogisticsMode').combogrid({
-            panelWidth: 360,
-            idField: 'LogisticsCode',
-            textField: 'LogisticsName',
-            url: '/LogisticsMode/ALLList',
-            fit: true,
-            columns: [[
-                { field: 'LogisticsName', title: '名称', width: 250 },
-                { field: 'LogisticsCode', title: '代码', width: 100 }
-
-
-            ]]
-
+        $('#c_LogisticsMode').combobox({
+            url: '@Url.Action("PruchasePlanList","Dictionary")',
+            idField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto'
         });
 
         $('#c_BuyBy').combobox({
