@@ -12,11 +12,46 @@
           url: 'User/UserSrc',
           editable: true
       });
-
+		        $("#c_OrderNo").validatebox({
+		            required: true,
+		        });
 
         $('#c_CreateOn').datebox();
+        $('#c_WId').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'Id',
+            textField: 'Id',
+            required: true,
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
 
+            ]]
 
+        })
+        $('#c_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+
+            ]]
+
+        })
     });
     
 </script>
@@ -25,14 +60,14 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
 		<td>

@@ -126,7 +126,7 @@ namespace KeWeiOMS.Web.Controllers
 
         //public JsonResult List(int page, int rows, string sort, string order)
         //{
-        //    string orderby = "";
+        //    string orderby = " order by Id desc ";
         //    if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
         //    {
         //        orderby = "order by " + sort + " " + order;
@@ -143,7 +143,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
-            string orderby = "";
+            string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;

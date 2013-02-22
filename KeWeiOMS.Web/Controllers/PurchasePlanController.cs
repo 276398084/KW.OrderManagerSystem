@@ -112,7 +112,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows,string sort,string order,string search)
         {
-            string orderby = "";
+            string orderby = " order by Id desc ";
             string where = "";
             if(!string.IsNullOrEmpty(sort)&&!string.IsNullOrEmpty(order))
             {
@@ -126,7 +126,7 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType"+where + orderby)
+            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType "+ where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<PurchasePlanType>();

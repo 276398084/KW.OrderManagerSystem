@@ -59,6 +59,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             StockOutType obj = GetById(id);
+            ViewData["sku"] = obj.SKU;
             return View(obj);
         }
 
@@ -99,7 +100,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string orderby = "";
+            string orderby = " order by Id desc ";
             string where = "";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {

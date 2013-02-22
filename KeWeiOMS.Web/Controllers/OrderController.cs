@@ -397,7 +397,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult List(int page, int rows, string sort, string order, string search, int isUn = 0)
         {
             string where = "";
-            string orderby = " order by Id Desc";
+            string orderby = " order by Id desc";
             string flag = "<>";
             if (isUn == 1)
                 flag = "=";
