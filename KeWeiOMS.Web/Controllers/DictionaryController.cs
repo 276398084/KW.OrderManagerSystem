@@ -113,6 +113,13 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(objList,JsonRequestBehavior.AllowGet);
         }
+        public void DelDictionary(int id)
+        {
+            DictionaryType log = GetById(id);
+            NSession.Delete(log);
+            NSession.Flush();
+        }
+
     }
 }
 
