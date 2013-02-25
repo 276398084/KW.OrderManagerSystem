@@ -133,7 +133,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string orderby = "";
+            string orderby = " order by Id desc ";
             string where = "";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {

@@ -1,0 +1,319 @@
+﻿@model KeWeiOMS.Domain.DisputeType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_OrderNo').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'OrderNo',
+            textField: 'OrderNo',
+            onChange: function (OrderNo) {
+                detail(OrderNo)
+            },
+            required: true,
+            url: '/Order/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'OrderNo', title: '订单号', width: 100 },
+                { field: 'Platform', title: '平台', width: 100 },
+                { field: 'BuyerName', title: '购买者', width: 100 },
+               { field: 'BuyerEmail', title: '购买邮箱', width: 100 }
+            ]]
+
+        })
+
+        $('#c_Status').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            onChange: function (st) {
+                Solution(st)
+            },
+            editable: false,
+            data: [{ id: 0, text: "未解决" }, { id: 1, text: "已解决" }]
+        });
+        $('#c_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            //onChange: function (sku) {
+            //    SeachSKU(sku)
+            //},
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+
+            ]]
+
+        })
+        $('#c_LogisticsMode').combogrid({
+            panelWidth: 360,
+
+            idField: 'LogisticsCode',
+            textField: 'LogisticsCode',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+
+
+            ]]
+
+        });
+
+
+        $('#c_GenerateOn').datebox({
+            required: true
+        });
+        $('#c_SendOn').datebox({
+            required: true
+        });
+        $('#c_DisputeOn').datebox({
+            required: true
+        });
+        $('#c_SolveOn').datebox();
+         $('#c_SolveBy').combobox({
+          url: 'User/UserSrc',
+          editable: true,
+
+      });
+       $('#c_DisputeCategory').combobox({
+             url: '@Url.Action("GetDisputeClass","Dictionary")',
+                    idField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto'
+         });
+        $('#c_Solution').combobox({
+            url: '@Url.Action("GetDisputeSolution","Dictionary")',
+                     idField: 'FullName',
+                     textField: 'FullName',
+                     panelHeight: 'auto'
+                 });
+
+    });
+    
+    function Solution(st) {
+        if (st ==1)
+        {
+            alert("gfh");
+        }
+    }
+    function detail(OrderNo) {
+        $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
+            if (json) {
+                $("#c_Account").attr("value", json[0].Account);
+                $("#c_Platform").attr("value", json[0].Platform);
+                $("#c_OrderExNo").attr("value", json[0].OrderExNo);
+                $("#c_GenerateOn").datebox("setValue", getDate(json[0].GenerateOn));
+                $("#c_SendOn").datebox("setValue", getDate(json[0].ScanningOn));
+                $("#c_Amount").attr("value", json[0].Amount);
+                $("#c_CurrencyCode").attr("value", json[0].CurrencyCode);
+                $("#c_TrackCode").attr("value", json[0].TrackCode);
+                $("#c_LogisticsMode").combogrid("setValue", json[0].LogisticMode);
+                
+            }
+        })
+        $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
+            if (json) {
+                $('#c_Qty').attr("value",json[0].Qty);
+                $('#c_SKU').combogrid("setValue", json[0].SKU);
+            }
+        })
+    }
+</script>
+
+@using (Html.BeginForm("Create", "Dispute", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Account,"账户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account,new{@id="c_Account"})
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="c_Platform"})
+		</td>		<td>
+            @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="c_OrderExNo"})
+		</td>
+	</tr>
+
+
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>*@
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"商品SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+            		<td>
+            @Html.LabelFor(model => model.GenerateOn,"下单时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.GenerateOn,new{@id="c_GenerateOn"})
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"Qty:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
+		</td>
+        	<td>
+            @Html.LabelFor(model => model.SendOn,"发货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SendOn,new{@id="c_SendOn"})
+		</td>
+	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.Amount,"金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Amount,new{@id="c_Amount"})
+		</td>		
+        <td>
+            @Html.LabelFor(model => model.CurrencyCode,"货币:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="c_CurrencyCode"})
+		</td>
+	</tr>
+
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsMode,"物流方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="c_LogisticsMode"})
+		</td>		
+            <td>
+            @Html.LabelFor(model => model.TrackCode,"追踪码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TrackCode,new{@id="c_TrackCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DisputeOn,"纠纷时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DisputeOn,new{@id="c_DisputeOn"})
+		</td>
+	</tr>
+
+        <tr>
+		<td>
+            @Html.LabelFor(model => model.DisputeCategory,"纠纷分类:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DisputeCategory,new{@id="c_DisputeCategory"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status", onblur="Solution()"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Solution,"解决方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Solution,new{@id="c_Solution"})
+		</td>		
+        <td>
+            @Html.LabelFor(model => model.SolveOn,"解决时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SolveOn,new{@id="c_SolveOn"})
+		</td>
+	</tr>
+
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.RefundAmount,"退款金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RefundAmount,new{@id="c_RefundAmount"})
+		</td>		
+        <td>
+            @Html.LabelFor(model => model.SolveBy,"解决人:")
+		</td>
+		<td >
+            @Html.TextBoxFor(model => model.SolveBy,new{@id="c_SolveBy"})
+		</td>
+	</tr>
+
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"添加人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
+		</td>
+	</tr>*@
+
+	
+
+
+</table>
+</fieldset>
+}

@@ -127,7 +127,7 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType" + where + orderby)
+            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType "+ where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<PurchasePlanType>();

@@ -117,7 +117,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public JsonResult GetUnCountryByAreaCode(string sort,string order)
         {
-            string orderby = "";
+            string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = "order by " + sort + " " + order;
@@ -131,7 +131,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public JsonResult GetCountryByAreaCode(string sort, string order)
         {
-            string orderby = "";
+            string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = "order by " + sort + " " + order;

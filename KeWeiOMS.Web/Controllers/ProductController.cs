@@ -179,6 +179,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult ListQ(string q)
         {
 
+
             IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU like '%" + q + "%'")
                 .SetFirstResult(0)
                 .SetMaxResults(20)
@@ -190,7 +191,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
-            string orderby = "";
+            string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;

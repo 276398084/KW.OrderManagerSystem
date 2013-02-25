@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class StockInController : BaseController
+    public class DisputeController : BaseController
     {
         public ViewResult Index()
         {
@@ -23,10 +23,16 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Create(StockInType obj)
+        public JsonResult Create(DisputeType obj)
         {
             try
             {
+                if (obj.SolveOn < Convert.ToDateTime("2000-01-01"))
+                { 
+                    obj.SolveOn=Convert.ToDateTime("2000-01-01");
+                }
+                obj.CreateOn = DateTime.Now;
+                obj.CreateBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -42,9 +48,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  StockInType GetById(int Id)
+        public  DisputeType GetById(int Id)
         {
-            StockInType obj = NSession.Get<StockInType>(Id);
+            DisputeType obj = NSession.Get<DisputeType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -58,14 +64,16 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            StockInType obj = GetById(id);
-            ViewData["sku"] = obj.SKU;
+            DisputeType obj = GetById(id);
+            ViewData["OrderNo"] = obj.OrderNo;
+            ViewData["SKU"] = obj.SKU;
+            ViewData["LogisticsMode"] = obj.LogisticsMode;
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(StockInType obj)
+        public ActionResult Edit(DisputeType obj)
         {
            
             try
@@ -87,7 +95,7 @@ namespace KeWeiOMS.Web.Controllers
           
             try
             {
-                StockInType obj = GetById(id);
+                DisputeType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -98,14 +106,15 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows, string sort, string order, string search)
+		public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string orderby = " order by Id desc ";
             string where = "";
+            string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
             }
+
             if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
@@ -114,13 +123,24 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<StockInType> objList = NSession.CreateQuery("from StockInType"+where+orderby)
+            IList<DisputeType> objList = NSession.CreateQuery("from DisputeType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
-                .List<StockInType>();
-			
-            object count = NSession.CreateQuery("select count(Id) from StockInType "+where).UniqueResult();
+                .List<DisputeType>();
+
+            object count = NSession.CreateQuery("select count(Id) from DisputeType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        public JsonResult SearchOrder(string id)
+        {
+            IList<OrderType> obj = NSession.CreateQuery("from OrderType where OrderNo=:OrderNo").SetString("OrderNo", id).List<OrderType>();
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult SearchOrderP(string id)
+        {
+            IList<OrderProductType> obj = NSession.CreateQuery("from OrderProductType where OrderNo=:OrderNo").SetString("OrderNo", id).List<OrderProductType>();
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
     }
