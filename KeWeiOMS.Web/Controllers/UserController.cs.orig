@@ -192,11 +192,19 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         public JsonResult List(int page, int rows,string sort,string order,string search)
+<<<<<<< HEAD
         {
             string orderby = "";
             string where="";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
+=======
+        {
+            string orderby = " order by Id desc ";
+            string where="";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+>>>>>>> kewei/ttt
                 orderby = " order by " + sort + " " + order;
             }
             if (!string.IsNullOrEmpty(search))
