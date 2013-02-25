@@ -168,6 +168,7 @@
     <Compile Include="Controllers\PermissionController.cs" />
     <Compile Include="Controllers\PermissionItemController.cs" />
     <Compile Include="Controllers\PermissionScopeController.cs" />
+    <Compile Include="Controllers\PlacardController.cs" />
     <Compile Include="Controllers\PrintTemplateController.cs" />
     <Compile Include="Controllers\ProductCategoryController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -1244,6 +1245,12 @@
     <Content Include="Views\Statistics\QueCount.cshtml" />
     <Content Include="Views\Dispute\Edit.cshtml" />
     <Content Include="Views\Dispute\Index.cshtml" />
+    <Content Include="Views\Placard\Create.cshtml" />
+    <Content Include="Views\Placard\Delete.cshtml" />
+    <Content Include="Views\Placard\Details.cshtml" />
+    <Content Include="Views\Placard\Edit.cshtml" />
+    <Content Include="Views\Placard\IndexShow.cshtml" />
+    <Content Include="Views\Placard\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

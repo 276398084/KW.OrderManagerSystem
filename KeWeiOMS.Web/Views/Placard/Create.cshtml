@@ -1,0 +1,73 @@
+﻿@model KeWeiOMS.Domain.PlacardType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		 $('#c_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_CreateOn').datebox();
+        $('#c_CardType').combobox({
+            url: '@Url.Action("GetPlacard","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true,
+                });
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Placard", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CardType,"类别:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CardType,new{@id="c_CardType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="c_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsTop,"置顶:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsTop,new{@id="c_IsTop"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

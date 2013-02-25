@@ -78,6 +78,7 @@
     <Compile Include="Entities\PermissionItemType.cs" />
     <Compile Include="Entities\PermissionScopeType.cs" />
     <Compile Include="Entities\PermissionType.cs" />
+    <Compile Include="Entities\PlacardType.cs" />
     <Compile Include="Entities\PrintTemplateType.cs" />
     <Compile Include="Entities\ProductCategoryType.cs" />
     <Compile Include="Entities\ProductSKUType.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Mappings\PermissionItemTypeMap.cs" />
     <Compile Include="Mappings\PermissionScopeTypeMap.cs" />
     <Compile Include="Mappings\PermissionTypeMap.cs" />
+    <Compile Include="Mappings\PlacardTypeMap.cs" />
     <Compile Include="Mappings\PrintTemplateTypeMap.cs" />
     <Compile Include="Mappings\ProductCategoryTypeMap.cs" />
     <Compile Include="Mappings\ProductSKUTypeMap.cs" />
