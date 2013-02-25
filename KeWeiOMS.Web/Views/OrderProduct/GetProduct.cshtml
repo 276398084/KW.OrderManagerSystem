@@ -8,11 +8,17 @@
     @foreach (var p in Model)
     {
         <tr>
-            <td>
+            <td style="width: 70px;">
                 <img src="@Url.Content("/ProductImg/SPic/" + p.SKU + ".png")" width="64px" height="64px" /></td>
-            <td>ExSKU:@p.ExSKU</td>
-            <td>SKU:@p.SKU</td>
-            <td>Qty:@p.Qty</td>
+            <td style="width: 180px;">ExSKU:@p.ExSKU</td>
+            <td style="width: 180px;">SKU:<b>@p.SKU</b></td>
+            <td style="width: 80px;">Qty:@p.Qty</td>
+            <td style="width: 80px;">缺货:
+        @if (p.IsQue == 1)
+        {
+            <b>缺</b>
+        }
+            </td>
             <td>规格: @p.Standard</td>
             <td>描述: @p.Remark</td>
         </tr>

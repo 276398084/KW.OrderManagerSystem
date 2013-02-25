@@ -123,7 +123,7 @@
             data: "sku=" + $('#c_SKU').val(),
             success: function (msg) {
                 if (msg.IsSuccess == "true") {
-                    $('#up_file').uploadify('upload')
+                    $('#up_file').uploadify('upload');
 
                 }
                 else {
@@ -132,7 +132,7 @@
                         msg: '改编号已经存在',
                         timeout: 0,
                         showType: 'slide'
-                    })
+                    });
                 }
             }
         });

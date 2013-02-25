@@ -1,4 +1,11 @@
-﻿Date.prototype.format = function (format) {
+﻿if (typeof (JSON) == 'undefined') {
+    $('head').append($("<script type='text/javascript' src='/Scripts/json2.js'>"));
+} else {
+
+}
+
+
+Date.prototype.format = function (format) {
     var o = {
         "M+": this.getMonth() + 1, //month
         "d+": this.getDate(), //day
@@ -28,12 +35,15 @@ function getTrue(value) {
         return "否";
 }
 
+
 var checks = [["1", "是"], ["0", "否"]];
 
-var checkSex = '[["不详"],["男"],["女"]]';
+var checkSex = '[["男"],["女"]]';
 
+var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];
 var Packer = 5;
 var Examiner = 7;
+var Pei = 8;
 var Purchaser = 9;
 
 function formPost(form, url, dlg, dg, t) {
@@ -53,12 +63,11 @@ function formPost(form, url, dlg, dg, t) {
                     showType: 'slide'
                 });
             } else {
-
+                alert("操作成功");
                 if (dlg) {
                     $('#' + dlg).dialog('close');
                 }
                 if (dg) {
-
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }
@@ -66,12 +75,6 @@ function formPost(form, url, dlg, dg, t) {
                         $('#' + dg).datagrid('reload');
                     }
                 }
-                $.messager.show({
-                    title: '提示',
-                    msg: '保存成功',
-                    timeout: 2000,
-                    showType: 'slide'
-                });
             }
         }
     });
@@ -79,14 +82,14 @@ function formPost(form, url, dlg, dg, t) {
 
 function delData(url, dg, t) {
     if (url) {
-
         $.messager.confirm('确认', '确定删除?', function (r) {
             if (r) {
                 $.post(url, function () {
-                }).success(function (data) {
+                }).success(function (result) {
+                    var result = eval('(' + result + ')');
                     var msgstr = "删除成功";
-                    if (data != true) {
-                        msgstr = "删除失败" + data;
+                    if (result.IsSuccess) {
+                        msgstr = "删除失败" + result.ErrorMsg;
                         $.messager.show({
                             title: '提示',
                             msg: msgstr,

@@ -1,0 +1,52 @@
+﻿@model KeWeiOMS.Web.OrderCount
+@{
+    ViewBag.Title = "OrderCount";
+}
+查询时间<input id="cc" type="text">
+<script>
+    var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
+
+
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("OrderCount", "Statistics")',
+            queryParams: { "dt": dt }
+        });
+        $("#cc").datebox({
+            parser: myparser,
+            onSelect: onSelect
+        });
+    });
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function onSelect(date) {
+
+        dt = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+
+        $('#dg').datagrid("load", {
+            dt: dt
+        });
+    }
+</script>
+<table id="dg" class="easyui-datagrid"
+    rownumbers="true" fitcolumns="true" singleselect="true" fit="true">
+    <thead>
+        <tr>
+            <th field="Account" width="100">账户
+            </th>
+            <th field="OCount" width="100">数量
+            </th>
+        </tr>
+    </thead>
+</table>

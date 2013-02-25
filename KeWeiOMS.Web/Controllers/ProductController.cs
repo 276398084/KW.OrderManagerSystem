@@ -182,7 +182,7 @@ namespace KeWeiOMS.Web.Controllers
 
             IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU like '%" + q + "%'")
                 .SetFirstResult(0)
-                .SetMaxResults(10)
+                .SetMaxResults(20)
                 .List<ProductType>();
 
             return Json(new { total = objList.Count, rows = objList });

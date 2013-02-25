@@ -128,10 +128,13 @@
     <Compile Include="Common\easyui\Easyui.cs" />
     <Compile Include="Common\EbayHelper.cs" />
     <Compile Include="Common\Enum.cs" />
+    <Compile Include="Common\ExcelHelper.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Statistics\OrderCount.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
+    <Compile Include="Common\Statistics\QueCount.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -173,6 +176,7 @@
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
+    <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Controllers\StockInController.cs" />
     <Compile Include="Controllers\StockOutController.cs" />
     <Compile Include="Controllers\SupplierController.cs" />
@@ -199,6 +203,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\smt.xml" />
+    <Content Include="Content\Audio\ring.wav" />
+    <Content Include="Content\Audio\security.wav" />
     <Content Include="Content\images\Data.gif" />
     <Content Include="Content\images\Data.png" />
     <Content Include="Content\images\Design.gif" />
@@ -643,6 +649,7 @@
     <Content Include="Scripts\easyUI\themes\metro\validatebox.css" />
     <Content Include="Scripts\easyUI\themes\metro\window.css" />
     <Content Include="Scripts\GRUtility.js" />
+    <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\kindeditor\kindeditor-all-min.js" />
     <Content Include="Scripts\kindeditor\kindeditor-all.js" />
     <Content Include="Scripts\kindeditor\kindeditor-min.js" />
@@ -1232,9 +1239,9 @@
     <Content Include="Views\OrderPeiRecord\Details.cshtml" />
     <Content Include="Views\OrderPeiRecord\Edit.cshtml" />
     <Content Include="Views\OrderPeiRecord\Index.cshtml" />
-    <Content Include="Views\Dispute\Create.cshtml" />
-    <Content Include="Views\Dispute\Delete.cshtml" />
-    <Content Include="Views\Dispute\Details.cshtml" />
+    <Content Include="Views\Order\ScanExport.cshtml" />
+    <Content Include="Views\Statistics\OrderCount.cshtml" />
+    <Content Include="Views\Statistics\QueCount.cshtml" />
     <Content Include="Views\Dispute\Edit.cshtml" />
     <Content Include="Views\Dispute\Index.cshtml" />
   </ItemGroup>

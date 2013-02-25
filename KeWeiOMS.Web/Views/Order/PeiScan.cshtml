@@ -5,7 +5,7 @@
     if (document.all) {
         document.write(' <OBJECT id="Player"');
         document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
-        document.write(' width=0 height=0 > <param name="URL" value="/audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
     }
     else {
         document.write(' <OBJECT id="Player"');
@@ -16,7 +16,7 @@
     if (document.all) {
         document.write(' <OBJECT id="Player2"');
         document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
-        document.write(' width=0 height=0 > <param name="URL" value="/audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
     }
     else {
         document.write(' <OBJECT id="Player2"');
@@ -27,7 +27,7 @@
 <script type="text/javascript">
     $(function () {
         $('#cc').combobox({
-            url: '/User/QList/' + Packer,
+            url: '/User/QList/' + Pei,
             valueField: 'Realname',
             textField: 'Realname',
             required: true,
@@ -35,15 +35,13 @@
             panelHeight: 'auto'
         });
         $('#ee').combobox({
-            url: '/User/QList/' + Packer,
+            url: '/User/QList/' + Pei,
             valueField: 'Realname',
             textField: 'Realname',
             required: true,
             width: 200,
             panelHeight: 'auto'
         });
-
-
     })
 
 </script>
@@ -142,13 +140,13 @@
                     progress = 0;
                     oldstr = "";
                     ShowMessage(msg.Result, "等待扫描", true);
+
                 }
             }
         });
     }
-
+    
     function OutStock(str) {
-
         var p2 = $("#ee").combobox("getValue");
         var p1 = $("#cc").combobox("getValue");
         if (oldstr == str) {
@@ -160,10 +158,12 @@
                     if (msg.IsSuccess) {
                         progress = 0;
                         oldstr = "";
+                        Player2.controls.play();
                         ShowMessage(msg.Result, "等待扫描", true);
                     } else {
                         progress = 0;
                         oldstr = "";
+                        Player1.controls.play();
                         ShowMessage(msg.Result, "等待扫描", false);
                     }
                 }

@@ -1,5 +1,165 @@
 ﻿@{
     ViewBag.Title = "QueScan";
 }
+<table align="center" cellpadding="2" cellspacing="0" width="100%">
+    <tbody>
+        <tr>
+            <td>
+                <asp:hiddenfield id="hId" runat="server" />
+            </td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <fieldset>
+                    <legend>
+                        <label>
+                            缺货扫描信息</label></legend>
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td colspan="4" align="left" valign="top" style="padding-top: 10px;">
+                                <table cellspacing="0" cellpadding="1" bordercolor="#eeeeee" border="1" width="100%">
+                                    <tbody>
 
-<h2>QueScan</h2>
+                                        <tr id="tr_ID">
+                                            <td height="25" width="22%">
+                                                <h2>
+                                                    <b>扫描扫描</b></h2>
+                                            </td>
+                                            <td width="78%">
+                                                <input id="txt" onkeydown="return txt_keydown(event)" style="font-size: 50px; background-image: none; width: 511px" />
+                                            </td>
+                                        </tr>
+                                        <tr id="tr2">
+                                            <td height="25" width="22%">
+                                                <h2>状态</h2>
+                                            </td>
+                                            <td width="78%">
+                                                <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描<br />
+                                                            <br />
+                                                            <br />
+                                                            <br />
+                                                            &nbsp;</span></font>
+                                            </td>
+                                        </tr>
+                                        <tr id="tr4">
+                                            <td height="25" width="22%">
+                                                <h2>信息</h2>
+                                            </td>
+                                            <td width="78%">
+
+                                                <span id="spanInfo"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+
+    var txt = document.getElementById("txt");
+    var spanInfo = document.getElementById("spanInfo");
+    var spanStatus = document.getElementById("spanStatus");
+    var progress = 0;
+    var oldstr = "";
+    //信息2 返回货物重量条码
+    function OutStock(str) {
+        var ids = new Array();
+        $("input:checked[name^='ck_']").each(function () {
+            ids.push($(this).attr("code"));
+        });
+        if (ids.length == 0) {
+            alert("请选择一项！");
+            return "";
+        }
+        if (oldstr == str) {
+            jQuery.ajax({
+                url: "/Order/OutStockByQue/",
+                type: "post",
+                data: "o=" + str + "&ids=" + ids.join(','),
+                success: function (msg) {
+                    if (msg.IsSuccess) {
+                        progress = 0;
+                        oldstr = "";
+                        ShowMessage(msg.Result, "等待扫描", true);
+                    } else {
+                        ShowMessage(msg.Result, "等待扫描", false);
+                    }
+                }
+            });
+        }
+        else {
+            ShowMessage(null, "确认的的编码不正确", true);
+        }
+    }
+
+    function getOrder(str) {
+        jQuery.ajax({
+            url: "/Order/GetOrderByQue/",
+            type: "post",
+            data: "orderNo=" + str,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    progress = 1;
+                    oldstr = str;
+                    ShowMessage(msg.Result, "等待确认", true);
+
+                } else {
+                    progress = 0;
+                    oldstr = "";
+                    ShowMessage(msg.Result, "等待扫描", true);
+
+                }
+            }
+        });
+    }
+    function ShowMessage(msgInfo, msgStatus, isOk) {
+        if (msgInfo != null) {
+            spanInfo.innerHTML = msgInfo;
+        }
+        if (msgStatus != null) {
+            spanStatus.innerHTML = msgStatus;
+        }
+        if (isOk) {
+            spanInfo.style.color = "Blue";
+        }
+        else {
+            spanInfo.style.color = "Red";
+        }
+    }
+    //重置
+    function Reset() {
+        progress = 0;
+        txt.value = "";
+        spanInfo.innerHTML = "";
+        spanStatus.innerHTML = "等待扫描 ";
+
+    }
+
+    function txt_keydown(e) {
+        var keynum;
+        if (window.event) {
+            keynum = e.keyCode;
+        }
+        else if (e.which) {
+            keynum = e.which;
+        }
+        if (keynum == 13) {
+            if (txt.value == "") { Reset(); }
+            if (progress == 0) {
+                getOrder(txt.value);
+            }
+            else if (progress == 1) {
+                OutStock(txt.value);
+            }
+            txt.value = "";
+            return false;
+        }
+        return true;
+    }
+</script>

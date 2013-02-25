@@ -66,10 +66,9 @@
 
         $('#e_CurrencyCode').combogrid({
             panelWidth: 360,
-
             idField: 'CurrencyCode',
             textField: 'CurrencyCode',
-            url: '/Currency/List',
+            url: '/Currency/QList',
             fit: true,
             columns: [[
                 { field: 'CurrencyName', title: '货币', width: 150 },
@@ -87,10 +86,7 @@
             columns: [[
                 { field: 'LogisticsName', title: '名称', width: 250 },
                 { field: 'LogisticsCode', title: '代码', width: 100 }
-
-
             ]]
-
         });
     });
 
@@ -111,25 +107,16 @@
         $('#btn').unbind("focus");
         $('#e_Country').combogrid('setValue', v);
     }
-
     var editIndex = undefined;
+    var editIndex1 = undefined;
     function endEditing() {
         if (editIndex == undefined) {
             return true;
         }
         if ($('#dg_product').datagrid('validateRow', editIndex)) {
             $('#dg_product').datagrid('endEdit', editIndex);
-            $.post("/OrderProduct/Save/", $('#dg_product').datagrid("getRows")[editIndex], function (rsp) {
-                if (rsp.IsSuccess) {
-                    $.messager.show("提示", "提交成功！");
-                }
-            }, "JSON").error(function () {
-                $.messager.show("提示", "提交错误了！");
-            });
-
             editIndex = undefined;
             return true;
-
         } else {
             return false;
         }
@@ -144,6 +131,35 @@
             } else {
                 $('#dg_product').datagrid('selectRow', editIndex);
             }
+        }
+    }
+    function onClickRow1(index) {
+        if (editIndex1 != index) {
+            if (endEditing1()) {
+                $('#dg_p').datagrid('selectRow', index)
+                    .datagrid('beginEdit', index);
+                editIndex1 = index;
+            } else {
+                $('#dg_p').datagrid('selectRow', editIndex1);
+            }
+        }
+    }
+    function endEditing1() {
+        if (editIndex1 == undefined) {
+            return true;
+        }
+        if ($('#dg_p').datagrid('validateRow', editIndex1)) {
+            var t1 = $('#dg_p').datagrid('getRows')[editIndex1]['Qty'];
+            var t2 = $('#dg_p').datagrid('getEditor', { index: editIndex1, field: 'Qty' }).target.numberbox("getValue");
+            if (t1 < t2) {
+                alert("数量不能大于原来的数量:");
+                return false;
+            }
+            $('#dg_p').datagrid('endEdit', editIndex1);
+            editIndex1 = undefined;
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -163,18 +179,59 @@
     }
 
     function addOrder() {
+        var effectRow = new Object();
+        effectRow["rows"] = JSON.stringify($('#dg_product').datagrid("getRows"));
+        $.post("/OrderProduct/Save/", effectRow, function (rsp) {
+            if (rsp.IsSuccess) {
+                $.messager.show("提示", "提交成功！");
+            }
+        }, "JSON").error(function () {
+            $.messager.show("提示", "提交错误了！");
+        });
         formPost('e_form', '@Url.Action("Edit", "Order")');
     }
     function splitOrder() {
         showProduct("拆分", function () {
-            alert('');
+            if (endEditing1()) {
+                var effectRow = new Object();
+                effectRow["o"] = '@ViewData["id"]';
+                effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
+                $.post("/Order/SplitOrder/", effectRow, function (rsp) {
+                    $('#dlg').dialog('close');
+                    if (rsp.IsSuccess) {
+                        $.messager.show("提示", "提交成功！");
+                    }
+                }, "JSON").error(function () {
+
+                    $.messager.show("提示", "提交错误了！");
+                });
+            }
+        });
+    }
+    function reOrder() {
+        showProduct("重发", function () {
+            if (endEditing1()) {
+                var effectRow = new Object();
+                effectRow["o"] = '@ViewData["id"]';
+                effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
+                $.post("/Order/ReOrder/", effectRow, function (rsp) {
+                    $('#dlg').dialog('close');
+                    if (rsp.IsSuccess) {
+
+                        $.messager.show("提示", "提交成功！");
+                    }
+                }, "JSON").error(function () {
+                    $.messager.show("提示", "提交错误了！");
+                });
+            }
         });
     }
 
     function showProduct(title, handle) {
         $('#dg_p').datagrid({
             url: '@Url.Action("List", "OrderProduct")/@ViewData["id"]',
-            width: 700
+            width: 700,
+            onClickRow: onClickRow1
         });
         $('#dlg').dialog({
             title: title,
@@ -187,7 +244,7 @@
             }, {
                 text: '取消',
                 handler: function () {
-                    $('# + dlg').dialog('close');
+                    $('#dlg').dialog('close');
                 }
             }]
         }).dialog('open');
@@ -199,16 +256,16 @@
 {
     <a href="#" class="easyui-linkbutton" onclick="addOrder();">保存</a>  
     <a href="#" class="easyui-linkbutton" onclick="splitOrder();">拆分</a>  
-    <a href="#" class="easyui-linkbutton" onclick="addOrder();">重发</a>  
+    <a href="#" class="easyui-linkbutton" onclick="reOrder();">重发</a>  
     
     <fieldset>
         <legend>订单信息</legend>
         <table class="editForm">
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.OrderNo, "订单编号:")
                 </td>
+
                 <td>
                     @Html.TextBoxFor(model => model.OrderNo, new { @id = "e_OrderNo" })
                     @Html.HiddenFor(model => model.Id, new { @id = "e_Id" })
@@ -325,6 +382,8 @@
                     </th>
                     <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
                     </th>
+                    <th field="Standard" width="80" data-options="editor:'text'">规格
+                    </th>
                     <th field="Remark" width="100" data-options="editor:'text'">描述
                     </th>
                     <th field="Price" width="80" data-options="editor:{ type: 'numberbox', options: { precision: 5 }}">
@@ -358,9 +417,15 @@
                 <td>
                     @Html.LabelFor(model => model.AddressInfo.Addressee, "收件人:")
                 </td>
-                <td colspan="3">
+                <td>
                     @Html.HiddenFor(model => model.AddressInfo.Id)
                     @Html.TextBoxFor(model => model.AddressInfo.Addressee, new { @id = "e_Addressee" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.PostCode, "邮编:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.PostCode, new { @id = "e_PostCode" })
                 </td>
             </tr>
 
@@ -378,7 +443,6 @@
                     @Html.TextBoxFor(model => model.AddressInfo.Phone, new { @id = "e_Phone" })
                 </td>
             </tr>
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.AddressInfo.Street, "街道:")
@@ -419,11 +483,10 @@
             </tr>
         </table>
     </fieldset>
-   
 }
 
 <div id="dlg">
-    <table id="dg_p" class="easyui-datagrid" rownumbers="true" singleselect="true">
+    <table id="dg_p" class="easyui-datagrid" rownumbers="true">
         <thead>
             <tr>
                 <th data-options="field:'Id',checkbox:true"></th>
@@ -433,7 +496,7 @@
                 </th>
                 <th field="SKU" width="80">SKU
                 </th>
-                <th field="Qty" width="80">数量
+                <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
                 </th>
                 <th field="Remark" width="100">描述
                 </th>

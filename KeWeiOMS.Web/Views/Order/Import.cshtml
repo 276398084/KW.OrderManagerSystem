@@ -7,6 +7,7 @@
 
 
 <script type="text/javascript">
+    var type = 0;
     $(function () {
 
         $('#up_file').uploadify({
@@ -18,7 +19,12 @@
             'onUploadSuccess': function (file, data, response) {
                 eval("data=" + data);
                 $('#hfile').val(data.SaveName);
-                formPost('c_Import', '@Url.Action("Import", "Order")');
+                if (type == 1) {
+                    formPost('c_Import', '@Url.Action("ImportAmount", "Order")');
+                } else {
+                    formPost('c_Import', '@Url.Action("Import", "Order")');
+                }
+
                 $('c_Import').clear();
             }
         });
@@ -69,6 +75,13 @@
         });
     }
     function addOrder() {
+        type = 0;
+        $('#up_file').uploadify('upload', '*');
+    }
+
+
+    function importAmount() {
+        type = 1;
         $('#up_file').uploadify('upload', '*');
     }
 
@@ -105,7 +118,9 @@
                 <tr>
                     <td></td>
                     <td>
-                        <input type="button" value="保存" onclick="addOrder();" /></td>
+                        <input type="button" value="导入订单" onclick="addOrder();" />
+                        <input type="button" value="导入金额" onclick="importAmount();" />
+                    </td>
                 </tr>
             </table>
         }

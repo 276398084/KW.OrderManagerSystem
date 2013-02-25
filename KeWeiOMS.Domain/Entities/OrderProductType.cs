@@ -56,6 +56,11 @@ namespace KeWeiOMS.Domain
         public virtual int Qty { get; set; }
 
         /// <summary>
+        /// 是否缺货
+        /// </summary>
+        public virtual int IsQue { get; set; }
+
+        /// <summary>
         /// 对应内部库存SKU
         /// </summary>
         public virtual String SKU { get; set; }

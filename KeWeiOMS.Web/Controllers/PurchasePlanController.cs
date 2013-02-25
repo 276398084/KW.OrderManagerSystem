@@ -19,6 +19,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult Create()
         {
+            ViewData["No"] = Utilities.GetPlanNo();
             return View();
         }
 
@@ -54,7 +55,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  PurchasePlanType GetById(int Id)
+        public PurchasePlanType GetById(int Id)
         {
             PurchasePlanType obj = NSession.Get<PurchasePlanType>(Id);
             if (obj == null)
@@ -79,7 +80,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(PurchasePlanType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -90,13 +91,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 PurchasePlanType obj = GetById(id);
@@ -110,15 +111,15 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows,string sort,string order,string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string orderby = " order by Id desc ";
             string where = "";
-            if(!string.IsNullOrEmpty(sort)&&!string.IsNullOrEmpty(order))
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
             }
-            if(!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
@@ -136,13 +137,15 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult SearchSKU(string id)
         {
-            IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU=:sku").SetString("sku", id).List<ProductType>();
-            return Json(obj,JsonRequestBehavior.AllowGet);
+            IList<PurchasePlanType> obj = NSession.CreateQuery("from PurchasePlanType where SKU=:sku order by Id desc").SetString("sku", id)
+           .SetFirstResult(0)
+                .SetMaxResults(1).List<PurchasePlanType>();
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetSuppliers()
         {
             IList<SupplierType> obj = NSession.CreateQuery("from SupplierType").List<SupplierType>();
-            return Json(obj,JsonRequestBehavior.AllowGet);
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
     }

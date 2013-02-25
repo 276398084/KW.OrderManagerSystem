@@ -12,7 +12,7 @@
             textField: 'Realname',
             required: true,
             onSelect: function (n, o) {
-                $('#c_RoleName').val($('#c_RoleId').combobox("getText"));
+                $('#e_RoleName').val($('#e_RoleId').combobox("getText"));
             }
         });
         $('#e_CId').combobox({
@@ -22,18 +22,19 @@
             required: true,
             onChange: showBuMen
         });
-        $('#e_DId').combotree();
+
+        showBuMen();
     });
 
-    function showBuMen(id) {
+    function showBuMen() {
         $('#e_DId').combotree({
-            url: '/Organize/BuMenList/' + id,
+            url: '/Organize/BuMenList/1',
             required: true
         });
     }
 
     function setCD() {
-        $('#e_RoleName').val($('#c_RoleId').combobox("getText"));
+
         $('#e_CompanyName').val($('#c_CId').combobox("getText"));
         $('#e_DepartmentName').val($('#c_DId').combotree("getText"));
     }
@@ -47,9 +48,11 @@
                     @Html.LabelFor(model => model.Code, "编号:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.Code, new { @id = "e_Code" })
-                    @Html.HiddenFor(model => model.Id, new { @id = "e_Id" })
-                </td>
+                @Html.TextBoxFor(model => model.Code, new { @id = "e_Code" })
+                @Html.HiddenFor(model => model.Id, new { @id = "e_Id" })
+                @Html.HiddenFor(model => model.LastVisit)
+                @Html.HiddenFor(model => model.CreateOn)
+                @Html.HiddenFor(model => model.Password)
                 <td>
                     @Html.LabelFor(model => model.Username, "登录名:")
                 </td>

@@ -294,7 +294,6 @@
 	background:url('images/datagrid_sort_asc.gif') no-repeat center center;
 }
 .datagrid-toolbar{
-	height:28px;
 	background:#efefef;
 	padding:1px 2px;
 	border-bottom:1px solid #ccc;
