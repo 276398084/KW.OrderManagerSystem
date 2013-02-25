@@ -43,13 +43,14 @@ namespace KeWeiOMS.Domain
             Map(x => x.LogisticsMode).Length(50);
             Map(x => x.TrackCode).Length(50);
             Map(x => x.PostStatus).Length(50);
-            Map(x => x.Status);
+            Map(x => x.Status).Length(20);
             Map(x => x.BuyBy).Length(50);
             Map(x => x.CreateBy).Length(50);
             Map(x => x.CreateOn);
             Map(x => x.BuyOn);
             Map(x => x.SendOn);
             Map(x => x.ReceiveOn);
+            Map(x => x.Memo).Length(800);
         }
     }
 }

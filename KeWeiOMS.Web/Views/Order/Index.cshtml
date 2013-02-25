@@ -308,6 +308,27 @@
             });
         }
 
+        function exportOrder() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/Order/ExportOrder/",
+                type: "post",
+                data: "o=" + s_ids.join(','),
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
+
         function o_Error(parameters) {
             s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
@@ -389,7 +410,6 @@
                     </th>
                     <th field="Account" width="100" formatter="getAccount">账户
                     </th>
-
                 </tr>
             </thead>
         </table>
@@ -399,7 +419,8 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="reSend();">重新发货</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportZM();">中美导出</a><br />
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportZM();">中美导出</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportOrder();">订单导出</a><br />
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
             状态<input type="text" id="OrderStatus" />

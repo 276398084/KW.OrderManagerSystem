@@ -131,9 +131,10 @@
     <Compile Include="Common\ExcelHelper.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
-    <Compile Include="Common\OrderCount.cs" />
+    <Compile Include="Common\Statistics\OrderCount.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
+    <Compile Include="Common\Statistics\QueCount.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -883,7 +884,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Common\Statistics\" />
     <Folder Include="Models\" />
     <Folder Include="upload\" />
   </ItemGroup>
@@ -1240,6 +1240,7 @@
     <Content Include="Views\OrderPeiRecord\Index.cshtml" />
     <Content Include="Views\Order\ScanExport.cshtml" />
     <Content Include="Views\Statistics\OrderCount.cshtml" />
+    <Content Include="Views\Statistics\QueCount.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

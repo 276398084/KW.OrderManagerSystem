@@ -85,7 +85,7 @@ namespace KeWeiOMS.Web
                     list[0].BeginNo = list[0].BeginNo + 1;
                     NSession.Update(list[0]);
                     NSession.Flush();
-                    return list[0].BeginNo.ToString();
+                    return "SP" + list[0].BeginNo.ToString();
                 }
                 return "";
 
@@ -403,6 +403,22 @@ namespace KeWeiOMS.Web
             try
             {
                 return Convert.ToInt32(str);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+
+        }
+        public static int ToInt(object obj)
+        {
+            try
+            {
+                if (obj == null || obj is DBNull)
+                {
+                    return 0;
+                }
+                return ToInt(obj.ToString());
             }
             catch (Exception)
             {

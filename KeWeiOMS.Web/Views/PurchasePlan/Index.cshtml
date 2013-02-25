@@ -1,93 +1,89 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.PurchasePlanType>
+﻿@model IEnumerable<KeWeiOMS.Domain.PurchasePlanType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","PurchasePlan")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100],
-            columns: [[
-                { field: 'PlanNo', title: '计划编号', width: 100, sortable: true },
-                {
-                    field: 'PicUrl', title: '图片', width: 130, sortable: true,
-                    formatter: function (v, r, i) {
-                        return '<a href="' + r.ProductUrl + '" target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="160px" width="160px" /></a></br>(SKU:'+r.SKU+')'+r.ProductName
-                    }
-                },
-                //{ field: 'ProductUrl', title: '链接', hidden: true },
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "PurchasePlan")',
+                pageNumber: 1,
+                pageSize: 20,
+                nowrap: false,
+                pageList: [20, 40, 60, 80, 100],
+                columns: [[
+                    { field: 'PlanNo', title: '计划编号', width: 100, sortable: true },
+                    {
+                        field: 'PicUrl', title: '图片', width: 200, sortable: true,
+                        formatter: function (v, r, i) {
+                            return '<a href="' + r.ProductUrl + '" target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="160px" width="160px" /></a></br>(SKU:' + r.SKU + ')' + r.ProductName
+                        }
+                    },
+                    //{ field: 'ProductUrl', title: '链接', hidden: true },
+                    { field: 'Price', title: '单价', width: 30, sortable: true },
+                    { field: 'Qty', title: '数量', width: 30, sortable: true },
+                    { field: 'Freight', title: '运费', width: 30, sortable: true },
+                    { field: 'Suppliers', title: '供应商', width: 80, sortable: true },
+                     { field: 'BuyBy', title: '采购人', width: 80, sortable: true },
+                    {
+                        field: 'Status', title: '状态', width: 100, sortable: true
 
-                { field: 'Price', title: '单价', width: 30, sortable: true },
-                { field: 'Qty', title: '数量', width: 30, sortable: true },
-                { field: 'Freight', title: '运费', width: 30, sortable: true },
-                { field: 'Suppliers', title: '供应商', width: 100, sortable: true },
-                {
-                    field: 'Status', title: '状态', width: 100, sortable: true,
-                    formatter: function (value) {
-                        if (value == 0) { return "已采购" }
-                        if (value == 1) { return "已发货" }
-                        if (value == 2) { return "已收到" }
-                    }
-                },
-                { field: 'LogisticsMode', title: '发货方式', width: 100, sortable: true },
-                { field: 'TrackCode', title: '运单号', width: 100, sortable: true },
-                { field: 'PostStatus', title: '物流状态', width: 100, sortable: true },
-                {
-                    field:'CreateOn',title: '时间', width: 100, sortable: true,
-                    formatter: function (v, r, i) {
-                        return '创建时间:' + getDate(v) + "<br>" + '采购时间:' + getDate(r.BuyOn) + "<br>" + '发货时间:' + getDate(r.SendOn) + "<br>" + '收到时间:' + getDate(r.ReceiveOn) + "<br>";
-                    }
-                },
+                    },
+                    { field: 'LogisticsMode', title: '发货方式', width: 80, sortable: true },
+                    { field: 'TrackCode', title: '运单号', width: 80, sortable: true },
+                    { field: 'Memo', title: '备注', width: 100 },
+                    {
+                        field: 'CreateOn', title: '时间', width: 100, sortable: true,
+                        formatter: function (v, r, i) {
+                            return '创建时间:' + getDate(v) + "<br>" + '采购时间:' + getDate(r.BuyOn) + "<br>" + '发货时间:' + getDate(r.SendOn) + "<br>" + '收到时间:' + getDate(r.ReceiveOn) + "<br>";
+                        }
+                    },
 
-            ]]
+                ]]
+            });
+
         });
 
-    });
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "PurchasePlan")';
 
-    //新建
-    function c_dlg() {
-        var url_str = '@Url.Action("Create","PurchasePlan")';
-		
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-        }).dialog('open');;
-    }
-
-    //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit","PurchasePlan")/' + id;
-            $('#e_dlg').load(url, function () {
+            $('#c_dlg').load(url_str, function () {
                 $(this).dialog({
-                    title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
+                    title: '新建',
+                    modal: true,
+                    loadingMessage: '正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-							ajaxEdit();
+                            ajaxAdd();
+                        }
+                    }, {
+                        text: '取消',
+                        handler: function () {
+                            $('#c_dlg').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');;
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "PurchasePlan")/' + id;
+            $('#e_dlg').load(url, function () {
+                $(this).dialog({
+                    title: '编辑',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '提交',
+                        iconCls: 'icon-ok',
+                        handler: function () {
+                            ajaxEdit();
                         }
                     }, {
                         text: '取消',
@@ -100,51 +96,51 @@
         }
     }
 
-	//异步新建提交
-        function ajaxAdd() {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create","PurchasePlan")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
-                    } else {
-                        $('#c_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
+    //异步新建提交
+    function ajaxAdd() {
+        $('#c_form').form('submit', {
+            url: '@Url.Action("Create", "PurchasePlan")',
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                var result = eval('(' + result + ')');
+                if (result.errorMsg) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存失败:' + result.errorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                } else {
+                    $('#c_dlg').dialog('close');
+                    $('#dg').datagrid('reload');
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存成功',
+                        timeout: 2000,
+                        showType: 'slide'
+                    });
                 }
-            });
+            }
+        });
         }
-		//异步修改提交
+        //异步修改提交
         function ajaxEdit() {
             $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","PurchasePlan")',
+                url: '@Url.Action("Edit", "PurchasePlan")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
                     var result = eval('(' + result + ')');
                     if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#e_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -158,165 +154,81 @@
                 }
             });
         }
-   
 
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","PurchasePlan")/' + id;
-                    $.post(url, function () {
-                    }).success(function (data) {
-                        var msgstr = "删除成功";
-                        if (data != true) {
-                            msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
 
-                        $('#dg').datagrid('reload');
-                    }) .error(function () {
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                $.messager.confirm('确认', '确定删除?', function (r) {
+                    if (r) {
+                        var url = '@Url.Action("Delete", "PurchasePlan")/' + id;
+                        $.post(url, function () {
+                        }).success(function (data) {
+                            var msgstr = "删除成功";
+                            if (data != true) {
+                                msgstr = "删除失败" + data;
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 0,
+                                    showType: 'slide'
+                                });
+                            } else {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
+                            }
+
+                            $('#dg').datagrid('reload');
+                        }).error(function () {
                             $.messager.alert('错误', '删除发生错误');
                         });
 
-                }
-            });
-        }
-    }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+                    }
+                });
             }
         }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-    function doSearch() {
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        $("#dg").datagrid("load", {
-            search: search
 
-        });
-    }
-   
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-@*            <th field="Id" width="100">
-                主键
-            </th>*@
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
 
-            <th field="PlanNo" width="100">
-                计划编号
-            </th>
+            });
+        }
 
-            <th field="SKU" width="100">
-                SKU
-            </th>            
-            <th field="ProductName" width="100" >
-                名称
-            </th>
-            <th field="ProductName" width="100">
-                图片
-            </th>
-            <th field="Price" width="100">
-                单价
-            </th>
-
-            <th field="Qty" width="100">
-                数量
-            </th>
-           
-            <th field="Freight" width="100">
-                运费
-            </th>
-
-
-
-            <th field="Suppliers" width="100">
-                供应商
-            </th>
-
-            <th field="SId" width="100">
-                供应商ID
-            </th>
-
-            <th field="LogisticsMode" width="100">
-                发货方式
-            </th>
-
-            <th field="TrackCode" width="100">
-                运单号
-            </th>
-
-            <th field="PostStatus" width="100">
-                物流状态
-            </th>
-
-            <th field="Status" width="100">
-                状态
-            </th>
-
-            <th field="BuyBy" width="100">
-                采购人
-            </th>
-
-            <th field="CreateBy" width="100">
-                生成人
-            </th>
-
-            <th field="CreateOn" width="100"">
-                时间
-            </th>
-
-            <th field="BuyOn" width="100">
-                采购时间
-            </th>
-
-            <th field="SendOn" width="100">
-                发货时间
-            </th>
-
-            <th field="ReceiveOn" width="100">
-                到货时间
-            </th>
-
-
-    	</tr>
-		</thead>
-		</table>
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'PlanNo'">计划编号</div>
@@ -339,8 +251,8 @@
             <div data-options="name:'ReceiveOn'">到货时间</div>
 
         </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
 
-</div>
+    </div>
 </body>

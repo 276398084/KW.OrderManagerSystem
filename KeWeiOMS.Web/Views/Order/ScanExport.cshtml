@@ -11,20 +11,9 @@
             success: function (result) {
                 var result = eval('(' + result + ')');
                 if (result.errorMsg) {
-                    $.messager.show({
-                        title: '提示',
-                        msg: '保存失败:' + result.errorMsg,
-                        timeout: 0,
-                        showType: 'slide'
-                    });
+
                 } else {
 
-                    $.messager.show({
-                        title: '提示',
-                        msg: '保存成功',
-                        timeout: 2000,
-                        showType: 'slide'
-                    });
                 }
             }
         });
@@ -37,6 +26,8 @@
         结束：<input type="text" id="et" name="et" class="easyui-datetimebox" style="width: 150px" />
         扫描人：<input type="text" id="u" name="u" style="width: 150px" />
         物流：<input type="text" id="key" name="key" style="width: 150px" />
-        <input type="button" value="导出" onclick="exportexcel()" />
+        <input type="button" value="导出扫描" onclick="exportexcel()" />
+       
     </div>
 }
+

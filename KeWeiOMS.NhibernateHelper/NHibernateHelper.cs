@@ -14,16 +14,13 @@ namespace KeWeiOMS.NhibernateHelper
 {
     public class NHibernateHelper
     {
-
         private static ISessionFactory sessionFactory = null;
-
         public static ISessionFactory SessionFactory
         {
             get
             {
                 if (sessionFactory == null)
                 {
-
                     FluentConfiguration fluentConfiguration = Fluently.Configure().Database(
              MsSqlConfiguration.MsSql2008.ConnectionString(
              c => c.FromConnectionStringWithKey("db")));

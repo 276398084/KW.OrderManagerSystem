@@ -92,18 +92,17 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult OrderVali()
         {
-            OrderHelper.countrys = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
+            List<CountryType> countrys = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
 
-            OrderHelper.products = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
+            List<ProductType> products = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
 
-            OrderHelper.currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
+            List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
 
-            OrderHelper.logistics = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>().ToList();
+            List<LogisticsModeType> logistics = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>().ToList();
             IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Status='待处理'").List<OrderType>();
-
             foreach (var order in orders)
             {
-                OrderHelper.ValiOrder(order);
+                OrderHelper.ValiOrder(order, countrys, products, currencys, logistics);
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -148,7 +147,6 @@ namespace KeWeiOMS.Web.Controllers
                         break;
                     case PlatformEnum.LT:
                         break;
-
                     default:
                         break;
                 }
@@ -196,6 +194,10 @@ namespace KeWeiOMS.Web.Controllers
                 obj.AddressInfo.CountryCode = obj.AddressInfo.Country;
                 obj.AddressInfo.Email = obj.BuyerEmail;
                 NSession.Save(obj.AddressInfo);
+
+                AccountType acc = NSession.Get<AccountType>(Utilities.ToInt(obj.Account));
+                if (acc != null)
+                    obj.Account = acc.AccountName;
 
                 obj.AddressId = obj.AddressInfo.Id;
                 obj.Country = obj.AddressInfo.Country;
@@ -387,7 +389,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExportDown()
+        public ActionResult ExportDown(string Id)
         {
             string str = "";
             object sb = Session["ExportDown"];
@@ -395,11 +397,23 @@ namespace KeWeiOMS.Web.Controllers
             {
                 str = sb.ToString();
             }
-            System.Web.HttpContext.Current.Response.ContentType = "text/plain";
-            System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
-            System.Web.HttpContext.Current.Response.Charset = "gb2312";
-            System.Web.HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=zm.txt");
-            return File(System.Text.Encoding.UTF8.GetBytes(str), "attachment;filename=zm.txt");
+            if (Id == null)
+            {
+                System.Web.HttpContext.Current.Response.ContentType = "text/plain";
+                System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+                System.Web.HttpContext.Current.Response.Charset = "gb2312";
+                System.Web.HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=zm.txt");
+                return File(System.Text.Encoding.UTF8.GetBytes(str), "attachment;filename=zm.txt");
+            }
+            else
+            {
+                System.Web.HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
+                System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+                System.Web.HttpContext.Current.Response.Charset = "gb2312";
+                System.Web.HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls");
+                return File(System.Text.Encoding.UTF8.GetBytes(str), "attachment;filename=" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls");
+            }
+
         }
         [HttpPost]
         public ActionResult ExportZM(string o)
@@ -424,6 +438,24 @@ namespace KeWeiOMS.Web.Controllers
             }
             Session["ExportDown"] = sb.ToString();
             return Json(new { IsSuccess = true });
+        }
+
+        [HttpPost]
+        public ActionResult ExportOrder(string o)
+        {
+            IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
+            StringBuilder sb = new StringBuilder();
+            string sql = "select  * from Orders where Id in(" + o + ")";
+
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
+
         }
 
         [HttpPost]
@@ -557,7 +589,6 @@ namespace KeWeiOMS.Web.Controllers
                             NSession.Update(item);
                             NSession.Flush();
                         }
-
                     }
                     string html = "订单：" + order.OrderNo + " 添加到缺货！";
                     return Json(new { IsSuccess = true, Result = html });
@@ -615,7 +646,6 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
-
 
         public JsonResult OutStockByJi(string p, string o)
         {

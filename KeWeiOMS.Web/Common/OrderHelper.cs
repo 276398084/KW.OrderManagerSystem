@@ -20,15 +20,6 @@ namespace KeWeiOMS.Web
     public class OrderHelper
     {
 
-        static OrderHelper()
-        {
-
-            countrys = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
-            products = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
-            currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
-            logistics = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>().ToList();
-        }
-
         public static ISession NSession = NHibernateHelper.CreateSession();
 
         public static DataTable GetDataTable(string fileName)
@@ -190,6 +181,8 @@ namespace KeWeiOMS.Web
                 if (listOrder.ContainsKey(OrderExNo))
                 {
                     CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", listOrder[OrderExNo], OrderExNo);
+                    continue;
+
                 }
                 bool isExist = IsExist(OrderExNo);
                 if (isExist)
@@ -208,8 +201,6 @@ namespace KeWeiOMS.Web
                     order.GenerateOn = Convert.ToDateTime(item["Payment Complete"]);
                     order.Platform = PlatformEnum.Gmarket.ToString();
                     order.BuyerMemo = item["Memo to Seller"] + item["Options"];
-
-
                     order.AddressId = CreateAddress(item["Recipient"], item["Address"], "", "", item["Nation"], item["Nation"], item["Recipient Phone number"], item["Recipient mobile Phone number"], "", item["Postal code"], 0);
                     NSession.Save(order);
                     NSession.Flush();
@@ -231,7 +222,6 @@ namespace KeWeiOMS.Web
             List<ResultInfo> results = new List<ResultInfo>();
             foreach (DataRow item in OrderHelper.GetDataTable(fileName).Rows)
             {
-
                 string OrderExNo = item["订单编号"].ToString();
                 bool isExist = IsExist(OrderExNo);
                 if (isExist)
@@ -636,13 +626,11 @@ namespace KeWeiOMS.Web
         #endregion
 
         #region 订单验证
-        public static List<CountryType> countrys = new List<CountryType>();
-        public static List<ProductType> products = new List<ProductType>();
-        public static List<CurrencyType> currencys = new List<CurrencyType>();
-        public static List<LogisticsModeType> logistics = new List<LogisticsModeType>();
 
-        public static bool ValiOrder(OrderType order)
+
+        public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics)
         {
+
             bool resultValue = true;
             order.ErrorInfo = "";
 
