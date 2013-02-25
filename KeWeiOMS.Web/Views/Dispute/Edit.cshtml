@@ -1,0 +1,279 @@
+﻿@model KeWeiOMS.Domain.DisputeType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#e_OrderNo').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'OrderNo',
+            textField: 'OrderNo',
+            onChange: function (OrderNo) {
+                detail(OrderNo)
+            },
+            url: '/Order/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'OrderNo', title: '订单号', width: 100 },
+                { field: 'Platform', title: '平台', width: 100 },
+                { field: 'BuyerName', title: '购买者', width: 100 },
+               { field: 'BuyerEmail', title: '购买邮箱', width: 100 }
+            ]]
+
+        })
+
+        $('#e_Status').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            onChange: function (st) {
+                Solution(st)
+            },
+            editable: false,
+            data: [{ id: 0, text: "未解决" }, { id: 1, text: "已解决" }]
+        });
+        $('#e_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+
+            ]]
+
+        })
+        $('#e_LogisticsMode').combogrid({
+            panelWidth: 360,
+
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+
+
+            ]]
+
+        });
+
+        $('#e_GenerateOn').datebox();
+        $('#e_SendOn').datebox();
+        $('#e_DisputeOn').datebox({
+            required: true
+        });
+        $('#e_SolveOn').datebox();
+        $('#e_SolveBy').combobox({
+            url: 'User/UserSrc',
+            editable: true,
+        });
+@*          $('#e_OrderNo').combogrid("setText", '@ViewData["OrderNo"]');
+        $('#e_SKU').combogrid("setText", '@ViewData["SKU"]');
+        $('#e_LogisticsMode').combogrid("setText", '@ViewData["LogisticsMode"]');
+      $("#e_GenerateOn").datebox("setValue", getDate('@ViewData["GenerateOn"]'));
+        $("#e_SendOn").datebox("setValue", getDate('@ViewData["SendOn"]'));*@
+    });
+
+    function Solution(st) {
+        if (st == 1) {
+            alert("gfh");
+        }
+    }
+    function detail(OrderNo) {
+        $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
+            if (json) {
+                $("#e_Account").attr("value", json[0].Account);
+                $("#e_Platform").attr("value", json[0].Platform);
+                $("#e_OrderExNo").attr("value", json[0].OrderExNo);
+                $("#e_GenerateOn").datebox("setValue", getDate(json[0].GenerateOn));
+                $("#e_SendOn").datebox("setValue", getDate(json[0].ScanningOn));
+                $("#e_Amount").attr("value", json[0].Amount);
+                $("#e_CurrencyCode").attr("value", json[0].CurrencyCode);
+                $("#e_TrackCode").attr("value", json[0].TrackCode);
+                $("#e_LogisticsMode").combogrid("setValue", json[0].LogisticMode);
+
+            }
+        })
+        $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
+            if (json) {
+                $('#e_Qty').attr("value", json[0].Qty);
+                $('#e_SKU').combogrid("setValue", json[0].SKU);
+
+            }
+        })
+    }
+</script>
+@using (Html.BeginForm("Edit", "Dispute", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+<tr>
+@*		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>*@
+		<td style ="display :none">
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Account,"账户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account,new{@id="e_Account"})
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform"})
+		</td>		<td>
+            @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo"})
+		</td>
+	</tr>
+    <tr>
+		<td style ="display:none">
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+        </tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"商品SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+		</td>
+            		<td>
+            @Html.LabelFor(model => model.GenerateOn,"下单时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.GenerateOn,new{@id="e_GenerateOn"})
+		</td>
+	</tr>
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"Qty:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
+		</td>
+        	<td>
+            @Html.LabelFor(model => model.SendOn,"发货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn"})
+		</td>
+	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.Amount,"金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount"})
+		</td>		
+        <td>
+            @Html.LabelFor(model => model.CurrencyCode,"货币:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="e_CurrencyCode"})
+		</td>
+	</tr>
+
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsMode,"物流方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode"})
+		</td>		
+            <td>
+            @Html.LabelFor(model => model.TrackCode,"追踪码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TrackCode,new{@id="e_TrackCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DisputeOn,"纠纷时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DisputeOn,new{@id="e_DisputeOn"})
+		</td>
+	</tr>
+
+        <tr>
+		<td>
+            @Html.LabelFor(model => model.DisputeCategory,"纠纷分类:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DisputeCategory,new{@id="e_DisputeCategory"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status", onblur="Solution()"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Solution,"解决方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Solution,new{@id="e_Solution"})
+		</td>		
+        <td>
+            @Html.LabelFor(model => model.SolveOn,"解决时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SolveOn,new{@id="e_SolveOn"})
+		</td>
+	</tr>
+
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.RefundAmount,"退款金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RefundAmount,new{@id="e_RefundAmount"})
+		</td>		
+        <td>
+            @Html.LabelFor(model => model.SolveBy,"解决人:")
+		</td>
+		<td >
+            @Html.TextBoxFor(model => model.SolveBy,new{@id="e_SolveBy"})
+		</td>
+	</tr>
+
+</table>
+</fieldset>
+}

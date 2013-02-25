@@ -119,6 +119,22 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Delete(log);
             NSession.Flush();
         }
+        public JsonResult GetDisputeClass()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Dispute.Class")
+                .List<DictionaryType>();
+
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetDisputeSolution()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Dispute.Solution")
+                .List<DictionaryType>();
+
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

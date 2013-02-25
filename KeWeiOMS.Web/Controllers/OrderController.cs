@@ -426,6 +426,17 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from OrderType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+        public JsonResult ListQ(string q)
+        {
+
+
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where OrderNo like '%" + q + "%'")
+                .SetFirstResult(0)
+                .SetMaxResults(10)
+                .List<OrderType>();
+
+            return Json(new { total = objList.Count, rows = objList });
+        }
 
     }
 }

@@ -141,6 +141,7 @@
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\DictionaryClassController.cs" />
     <Compile Include="Controllers\DictionaryController.cs" />
+    <Compile Include="Controllers\DisputeController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
@@ -1231,6 +1232,11 @@
     <Content Include="Views\OrderPeiRecord\Details.cshtml" />
     <Content Include="Views\OrderPeiRecord\Edit.cshtml" />
     <Content Include="Views\OrderPeiRecord\Index.cshtml" />
+    <Content Include="Views\Dispute\Create.cshtml" />
+    <Content Include="Views\Dispute\Delete.cshtml" />
+    <Content Include="Views\Dispute\Details.cshtml" />
+    <Content Include="Views\Dispute\Edit.cshtml" />
+    <Content Include="Views\Dispute\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

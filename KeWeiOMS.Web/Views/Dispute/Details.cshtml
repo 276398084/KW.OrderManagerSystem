@@ -1,0 +1,128 @@
+﻿@model KeWeiOMS.Domain.DisputeType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>DotNet.Domain.DisputeType</title>
+</head>
+<body>
+<fieldset>
+    <legend>DotNet.Domain.DisputeType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">订单号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderNo)
+    </div>
+
+    <div class="display-label">平台订单号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderExNo)
+    </div>
+
+    <div class="display-label">平台</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Platform)
+    </div>
+
+    <div class="display-label">账户</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Account)
+    </div>
+
+    <div class="display-label">创建时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">下单时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.GenerateOn)
+    </div>
+
+    <div class="display-label">发货时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SendOn)
+    </div>
+
+    <div class="display-label">纠纷时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DisputeOn)
+    </div>
+
+    <div class="display-label">解决时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SolveOn)
+    </div>
+
+    <div class="display-label">金额</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Amount)
+    </div>
+
+    <div class="display-label">货币</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CurrencyCode)
+    </div>
+
+    <div class="display-label">商品SKU</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SKU)
+    </div>
+
+    <div class="display-label">Qty</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Qty)
+    </div>
+
+    <div class="display-label">物流方式</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LogisticsMode)
+    </div>
+
+    <div class="display-label">状态</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+    <div class="display-label">纠纷分类</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DisputeCategory)
+    </div>
+
+    <div class="display-label">解决方式</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Solution)
+    </div>
+
+    <div class="display-label">退款金额</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RefundAmount)
+    </div>
+
+    <div class="display-label">添加人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">解决人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SolveBy)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>
