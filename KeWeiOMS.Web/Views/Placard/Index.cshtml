@@ -23,34 +23,83 @@
         }
 
         //编辑框
-        function e_dlg() {
-            var url = '@Url.Action("Edit","Placard")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
-            }
+    function e_dlg() {
+        var id = getselectedRow();
+        var url = '@Url.Action("Edit","Placard")/' + id;
+        if (id != undefined) {
+            showdlg(url, 'e_dlg', ajaxEdit)
         }
+    }
 
         //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "Placard")', 'c_dlg', 'dg');
+    function ajaxAdd() {
+        $('#c_form').form('submit', {
+            url: '@Url.Action("Create", "Placard")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    var result = eval('(' + result + ')');
+                    if (result.errorMsg) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.errorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $('#c_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
+                }
+            });
         }
         //异步修改提交
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "Placard")', 'e_dlg', 'dg');
         }
         //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            $.messager.confirm('确认', '确定删除?', function (r) {
+                if (r) {
+                    var url = '@Url.Action("Delete", "Placard")/' + id;
+                        $.post(url, function () {
+                        }).success(function (data) {
+                            var msgstr = "删除成功";
+                            if (data != true) {
+                                msgstr = "删除失败" + data;
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 0,
+                                    showType: 'slide'
+                                });
+                            } else {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
+                            }
 
-                var url = '@Url.Action("Delete", "Placard")/' + id;
-                alert(1);
-                delData(url, 'dg');
+                            $('#dg').datagrid('reload');
+                        }).error(function () {
+                            $.messager.alert('错误', '删除发生错误');
+                        });
 
+                    }
+                });
             }
         }
-
     //获取选中行
     function getselectedRow() {
         var row = $('#dg').datagrid('getSelected');
@@ -74,10 +123,6 @@
                     search: search
                 });
       }
-    function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "Placard")', 's_dlg', 'dg');
-      }		
-
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -86,27 +131,27 @@
         <thead>  
         <tr>
 
-            <th field="CardType" width="100">
+            <th field="CardType" width="100" sortable="true">
                 类别
             </th>
 
-            <th field="Title" width="100">
+            <th field="Title" width="100" sortable="true">
                 标题
             </th>
 
-            <th field="Content" width="100">
+            <th field="Content" width="100" sortable="true">
                 内容
             </th>
 
-            <th field="CreateBy" width="100">
+            <th field="CreateBy" width="100" sortable="true">
                 创建人
             </th>
 
-            <th field="CreateOn" width="100">
+            <th field="CreateOn" width="100" sortable="true" formatter="getDate">
                 创建时间
             </th>
 
-            <th field="IsTop" width="100">
+            <th field="IsTop" width="100" sortable="true">
                 置顶
             </th>
 
@@ -119,17 +164,10 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div> 
 		<div id="mm" style="width: 120px">
-                        <div data-options="name:'Id'">编号</div>
-            <div data-options="name:'CardType'">类别</div>
             <div data-options="name:'Title'">标题</div>
             <div data-options="name:'Content'">内容</div>
-            <div data-options="name:'CreateBy'">创建人</div>
-            <div data-options="name:'CreateOn'">创建时间</div>
-            <div data-options="name:'IsTop'">置顶</div>
-
         </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>

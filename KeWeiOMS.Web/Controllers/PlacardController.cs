@@ -16,6 +16,12 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult ShowIndex(int id)
+        {
+            ViewData["uid"] = id;
+            return View();
+        }
+
 
         public ActionResult Create()
         {
@@ -105,7 +111,39 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+        public JsonResult ListS(string search)
+        {
+            string where = "";
+            string orderby = " order by IsTop desc,CreateOn desc ";
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<PlacardType> objList = NSession.CreateQuery("from PlacardType " + where + orderby)
+                .List<PlacardType>();
+
+            return Json(new { total = objList.Count, rows = objList });
+        }
+        public JsonResult ListQ()
+        {
+            IList<PlacardType> objList = NSession.CreateQuery("from PlacardType "+" order by IsTop desc,CreateOn desc ")
+            .SetMaxResults(8)
+            .List<PlacardType>();
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Detail(int id) 
+        {
+
+            PlacardType obj = GetById(id);
+            return Json(obj,JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
             string orderby = " order by Id desc ";
@@ -127,17 +165,9 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows)
                 .List<PlacardType>();
 
-            object count = NSession.CreateQuery("select count(Id) from PlacardType " + where ).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from PlacardType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
-        public JsonResult ListQ()
-        {
-            IList<PlacardType> objList = NSession.CreateQuery("from PlacardType "+" order by IsTop desc,CreateOn desc ")
-            .SetMaxResults(10)
-            .List<PlacardType>();
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-
     }
 }
 

@@ -14,15 +14,24 @@
       });
 
 
-        $('#c_CreateOn').datebox();
+		 $('#c_CreateOn').datebox();
+
         $('#c_CardType').combobox({
             url: '@Url.Action("GetPlacard","Dictionary")',
+                    required:true,
                     valueField: 'FullName',
                     textField: 'FullName',
                     panelHeight: 'auto',
-                    editable: true,
+                    editable: true
                 });
-
+        $('#c_IsTop').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            data: [{ id: '0', text: "否" }, { id: '1', text: "是" }]
+        });
+        $('#c_Title').validatebox({ required: true });
+        $('#c_Content').validatebox({ required: true });
     });
     
 </script>
@@ -54,7 +63,7 @@
             @Html.LabelFor(model => model.Content,"内容:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
+            @Html.TextAreaFor(model => model.Content,new{@id="c_Content",@style="width:300px;height:180px"})
 		</td>
 	</tr>
 

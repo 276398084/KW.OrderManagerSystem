@@ -1250,6 +1250,7 @@
     <Content Include="Views\Placard\Details.cshtml" />
     <Content Include="Views\Placard\Edit.cshtml" />
     <Content Include="Views\Placard\IndexShow.cshtml" />
+    <Content Include="Views\Placard\ShowIndex.cshtml" />
     <Content Include="Views\Placard\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>

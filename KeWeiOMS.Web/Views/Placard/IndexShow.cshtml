@@ -5,36 +5,40 @@
 }
 <script language="javascript" type="text/javascript">
     $(function () {
-      $('#dg1').datagrid({
+        $('#dg1').datagrid({
+            border:false,
+            noheader: true,
           url: '@Url.Action("ListQ","Placard")',
           columns: [[
                   {
-                      field: 'CardType', title: '类别', width: 60,align:"right",
+                      field: 'CardType', width: 60,align:"right",
                       formatter: function (v, r, i) {
                           var top = "";
+                          var id = r.Id;
                           if (r.IsTop == 1) {
                               top = "[顶]";
-                              top += '<a href="#" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>' + ":";
+                              top += '<a href="@Url.Action("ShowIndex", "Placard")/' + id + '" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>' + ":";
                           }
-                          else { top = '<a href="#" target="_blank"  class="easyui-linkbutton" >' + v + '</a>' + ":";}
+                          else { top = '<a href="@Url.Action("ShowIndex", "Placard")/'+id+'" target="_blank"  class="easyui-linkbutton" >' + v + '</a>' + ":"; }
                           return top;
                       }
                   },
                   {
-                      field: 'Title', title: '标题', width: 400,
+                      field: 'Title', width: 400,
                       formatter: function (v, r, i) {
-                          var c="";
+                          var c = "";
+                          var id = r.Id;
                           if (r.IsTop == 1) {
-                              c = '<a href="#" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>'
+                              c = '<a href="@Url.Action("ShowIndex", "Placard")/'+id+'" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>'
                           }
                           else {
-                              c = '<a href="#" target="_blank"  class="easyui-linkbutton" >' + v + '</a>'
+                              c = '<a href="@Url.Action("ShowIndex", "Placard")/"' + id + ' target="_blank"  class="easyui-linkbutton" >' + v + '</a>'
                           }
                           return c;
                       }
                   },
                   {
-                            field: 'CreateOn', title: '时间', width:90,
+                            field: 'CreateOn', width:90,
                             formatter: function (v, r, i) {
                                 return daate(v);
                              }
@@ -49,19 +53,6 @@
         return date.format("yyyy-MM-dd");
     }
 </script>      
-<div align="right" style="width:550px"><a href='@Url.Action("Index", "Placard")' target="_Blank">更多公告>></a></div> 
-<table id="dg1" class="easyui-datagrid" singleSelect="true"  >  
-        <thead>  
-        <tr>
-            <th field="CardType" width="20">
-                类别
-            </th>
-
-            <th field="Title" width="100">
-                标题
-            </th>
-
-
-    	</tr>
-		</thead>
+<div align="right" style="width:550px"><a href="@Url.Action("Index", "Placard")" target="_Blank">更多公告>></a></div> 
+<table id="dg1" class="easyui-datagrid" singleSelect="true" >  
 		</table>
