@@ -32,7 +32,7 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.UserId);
             Map(x => x.UserCode).Length(255);
-            Map(x => x.姓名).Length(255);
+            Map(x => x.RealName).Length(255);
             Map(x => x.CurrentDate);
             Map(x => x.AMStart).Length(30);
             Map(x => x.AMEnd).Length(30);

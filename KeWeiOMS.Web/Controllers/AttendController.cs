@@ -123,6 +123,87 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
+        public JsonResult AttendOn(int id)
+        {
+            string ip = GetIP();
+            try
+            {
+                AttendType obj = new AttendType() {CurrentDate=DateTime.Now.Date,UserId=CurrentUser.Id,UserCode=CurrentUser.Code,RealName=CurrentUser.Realname };
+                IList<AttendType> list = NSession.CreateQuery("from AttendType").List<AttendType>();
+                foreach (var item in list)
+                {
+                    if (item.CurrentDate == obj.CurrentDate && item.UserId == obj.UserId)
+                    {
+                        obj = item;
+                    }
+                }
+                //if (IsOK(ip))
+                //    obj.IP = ip;
+                //else
+                //    return Json(new { Msg = "不会没起床吧，请使用公司网络打卡哦！" }, JsonRequestBehavior.AllowGet);
+                switch (id)  
+                    {
+                        case 0:
+                            if (string.IsNullOrEmpty(obj.AMStart)) 
+                            { 
+                                obj.AMStart = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); 
+                            }
+                            else
+                                return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
+                            break;
+                        case 1:
+                            if (string.IsNullOrEmpty(obj.AMEnd))
+                            {
+                                obj.AMEnd = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else
+                                return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
+                            break;
+                        case 2:
+                            if (string.IsNullOrEmpty(obj.PMStart))
+                            {
+                                obj.PMStart = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else
+                                return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
+                            break;
+                        case 3:
+                            if (string.IsNullOrEmpty(obj.PMEnd))
+                            {
+                                obj.PMEnd = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                            }
+                            else 
+                                return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
+                            break;
+                    }
+                NSession.SaveOrUpdate(obj);
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { Msg = "出错了" },JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = "签到成功" }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public string GetIP()
+        {
+
+            string ip = string.Empty;
+
+            if (!string.IsNullOrEmpty(System.Web.HttpContext.Current.Request.ServerVariables["HTTP_VIA"]))
+            ip = Convert.ToString(System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"]);
+            if (string.IsNullOrEmpty(ip))
+            ip = Convert.ToString(System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"]);
+             return ip;
+
+        }
+        public bool IsOK(string ip)
+        {
+            string[] strs = new string[] { "115.238.181.255", "115.238.181.251", "115.238.181.252", "115.238.181.253", "115.238.181.254", "122.227.207.205", "122.227.207.202", "122.227.207.203", "122.227.207.204", "122.227.207.206" };
+            return true;
+        }
     }
 }
 

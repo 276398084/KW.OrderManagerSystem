@@ -12,7 +12,6 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
-
     });
 
 
@@ -73,11 +72,26 @@
                 $("#dg").datagrid("load", {
                     search: search
                 });
-      }
-    function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "Attend")', 's_dlg', 'dg');
-      }		
+     }
+     function work(value) {
+         $.ajax({
+             url: '@Url.Action("AttendOn", "Attend")/' + value,
+             success: function (result) {
+                 $('#dg').datagrid('reload');
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide'
+                     });
+             }
+         });
 
+     }
+    function daate(value) {
+        var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+        return date.format("yyyy-MM-dd");
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -85,7 +99,7 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
+@*            <th field="Id" width="100">
                 主键
             </th>
 
@@ -95,13 +109,13 @@
 
             <th field="UserCode" width="100">
                 用户编号
-            </th>
+            </th>*@
 
-            <th field="姓名" width="100">
+            <th field="RealName" width="100">
                 姓名
             </th>
 
-            <th field="CurrentDate" width="100">
+            <th field="CurrentDate" width="100" formatter="daate">
                 日期
             </th>
 
@@ -130,27 +144,12 @@
 		</thead>
 		</table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="work(0);">上午上班</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="work(1)">上午下班</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="work(2);">下午上班</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="work(3);">下午下班</a>  
         </div> 
-		<div id="mm" style="width: 120px">
-                        <div data-options="name:'Id'">主键</div>
-            <div data-options="name:'UserId'">用户Id</div>
-            <div data-options="name:'UserCode'">用户编号</div>
-            <div data-options="name:'姓名'">姓名</div>
-            <div data-options="name:'CurrentDate'">日期</div>
-            <div data-options="name:'AMStart'">上午上班</div>
-            <div data-options="name:'AMEnd'">上午下班</div>
-            <div data-options="name:'PMStart'">下午上班</div>
-            <div data-options="name:'PMEnd'">下午下班</div>
-            <div data-options="name:'IP'">IP</div>
-
-        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
-
 </div>
 </body>

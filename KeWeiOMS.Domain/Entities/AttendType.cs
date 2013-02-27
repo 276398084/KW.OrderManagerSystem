@@ -43,7 +43,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 姓名
         /// </summary>
-        public virtual String 姓名 { get; set; }
+        public virtual String RealName { get; set; }
 
         /// <summary>
         /// 日期
