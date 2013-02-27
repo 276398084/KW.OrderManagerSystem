@@ -16,9 +16,13 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
-        public ActionResult ShowIndex(int id)
+        public ActionResult ShowIndex()
         {
-            ViewData["uid"] = id;
+             
+            if(!string.IsNullOrEmpty(Request["id"]))
+            {
+                ViewData["uid"] =int.Parse(Request["id"].ToString());
+            }
             return View();
         }
 
