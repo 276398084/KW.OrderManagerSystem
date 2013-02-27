@@ -160,6 +160,16 @@ namespace KeWeiOMS.Domain
         public virtual int HasBattery { get; set; }
 
         /// <summary>
+        /// 液体
+        /// </summary>
+        public virtual int IsLiquid { get; set; }
+
+        /// <summary>
+        /// 是否扫描
+        /// </summary>
+        public virtual int IsScan { get; set; }
+
+        /// <summary>
         /// 库位
         /// </summary>
         public virtual String Location { get; set; }
@@ -173,6 +183,11 @@ namespace KeWeiOMS.Domain
         /// 创建人
         /// </summary>
         public virtual String CreateBy { get; set; }
+
+        /// <summary>
+        /// 产品管理人
+        /// </summary>
+        public virtual String Manager { get; set; }
 
     }
 }

@@ -4,15 +4,11 @@
 <script type="text/javascript">
     $(function () {
         $('#tree1').tree({
-            url: '@Url.Action("SelectListByUser", "Module")/@ViewData["uid"]',
+            url: '@Url.Action("SelectListByRole", "Module")/@ViewData["uid"]',
             checkbox: true
         });
         $('#tree2').tree({
-            url: '@Url.Action("SelectListByUser", "PermissionItem")/@ViewData["uid"]',
-            checkbox: true
-        });
-        $('#tree3').tree({
-            url: '@Url.Action("SelectList", "Account")/@ViewData["uid"]',
+            url: '@Url.Action("SelectListByRole", "PermissionItem")/@ViewData["uid"]',
             checkbox: true
         });
     })
@@ -31,11 +27,11 @@
     function SetUser() {
         var m = getChecked('tree1');
         var p = getChecked('tree2');
-        var a = getChecked('tree3');
+
         $.ajax({
             type: "POST",
-            url: "/User/SetMP/",
-            data: "uid=@ViewData["uid"]&m=" + m + "&p=" + p + "&a=" + a,
+            url: "/Role/SetMP/",
+            data: "uid=@ViewData["uid"]&m=" + m + "&p=" + p,
             success: function (msg) {
                 alert("已经保存");
             }
@@ -56,12 +52,6 @@
             <fieldset>
                 <legend>权限管理</legend>
                 <div id="tree2"></div>
-            </fieldset>
-        </td>
-        <td valign="top">
-            <fieldset>
-                <legend>账户权限</legend>
-                <div id="tree3"></div>
             </fieldset>
         </td>
     </tr>

@@ -13,7 +13,7 @@ namespace KeWeiOMS.Web
     /// <summary>
     /// 导航菜单构造器
     /// </summary>
-    public class FunctionMenu :BaseController
+    public class FunctionMenu
     {
         /// <summary>
         /// 支持两层
@@ -22,6 +22,8 @@ namespace KeWeiOMS.Web
         public static List<MenuItem> GetFunctionMenus()
         {
             List<MenuItem> items = new List<MenuItem>();
+            //UserType account = (UserType)System.Web.HttpContext.Current.Session["account"];
+            //IList<ModuleType> customerList = account.Modules;
             ISession Session = NHibernateHelper.CreateSession();
             IList<ModuleType> customerList = Session.CreateQuery("from ModuleType").List<ModuleType>();
 

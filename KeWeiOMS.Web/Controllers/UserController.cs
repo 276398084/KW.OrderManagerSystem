@@ -80,24 +80,30 @@ namespace KeWeiOMS.Web.Controllers
         {
             if (Session["__VCode"] == null || (Session["__VCode"] != null && user.ValidateCode != Session["__VCode"].ToString()))
             {
-                ModelState.AddModelError("Username", "验证码错误！"); //return "";
+                ModelState.AddModelError("Username", "验证码错误！");
                 return View();
             }
             if (ModelState.IsValid)
             {
                 bool iscon = Utilities.LoginByUser(user.Username, user.Password);
-                Utilities.CreateCookies(user.Username, user.Password);
-                return RedirectToAction("Index", "Home");
+                if (iscon)
+                {
+                    Utilities.CreateCookies(user.Username, user.Password);
+                    return RedirectToAction("Index", "Home");
+                }
             }
             ModelState.AddModelError("Username", "用户名或者密码出错。");
             return View();
         }
 
-        public ActionResult SetMP(string m, string p, int uid)
+        public ActionResult SetMP(string a, string m, string p, int uid)
         {
             string[] ms = m.Split(',');
             string[] ps = p.Split(',');
+            string[] fos = a.Split(',');
             PermissionScopeType sc = null;
+            NSession.CreateQuery("delete from PermissionScopeType where ResourceCategory='" +
+                                  ResourceCategoryEnum.User.ToString() + "' and ResourceId=" + uid).ExecuteUpdate();
             foreach (var item in ms)
             {
                 sc = new PermissionScopeType();
@@ -119,7 +125,16 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(sc);
                 NSession.Flush();
             }
-
+            foreach (var item in fos)
+            {
+                sc = new PermissionScopeType();
+                sc.ResourceCategory = ResourceCategoryEnum.User.ToString();
+                sc.ResourceId = uid;
+                sc.TargetCategory = TargetCategoryEnum.Account.ToString();
+                sc.TargetId = Convert.ToInt32(item);
+                NSession.Save(sc);
+                NSession.Flush();
+            }
             return Json(new { IsSuccess = "true" });
         }
 
@@ -192,10 +207,10 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows,string sort,string order,string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string orderby = " order by Id desc ";
-            string where="";
+            string where = "";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
@@ -208,11 +223,11 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<UserType> objList = NSession.CreateQuery("from UserType "+ where + orderby)
+            IList<UserType> objList = NSession.CreateQuery("from UserType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<UserType>();
-            object count = NSession.CreateQuery("select count(Id) from UserType "+ where).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from UserType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 

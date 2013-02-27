@@ -8,9 +8,9 @@
     $(function () {
         $('#e_LogisticsMode').combobox({
             url: '@Url.Action("PruchasePlanList", "Dictionary")',
-            idField: 'FullName',
-            textField: 'FullName',
-            panelHeight: 'auto'
+            valueField: 'FullName',
+            textField: 'FullName'
+
         });
 
         //$('#e_PlanNo').val('@ViewData["No"]');

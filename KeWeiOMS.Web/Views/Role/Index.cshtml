@@ -187,6 +187,13 @@
 
                 });
             }
+            function getHtml(v) {
+                return '<a href="javascript:void(0);" onclick="g_dlg(' + v + ')">权限和菜单</a>';
+            }
+            function g_dlg(id) {
+                window.open('@Url.Action("GetCompetence", "Role")/' + id);
+
+             }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -194,7 +201,8 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-
+                    <th field="Id" width="100" formatter="getHtml">操作
+                    </th>
                     <th field="OrganizeId" width="100" sortable="true">组织机构主键
                     </th>
 

@@ -220,6 +220,7 @@ left join ReturnAddress R On r.Id=" + r;
         public ContentResult PrintData()
         {
             object obj = Session["data"];
+            //Session["data"] = null;
             return Content(obj.ToString(), "text/xml");
         }
 

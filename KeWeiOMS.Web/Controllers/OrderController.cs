@@ -255,7 +255,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 key = "and ScanningBy= '" + key + "' ";
             }
-            string sql = "select OrderNo,Weight,ScanningBy,trackCode,ScanningOn,LogisticMode,Country from Orders where {0}  ScanningOn between '{1}' and '{2}'  {3}";
+            string sql = "select OrderNo,Weight,ScanningBy,trackCode,ScanningOn,LogisticMode,Country from Orders where Status in ('已发货','已完成') and {0}  ScanningOn between '{1}' and '{2}' {3} ";
             sql = string.Format(sql, u, st.ToString("yyyy/MM/dd HH:mm:ss"), et.ToString("yyyy/MM/dd HH:mm:ss"), key);
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
@@ -608,14 +608,26 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     string html = @"  <table width='100%' class='dataTable'>
                                                         <tr class='dataTableHead'>
-                                                            <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td><td>名称</td><td>描述</td>
+                                                            <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td><td>扫描次数</td>
                                                         </tr>";
-                    string html2 = @"<tr style='font-weight:bold; font-size:30px;'><td><img width='220px' src='/imgs/pic/{0}/1.jpg' /></td><td>{0}*{1}</td><td>{4}</td><td>{2}</td><td>{3}</td></tr>";
+                    string html2 = @"<tr style='font-weight:bold; font-size:30px;' name='tr_{0}' code='{3}' qty='{1}' cqty='{4}'><td><img width='220px' src='/imgs/pic/{0}/1.jpg' /></td><td>{0}*{1}</td><td>{2}</td><td><span><span id='r_{3}' style='color:red'>{4}</span>/<span style='color:green'>{1}</span></td></tr>";
                     order.Products =
                         NSession.CreateQuery("from OrderProductType where OId=" + order.Id).List<OrderProductType>();
                     foreach (var p in order.Products)
                     {
-                        html += string.Format(html2, p.SKU, p.Qty, p.Title, p.Remark, p.Standard);
+                        IList<ProductType> products = NSession.CreateQuery("from ProductType where SKU=:p").SetString("p", p.SKU).SetMaxResults(1).List<ProductType>();
+                        if (products.Count > 0)
+                        {
+                            if (products[0].IsScan == 1)
+                            {
+                                html += string.Format(html2, p.SKU, p.Qty, p.Standard, p.Id, 0);
+                            }
+                            else
+                            {
+                                html += string.Format(html2, p.SKU, p.Qty, p.Standard, p.Id, p.Qty);
+                            }
+                        }
+
                     }
                     html += "</table>";
                     return Json(new { IsSuccess = true, Result = html });
@@ -625,7 +637,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
-        public JsonResult OutStockByPei(string p1, string p2, string o)
+        public JsonResult OutStockByPei(string p1, string p2, string o, string skuCode)
         {
             List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
             if (orders.Count > 0)
@@ -639,6 +651,8 @@ namespace KeWeiOMS.Web.Controllers
                     order.Status = OrderStatusEnum.待包装.ToString();
                     NSession.Update(order);
                     NSession.Flush();
+                    if (skuCode != "")
+                        NSession.CreateQuery("update SKUCodeType set IsOut=1 where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
                     string html = "订单：" + order.OrderNo + " 配货完成！";
                     return Json(new { IsSuccess = true, Result = html });
                 }

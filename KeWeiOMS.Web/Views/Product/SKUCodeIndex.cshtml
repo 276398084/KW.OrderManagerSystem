@@ -1,0 +1,85 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.SKUCodeType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("SKUCodeList", "Product")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
+        });
+
+        //删除
+        function del() {
+            alert("不开放");
+            return;
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "SKUCode")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="Code" width="100">Code
+                    </th>
+
+                    <th field="SKU" width="100">SKU
+                    </th>
+                    <th field="IsOut" width="100" formatter="getTrue">是否出库
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+          
+        </div>
+        <div id="mm" style="width: 120px">
+            <
+            <div data-options="name:'Code'">Code</div>
+            <div data-options="name:'SKU'">SKU</div>
+
+        </div>
+     
+
+    </div>
+</body>

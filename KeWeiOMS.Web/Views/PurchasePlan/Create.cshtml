@@ -8,18 +8,15 @@
     $(function () {
         $('#c_LogisticsMode').combobox({
             url: '@Url.Action("PruchasePlanList", "Dictionary")',
-            idField: 'FullName',
-            textField: 'FullName',
-            panelHeight: 'auto'
+            valueField: 'FullName',
+            textField: 'FullName'
         });
 
         $('#c_PlanNo').val('@ViewData["No"]');
 
         $('#c_BuyOn').datebox();
 
-
         $('#c_SendOn').datebox();
-
 
         $('#c_ReceiveOn').datebox();
 

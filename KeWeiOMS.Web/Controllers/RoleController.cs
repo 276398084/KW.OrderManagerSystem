@@ -22,6 +22,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult GetCompetence(string id)
+        {
+            ViewData["uid"] = id;
+            return View();
+        }
+
         [HttpPost]
         public JsonResult Create(RoleType obj)
         {
@@ -106,7 +112,9 @@ namespace KeWeiOMS.Web.Controllers
             return Json(objList);
         }
 
-        public JsonResult List(int page, int rows,string sort,string order,string search)
+
+
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string orderby = " order by Id desc ";
             string where = "";
@@ -114,7 +122,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 orderby = " order by " + sort + " " + order;
             }
-            if(!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
@@ -122,12 +130,45 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<RoleType> objList = NSession.CreateQuery("from RoleType"+where+orderby)
+            IList<RoleType> objList = NSession.CreateQuery("from RoleType" + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<RoleType>();
-            object count = NSession.CreateQuery("select count(Id) from RoleType "+where).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from RoleType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+
+        public ActionResult SetMP(string m, string p, int uid)
+        {
+            string[] ms = m.Split(',');
+            string[] ps = p.Split(',');
+
+            PermissionScopeType sc = null;
+            NSession.CreateQuery("delete from PermissionScopeType where ResourceCategory='" +
+                                  ResourceCategoryEnum.Role.ToString() + "' and ResourceId=" + uid).ExecuteUpdate();
+            foreach (var item in ms)
+            {
+                sc = new PermissionScopeType();
+                sc.ResourceCategory = ResourceCategoryEnum.Role.ToString();
+                sc.ResourceId = uid;
+                sc.TargetCategory = TargetCategoryEnum.Module.ToString();
+                sc.TargetId = Convert.ToInt32(item);
+                NSession.Save(sc);
+                NSession.Flush();
+            }
+
+            foreach (var item in ms)
+            {
+                sc = new PermissionScopeType();
+                sc.ResourceCategory = ResourceCategoryEnum.Role.ToString();
+                sc.ResourceId = uid;
+                sc.TargetCategory = TargetCategoryEnum.PermissionItem.ToString();
+                sc.TargetId = Convert.ToInt32(item);
+                NSession.Save(sc);
+                NSession.Flush();
+            }
+            return Json(new { IsSuccess = "true" });
         }
 
     }

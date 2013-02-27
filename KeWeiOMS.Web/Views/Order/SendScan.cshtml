@@ -54,9 +54,10 @@
                                                         <b>选项</b></h2>
                                                 </td>
                                                 <td width="78%">仓库:<input type="text" id="ww" />
-                                                    物流方式<input type="text" id="ll" />
-                                                    强制<input type="checkbox" id="ckQ" />
-                                                    打印报关单<input type="checkbox" id="ckBGD" />
+                                                    物流方式<input type="text" id="ll" />&nbsp;&nbsp;
+                                                    强制<input type="checkbox" id="ckQ" />&nbsp;&nbsp;
+                                                    打印报关单<input type="checkbox" id="ckBGD" />&nbsp;&nbsp;
+                                                    电子称<input type="checkbox" id="ckCheng" checked="checked" />
                                                 </td>
                                             </tr>
                                             <tr id="tr_ID">
@@ -131,6 +132,9 @@
                 getOrder(txt.value);
             }
             else if (progress == 1) {
+                inputWeight(txt.value);
+            }
+            else if (progress == 2) {
                 OutStock(txt.value);
             }
             txt.value = "";
@@ -139,19 +143,38 @@
         return true;
     }
 
+    function inputWeight(w) {
+        if (isNaN(w)) {
+            ShowMessage(null, "请重新输入重量，重量为数字", false);
+        } else {
+            progress = 2;
+            zl = w;
+            ShowMessage(null, "请输入跟踪号", true);
+        }
+
+    }
+
     function getOrder(str) {
-        var tc = document.getElementById('tc');
-        tc.ReadCheng();
-        zl = tc.Value;
+
         jQuery.ajax({
             url: "/Order/GetOrderBySend/",
             type: "post",
             data: "o=" + str,
             success: function (msg) {
                 if (msg.IsSuccess) {
-                    progress = 1;
-                    o = str;
-                    ShowMessage(msg.Result, "请输入追踪码", true);
+                    if ($("#ckCheng").attr("checked")) {
+                        progress = 2;
+                        o = str;
+
+                        ShowMessage(msg.Result, "请输入追踪码", true);
+                        var tc = document.getElementById('tc');
+                        tc.ReadCheng();
+                        zl = tc.Value;
+                    } else {
+                        progress = 1;
+                        o = str;
+                        ShowMessage(msg.Result, "请输入重量", true);
+                    }
                 } else {
                     progress = 0;
                     ShowMessage(msg.Result, "等待扫描", false);

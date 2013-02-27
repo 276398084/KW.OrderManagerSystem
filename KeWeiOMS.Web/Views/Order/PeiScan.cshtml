@@ -42,7 +42,9 @@
             width: 200,
             panelHeight: 'auto'
         });
-    })
+    });
+
+
 
 </script>
 <fieldset>
@@ -54,33 +56,24 @@
             <td colspan="4" align="left" valign="top" style="padding-top: 10px;">
                 <table cellspacing="0" cellpadding="1" bordercolor="#eeeeee" border="1" width="100%">
                     <tbody>
-                        <tr id="tr2">
+                        <tr>
                             <td width="" colspan="2">
-                                <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描<br />
-                                                                                   
-                                                                                              &nbsp;</span></font>
+                                <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描</span></font>
                             </td>
                         </tr>
-                        <tr id="tr4">
+                        <tr>
                             <td colspan="2">
                                 <span id="spanInfo"></span>
                             </td>
                         </tr>
                         <tr>
-                            <td height="26" align="right">
-                                <h2>配货人</h2>
-                            </td>
-                            <td width="280">
-                                <input id="cc" type="text" /></td>
-                        </tr>
-                        <tr>
-                            <td height="26" align="right">
-                                <h2>检验人</h2>
-                            </td>
-                            <td width="280">
+                            <td height="26" align="right"></td>
+                            <td>配货人:
+                                <input id="cc" type="text" />&nbsp;&nbsp;&nbsp;检验人:
                                 <input id="ee" type="text" /></td>
                         </tr>
-                        <tr id="tr_ID">
+
+                        <tr>
                             <td height="25" width="22%">
                                 <h2>
                                     <b>扫描扫描</b></h2>
@@ -113,11 +106,15 @@
             keynum = e.which;
         }
         if (keynum == 13) {
+
             if (txt.value == "") { Reset(); }
             if (progress == 0) {
                 getOrder(txt.value);
             }
             else if (progress == 1) {
+                getSKU(txt.value);
+            }
+            else if (progress == 2) {
                 OutStock(txt.value);
             }
             txt.value = "";
@@ -135,17 +132,24 @@
                 if (msg.IsSuccess) {
                     progress = 1;
                     oldstr = str;
-                    ShowMessage(msg.Result, "如检验无误，请在一次扫描包裹号，进行出库", true);
+                    ShowMessage(msg.Result, "", true);
+                    valiOrder();
+                    if (iscon) {
+                        ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
+                        progress = 2;
+                    }
+                    else {
+                        ShowMessage(null, "请扫描产品条码", true);
+                    }
                 } else {
                     progress = 0;
                     oldstr = "";
                     ShowMessage(msg.Result, "等待扫描", true);
-
                 }
             }
         });
     }
-    
+
     function OutStock(str) {
         var p2 = $("#ee").combobox("getValue");
         var p1 = $("#cc").combobox("getValue");
@@ -153,13 +157,15 @@
             jQuery.ajax({
                 url: "/Order/OutStockByPei/",
                 type: "post",
-                data: "o=" + str + "&p1=" + p1 + "&p2=" + p2,
+                data: "o=" + str + "&p1=" + p1 + "&p2=" + p2 + "&skuCode=" + skuCode.join(','),
                 success: function (msg) {
                     if (msg.IsSuccess) {
+
                         progress = 0;
                         oldstr = "";
-                        Player2.controls.play();
+
                         ShowMessage(msg.Result, "等待扫描", true);
+                        Player2.controls.play();
                     } else {
                         progress = 0;
                         oldstr = "";
@@ -170,7 +176,6 @@
             });
         } else {
             ShowMessage(null, "确认的的编码不正确", false);
-
         }
     }
 
@@ -193,6 +198,85 @@
         else {
             spanInfo.style.color = "Red";
         }
+    }
+    var skuCode = [];
+    var code = "";
+    var iscon = true;
+
+    function getSKU(c) {
+        jQuery.ajax({
+            url: "/Product/GetSKUByCode/",
+            type: "post",
+            data: "code=" + c,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    progress = 1;
+                    code = c;
+                    setSKU(msg.Result);
+                } else {
+                    progress = 1;
+                    ShowMessage(null, "错误：" + msg.Result, false);
+                }
+            }
+        });
+    }
+
+    function setSKU(sku) {
+
+        if ($("tr[name='tr_" + sku + "']").length == 0) {
+            ShowMessage(null, "条码不符！请输入正确的条码", true);
+            code = "";
+            return;
+        }
+        for (var i = 0; i < skuCode.length; i++) {
+            if (skuCode[i] == code) {
+ 
+                ShowMessage(null, "这个条码已经在这次配货中扫描了！", true);
+                return;
+            }
+        }
+        $("tr[name='tr_" + sku + "']").each(function () {
+            var qty = parseInt($(this).attr("qty"));
+            var cqty = parseInt($(this).attr("cqty"));
+            var c = $(this).attr("code");
+            if (qty > cqty) {
+
+                cqty = parseInt(cqty) + 1;
+                $(this).attr("cqty", cqty);
+                skuCode.push(code);
+                $("#r_" + c).html(cqty);
+                // skuCode.add(code);
+                //检查是不是所有的条码都好了
+                iscon = true;
+                valiOrder();
+                if (iscon) {
+                    progress = 2;
+
+                    ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
+                }
+                else {
+
+                    ShowMessage(null, "产品 " + sku + " 数量加1,请继续扫描条码", true);
+                }
+
+                return false;
+            }
+        });
+
+    }
+
+    function valiOrder() {
+        iscon = true;
+        $("[name^='tr_']").each(function () {
+            var a = $(this).attr("qty");
+
+            var b = $(this).attr("cqty");
+
+            if (a != b) {
+                iscon = false;
+                return false;
+            }
+        });
     }
 
 </script>

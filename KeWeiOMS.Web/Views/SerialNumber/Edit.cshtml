@@ -5,42 +5,42 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-	
+
     });
 </script>
 @using (Html.BeginForm("Edit", "SerialNumber", FormMethod.Post, new { id = "e_form" }))
 {
-<fieldset>
-<table class="editForm">
-	<tr>
-@*		<td>
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                @*		<td>
             @Html.LabelFor(model => model.Id,"主键标识:")
 		</td>*@
-		<td style="display:none">
-            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
-		</td>
-	</tr>
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.Id, new { @id = "e_Id" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Code,"代码:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Code,new{@id="e_Code"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Code, "代码:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Code, new { @id = "e_Code" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.BeginNo,"起始:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.BeginNo,new{@id="e_BeginNo"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.BeginNo, "起始:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.BeginNo, new { @id = "e_BeginNo" })
+                </td>
+            </tr>
 
 
-    
-</table>
-</fieldset>
+
+        </table>
+    </fieldset>
 }

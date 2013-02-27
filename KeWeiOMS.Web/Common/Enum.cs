@@ -14,7 +14,7 @@ namespace KeWeiOMS.Web
         待发货 = 4,
         已发货 = 5,
         已完成 = 6,
-        作废订单=7
+        作废订单 = 7
     }
 
     public enum ProductStatusEnum
@@ -29,12 +29,12 @@ namespace KeWeiOMS.Web
 
     public enum PlatformEnum
     {
-        SMT,
-        Ebay,
-        Amazon,
-        B2C,
-        Gmarket,
-        LT
+        SMT = 9999998,
+        Ebay = 9999997,
+        Amazon = 9999996,
+        B2C = 9999995,
+        Gmarket = 9999994,
+        LT = 9999993
     }
 
     public enum ResourceCategoryEnum
@@ -46,7 +46,8 @@ namespace KeWeiOMS.Web
     public enum TargetCategoryEnum
     {
         Module,
-        PermissionItem
+        PermissionItem,
+        Account
     }
 
     public enum PrintCategoryEnum

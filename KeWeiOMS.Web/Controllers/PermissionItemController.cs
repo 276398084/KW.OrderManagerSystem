@@ -158,8 +158,6 @@ namespace KeWeiOMS.Web.Controllers
                 List<PermissionItemType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
                 item.children = fooList;
                 List<SystemTree> tree2 = ConvertToTree(fooList, scopeList);
-
-
                 if (scopeList.FindIndex(p => p.TargetId == item.Id) >= 0)
                 {
                     root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2, @checked = true });

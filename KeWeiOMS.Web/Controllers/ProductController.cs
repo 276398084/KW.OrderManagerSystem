@@ -23,6 +23,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult SKUCodeIndex()
+        {
+            return View();
+        }
+
         public ActionResult ImportPic()
         {
             return View();
@@ -52,6 +57,12 @@ namespace KeWeiOMS.Web.Controllers
                 p.High = Convert.ToInt16(dt.Rows[i]["高"]);
                 p.Location = dt.Rows[i]["库位"].ToString();
                 p.OldSKU = dt.Rows[i]["旧SKU"].ToString();
+                p.HasBattery = Convert.ToInt32(dt.Rows[i]["电池"].ToString());
+                p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
+                p.IsLiquid = Convert.ToInt32(dt.Rows[i]["液体"].ToString());
+                p.PackCoefficient = Convert.ToInt32(dt.Rows[i]["包装系数"].ToString());
+                p.Manager = dt.Rows[i]["管理人"].ToString();
+
                 NSession.SaveOrUpdate(p);
                 //
                 //在仓库中添加产品库存
@@ -146,7 +157,6 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(ProductType obj)
         {
-
             try
             {
                 NSession.Update(obj);
@@ -163,7 +173,6 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
             try
             {
                 ProductType obj = GetById(id);
@@ -178,14 +187,42 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult ListQ(string q)
         {
-
-
             IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU like '%" + q + "%'")
                 .SetFirstResult(0)
                 .SetMaxResults(20)
                 .List<ProductType>();
 
             return Json(new { total = objList.Count, rows = objList });
+        }
+
+
+        public ActionResult SKUScan()
+        {
+            return View();
+        }
+
+        public JsonResult SKUCodeList(int page, int rows, string sort, string order, string search)
+        {
+            string where = "";
+            string orderby = " order by Id desc ";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<SKUCodeType> objList = NSession.CreateQuery("from SKUCodeType " + where + orderby)
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows)
+                .List<SKUCodeType>();
+            object count = NSession.CreateQuery("select count(Id) from SKUCodeType " + where).UniqueResult();
+            return Json(new { total = count, rows = objList });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
@@ -196,7 +233,6 @@ namespace KeWeiOMS.Web.Controllers
             {
                 orderby = " order by " + sort + " " + order;
             }
-
             if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
@@ -205,13 +241,11 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-
             IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<ProductType>();
-
-            object count = NSession.CreateQuery("select count(Id) from ProductType " + where + orderby).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from ProductType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
@@ -226,6 +260,54 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = "true" });
             }
+        }
+
+        public ActionResult SetSKUCode(int code, string sku)
+        {
+            object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
+            if (Convert.ToInt32(count) > 0)
+            {
+                object count1 =
+                    NSession.CreateQuery("select count(Id) from SKUCodeType where Code=:p").SetInt32("p", code).
+                        UniqueResult();
+                if (Convert.ToInt32(count1) == 0)
+                {
+                    SKUCodeType skuCode = new SKUCodeType { Code = code, SKU = sku, IsNew = 0, IsOut = 0 };
+                    NSession.Save(skuCode);
+                    NSession.Flush();
+                    return Json(new { IsSuccess = true, Result = "添加成功！" });
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Result = "这个条码已经添加！" });
+                }
+
+            }
+            else
+            {
+                return Json(new { IsSuccess = false, Result = "没有这个产品！" });
+            }
+
+        }
+        public ActionResult GetSKUByCode(string code)
+        {
+            IList<SKUCodeType> list =
+                 NSession.CreateQuery("from SKUCodeType where Code=:p").SetString("p", code).SetMaxResults(1).List
+                     <SKUCodeType>();
+            if (list.Count > 0)
+            {
+                SKUCodeType sku = list[0];
+                if (sku.IsOut == 0)
+                {
+                    return Json(new { IsSuccess = true, Result = sku.SKU });
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Result = "当前产品已经出库过了！" });
+                }
+            }
+            return Json(new { IsSuccess = false, Result = "没有找到这个产品！" });
+
         }
     }
 }

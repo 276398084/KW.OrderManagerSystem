@@ -1,0 +1,197 @@
+﻿@model KeWeiOMS.Domain.PlanDaoType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_BuyOn').datebox();
+
+
+        $('#e_SendOn').datebox();
+
+        $('#e_CheckBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#e_ValiBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "PlanDao", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PlanNo,"采购计划编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PlanNo,new{@id="e_PlanNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"采购SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"产品名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="e_Title"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyOn,"采购时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyOn,new{@id="e_BuyOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SendOn,"发货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticMode,"物流:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticMode,new{@id="e_LogisticMode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TrackCode,"追踪号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TrackCode,new{@id="e_TrackCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PlanQty,"计划中采购数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PlanQty,new{@id="e_PlanQty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RealQty,"实际到货数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RealQty,new{@id="e_RealQty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Suppliers,"供货商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Suppliers,new{@id="e_Suppliers"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"产品金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"到货状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CheckBy,"清点人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CheckBy,new{@id="e_CheckBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PassRate,"合格率:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PassRate,new{@id="e_PassRate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ValiBy,"产品检验人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ValiBy,new{@id="e_ValiBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PlanMemo,"采购备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PlanMemo,new{@id="e_PlanMemo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"到货备注:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Memo,new{@id="e_Memo"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

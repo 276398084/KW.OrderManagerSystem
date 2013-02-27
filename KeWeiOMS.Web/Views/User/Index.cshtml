@@ -1,4 +1,4 @@
-@model IEnumerable<KeWeiOMS.Domain.UserType>
+﻿@model IEnumerable<KeWeiOMS.Domain.UserType>
 @{
     ViewBag.Title = "Index";
 }
@@ -28,24 +28,11 @@
         }
 
         function g_dlg(id) {
-            var url_str = '@Url.Action("GetCompetence", "User")/' + id;
-            uid = id;
-            showdlg(url_str, 'g_dlg', SetUser)
+            window.open('@Url.Action("GetCompetence", "User")/' + id);
+            
         }
         var uid = "";
-        function SetUser() {
-            var m = getChecked('tree1');
-            var p = getChecked('tree2');
-            alert("2");
-            $.ajax({
-                type: "POST",
-                url: "/User/SetMP/",
-                data: "uid=" + uid + "&m=" + m + "&p=" + p,
-                success: function (msg) {
-                    alert("已经保存");
-                }
-            });
-        }
+    
 
         //异步新建提交
         function ajaxAdd() {
@@ -88,7 +75,7 @@
         }
 
         function getHtml(v) {
-            return '<a href="javascript:void(0);" onclick="g_dlg(' + v + ')">权限和菜单</a>'
+            return '<a href="javascript:void(0);" onclick="g_dlg(' + v + ')">权限和菜单</a>';
         }
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";

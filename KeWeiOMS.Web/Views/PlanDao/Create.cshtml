@@ -1,0 +1,188 @@
+﻿@model KeWeiOMS.Domain.PlanDaoType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_ValiBy').combobox({
+            url: '/User/QList/' + Examiner,
+            valueField: 'Id',
+            textField: 'Realname',
+            required: true,
+            width: 120,
+            panelHeight: 'auto'
+        });
+        $('#c_CheckBy').combobox({
+            url: '/User/QList/' + Examiner,
+            valueField: 'Id',
+            textField: 'Realname',
+            required: true,
+            width: 120,
+            panelHeight: 'auto'
+        });
+        $('#c_PassRate').numberbox({
+            min: 0,
+            max: 100
+        });
+        $('#c_RealQty').numberbox({
+            min: 0
+        });
+        $('#c_Status').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            editable: false,
+            data: [{ id: "已收到", text: "已收到" }, { id: "部分到货", text: "部分到货" }, { id: "异常", text: "异常" }]
+        });
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "PlanDao", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <legend>采购到货</legend>
+        @{
+    var plan = ViewData["plan"] as KeWeiOMS.Domain.PurchasePlanType;
+            <table class="editForm">
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PlanNo, "采购计划编号:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="PlanNo" value="@plan.PlanNo"/>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.SKU, "SKU:")
+
+                    </td>
+                    <td>
+                        <input  name="SKU" value="@plan.SKU"/>
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Title, "产品名称:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="Title" value="@plan.ProductName"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.BuyOn, "采购时间:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="BuyOn" value="@plan.BuyOn"/>
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.SendOn, "发货时间:")
+                    </td>
+                    <td>
+                        <input readonly="readonly"  value="@plan.SendOn"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.LogisticMode, "物流:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="LogisticsMode" value="@plan.LogisticsMode"/>
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.TrackCode, "追踪号:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="TrackCode" value="@plan.TrackCode"/>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PlanQty, "数量:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="PlanQty" id="c_PlanQty" value="@plan.Qty"/>
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Price, "金额:")
+                    </td>
+                    <td>
+                        <input readonly="readonly" name="Price" value="@plan.Price"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PlanMemo, "采购备注:")
+                    </td>
+                    <td colspan="3">
+
+                        <textarea style="width: 482px; height: 35px;" readonly="readonly" name="PlanMemo">@plan.Memo</textarea>
+                    </td>
+                </tr>
+
+            </table>
+        }
+
+    </fieldset>
+    <script type="text/javascript">
+        function alldao() {
+
+            $('#c_RealQty').numberbox("setValue", $('#c_PlanQty').val());
+            $('#c_Status').combobox("setValue", "已收到");
+        }
+    </script>
+    <fieldset>
+        <legend>到货信息</legend>
+        <table>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.RealQty, "实际到货数量:")
+                </td>
+                <td colspan="3">
+                    @Html.TextBoxFor(model => model.RealQty, new { @id = "c_RealQty" }) <a href="javascript:void(0);" onclick="alldao()">全部到货</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Status, "到货状态:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.CheckBy, "清点人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.CheckBy, new { @id = "c_CheckBy" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.PassRate, "合格率:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PassRate, new { @id = "c_PassRate" })%
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.ValiBy, "产品检验人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ValiBy, new { @id = "c_ValiBy" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Memo, "到货备注:")
+                </td>
+                <td colspan="3">
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "c_Memo", @style = "width: 482px; height: 35px;" })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}

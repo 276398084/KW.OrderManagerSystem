@@ -191,5 +191,12 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual List<PermissionItemType> Permissions { get; set; }
 
+        /// <summary>
+        /// 账户权限
+        /// </summary>
+        public virtual List<AccountType> Accounts { get; set; }
+
+
+
     }
 }
