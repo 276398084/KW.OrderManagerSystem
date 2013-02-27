@@ -1,0 +1,127 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.PlacardType>
+@{
+    ViewBag.Title = "Index";
+}
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("ListS","Placard")',
+            height: 405,
+            border: 0,
+            noheader: true,
+            onClickRow: function (index,row) {
+                detail(row.Id);
+            },
+            columns: [[
+                    {
+                        field: 'CardType', width:60, align: "right",
+                        formatter: function (v, r, i) {
+                            var top = "";
+                            if (r.IsTop == 1) {
+                                top = "[顶]";
+                                top += '<a href="@Url.Action("Index", "Placard")"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>' + ":";
+                          }
+                          else { top = '<a href="@Url.Action("Index", "Placard")"   class="easyui-linkbutton" >' + v + '</a>' + ":"; }
+                          return top;
+                      }
+                  },
+                  {
+                      field: 'Title', width:250,
+                      formatter: function (v, r, i) {
+                          var c = "";
+                          if (r.IsTop == 1) {
+                              c = '<a href="#"   class="easyui-linkbutton"style="font-size:16px">' + v + '</a>'
+                          }
+                          else {
+                              c = '<a href="#"   class="easyui-linkbutton">' + v + '</a>'
+                          }
+                          return c;
+                      }
+                  },
+                   {
+                        field: 'CreateOn', width:40,
+                        formatter: function (v, r, i) {
+                        return daate(v);
+                        }
+                    }
+
+          ]]
+        });
+        $("#title").attr("value","");
+        $("#content").attr("value","");
+        $("#writer").attr("value","");
+        detail('@ViewData["uid"]');
+    });
+
+
+    function detail(row) {
+        var id = row;
+        $.getJSON('@Url.Action("Detail", "Placard")/' + id, function (json) {
+            $("#title").attr("value", json.Title);
+            $("#content").attr("value", json.Content);
+            $("#writer").attr("value", "发布人：" + json.CreateBy + "   日期：" + getDate(json.CreateOn));
+           
+        })
+    }
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+     function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+      }
+     function daate(value) {
+         var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+         return date.format("MM-dd");
+     }
+
+</script>
+<body class="easyui-layout">
+	<div data-options="region:'north',border:false" style="height:70px;background:#B3DFDA;padding:10px;font-size:xx-large">公司公告信息</div>
+	<div data-options="region:'west',title:'公告概要'" style="width:400px;padding:10px;">
+        <table id="dg" toolbar="#toolbar"  class="easyui-datagrid" singleSelect="true" style="height:405px">  
+		</table>
+	</div>
+	<div data-options="region:'south',border:false" style="height:50px;background:#A9FACD;padding:5px;font-size:10px;text-align:center">Copyright © 1999-2019 Feidu All Rights Reserved<br><a href='Http://www.gamesalor.com' target="_blank">www.gamesalor.com</a></div>
+	<div id="pal" data-options="region:'center',title:'公告详细'">
+        <div style="width:90%;text-align:center;font-size:large;padding:10px;font:bold">
+            <input id="title" style="border:0;width:90%;text-align:center;font-size:large;font:bold" readonly="readonly" />
+        </div>
+        <div   style="width:90%;text-align:center;padding:0px 40px;">
+            <input id="writer" style="border:0;width:90%;text-align:center;" readonly="readonly"/>
+         </div>
+        <div  style="width:80%;padding:20px 60px;font-size:larger;height:300px">
+            <textArea id="content" style="border:0;width:100%;font-size:larger;height:320px;resize:none" readonly="readonly"></textArea>
+        </div>
+</div>
+
+       <div id="toolbar">
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div> 
+	<div id="mm" style="width: 100px">
+            <div data-options="name:'CardType'">类别</div>
+            <div data-options="name:'Title'">标题</div>
+            <div data-options="name:'Content'">内容</div>
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+
+</body>

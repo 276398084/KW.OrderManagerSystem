@@ -135,6 +135,14 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(objList, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetPlacard()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Placard.Tag")
+                .List<DictionaryType>();
+
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

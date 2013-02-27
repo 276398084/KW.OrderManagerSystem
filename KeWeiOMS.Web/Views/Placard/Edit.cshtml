@@ -1,0 +1,104 @@
+﻿@model KeWeiOMS.Domain.PlacardType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+	        $('#e_CreateOn').datebox();
+	        $('#e_Title').validatebox({ required: true });
+	        $('#e_Content').validatebox({ required: true });
+        $('#e_CardType').combobox({
+            url: '@Url.Action("GetPlacard","Dictionary")',
+                    required: true,
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true
+                });
+        $('#e_IsTop').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            data: [{ id: '0', text: "否" }, { id: '1', text: "是" }]
+        });
+    });
+</script>
+@using (Html.BeginForm("Edit", "Placard", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+@*		<td>
+            @Html.LabelFor(model => model.Id,"编号:")
+		</td>*@
+		<td style ="display:none">
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CardType,"类别:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CardType,new{@id="e_CardType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Title,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Title,new{@id="e_Title",@style="width:300px"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Content,new{@id="e_Content",@style="width:300px;height:180px"})
+		</td>
+	</tr>
+
+	<tr>
+@*		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建人:")
+		</td>*@
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+@*		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>*@
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsTop,"置顶:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsTop,new{@id="e_IsTop"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

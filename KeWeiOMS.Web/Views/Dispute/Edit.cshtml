@@ -34,60 +34,67 @@
             editable: false,
             data: [{ id: 0, text: "未解决" }, { id: 1, text: "已解决" }]
         });
-        $('#e_SKU').combogrid({
-            required: true,
-            panelWidth: 410,
-            mode: 'remote',
-            idField: 'SKU',
-            textField: 'SKU',
-            url: '/Product/ListQ',
-            fit: true,
-            columns: [[
-                { field: 'SKU', title: 'SKU', width: 100 },
-                { field: 'ProductName', title: 'Title', width: 200 },
-                { field: 'Standard', title: '规格', width: 100 }
-
-            ]]
-
-        })
-        $('#e_LogisticsMode').combogrid({
-            panelWidth: 360,
-
-            idField: 'LogisticsCode',
-            textField: 'LogisticsName',
-            url: '/LogisticsMode/ALLList',
-            fit: true,
-            columns: [[
-                { field: 'LogisticsName', title: '名称', width: 250 },
-                { field: 'LogisticsCode', title: '代码', width: 100 }
-
-
-            ]]
-
-        });
-
+        $('#e_DisputeCategory').combobox({
+            url: '@Url.Action("GetDisputeClass","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto'
+                });
         $('#e_GenerateOn').datebox();
         $('#e_SendOn').datebox();
         $('#e_DisputeOn').datebox({
             required: true
         });
-        $('#e_SolveOn').datebox();
+        $('#e_SolveOn').datebox({ disabled: true });
         $('#e_SolveBy').combobox({
             url: 'User/UserSrc',
             editable: true,
+            disabled: true
         });
-@*          $('#e_OrderNo').combogrid("setText", '@ViewData["OrderNo"]');
-        $('#e_SKU').combogrid("setText", '@ViewData["SKU"]');
-        $('#e_LogisticsMode').combogrid("setText", '@ViewData["LogisticsMode"]');
-      $("#e_GenerateOn").datebox("setValue", getDate('@ViewData["GenerateOn"]'));
-        $("#e_SendOn").datebox("setValue", getDate('@ViewData["SendOn"]'));*@
+        $("#e_RefundAmount").attr({
+            disabled: true
+        });
+        $('#e_Solution').combobox({
+            url: '@Url.Action("GetDisputeSolution","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true,
+            disabled: true
+        });
+        Solution($('#e_Status').combobox("getValue"));
     });
 
     function Solution(st) {
         if (st == 1) {
-            alert("gfh");
+            $('#e_Solution').combobox({
+                disabled: false
+            });
+            $('#e_SolveBy').combobox({
+                disabled: false
+            });
+            $('#e_SolveOn').datebox({
+                disabled: false
+            });
+            $("#e_RefundAmount").attr({
+                disabled: false
+            });
         }
-    }
+        else {
+            $('#e_Solution').combobox({
+                disabled: true
+            });
+            $('#e_SolveBy').combobox({
+                disabled: true
+            });
+            $('#e_SolveOn').datebox({
+                disabled: true
+            });
+            $("#e_RefundAmount").attr({
+                disabled: true
+            });
+            }
+        }
     function detail(OrderNo) {
         $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
             if (json) {
@@ -99,14 +106,14 @@
                 $("#e_Amount").attr("value", json[0].Amount);
                 $("#e_CurrencyCode").attr("value", json[0].CurrencyCode);
                 $("#e_TrackCode").attr("value", json[0].TrackCode);
-                $("#e_LogisticsMode").combogrid("setValue", json[0].LogisticMode);
+                $("#e_LogisticsMode").attr("value", json[0].LogisticMode);
 
             }
         })
         $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
             if (json) {
                 $('#e_Qty').attr("value", json[0].Qty);
-                $('#e_SKU').combogrid("setValue", json[0].SKU);
+                $('#e_SKU').attr("value", json[0].SKU);
 
             }
         })
@@ -122,6 +129,9 @@
 		</td>*@
 		<td style ="display :none">
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+    	<td style ="display :none">
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
 		</td>
 	</tr>
 
@@ -187,19 +197,20 @@
             @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn"})
 		</td>
 	</tr>
-    	<tr>
-		<td>
-            @Html.LabelFor(model => model.Amount,"金额:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount"})
-		</td>		
+    	<tr>        
         <td>
             @Html.LabelFor(model => model.CurrencyCode,"货币:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.CurrencyCode,new{@id="e_CurrencyCode"})
 		</td>
+		<td>
+            @Html.LabelFor(model => model.Amount,"金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount"})
+		</td>		
+
 	</tr>
 
     	<tr>

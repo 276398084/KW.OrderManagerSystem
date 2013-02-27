@@ -38,41 +38,7 @@
             editable: false,
             data: [{ id: 0, text: "未解决" }, { id: 1, text: "已解决" }]
         });
-        $('#c_SKU').combogrid({
-            required: true,
-            panelWidth: 410,
-            mode: 'remote',
-            idField: 'SKU',
-            textField: 'SKU',
-            //onChange: function (sku) {
-            //    SeachSKU(sku)
-            //},
-            required: true,
-            url: '/Product/ListQ',
-            fit: true,
-            columns: [[
-                { field: 'SKU', title: 'SKU', width: 100 },
-                { field: 'ProductName', title: 'Title', width: 200 },
-                { field: 'Standard', title: '规格', width: 100 }
 
-            ]]
-
-        })
-        $('#c_LogisticsMode').combogrid({
-            panelWidth: 360,
-
-            idField: 'LogisticsCode',
-            textField: 'LogisticsCode',
-            url: '/LogisticsMode/ALLList',
-            fit: true,
-            columns: [[
-                { field: 'LogisticsName', title: '名称', width: 250 },
-                { field: 'LogisticsCode', title: '代码', width: 100 }
-
-
-            ]]
-
-        });
 
 
         $('#c_GenerateOn').datebox({
@@ -84,54 +50,84 @@
         $('#c_DisputeOn').datebox({
             required: true
         });
-        $('#c_SolveOn').datebox();
+        $('#c_SolveOn').datebox({ disabled: true });
          $('#c_SolveBy').combobox({
           url: 'User/UserSrc',
           editable: true,
-
-      });
-       $('#c_DisputeCategory').combobox({
-             url: '@Url.Action("GetDisputeClass","Dictionary")',
-                    idField: 'FullName',
-                    textField: 'FullName',
-                    panelHeight: 'auto'
+          disabled: true
+         });
+         $("#c_RefundAmount").attr({
+             disabled: true
          });
         $('#c_Solution').combobox({
             url: '@Url.Action("GetDisputeSolution","Dictionary")',
-                     idField: 'FullName',
+                     valueField: 'FullName',
                      textField: 'FullName',
-                     panelHeight: 'auto'
-                 });
+                     panelHeight: 'auto',
+                     editable: true,
+                     disabled: true
+        });
+        $('#c_DisputeCategory').combobox({
+             url: '@Url.Action("GetDisputeClass","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto'
+        });
 
     });
     
     function Solution(st) {
-        if (st ==1)
-        {
-            alert("gfh");
+        if (st == 1) {
+            $('#c_Solution').combobox({
+                disabled: false
+            });
+            $('#c_SolveBy').combobox({
+                disabled: false
+            });
+            $('#c_SolveOn').datebox({
+                disabled: false
+            });
+            $("#c_RefundAmount").attr({
+                disabled: false
+            });
+        }
+        else {
+            $('#c_Solution').combobox({
+                disabled: true
+            });
+            $('#c_SolveBy').combobox({
+                disabled: true
+            });
+            $('#c_SolveOn').datebox({
+                disabled: true
+            });
+            $("#c_RefundAmount").attr({
+                disabled: true
+            });
         }
     }
-    function detail(OrderNo) {
-        $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
-            if (json) {
-                $("#c_Account").attr("value", json[0].Account);
-                $("#c_Platform").attr("value", json[0].Platform);
-                $("#c_OrderExNo").attr("value", json[0].OrderExNo);
-                $("#c_GenerateOn").datebox("setValue", getDate(json[0].GenerateOn));
-                $("#c_SendOn").datebox("setValue", getDate(json[0].ScanningOn));
-                $("#c_Amount").attr("value", json[0].Amount);
-                $("#c_CurrencyCode").attr("value", json[0].CurrencyCode);
-                $("#c_TrackCode").attr("value", json[0].TrackCode);
-                $("#c_LogisticsMode").combogrid("setValue", json[0].LogisticMode);
-                
-            }
-        })
-        $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
-            if (json) {
-                $('#c_Qty').attr("value",json[0].Qty);
-                $('#c_SKU').combogrid("setValue", json[0].SKU);
-            }
-        })
+        function detail(OrderNo) {
+            $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
+                if (json) {
+                    $("#c_Account").attr("value", json[0].Account);
+                    $("#c_Platform").attr("value", json[0].Platform);
+                    $("#c_OrderExNo").attr("value", json[0].OrderExNo);
+                    $("#c_GenerateOn").datebox("setValue", getDate(json[0].GenerateOn));
+                    $("#c_SendOn").datebox("setValue", getDate(json[0].ScanningOn));
+                    $("#c_Amount").attr("value", json[0].Amount);
+                    $("#c_CurrencyCode").attr("value", json[0].CurrencyCode);
+                    $("#c_TrackCode").attr("value", json[0].TrackCode);
+                    $("#c_LogisticsMode").attr("value", json[0].LogisticMode);
+
+                }
+            })
+            $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
+                if (json) {
+                    $('#c_Qty').attr("value", json[0].Qty);
+                    $('#c_SKU').attr("value", json[0].SKU);
+                }
+            })
+    
     }
 </script>
 
@@ -215,20 +211,21 @@
             @Html.TextBoxFor(model => model.SendOn,new{@id="c_SendOn"})
 		</td>
 	</tr>
-    	<tr>
-		<td>
-            @Html.LabelFor(model => model.Amount,"金额:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Amount,new{@id="c_Amount"})
-		</td>		
-        <td>
-            @Html.LabelFor(model => model.CurrencyCode,"货币:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="c_CurrencyCode"})
-		</td>
-	</tr>
+    	<tr>        
+            <td>
+                @Html.LabelFor(model => model.CurrencyCode,"货币:")
+		    </td>
+		    <td>
+                @Html.TextBoxFor(model => model.CurrencyCode,new{@id="c_CurrencyCode"})
+		    </td>
+		    <td>
+                @Html.LabelFor(model => model.Amount,"金额:")
+		    </td>
+		    <td>
+                @Html.TextBoxFor(model => model.Amount,new{@id="c_Amount"})
+		    </td>		
+
+	    </tr>
 
     	<tr>
 		<td>

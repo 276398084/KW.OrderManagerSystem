@@ -1,0 +1,60 @@
+﻿
+@model KeWeiOMS.Domain.PlacardType
+@{
+    ViewBag.Title = "IndexShow";
+}
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg1').datagrid({
+            border:false,
+            noheader: true,
+          url: '@Url.Action("ListQ","Placard")',
+          columns: [[
+                  {
+                      field: 'CardType', width: 60,align:"right",
+                      formatter: function (v, r, i) {
+                          var top = "";
+                          var id = r.Id;
+                          if (r.IsTop == 1) {
+                              top = "[顶]";
+                              top += '<a href="@Url.Action("ShowIndex", "Placard")/?id=' + id + '" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>' + ":";
+                          }
+                          else {
+                              top = '<a href="@Url.Action("ShowIndex", "Placard")/?id=' + id + '" target="_blank"  class="easyui-linkbutton" >' + v + '</a>' + ":";
+                          }
+                          return top;
+                      }
+                  },
+                  {
+                      field: 'Title', width: 400,
+                      formatter: function (v, r, i) {
+                          var c = "";
+                          var id = r.Id;
+                          if (r.IsTop == 1) {
+                              c = '<a href="@Url.Action("ShowIndex", "Placard")/?id='+id+'" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>'
+                          }
+                          else {
+                              c = '<a href="@Url.Action("ShowIndex", "Placard")/?id=' + id + '" target="_blank"  class="easyui-linkbutton" >' + v + '</a>'
+                          }
+                          return c;
+                      }
+                  },
+                  {
+                            field: 'CreateOn', width:90,
+                            formatter: function (v, r, i) {
+                                return daate(v);
+                             }
+                  }
+
+                ]]
+        });
+
+    });
+    function daate(value) {
+        var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+        return date.format("yyyy-MM-dd");
+    }
+</script>      
+<div align="right" style="width:550px"><a href="@Url.Action("ShowIndex", "Placard")" target="_Blank">更多公告>></a></div> 
+<table id="dg1" class="easyui-datagrid" singleSelect="true" >  
+		</table>

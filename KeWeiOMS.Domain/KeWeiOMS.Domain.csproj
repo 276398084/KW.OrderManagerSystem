@@ -78,7 +78,11 @@
     <Compile Include="Entities\PermissionItemType.cs" />
     <Compile Include="Entities\PermissionScopeType.cs" />
     <Compile Include="Entities\PermissionType.cs" />
+<<<<<<< HEAD
     <Compile Include="Entities\PlanDaoType.cs" />
+=======
+    <Compile Include="Entities\PlacardType.cs" />
+>>>>>>> kewei/ttt
     <Compile Include="Entities\PrintTemplateType.cs" />
     <Compile Include="Entities\ProductCategoryType.cs" />
     <Compile Include="Entities\ProductSKUType.cs" />
@@ -127,7 +131,11 @@
     <Compile Include="Mappings\PermissionItemTypeMap.cs" />
     <Compile Include="Mappings\PermissionScopeTypeMap.cs" />
     <Compile Include="Mappings\PermissionTypeMap.cs" />
+<<<<<<< HEAD
     <Compile Include="Mappings\PlanDaoTypeMap.cs" />
+=======
+    <Compile Include="Mappings\PlacardTypeMap.cs" />
+>>>>>>> kewei/ttt
     <Compile Include="Mappings\PrintTemplateTypeMap.cs" />
     <Compile Include="Mappings\ProductCategoryTypeMap.cs" />
     <Compile Include="Mappings\ProductSKUTypeMap.cs" />
