@@ -18,6 +18,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult IndexShow()
+        {
+            return View();
+        }
 
         public ActionResult Create()
         {
@@ -120,6 +124,17 @@ namespace KeWeiOMS.Web.Controllers
             
             object count = NSession.CreateQuery("select count(Id) from AttendType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+       //首页显示   ListToday
+        public JsonResult ListToday()
+        {
+            string where = " where CurrentDate=\'" +DateTime.Now.Date + "\' ";
+            string orderby = " order by Id desc ";
+            IList<AttendType> objList = NSession.CreateQuery("from AttendType " + where + orderby)
+                .List<AttendType>();
+
+            return Json(objList,JsonRequestBehavior.AllowGet);
         }
 
         //签到操作

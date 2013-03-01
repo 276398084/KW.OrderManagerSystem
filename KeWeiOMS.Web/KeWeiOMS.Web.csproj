@@ -1269,6 +1269,7 @@
     <Content Include="Views\Attend\Details.cshtml" />
     <Content Include="Views\Attend\Edit.cshtml" />
     <Content Include="Views\Attend\Index.cshtml" />
+    <Content Include="Views\Attend\IndexShow.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
