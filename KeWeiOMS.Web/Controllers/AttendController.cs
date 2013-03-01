@@ -106,12 +106,11 @@ namespace KeWeiOMS.Web.Controllers
 		public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where =" where  RealName=\'"+CurrentUser.Realname+"\' ";
-            string orderby = " order by Id desc ";
+            string orderby = " order by UserCode ,CurrentDate desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
             }
-
             if (!string.IsNullOrEmpty(search))
             {
                 where = GetSearch(search);
@@ -129,8 +128,8 @@ namespace KeWeiOMS.Web.Controllers
        //首页显示   ListToday
         public JsonResult ListToday()
         {
-            string where = " where CurrentDate=\'" +DateTime.Now.Date + "\' ";
-            string orderby = " order by Id desc ";
+            string where = " where CurrentDate=\'" + DateTime.Now.Date + "\' and RealName=\'" + CurrentUser.Realname + "\' ";
+            string orderby = " order by CurrentDate desc ";
             IList<AttendType> objList = NSession.CreateQuery("from AttendType " + where + orderby)
                 .List<AttendType>();
 
@@ -143,19 +142,28 @@ namespace KeWeiOMS.Web.Controllers
             string ip = GetIP();
             try
             {
-                AttendType obj = new AttendType() {CurrentDate=DateTime.Now.Date,UserId=CurrentUser.Id,UserCode=CurrentUser.Code,RealName=CurrentUser.Realname };
+                AttendType obj = new AttendType() { CurrentDate = DateTime.Now.Date, UserId = CurrentUser.Id, UserCode = CurrentUser.Code, RealName = CurrentUser.Realname };
                 IList<AttendType> list = NSession.CreateQuery("from AttendType").List<AttendType>();
-                foreach (var item in list)
-                {
-                    if (item.CurrentDate == obj.CurrentDate && item.UserId == obj.UserId)
-                    {
-                        obj = item;
-                    }
-                }
                 if (IsOK(ip))
+                {
+                    foreach (var item in list)
+                    {
+                        if (item.UserId == obj.UserId)
+                        {
+                            IList<AttendType> objList = NSession.CreateQuery("from AttendType " + " where UserId=\'" + CurrentUser.Id + "\'  order by CurrentDate desc ")
+                            .List<AttendType>();
+                            NoAttend(objList[0].CurrentDate);
+                            if (item.CurrentDate == obj.CurrentDate)
+                            {
+                                obj = item;
+                            }
+                        }
+                    }
                     obj.IP = ip;
+                }
                 else
                     return Json(new { Msg = "请使用公司网络打卡！" }, JsonRequestBehavior.AllowGet);
+
                 switch (id)  
                     {
                         case 0:
@@ -200,6 +208,16 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { Msg = "签到成功" }, JsonRequestBehavior.AllowGet);
 
+        }
+
+        public void NoAttend(DateTime LastAttend)
+        {
+            TimeSpan day = DateTime.Now.Date - LastAttend;
+            for (int i = 1; i < day.Days; i++)
+            {
+                AttendType obj = new AttendType() { CurrentDate = DateTime.Now.Date.AddDays(-i), UserId = CurrentUser.Id, UserCode = CurrentUser.Code, RealName = CurrentUser.Realname };
+                NSession.Save(obj);
+            }
         }
 
         //导出为Excel

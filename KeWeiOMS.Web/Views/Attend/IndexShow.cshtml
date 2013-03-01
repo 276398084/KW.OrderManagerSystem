@@ -5,7 +5,7 @@
 <script language="javascript" type="text/javascript">
     $(function () {
         $('#dg_attend').datagrid({
-            url: '@Url.Action("ListToday","Attend")',
+            url: '@Url.Action("ListToday","Attend")'
         });
     });
 
@@ -60,19 +60,19 @@
                 日期
             </th>
 
-            <th field="AMStart" width="75" formatter="showTime">
+            <th field="AMStart" width="80" formatter="showTime">
                 上午上班
             </th>
 
-            <th field="AMEnd" width="75" formatter="showTime">
+            <th field="AMEnd" width="80" formatter="showTime">
                 上午下班
             </th>
 
-            <th field="PMStart" width="75" formatter="showTime">
+            <th field="PMStart" width="80" formatter="showTime">
                 下午上班
             </th>
 
-            <th field="PMEnd" width="75" formatter="showTime">
+            <th field="PMEnd" width="80" formatter="showTime">
                 下午下班
             </th>
 
