@@ -441,7 +441,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult ExportOrder(string o)
         {
             
-            StringBuilder sb = new StringBuilder();
+           
             string sql = "select  * from Orders where Id in(" + o + ")";
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();

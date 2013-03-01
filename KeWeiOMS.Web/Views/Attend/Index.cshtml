@@ -43,6 +43,7 @@
     }
 
     function toExcel() {
+        var postUrl = "/Order/ExportDown/1";
         $.ajax({
             url: '@Url.Action("ToExcel", "Attend")/',
                      success: function (result) {
@@ -51,8 +52,9 @@
                              title: '提示',
                              msg: result.Msg,
                              timeout: 0,
-                             showType: 'slide'
+                             showType: 'slide',    
                          })
+                         location.href = postUrl
                      }
                  })
     }

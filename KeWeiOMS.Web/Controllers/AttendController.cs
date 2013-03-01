@@ -228,6 +228,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 signout = NSession.CreateQuery("from AttendType " + Session["ToExcel"].ToString()).List<AttendType>();
                 DataSet ds = ConvertToDataSet<AttendType>(signout);
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             }
             catch (Exception ee)
             {
@@ -291,7 +292,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         //IList转DataSet
-        public static DataSet ConvertToDataSet<T>(IList<T> list)
+        public static DataSet ConvertToDataSet<AttendType>(IList<AttendType> list)
         {
             if (list == null || list.Count <= 0)
             {
@@ -299,13 +300,13 @@ namespace KeWeiOMS.Web.Controllers
             }
 
             DataSet ds = new DataSet();
-            DataTable dt = new DataTable(typeof(T).Name);
+            DataTable dt = new DataTable(typeof(AttendType).Name);
             DataColumn column;
             DataRow row;
 
-            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(AttendType).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 
-            foreach (T t in list)
+            foreach (AttendType t in list)
             {
                 if (t == null)
                 {
