@@ -1,0 +1,116 @@
+﻿@model KeWeiOMS.Domain.AttendType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CurrentDate').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Attend", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserId,"用户Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserId,new{@id="c_UserId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserCode,"用户编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserCode,new{@id="c_UserCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.姓名,"姓名:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.姓名,new{@id="c_姓名"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrentDate,"日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrentDate,new{@id="c_CurrentDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AMStart,"上午上班:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AMStart,new{@id="c_AMStart"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AMEnd,"上午下班:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AMEnd,new{@id="c_AMEnd"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PMStart,"下午上班:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PMStart,new{@id="c_PMStart"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PMEnd,"下午下班:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PMEnd,new{@id="c_PMEnd"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IP,"IP:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IP,new{@id="c_IP"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}
