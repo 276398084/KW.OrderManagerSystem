@@ -7,11 +7,13 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
+using System.Data;
 
 namespace KeWeiOMS.Web.Controllers
 {
     public class AttendController : BaseController
     {
+
         public ViewResult Index()
         {
             return View();
@@ -99,7 +101,7 @@ namespace KeWeiOMS.Web.Controllers
 
 		public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string where = "";
+            string where =" where  RealName=\'"+CurrentUser.Realname+"\' ";
             string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
@@ -108,21 +110,19 @@ namespace KeWeiOMS.Web.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
+                where = GetSearch(search);
+                Session["ToExcel"] = where + orderby;
             }
             IList<AttendType> objList = NSession.CreateQuery("from AttendType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<AttendType>();
-
+            
             object count = NSession.CreateQuery("select count(Id) from AttendType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
+        //签到操作
         public JsonResult AttendOn(int id)
         {
             string ip = GetIP();
@@ -137,10 +137,10 @@ namespace KeWeiOMS.Web.Controllers
                         obj = item;
                     }
                 }
-                //if (IsOK(ip))
-                //    obj.IP = ip;
-                //else
-                //    return Json(new { Msg = "不会没起床吧，请使用公司网络打卡哦！" }, JsonRequestBehavior.AllowGet);
+                if (IsOK(ip))
+                    obj.IP = ip;
+                else
+                    return Json(new { Msg = "请使用公司网络打卡！" }, JsonRequestBehavior.AllowGet);
                 switch (id)  
                     {
                         case 0:
@@ -187,6 +187,23 @@ namespace KeWeiOMS.Web.Controllers
 
         }
 
+        //导出为Excel
+        public JsonResult ToExcel() 
+        {
+            IList<AttendType> signout = new List<AttendType>();
+            try
+            {
+                signout = NSession.CreateQuery("from AttendType " + Session["ToExcel"].ToString()).List<AttendType>();
+                DataSet ds = ConvertToDataSet<AttendType>(signout);
+            }
+            catch (Exception ee)
+            {
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+        }
+
+        //获取IP地址
         public string GetIP()
         {
 
@@ -199,11 +216,94 @@ namespace KeWeiOMS.Web.Controllers
              return ip;
 
         }
+
+        //IP地址进行验证
         public bool IsOK(string ip)
         {
-            string[] strs = new string[] { "115.238.181.255", "115.238.181.251", "115.238.181.252", "115.238.181.253", "115.238.181.254", "122.227.207.205", "122.227.207.202", "122.227.207.203", "122.227.207.204", "122.227.207.206" };
-            return true;
+            string[] strs = new string[] {"127.0.0.1", "115.238.181.250", "115.238.181.251", "115.238.181.252", "115.238.181.253", "115.238.181.254", "122.227.207.205", "122.227.207.202", "122.227.207.203", "122.227.207.204", "122.227.207.206" };
+            for (int i = 0; i < strs.Length; i++)
+            {
+                if (ip == strs[i])
+                    return true;
+            }
+            return false;
         }
+
+        //获取搜索条件
+        public static string GetSearch(string search)
+        {
+            string where="";
+            string startdate = search.Substring(0, search.IndexOf("&")).Replace("&", "").Replace("$", "");
+            string enddate = search.Substring(0, search.IndexOf("$")).Substring(search.IndexOf("&")).Replace("&", "").Replace("$", "");
+            string key = search.Substring(search.IndexOf("$") + 1).Replace("&", "").Replace("$", "");
+            if(!string.IsNullOrEmpty(startdate)||!string.IsNullOrEmpty(enddate)||!string.IsNullOrEmpty(key))
+            {
+                if (!string.IsNullOrEmpty(startdate))
+                    where += "CurrentDate >=\'" + Convert.ToDateTime(startdate) + "\'";
+                if (!string.IsNullOrEmpty(enddate))
+                {
+                    if (where != "")
+                        where += " and ";
+                    where += "CurrentDate <=\'" + Convert.ToDateTime(enddate) + "\'";
+                }
+                if (!string.IsNullOrEmpty(key))
+                {
+                    if (where != "")
+                        where += " and ";
+                    where += "RealName like\'%" + key + "%\'";
+                }
+                where = " where " + where;
+            }
+            return where;
+        }
+
+        //IList转DataSet
+        public static DataSet ConvertToDataSet<T>(IList<T> list)
+        {
+            if (list == null || list.Count <= 0)
+            {
+                return null;
+            }
+
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable(typeof(T).Name);
+            DataColumn column;
+            DataRow row;
+
+            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            foreach (T t in list)
+            {
+                if (t == null)
+                {
+                    continue;
+                }
+
+                row = dt.NewRow();
+
+                for (int i = 0, j = myPropertyInfo.Length; i < j; i++)
+                {
+                    System.Reflection.PropertyInfo pi = myPropertyInfo[i];
+
+                    string name = pi.Name;
+
+                    if (dt.Columns[name] == null)
+                    {
+                        column = new DataColumn(name, pi.PropertyType);
+                        dt.Columns.Add(column);
+                    }
+
+                    row[name] = pi.GetValue(t, null);
+                }
+
+                dt.Rows.Add(row);
+            }
+
+            ds.Tables.Add(dt);
+
+            return ds;
+        }
+
     }
 }
 

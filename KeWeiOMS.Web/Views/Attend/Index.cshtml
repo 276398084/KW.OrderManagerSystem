@@ -14,65 +14,6 @@
         });
     });
 
-
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","Attend")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
-        }
-
-        //编辑框
-        function e_dlg() {
-            var url = '@Url.Action("Edit","Attend")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
-            }
-        }
-
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "Attend")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "Attend")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-
-                var url = '@Url.Action("Delete", "Attend")/' + id;
-                alert(1);
-                delData(url, 'dg');
-
-            }
-        }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
-            }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-     function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                $("#dg").datagrid("load", {
-                    search: search
-                });
-     }
      function work(value) {
          $.ajax({
              url: '@Url.Action("AttendOn", "Attend")/' + value,
@@ -83,14 +24,37 @@
                          msg: result.Msg,
                          timeout: 0,
                          showType: 'slide'
-                     });
+                     })
              }
-         });
+         })
 
      }
+
     function daate(value) {
         var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
         return date.format("yyyy-MM-dd");
+    }
+
+    function doSearch() {
+        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').attr("value");
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+
+    function toExcel() {
+        $.ajax({
+            url: '@Url.Action("ToExcel", "Attend")/',
+                     success: function (result) {
+                         $('#dg').datagrid('reload');
+                         $.messager.show({
+                             title: '提示',
+                             msg: result.Msg,
+                             timeout: 0,
+                             showType: 'slide'
+                         })
+                     }
+                 })
     }
 </script>
 <div region="center">
@@ -147,8 +111,13 @@
             <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="work(0);">上午上班</a>  
             <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="work(1)">上午下班</a>  
             <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="work(2);">下午上班</a>  
-            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="work(3);">下午下班</a>  
-        </div> 
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="work(3);">下午下班</a> 
+            &nbsp;&nbsp;&nbsp;&nbsp;开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
+              关键字：<input type="text" style="width: 100px;" value="" id="txtSearch" name="txtSearch" />&nbsp;&nbsp;
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="doSearch();">查询</a>&nbsp;&nbsp;
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 </div>
