@@ -65,6 +65,8 @@
     <Compile Include="Entities\LogisticsFreightType.cs" />
     <Compile Include="Entities\LogisticsModeType.cs" />
     <Compile Include="Entities\LogisticsType.cs" />
+    <Compile Include="Entities\MachinesOldType.cs" />
+    <Compile Include="Entities\MachineType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
     <Compile Include="Entities\NewGuideType.cs" />
     <Compile Include="Entities\OrderAddressType.cs" />
@@ -79,11 +81,8 @@
     <Compile Include="Entities\PermissionItemType.cs" />
     <Compile Include="Entities\PermissionScopeType.cs" />
     <Compile Include="Entities\PermissionType.cs" />
-
     <Compile Include="Entities\PlanDaoType.cs" />
-
     <Compile Include="Entities\PlacardType.cs" />
-
     <Compile Include="Entities\PrintTemplateType.cs" />
     <Compile Include="Entities\ProductCategoryType.cs" />
     <Compile Include="Entities\ProductSKUType.cs" />
@@ -119,6 +118,8 @@
     <Compile Include="Mappings\LogisticsFreightTypeMap.cs" />
     <Compile Include="Mappings\LogisticsModeTypeMap.cs" />
     <Compile Include="Mappings\LogisticTypeMap.cs" />
+    <Compile Include="Mappings\MachinesOldTypeMap.cs" />
+    <Compile Include="Mappings\MachineTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
     <Compile Include="Mappings\NewGuideTypeMap.cs" />
     <Compile Include="Mappings\OrderAddressTypeMap.cs" />
@@ -133,11 +134,8 @@
     <Compile Include="Mappings\PermissionItemTypeMap.cs" />
     <Compile Include="Mappings\PermissionScopeTypeMap.cs" />
     <Compile Include="Mappings\PermissionTypeMap.cs" />
-
     <Compile Include="Mappings\PlanDaoTypeMap.cs" />
-
     <Compile Include="Mappings\PlacardTypeMap.cs" />
-
     <Compile Include="Mappings\PrintTemplateTypeMap.cs" />
     <Compile Include="Mappings\ProductCategoryTypeMap.cs" />
     <Compile Include="Mappings\ProductSKUTypeMap.cs" />
