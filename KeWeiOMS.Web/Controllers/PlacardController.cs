@@ -18,10 +18,9 @@ namespace KeWeiOMS.Web.Controllers
         }
         public ActionResult ShowIndex()
         {
-             
-            if(!string.IsNullOrEmpty(Request["id"]))
+            if (!string.IsNullOrEmpty(Request["id"]))
             {
-                ViewData["uid"] =int.Parse(Request["id"].ToString());
+                ViewData["uid"] = int.Parse(Request["id"].ToString());
             }
             return View();
         }
@@ -34,7 +33,6 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult IndexShow()
         {
-
             return View();
         }
 
@@ -60,7 +58,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  PlacardType GetById(int Id)
+        public PlacardType GetById(int Id)
         {
             PlacardType obj = NSession.Get<PlacardType>(Id);
             if (obj == null)
@@ -84,7 +82,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(PlacardType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -95,13 +93,12 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 PlacardType obj = GetById(id);
@@ -110,7 +107,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { errorMsg = "出错" + ee.Message });
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -134,17 +131,16 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult ListQ()
         {
-            IList<PlacardType> objList = NSession.CreateQuery("from PlacardType "+" order by IsTop desc,CreateOn desc ")
+            IList<PlacardType> objList = NSession.CreateQuery("from PlacardType " + " order by IsTop desc,CreateOn desc ")
             .SetMaxResults(8)
             .List<PlacardType>();
             return Json(objList, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult Detail(int id) 
+        public JsonResult Detail(int id)
         {
-
             PlacardType obj = GetById(id);
-            return Json(obj,JsonRequestBehavior.AllowGet);
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)

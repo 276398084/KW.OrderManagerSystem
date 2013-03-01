@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -185,6 +186,22 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = "true" });
         }
+
+        [HttpPost, ActionName("DeleteSKU")]
+        public JsonResult DeleteConfirmed2(int id)
+        {
+            try
+            {
+                SKUCodeType obj = NSession.Get<SKUCodeType>(id);
+                NSession.Delete(obj);
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true });
+        }
         public JsonResult ListQ(string q)
         {
             IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU like '%" + q + "%'")
@@ -265,6 +282,22 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult SetSKUCode(int code, string sku)
         {
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
+
+
+            SqlConnection conn = new SqlConnection("server=122.227.207.204;database=Feidu;uid=sa;pwd=`1q2w3e4r");
+            string sql = "select top 1 SKU from SkuCode where Code={0}or Code={1} ";
+            conn.Open();
+            SqlCommand sqlCommand = new SqlCommand(string.Format(sql, code, (code + 1000000)), conn);
+            object objSKU = sqlCommand.ExecuteScalar();
+            conn.Close();
+            if (objSKU != null)
+            {
+                if (objSKU.ToString().Trim().ToUpper() != sku.Trim().ToUpper())
+                {
+                    return Json(new { IsSuccess = false, Result = "这个条码对应是的" + objSKU + ",不是现在的：" + sku + "！" });
+                }
+            }
+
             if (Convert.ToInt32(count) > 0)
             {
                 object count1 =
@@ -281,7 +314,6 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     return Json(new { IsSuccess = false, Result = "这个条码已经添加！" });
                 }
-
             }
             else
             {

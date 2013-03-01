@@ -13,12 +13,9 @@
             'uploader': '/Home/SaveFile/',
             'multi': false,
             'onUploadSuccess': function (file, data, response) {
-
                 eval("data=" + data);
                 $('#fileName').val(data.SaveName);
-
                 formPost('c_form', '@Url.Action("ImportProduct", "Product")');
-
             }
         });
     });
@@ -27,7 +24,7 @@
 {
     <fieldset>
         <legend>商品批量上传</legend>
-        <table class="editForm">
+        <tble class="editForm">
             <tr>
                 <td>选择文件</td>
                 <td>
@@ -40,7 +37,7 @@
                 <td>
                     <input type="button" value="上传" onclick="$('#up_file').uploadify('upload', '*');" /></td>
             </tr>
-        </table>
+        </tble>
     </fieldset>
 }
 

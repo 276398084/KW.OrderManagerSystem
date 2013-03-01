@@ -16,13 +16,11 @@
 
         //删除
         function del() {
-            alert("不开放");
-            return;
+
             var id = getselectedRow();
             if (id != undefined) {
 
-                var url = '@Url.Action("Delete", "SKUCode")/' + id;
-                alert(1);
+                var url = '@Url.Action("DeleteSKU", "Product")/' + id;
                 delData(url, 'dg');
 
             }
@@ -71,7 +69,7 @@
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-          
+
         </div>
         <div id="mm" style="width: 120px">
             <
@@ -79,7 +77,7 @@
             <div data-options="name:'SKU'">SKU</div>
 
         </div>
-     
+
 
     </div>
 </body>

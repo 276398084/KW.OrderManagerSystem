@@ -168,7 +168,6 @@ namespace KeWeiOMS.Web.Controllers
             List<ResultInfo> results = new List<ResultInfo>();
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
             {
-
                 case PlatformEnum.Ebay:
                     results = OrderHelper.APIByEbay(account, st, et);
                     break;
@@ -198,7 +197,6 @@ namespace KeWeiOMS.Web.Controllers
                 AccountType acc = NSession.Get<AccountType>(Utilities.ToInt(obj.Account));
                 if (acc != null)
                     obj.Account = acc.AccountName;
-
                 obj.AddressId = obj.AddressInfo.Id;
                 obj.Country = obj.AddressInfo.Country;
                 obj.Status = OrderStatusEnum.待处理.ToString();
@@ -413,7 +411,6 @@ namespace KeWeiOMS.Web.Controllers
                 System.Web.HttpContext.Current.Response.AppendHeader("Content-Disposition", "attachment;filename=" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls");
                 return File(System.Text.Encoding.UTF8.GetBytes(str), "attachment;filename=" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls");
             }
-
         }
         [HttpPost]
         public ActionResult ExportZM(string o)
@@ -443,10 +440,9 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult ExportOrder(string o)
         {
-            IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
+            
             StringBuilder sb = new StringBuilder();
             string sql = "select  * from Orders where Id in(" + o + ")";
-
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
@@ -455,7 +451,22 @@ namespace KeWeiOMS.Web.Controllers
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
+        }
 
+        [HttpPost]
+        public ActionResult ExportBiLiShi(string o)
+        {
+          
+            StringBuilder sb = new StringBuilder();
+            string sql = "select  * from Orders where O.Id in(" + o + ")";
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]
@@ -652,11 +663,11 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Update(order);
                     NSession.Flush();
                     if (skuCode != "")
-                        NSession.CreateQuery("update SKUCodeType set IsOut=1 where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
+                        NSession.CreateQuery("update SKUCodeType set IsOut=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "' where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
                     string html = "订单：" + order.OrderNo + " 配货完成！";
                     return Json(new { IsSuccess = true, Result = html });
                 }
-                return Json(new { IsSuccess = false, Result = "订单状态不符！" });
+                return Json(new { IsSuccess = false, Result = "订单状态不符！现在的订单状态为：" + order.Status + " 将订单状态设置为“已处理”才能配货扫描！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }

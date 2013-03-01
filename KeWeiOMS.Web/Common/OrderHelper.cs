@@ -652,6 +652,12 @@ namespace KeWeiOMS.Web
             order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>();
             foreach (var item in order.Products)
             {
+                if (item.SKU == null)
+                {
+                    resultValue = false;
+                    order.ErrorInfo += "SKU不符";
+                    break;
+                }
                 item.SKU = item.SKU.Trim();
                 NSession.SaveOrUpdate(item);
                 NSession.Flush();
@@ -660,7 +666,6 @@ namespace KeWeiOMS.Web
                     resultValue = false;
                     order.ErrorInfo += "SKU不符";
                     break;
-
                 }
             }
             NSession.Clear();
