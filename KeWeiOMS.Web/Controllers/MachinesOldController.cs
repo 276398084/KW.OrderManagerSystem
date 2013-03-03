@@ -22,6 +22,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ViewResult GetOld(string id)
+        {
+            IList<MachinesOldType> list = NSession.CreateQuery("from MachinesOldType where MachineCode=:id").SetString("id", id).List<MachinesOldType>();
+            return View(list);
+        }
+
         [HttpPost]
         public JsonResult Create(MachinesOldType obj)
         {

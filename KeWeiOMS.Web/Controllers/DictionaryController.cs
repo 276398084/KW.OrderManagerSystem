@@ -143,6 +143,14 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(objList, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetMachine()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Machine.Status")
+                .List<DictionaryType>();
+
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

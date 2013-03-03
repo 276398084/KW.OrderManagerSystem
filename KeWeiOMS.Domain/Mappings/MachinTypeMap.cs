@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// MachinesOldTypeMap
-    /// 设备表过去使用
+    /// MachinTypeMap
+    /// 设备管理
     /// 
     /// 修改纪录
     /// 
@@ -24,15 +24,20 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class MachinesOldTypeMap : ClassMap<MachinesOldType> 
+    public class MachinTypeMap : ClassMap<MachinType> 
     {
-        public MachinesOldTypeMap()
+        public MachinTypeMap()
         {
-            Table("MachinesOld");
+            Table("Machin");
             Id(x => x.Id);
-            Map(x => x.MachineCode).Length(50);
-            Map(x => x.StatusOld).Length(50);
+            Map(x => x.Code).Length(50);
+            Map(x => x.Name).Length(50);
+            Map(x => x.Status).Length(50);
+            Map(x => x.UserName).Length(50);
+            Map(x => x.StartDate);
+            Map(x => x.EndDate);
             Map(x => x.UserNameOld).Length(50);
+            Map(x => x.StatusOld).Length(50);
             Map(x => x.StartDateOld);
             Map(x => x.EndDateOld);
         }

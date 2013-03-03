@@ -9,8 +9,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// MachinesOldType
-    /// 设备表过去使用
+    /// MachinType
+    /// 设备管理
     /// 
     /// 修改纪录
     /// 
@@ -23,7 +23,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class MachinesOldType
+    public class MachinType
     {
         /// <summary>
         /// 主键
@@ -31,27 +31,52 @@ namespace KeWeiOMS.Domain
         public virtual int Id { get; set; }
 
         /// <summary>
-        /// 设备编号
+        /// 编号
         /// </summary>
-        public virtual String MachineCode { get; set; }
+        public virtual String Code { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public virtual String Name { get; set; }
 
         /// <summary>
         /// 状态
         /// </summary>
-        public virtual String StatusOld { get; set; }
+        public virtual String Status { get; set; }
 
         /// <summary>
-        /// 使用者
+        /// 使用人
+        /// </summary>
+        public virtual String UserName { get; set; }
+
+        /// <summary>
+        /// 开始时间
+        /// </summary>
+        public virtual DateTime StartDate { get; set; }
+
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        public virtual DateTime EndDate { get; set; }
+
+        /// <summary>
+        /// 过去使用人
         /// </summary>
         public virtual String UserNameOld { get; set; }
 
         /// <summary>
-        /// 开始使用时间
+        /// 过去状态
+        /// </summary>
+        public virtual String StatusOld { get; set; }
+
+        /// <summary>
+        /// 开始时
         /// </summary>
         public virtual DateTime StartDateOld { get; set; }
 
         /// <summary>
-        /// 结束始用时间
+        /// 结束时
         /// </summary>
         public virtual DateTime EndDateOld { get; set; }
 

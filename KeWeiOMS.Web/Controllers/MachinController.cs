@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class MachineController : BaseController
+    public class MachinController : BaseController
     {
         public ViewResult Index()
         {
@@ -22,12 +22,27 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-
         [HttpPost]
-        public JsonResult Create(MachineType obj)
+        public JsonResult Create(MachinType obj)
         {
             try
             {
+                if (obj.StartDate < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.StartDate = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.EndDate < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.EndDate = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.StartDateOld < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.StartDateOld = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.EndDateOld < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.EndDateOld = Convert.ToDateTime("2000-01-01");
+                }
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -38,15 +53,14 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-
         /// <summary>
         /// 根据Id获取
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  MachineType GetById(int Id)
+        public  MachinType GetById(int Id)
         {
-            MachineType obj = NSession.Get<MachineType>(Id);
+            MachinType obj = NSession.Get<MachinType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -60,13 +74,13 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            MachineType obj = GetById(id);
+            MachinType obj = GetById(id);
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(MachineType obj)
+        public ActionResult Edit(MachinType obj)
         {
            
             try
@@ -88,7 +102,7 @@ namespace KeWeiOMS.Web.Controllers
           
             try
             {
-                MachineType obj = GetById(id);
+                MachinType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -116,12 +130,11 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<MachineType> objList = NSession.CreateQuery("from MachineType " + where + orderby)
+            IList<MachinType> objList = NSession.CreateQuery("from MachinType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
-                .List<MachineType>();
-
-            object count = NSession.CreateQuery("select count(Id) from MachineType " + where ).UniqueResult();
+                .List<MachinType>();
+            object count = NSession.CreateQuery("select count(Id) from MachinType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
