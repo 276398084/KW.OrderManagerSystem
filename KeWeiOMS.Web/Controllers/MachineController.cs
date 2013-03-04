@@ -22,12 +22,31 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-
         [HttpPost]
         public JsonResult Create(MachineType obj)
         {
             try
             {
+                if (obj.StartDate < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.StartDate = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.EndDate < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.EndDate = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.StartDateOld < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.StartDateOld = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.EndDateOld < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.EndDateOld = Convert.ToDateTime("2000-01-01");
+                }
+                if (obj.BuyDate < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.BuyDate = Convert.ToDateTime("2000-01-01");
+                }
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -37,7 +56,6 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = "true" });
         }
-
 
         /// <summary>
         /// 根据Id获取
@@ -120,7 +138,6 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<MachineType>();
-
             object count = NSession.CreateQuery("select count(Id) from MachineType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }

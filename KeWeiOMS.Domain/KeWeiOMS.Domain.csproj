@@ -65,9 +65,7 @@
     <Compile Include="Entities\LogisticsFreightType.cs" />
     <Compile Include="Entities\LogisticsModeType.cs" />
     <Compile Include="Entities\LogisticsType.cs" />
-    <Compile Include="Entities\MachinesOldType.cs" />
     <Compile Include="Entities\MachineType.cs" />
-    <Compile Include="Entities\MachinType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
     <Compile Include="Entities\NewGuideType.cs" />
     <Compile Include="Entities\OrderAddressType.cs" />
@@ -119,9 +117,7 @@
     <Compile Include="Mappings\LogisticsFreightTypeMap.cs" />
     <Compile Include="Mappings\LogisticsModeTypeMap.cs" />
     <Compile Include="Mappings\LogisticTypeMap.cs" />
-    <Compile Include="Mappings\MachinesOldTypeMap.cs" />
     <Compile Include="Mappings\MachineTypeMap.cs" />
-    <Compile Include="Mappings\MachinTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
     <Compile Include="Mappings\NewGuideTypeMap.cs" />
     <Compile Include="Mappings\OrderAddressTypeMap.cs" />

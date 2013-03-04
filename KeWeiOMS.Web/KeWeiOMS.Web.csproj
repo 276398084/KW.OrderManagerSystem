@@ -155,9 +155,7 @@
     <Compile Include="Controllers\LogisticsAreaCountryController.cs" />
     <Compile Include="Controllers\LogisticsFreightController.cs" />
     <Compile Include="Controllers\LogisticsModeController.cs" />
-    <Compile Include="Controllers\MachinController.cs" />
     <Compile Include="Controllers\MachineController.cs" />
-    <Compile Include="Controllers\MachinesOldController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NewGuideController.cs" />
     <Compile Include="Controllers\OrderAddresController.cs" />
@@ -1273,22 +1271,9 @@
     <Content Include="Views\Attend\Edit.cshtml" />
     <Content Include="Views\Attend\Index.cshtml" />
     <Content Include="Views\Attend\IndexShow.cshtml" />
-    <Content Include="Views\MachinesOld\Create.cshtml" />
-    <Content Include="Views\MachinesOld\Delete.cshtml" />
-    <Content Include="Views\MachinesOld\Details.cshtml" />
-    <Content Include="Views\MachinesOld\Edit.cshtml" />
-    <Content Include="Views\MachinesOld\Index.cshtml" />
     <Content Include="Views\Machine\Create.cshtml" />
-    <Content Include="Views\Machine\Delete.cshtml" />
-    <Content Include="Views\Machine\Details.cshtml" />
     <Content Include="Views\Machine\Edit.cshtml" />
     <Content Include="Views\Machine\Index.cshtml" />
-    <Content Include="Views\MachinesOld\GetOld.cshtml" />
-    <Content Include="Views\Machin\Create.cshtml" />
-    <Content Include="Views\Machin\Delete.cshtml" />
-    <Content Include="Views\Machin\Details.cshtml" />
-    <Content Include="Views\Machin\Edit.cshtml" />
-    <Content Include="Views\Machin\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

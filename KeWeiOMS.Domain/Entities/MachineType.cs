@@ -9,8 +9,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// MachineType
-    /// 设备表
+    /// MachinType
+    /// 设备管理
     /// 
     /// 修改纪录
     /// 
@@ -46,19 +46,54 @@ namespace KeWeiOMS.Domain
         public virtual String Status { get; set; }
 
         /// <summary>
-        /// 使用者
+        /// 使用人
         /// </summary>
         public virtual String UserName { get; set; }
 
         /// <summary>
-        /// 开始使用时间
+        /// 开始时间
         /// </summary>
         public virtual DateTime StartDate { get; set; }
 
         /// <summary>
-        /// 结束始用时间
+        /// 结束时间
         /// </summary>
         public virtual DateTime EndDate { get; set; }
+
+        /// <summary>
+        /// 过去使用人
+        /// </summary>
+        public virtual String UserNameOld { get; set; }
+
+        /// <summary>
+        /// 过去状态
+        /// </summary>
+        public virtual String StatusOld { get; set; }
+
+        /// <summary>
+        /// 开始时
+        /// </summary>
+        public virtual DateTime StartDateOld { get; set; }
+
+        /// <summary>
+        /// 结束时
+        /// </summary>
+        public virtual DateTime EndDateOld { get; set; }
+
+        /// <summary>
+        /// 购买时间
+        /// </summary>
+        public virtual DateTime BuyDate { get; set; }
+
+        /// <summary>
+        /// 购买金额
+        /// </summary>
+        public virtual String BuyMoney{ get; set; }
+
+        /// <summary>
+        /// 购买人
+        /// </summary>
+        public virtual String BuyBy{ get; set; }
 
     }
 }

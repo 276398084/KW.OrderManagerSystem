@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// MachineTypeMap
-    /// 设备表
+    /// MachinTypeMap
+    /// 设备管理
     /// 
     /// 修改纪录
     /// 
@@ -28,7 +28,7 @@ namespace KeWeiOMS.Domain
     {
         public MachineTypeMap()
         {
-            Table("Machines");
+            Table("Machine");
             Id(x => x.Id);
             Map(x => x.Code).Length(50);
             Map(x => x.Name).Length(50);
@@ -36,6 +36,13 @@ namespace KeWeiOMS.Domain
             Map(x => x.UserName).Length(50);
             Map(x => x.StartDate);
             Map(x => x.EndDate);
+            Map(x => x.UserNameOld).Length(50);
+            Map(x => x.StatusOld).Length(50);
+            Map(x => x.StartDateOld);
+            Map(x => x.EndDateOld);
+            Map(x => x.BuyDate);
+            Map(x => x.BuyMoney).Length(50);
+            Map(x => x.BuyBy).Length(50);
         }
     }
 }

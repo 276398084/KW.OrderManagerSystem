@@ -7,39 +7,60 @@
 <script type="text/javascript">
 
     $(function () {
-        $('#c_Status').combobox({
-            url: '@Url.Action("GetMachine","Dictionary")',
-                    valueField: 'FullName',
-                    textField: 'FullName',
-                    panelHeight: 'auto',
-                    editable: true
+        $("#c_Code").validatebox({
+            required: true
         });
-        $('#c_StatusOld').combobox({
-            url: '@Url.Action("GetMachine","Dictionary")',
+        $('#c_Name').combobox({
+            url: '@Url.Action("GetMachineName","Dictionary")',
                     valueField: 'FullName',
                     textField: 'FullName',
                     panelHeight: 'auto',
-                    editable: true
+                    editable: true,
+                    required: true
                 });
+        $('#c_Status').combobox({
+            url: '@Url.Action("GetMachineStatus","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true,
+                    required:true
+                });
+        $('#c_StatusOld').combobox({
+            url: '@Url.Action("GetMachineStatus","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true
+        });
         $('#c_UserName').combobox({
             url: 'User/UserSrc',
             editable: true,
         });
+
         $('#c_UserNameOld').combobox({
             url: 'User/UserSrc',
             editable: true,
         });
+		$('#c_BuyBy').combobox({
+            url: 'User/UserSrc',
+            editable: true,
+		});
+		$('#c_BuyDate').datebox();
+
         $('#c_StartDate').datebox();
+
 
         $('#c_EndDate').datebox();
 
+
         $('#c_StartDateOld').datebox();
 
+
         $('#c_EndDateOld').datebox();
+
+
     });
-    function CodeIn() {
-        $("#c_MachineCode").attr("value", $("#c_Code").attr("value"));
-    }
     
 </script>
 
@@ -61,7 +82,7 @@
             @Html.LabelFor(model => model.Code,"编号:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Code,new{@id="c_Code",onblur = "CodeIn()"})
+            @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
 		</td>
 	</tr>
 
@@ -81,71 +102,123 @@
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.StatusOld,"过去状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StatusOld,new{@id="c_StatusOld"})
+		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.UserName,"使用者:")
+            @Html.LabelFor(model => model.UserName,"使用人:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.UserName,new{@id="c_UserName"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.UserNameOld,"过去使用人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserNameOld,new{@id="c_UserNameOld"})
+		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.StartDate,"开始使用时间:")
+            @Html.LabelFor(model => model.StartDate,"开始时间:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.StartDate,new{@id="c_StartDate"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.StartDateOld,"开始时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDateOld,new{@id="c_StartDateOld"})
+		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.EndDate,"结束始用时间:")
+            @Html.LabelFor(model => model.EndDate,"结束时间:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.EndDate,new{@id="c_EndDate"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.EndDateOld,"结束时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDateOld,new{@id="c_EndDateOld"})
+		</td>
 	</tr>
+
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyMoney,"购买金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyMoney,new{@id="c_BuyMoney"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyDate,"购买日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyDate,new{@id="c_BuyDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyBy,"购买人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyBy,new{@id="c_BuyBy"})
+		</td>
+	</tr>
+
+@*		<tr>
+		<td>
+            @Html.LabelFor(model => model.UserNameOld,"过去使用人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserNameOld,new{@id="c_UserNameOld"})
+		</td>
+	</tr>
+
+<tr>
+		<td>
+            @Html.LabelFor(model => model.StatusOld,"过去状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StatusOld,new{@id="c_StatusOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartDateOld,"开始时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDateOld,new{@id="c_StartDateOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDateOld,"结束时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDateOld,new{@id="c_EndDateOld"})
+		</td>
+	</tr>*@
 
 
 </table>
 </fieldset>
-}
-@using (Html.BeginForm("Create", "MachinesOld", FormMethod.Post, new { id = "co_form" }))
-{
-    <fieldset>
-        <legend>过去使用情况</legend>
-        <table class="editForm">
-            <tr>
-               <td style="display:none">
-                       <input id="c_MachineCode" field="MachineCode"/>
-                </td>
-                <td><label>状态:</label></td>
-                <td  width="100">
-                       <input id="c_StatusOld" field="StatusOld"/>
-                    </td>
-            </tr>
-            <tr>
-                <td><label>使用者:</label></td>
-                <td  width="100">
-                       <input id="c_UserNameOld" field="UserNameOld"/>
-                    </td>
-            </tr>
-            <tr>
-                <td><label>开始时间:</label></td>
-                <td  width="100">
-                       <input id="c_StartDateOld" field="StartDateOld"/>
-                    </td>
-                </tr>
-            <tr>
-                <td><label>结束时间:</label></td>
-                <td  width="100">
-                       <input id="c_EndDateOld" field="EndDateOld"/>
-                </td>
-            </tr>
-            </table>
-    </fieldset>
 }
