@@ -23,6 +23,7 @@ namespace KeWeiOMS.Web
 
         protected virtual void OnStart()
         {
+
             initSessionBuilder();
             RegisterRoutes(RouteTable.Routes);
         }
@@ -45,6 +46,7 @@ namespace KeWeiOMS.Web
         }
         protected void Application_Start()
         {
+            NHibernateHelper.CreateDatabase();
             OnStart();
 
         }

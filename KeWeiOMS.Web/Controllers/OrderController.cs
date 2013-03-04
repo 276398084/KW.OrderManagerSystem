@@ -443,7 +443,7 @@ namespace KeWeiOMS.Web.Controllers
         {
 
             StringBuilder sb = new StringBuilder();
-            string sql = @"select  O.OrderNo,OrderExNo,CurrencyCode,Amount,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+            string sql = @"select 0 as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
             if (string.IsNullOrEmpty(o))
             {
@@ -455,11 +455,41 @@ left join Products P On OP.SKU=P.SKU ";
             }
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
-            command.CommandText = sql;
+            command.CommandText = sql + " order by O.Id asc";
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
-
-
             da.Fill(ds);
+
+            DataTable dt = ds.Tables[0];
+
+            int i = 1;
+            List<string> list = new List<string>();
+            foreach (DataRow dr in dt.Rows)
+            {
+                if (list.Contains(dr["OrderNo"].ToString().Trim()))
+                {
+                    dr[0] = 0;
+                    dr[1] = "";
+                    dr[2] = "";
+                    dr[3] = "";
+                    dr[4] = 0;
+                    dr[5] = "";
+                    dr[6] = "";
+                    dr[7] = "";
+                    dr[8] = "";
+                    dr[9] = "";
+                    dr[10] = 0;
+                    dr[11] = "";
+
+
+                }
+                else
+                {
+                    dr["记录号"] = i;
+                    i++;
+                    list.Add(dr["OrderNo"].ToString().Trim());
+                }
+            }
+
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });

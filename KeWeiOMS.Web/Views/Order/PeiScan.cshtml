@@ -3,14 +3,14 @@
 }
 <script type="text/javascript">
     if (document.all) {
-        document.write(' <OBJECT id="Player"');
+        document.write(' <OBJECT id="Player1"');
         document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
         document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
     }
     else {
-        document.write(' <OBJECT id="Player"');
+        document.write(' <OBJECT id="Player1"');
         document.write(' type="application/x-ms-wmp"');
-        document.write(' src= "/audio/ring.wav" width=0 height=0> </OBJECT>');
+        document.write(' src= "/Content/audio/ring.wav" width=0 height=0> </OBJECT>');
     }
 
     if (document.all) {
@@ -21,7 +21,7 @@
     else {
         document.write(' <OBJECT id="Player2"');
         document.write(' type="application/x-ms-wmp"');
-        document.write(' src= "/audio/security.wav" width=0 height=0> </OBJECT>');
+        document.write(' src= "/Content/audio/security.wav" width=0 height=0> </OBJECT>');
     }
 </script>
 <script type="text/javascript">
@@ -124,32 +124,32 @@
     }
 
     function getOrder(str) {
-       
-            jQuery.ajax({
-                url: "/Order/GetOrderByPei/",
-                type: "post",
-                data: "orderNo=" + str,
-                success: function (msg) {
-                    if (msg.IsSuccess) {
-                        progress = 1;
-                        oldstr = str;
-                        ShowMessage(msg.Result, "", true);
-                        valiOrder();
-                        if (iscon) {
-                            ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
-                            progress = 2;
-                        }
-                        else {
-                            ShowMessage(null, "请扫描产品条码", true);
-                        }
-                    } else {
-                        progress = 0;
-                        oldstr = "";
-                        ShowMessage(msg.Result, "等待扫描", true);
+
+        jQuery.ajax({
+            url: "/Order/GetOrderByPei/",
+            type: "post",
+            data: "orderNo=" + str,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    progress = 1;
+                    oldstr = str;
+                    ShowMessage(msg.Result, "", true);
+                    valiOrder();
+                    if (iscon) {
+                        ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
+                        progress = 2;
                     }
+                    else {
+                        ShowMessage(null, "请扫描产品条码", true);
+                    }
+                } else {
+                    progress = 0;
+                    oldstr = "";
+                    ShowMessage(msg.Result, "等待扫描", true);
                 }
-            });
-        
+            }
+        });
+
 
     }
 
@@ -219,7 +219,9 @@
                     setSKU(msg.Result);
                 } else {
                     progress = 1;
+                    
                     ShowMessage(null, "错误：" + msg.Result, false);
+                    Player1.controls.play();
                 }
             }
         });
@@ -230,12 +232,13 @@
         if ($("tr[name='tr_" + sku.toUpperCase() + "']").length == 0) {
             ShowMessage(null, "条码不符！请输入正确的条码", true);
             code = "";
+            Player1.controls.play();
             return;
         }
         for (var i = 0; i < skuCode.length; i++) {
             if (skuCode[i].toUpperCase() == code.toUpperCase()) {
-
                 ShowMessage(null, "这个条码已经在这次配货中扫描了！", true);
+                Player1.controls.play();
                 return;
             }
         }
@@ -244,7 +247,6 @@
             var cqty = parseInt($(this).attr("cqty"));
             var c = $(this).attr("code");
             if (qty > cqty) {
-
                 cqty = parseInt(cqty) + 1;
                 $(this).attr("cqty", cqty);
                 skuCode.push(code);
