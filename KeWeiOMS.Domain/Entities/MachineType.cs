@@ -38,6 +38,11 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 名称
         /// </summary>
+        public virtual String MachineClass { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
         public virtual String Name { get; set; }
 
         /// <summary>
@@ -59,26 +64,6 @@ namespace KeWeiOMS.Domain
         /// 结束时间
         /// </summary>
         public virtual DateTime EndDate { get; set; }
-
-        /// <summary>
-        /// 过去使用人
-        /// </summary>
-        public virtual String UserNameOld { get; set; }
-
-        /// <summary>
-        /// 过去状态
-        /// </summary>
-        public virtual String StatusOld { get; set; }
-
-        /// <summary>
-        /// 开始时
-        /// </summary>
-        public virtual DateTime StartDateOld { get; set; }
-
-        /// <summary>
-        /// 结束时
-        /// </summary>
-        public virtual DateTime EndDateOld { get; set; }
 
         /// <summary>
         /// 购买时间

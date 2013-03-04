@@ -35,19 +35,20 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     obj.EndDate = Convert.ToDateTime("2000-01-01");
                 }
-                if (obj.StartDateOld < Convert.ToDateTime("2000-01-01"))
-                {
-                    obj.StartDateOld = Convert.ToDateTime("2000-01-01");
-                }
-                if (obj.EndDateOld < Convert.ToDateTime("2000-01-01"))
-                {
-                    obj.EndDateOld = Convert.ToDateTime("2000-01-01");
-                }
                 if (obj.BuyDate < Convert.ToDateTime("2000-01-01"))
                 {
                     obj.BuyDate = Convert.ToDateTime("2000-01-01");
                 }
-                NSession.SaveOrUpdate(obj);
+                IList<MachineType> objList = NSession.CreateQuery("from MachineType ")
+               .List<MachineType>();
+                foreach (var item in objList)
+                {
+                    if (obj.Code == item.Code)
+                    {
+                        return Json(new { errorMsg = "编号已经存在" });
+                    }
+                }
+                NSession.Save(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -62,7 +63,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  MachineType GetById(int Id)
+        public MachineType GetById(int Id)
         {
             MachineType obj = NSession.Get<MachineType>(Id);
             if (obj == null)
@@ -86,9 +87,11 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(MachineType obj)
         {
-           
+
             try
             {
+                if (IsOk(obj.Id, obj.Code))
+                    return Json(new { errorMsg = "编号已经存在" });
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -97,13 +100,25 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
+        }
+
+        private bool IsOk(int p, string s)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from MachineType where Code='" + s + "' and Id <> " + p).UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return false;
+            }
+            return true;
+
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 MachineType obj = GetById(id);
@@ -117,7 +132,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
             string orderby = " order by Id desc ";
@@ -138,7 +153,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<MachineType>();
-            object count = NSession.CreateQuery("select count(Id) from MachineType " + where ).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from MachineType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
