@@ -1,0 +1,136 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.MachinesOldType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","MachinesOld")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","MachinesOld")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit","MachinesOld")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "MachinesOld")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "MachinesOld")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "MachinesOld")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+     function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+      }
+    function ShowAdvanced() {
+    showSrarch('@Url.Action("Search", "MachinesOld")', 's_dlg', 'dg');
+      }		
+
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="100">
+                主键
+            </th>
+
+            <th field="MachineId" width="100">
+                设备Id
+            </th>
+
+            <th field="StatusOld" width="100">
+                状态
+            </th>
+
+            <th field="UserNameOld" width="100">
+                使用者
+            </th>
+
+            <th field="StartDateOld" width="100">
+                开始使用时间
+            </th>
+
+            <th field="EndDateOld" width="100">
+                结束始用时间
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+        </div> 
+		<div id="mm" style="width: 120px">
+                        <div data-options="name:'Id'">主键</div>
+            <div data-options="name:'MachineId'">设备Id</div>
+            <div data-options="name:'StatusOld'">状态</div>
+            <div data-options="name:'UserNameOld'">使用者</div>
+            <div data-options="name:'StartDateOld'">开始使用时间</div>
+            <div data-options="name:'EndDateOld'">结束始用时间</div>
+
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

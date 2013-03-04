@@ -1,0 +1,162 @@
+﻿@model KeWeiOMS.Domain.MachinType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#c_Code").validatebox({
+            required: true
+        });
+        $("#c_Name").validatebox({
+            required: true
+        });
+
+        $('#c_Status').combobox({
+            url: '@Url.Action("GetMachine","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true,
+                    required:true
+                });
+        $('#c_StatusOld').combobox({
+            url: '@Url.Action("GetMachine","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true
+        });
+        $('#c_UserName').combobox({
+            url: 'User/UserSrc',
+            editable: true,
+        });
+        $('#c_UserNameOld').combobox({
+            url: 'User/UserSrc',
+            editable: true,
+        });
+		
+        $('#c_StartDate').datebox();
+
+
+        $('#c_EndDate').datebox();
+
+
+        $('#c_StartDateOld').datebox();
+
+
+        $('#c_EndDateOld').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "Machin", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Name,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Name,new{@id="c_Name"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserName,"使用人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="c_UserName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartDate,"开始时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDate,new{@id="c_StartDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDate,"结束时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDate,new{@id="c_EndDate"})
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserNameOld,"过去使用人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserNameOld,new{@id="c_UserNameOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StatusOld,"过去状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StatusOld,new{@id="c_StatusOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartDateOld,"开始时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDateOld,new{@id="c_StartDateOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDateOld,"结束时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDateOld,new{@id="c_EndDateOld"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

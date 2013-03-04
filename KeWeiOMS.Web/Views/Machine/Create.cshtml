@@ -1,0 +1,151 @@
+﻿@model KeWeiOMS.Domain.MachineType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_Status').combobox({
+            url: '@Url.Action("GetMachine","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true
+        });
+        $('#c_StatusOld').combobox({
+            url: '@Url.Action("GetMachine","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true
+                });
+        $('#c_UserName').combobox({
+            url: 'User/UserSrc',
+            editable: true,
+        });
+        $('#c_UserNameOld').combobox({
+            url: 'User/UserSrc',
+            editable: true,
+        });
+        $('#c_StartDate').datebox();
+
+        $('#c_EndDate').datebox();
+
+        $('#c_StartDateOld').datebox();
+
+        $('#c_EndDateOld').datebox();
+    });
+    function CodeIn() {
+        $("#c_MachineCode").attr("value", $("#c_Code").attr("value"));
+    }
+    
+</script>
+
+@using (Html.BeginForm("Create", "Machine", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>*@
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="c_Code",onblur = "CodeIn()"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Name,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Name,new{@id="c_Name"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserName,"使用者:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="c_UserName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartDate,"开始使用时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDate,new{@id="c_StartDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDate,"结束始用时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDate,new{@id="c_EndDate"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}
+@using (Html.BeginForm("Create", "MachinesOld", FormMethod.Post, new { id = "co_form" }))
+{
+    <fieldset>
+        <legend>过去使用情况</legend>
+        <table class="editForm">
+            <tr>
+               <td style="display:none">
+                       <input id="c_MachineCode" field="MachineCode"/>
+                </td>
+                <td><label>状态:</label></td>
+                <td  width="100">
+                       <input id="c_StatusOld" field="StatusOld"/>
+                    </td>
+            </tr>
+            <tr>
+                <td><label>使用者:</label></td>
+                <td  width="100">
+                       <input id="c_UserNameOld" field="UserNameOld"/>
+                    </td>
+            </tr>
+            <tr>
+                <td><label>开始时间:</label></td>
+                <td  width="100">
+                       <input id="c_StartDateOld" field="StartDateOld"/>
+                    </td>
+                </tr>
+            <tr>
+                <td><label>结束时间:</label></td>
+                <td  width="100">
+                       <input id="c_EndDateOld" field="EndDateOld"/>
+                </td>
+            </tr>
+            </table>
+    </fieldset>
+}

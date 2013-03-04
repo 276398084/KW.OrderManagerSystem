@@ -1,0 +1,88 @@
+﻿@model KeWeiOMS.Domain.MachineType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_StartDate').datebox();
+
+
+        $('#e_EndDate').datebox();
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Machine", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Code,"编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Code,new{@id="e_Code"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Name,"名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Name,new{@id="e_Name"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserName,"使用者:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="e_UserName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartDate,"开始使用时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDate,new{@id="e_StartDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDate,"结束始用时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDate,new{@id="e_EndDate"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

@@ -1,0 +1,92 @@
+﻿@model KeWeiOMS.Domain.AttendType
+@{
+    ViewBag.Title = "IndexShow";
+}
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg_attend').datagrid({
+            url: '@Url.Action("ListToday","Attend")'
+        });
+    });
+
+     function work(value) {
+         $.ajax({
+             url: '@Url.Action("AttendOn", "Attend")/' + value,
+             success: function (result) {
+                 $('#dg_attend').datagrid('reload');
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide'
+                     })
+             }
+         })
+     }
+
+    function daate(value) {
+        var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+        return date.format("yyyy-MM-dd");
+    }
+    function showTime(value) { 
+        var str = "";
+        if (value != null){
+           str = value.substring(10);
+        }
+        return str;
+    }
+    </script>
+<table id="dg_attend" class="easyui-datagrid" 
+           toolbar="#toolbarAttend" singleSelect="true" fit="true">  
+        <thead>  
+        <tr>
+@*            <th field="Id" width="100">
+                主键
+            </th>
+
+            <th field="UserId" width="100">
+                用户Id
+            </th>
+
+            <th field="UserCode" width="100">
+                用户编号
+            </th>*@
+
+            <th field="RealName" width="65">
+                姓名
+            </th>
+
+            <th field="CurrentDate" width="80" formatter="daate">
+                日期
+            </th>
+
+            <th field="AMStart" width="80" formatter="showTime">
+                上午上班
+            </th>
+
+            <th field="AMEnd" width="80" formatter="showTime">
+                上午下班
+            </th>
+
+            <th field="PMStart" width="80" formatter="showTime">
+                下午上班
+            </th>
+
+            <th field="PMEnd" width="80" formatter="showTime">
+                下午下班
+            </th>
+
+            <th field="IP" width="100">
+                IP
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbarAttend">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="work(0);">上午上班</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="work(1)">上午下班</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="work(2);">下午上班</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="work(3);">下午下班</a> 
+        </div>
