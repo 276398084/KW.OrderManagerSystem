@@ -206,5 +206,7 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String ErrorInfo { get; set; }
 
+        public virtual string rows { get; set; }
+
     }
 }

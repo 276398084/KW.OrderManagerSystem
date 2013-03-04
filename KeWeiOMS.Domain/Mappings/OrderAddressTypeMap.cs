@@ -31,17 +31,17 @@ namespace KeWeiOMS.Domain
             Table("OrderAddress");
             Id(x => x.Id);
             Map(x => x.BId);
-            Map(x => x.Addressee).Length(50);
-            Map(x => x.Tel).Length(50);
-            Map(x => x.Phone).Length(50);
-            Map(x => x.Street).Length(200);
-            Map(x => x.County).Length(50);
-            Map(x => x.City).Length(50);
-            Map(x => x.Province).Length(50);
-            Map(x => x.Country).Length(50);
-            Map(x => x.CountryCode).Length(50);
-            Map(x => x.Email).Length(50);
-            Map(x => x.PostCode).Length(50);
+            Map(x => x.Addressee).Length(100);
+            Map(x => x.Tel).Length(100);
+            Map(x => x.Phone).Length(100);
+            Map(x => x.Street).Length(400);
+            Map(x => x.County).Length(100);
+            Map(x => x.City).Length(100);
+            Map(x => x.Province).Length(100);
+            Map(x => x.Country).Length(100);
+            Map(x => x.CountryCode).Length(100);
+            Map(x => x.Email).Length(100);
+            Map(x => x.PostCode).Length(100);
         }
     }
 }

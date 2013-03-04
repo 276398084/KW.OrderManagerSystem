@@ -124,30 +124,33 @@
     }
 
     function getOrder(str) {
-        jQuery.ajax({
-            url: "/Order/GetOrderByPei/",
-            type: "post",
-            data: "orderNo=" + str,
-            success: function (msg) {
-                if (msg.IsSuccess) {
-                    progress = 1;
-                    oldstr = str;
-                    ShowMessage(msg.Result, "", true);
-                    valiOrder();
-                    if (iscon) {
-                        ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
-                        progress = 2;
+       
+            jQuery.ajax({
+                url: "/Order/GetOrderByPei/",
+                type: "post",
+                data: "orderNo=" + str,
+                success: function (msg) {
+                    if (msg.IsSuccess) {
+                        progress = 1;
+                        oldstr = str;
+                        ShowMessage(msg.Result, "", true);
+                        valiOrder();
+                        if (iscon) {
+                            ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
+                            progress = 2;
+                        }
+                        else {
+                            ShowMessage(null, "请扫描产品条码", true);
+                        }
+                    } else {
+                        progress = 0;
+                        oldstr = "";
+                        ShowMessage(msg.Result, "等待扫描", true);
                     }
-                    else {
-                        ShowMessage(null, "请扫描产品条码", true);
-                    }
-                } else {
-                    progress = 0;
-                    oldstr = "";
-                    ShowMessage(msg.Result, "等待扫描", true);
                 }
-            }
-        });
+            });
+        
+
     }
 
     function OutStock(str) {
@@ -160,7 +163,7 @@
                 data: "o=" + str + "&p1=" + p1 + "&p2=" + p2 + "&skuCode=" + skuCode.join(','),
                 success: function (msg) {
                     if (msg.IsSuccess) {
-
+                        skuCode = [];
                         progress = 0;
                         oldstr = "";
 
@@ -181,6 +184,7 @@
 
     //重置
     function Reset() {
+        skuCode = [];
         progress = 0;
         txt.value = "";
     }
@@ -223,19 +227,19 @@
 
     function setSKU(sku) {
 
-        if ($("tr[name='tr_" + sku + "']").length == 0) {
+        if ($("tr[name='tr_" + sku.toUpperCase() + "']").length == 0) {
             ShowMessage(null, "条码不符！请输入正确的条码", true);
             code = "";
             return;
         }
         for (var i = 0; i < skuCode.length; i++) {
-            if (skuCode[i] == code) {
- 
+            if (skuCode[i].toUpperCase() == code.toUpperCase()) {
+
                 ShowMessage(null, "这个条码已经在这次配货中扫描了！", true);
                 return;
             }
         }
-        $("tr[name='tr_" + sku + "']").each(function () {
+        $("tr[name='tr_" + sku.toUpperCase() + "']").each(function () {
             var qty = parseInt($(this).attr("qty"));
             var cqty = parseInt($(this).attr("cqty"));
             var c = $(this).attr("code");

@@ -99,7 +99,6 @@ namespace KeWeiOMS.Web
             {
                 string result = string.Empty;
                 int no = 0;
-
                 IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", "SKUNo").List<SerialNumberType>();
                 if (list.Count > 0)
                 {
@@ -107,7 +106,6 @@ namespace KeWeiOMS.Web
                     list[0].BeginNo = list[0].BeginNo + count;
                     NSession.Update(list[0]);
                     NSession.Flush();
-
                     return no;
                 }
                 return 0;
@@ -116,18 +114,21 @@ namespace KeWeiOMS.Web
 
         public static int CreateSKUCode(string sku, int count)
         {
-
             int code = GetSKUCode(count);
-            for (int i = code; i < code + count; i++)
+            using (var tr = NSession.BeginTransaction())
             {
-                SKUCodeType SKUCode = new SKUCodeType();
-                SKUCode.Code = i;
-                SKUCode.SKU = sku;
-                SKUCode.IsOut = 0;
-                SKUCode.IsNew = 1;
-                NSession.Save(SKUCode);
-                NSession.Flush();
+                for (int i = code; i < code + count; i++)
+                {
+                    SKUCodeType SKUCode = new SKUCodeType();
+                    SKUCode.Code = i;
+                    SKUCode.SKU = sku;
+                    SKUCode.IsOut = 0;
+                    SKUCode.IsNew = 1;
+                    NSession.Save(SKUCode);
+                }
+                tr.Commit();
             }
+
             return code;
         }
 

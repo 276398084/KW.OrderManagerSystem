@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using KeWeiOMS.Domain;
 using NHibernate.Cfg;
 using NHibernate;
 using FluentNHibernate.Cfg;
@@ -22,8 +23,8 @@ namespace KeWeiOMS.NhibernateHelper
                 if (sessionFactory == null)
                 {
                     FluentConfiguration fluentConfiguration = Fluently.Configure().Database(
-             MsSqlConfiguration.MsSql2008.ConnectionString(
-             c => c.FromConnectionStringWithKey("db")));
+        MsSqlConfiguration.MsSql2008.ConnectionString(
+        c => c.FromConnectionStringWithKey("db")));
                     string path = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
                     string assemblyFile = Path.Combine(path, "bin/KeWeiOMS.Domain.dll");
                     fluentConfiguration.Mappings(delegate(MappingConfiguration m)
@@ -33,19 +34,20 @@ namespace KeWeiOMS.NhibernateHelper
                         m.FluentMappings.AddFromAssembly(assembly).Conventions.AddAssembly(assembly);
                     });
                     sessionFactory = fluentConfiguration.BuildSessionFactory();
-                    //return fluentConfiguration.ExposeConfiguration(BuildSchema).BuildSessionFactory();
-                    return sessionFactory;
                 }
-                else
-                {
-                    return sessionFactory;
-                }
+
+                // return fluentConfiguration.ExposeConfiguration(BuildSchema).BuildSessionFactory();
+                return sessionFactory;
+
             }
         }
 
         public static ISession CreateSession()
         {
-            return SessionFactory.OpenSession();
+
+            ISession session = SessionFactory.OpenSession();
+            session.Clear();
+            return session;
         }
 
         public static void CreateDatabase()
@@ -55,21 +57,11 @@ namespace KeWeiOMS.NhibernateHelper
 
             Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2008.ConnectionString(c => c.FromConnectionStringWithKey("db")))
-                .Mappings(delegate(MappingConfiguration m)
-                {
-                    Assembly assembly = Assembly.LoadFrom(assemblyFile);
-                    m.HbmMappings.AddFromAssembly(assembly);
-                    m.FluentMappings.AddFromAssembly(assembly).Conventions.AddAssembly(assembly);
-                })
+                .Mappings(m =>
+                    m.FluentMappings.AddFromAssemblyOf<OrderType>())
                 .ExposeConfiguration(CreateSchema)
                 .BuildConfiguration();
         }
-
-        //private static void BuildSchema(Configuration config)
-        //{
-
-        //    new SchemaExport(config).Create(false, false);
-        //}
 
         private static void CreateSchema(Configuration cfg)
         {

@@ -314,15 +314,52 @@
             for (var i = 0; i < rows.length; i++) {
                 s_ids.push(rows[i]["Id"]);
             }
+            var search = "";
             if (s_ids.length == 0) {
-                $.messager.alert("请选择一条数据");
-                return;
+
+                var e = $('#CreateOn_st').combobox("getValue");
+                if (e != "ALL" && e != "" && e != "0") {
+                    search += "&st=" + e + "";
+                } else {
+                    alert("请选择开始时间！");
+                }
+                var f = $('#CreateOn_et').combobox("getValue");
+                if (f != "ALL" && f != "" && f != "0") {
+                    search += "&et=" + f + "";
+                } else {
+                    alert("请选择结束时间！");
+                }
+                var c = $('#OrderStatus').combobox("getText");
+                if (c != "ALL" && c != "") {
+                    search += "&s=" + c + "";
+                } else {
+                    alert("请选择订单状态！");
+                }
+
+                var a = $('#Account').combobox("getText");
+                if (a != "ALL" && a != "") {
+                    search += "&a=" + a + "";
+                } else {
+                    alert("请选择账户！");
+                }
+                var b = $('#Platform').combobox("getText");
+                if (b != "ALL" && b != "") {
+                    search += "&p=" + b + "";
+                } else {
+                    alert("请选择平台！");
+                }
+                if (search.length == 0) {
+                    alert("不选订单，也选个时间啊！");
+                    return;
+                }
             }
+
+
             var postUrl = "/Order/ExportDown/1";
             jQuery.ajax({
                 url: "/Order/ExportOrder/",
                 type: "post",
-                data: "o=" + s_ids.join(','),
+                data: "o=" + s_ids.join(',') + search,
                 success: function (sss) {
                     location.href = postUrl;
                 }

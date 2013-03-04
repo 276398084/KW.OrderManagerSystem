@@ -54,6 +54,11 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual string SendOn { get; set; }
 
+        /// <summary>
+        /// OrderNo
+        /// </summary>
+        public virtual string OrderNo { get; set; }
+
 
 
     }

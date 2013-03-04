@@ -55,16 +55,10 @@ function formPost(form, url, dlg, dg, t) {
         onSubmit: function () {
             return $(this).form('validate');
         },
-        success: function (result) {
-            var result = eval('(' + result + ')');
-            if (result.errorMsg) {
-                $.messager.show({
-                    title: '提示',
-                    msg: '保存失败:' + result.errorMsg,
-                    timeout: 0,
-                    showType: 'slide'
-                });
-            } else {
+        success: function (msg) {
+
+            var result = $.parseJSON(msg);
+            if (result.IsSuccess) {
                 alert("操作成功");
                 if (dlg) {
                     $('#' + dlg).dialog('close');
@@ -77,6 +71,8 @@ function formPost(form, url, dlg, dg, t) {
                         $('#' + dg).datagrid('reload');
                     }
                 }
+            } else {
+                alert("保存失败!");
             }
         }
     });
@@ -91,18 +87,19 @@ function delData(url, dg, t) {
                     var result = eval('(' + result + ')');
                     var msgstr = "删除成功";
                     if (result.IsSuccess) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: msgstr,
+                            timeout: 3000,
+                            showType: 'slide'
+                        });
+
+                    } else {
                         msgstr = "删除失败" + result.ErrorMsg;
                         $.messager.show({
                             title: '提示',
                             msg: msgstr,
                             timeout: 0,
-                            showType: 'slide'
-                        });
-                    } else {
-                        $.messager.show({
-                            title: '提示',
-                            msg: msgstr,
-                            timeout: 3000,
                             showType: 'slide'
                         });
                     }

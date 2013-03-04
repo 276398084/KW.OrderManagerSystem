@@ -169,16 +169,13 @@
 
     function addOrder() {
         var effectRow = new Object();
+        if (endEditing()) {
+            $('#dg_product').datagrid('acceptChanges');
+        }
         effectRow["rows"] = JSON.stringify($('#dg_product').datagrid("getRows"));
-        $.post("/OrderProduct/Save/", effectRow, function (rsp) {
-            if (rsp.IsSuccess) {
-                $.messager.show("提示", "提交成功！");
-            }
-        }, "JSON").error(function () {
-            $.messager.show("提示", "提交错误了！");
-        });
+        $("#rows").val(JSON.stringify($('#dg_product').datagrid("getRows")));
         formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg', 't');
-        $('c_form').clear();
+        window.location.reload();
     }
 
 </script>
@@ -193,6 +190,7 @@
 
             <tr>
                 <td>
+                    <input type="hidden" id="rows" name="rows" />
                     @Html.LabelFor(model => model.OrderNo, "订单编号:")
                 </td>
                 <td>

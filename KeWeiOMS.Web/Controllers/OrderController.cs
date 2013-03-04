@@ -127,7 +127,6 @@ namespace KeWeiOMS.Web.Controllers
                 string Account = form["Account"];
                 AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
                 string file = form["hfile"];
-
                 List<ResultInfo> results = new List<ResultInfo>();
                 switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
                 {
@@ -154,7 +153,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new { IsSuccess = true, ErrorMsg = ex.Message });
+                return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
 
             }
 
@@ -180,9 +179,9 @@ namespace KeWeiOMS.Web.Controllers
                 case PlatformEnum.LT:
                 case PlatformEnum.SMT:
                 default:
-                    return Json(new { ErrorMsg = "该平台没有同步功能！" });
+                    return Json(new { IsSuccess = false, ErrorMsg = "该平台没有同步功能！" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]
@@ -201,7 +200,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.Country = obj.AddressInfo.Country;
                 obj.Status = OrderStatusEnum.待处理.ToString();
                 obj.GenerateOn = obj.ScanningOn = obj.CreateOn = DateTime.Now;
-                List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
+                List<OrderProductType> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(obj.rows);
                 NSession.Save(obj);
                 foreach (var item in list)
                 {
@@ -291,7 +290,9 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Update(obj);
                 NSession.Flush();
                 NSession.CreateQuery("delete from OrderProductType where OId=" + obj.Id).ExecuteUpdate();
-                List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
+                //List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
+
+                List<OrderProductType> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(obj.rows);
                 foreach (OrderProductType orderProductType in list)
                 {
                     orderProductType.OId = obj.Id;
@@ -438,15 +439,26 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ExportOrder(string o)
+        public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p)
         {
-            
+
             StringBuilder sb = new StringBuilder();
-            string sql = "select  * from Orders where Id in(" + o + ")";
+            string sql = @"select  O.OrderNo,OrderExNo,CurrencyCode,Amount,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+left join Products P On OP.SKU=P.SKU ";
+            if (string.IsNullOrEmpty(o))
+            {
+                sql += " where O.Status='" + s + "' and O.Account='" + a + "' and  O.CreateOn between '" + st + "' and '" + et + "'";
+            }
+            else
+            {
+                sql += " where  O.Id in(" + o + ")";
+            }
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+
+
             da.Fill(ds);
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
@@ -456,7 +468,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult ExportBiLiShi(string o)
         {
-          
+
             StringBuilder sb = new StringBuilder();
             string sql = "select  * from Orders where O.Id in(" + o + ")";
             DataSet ds = new DataSet();
@@ -663,7 +675,7 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Update(order);
                     NSession.Flush();
                     if (skuCode != "")
-                        NSession.CreateQuery("update SKUCodeType set IsOut=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "' where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
+                        NSession.CreateQuery("update SKUCodeType set IsOut=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='" + order.OrderNo + "' where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
                     string html = "订单：" + order.OrderNo + " 配货完成！";
                     return Json(new { IsSuccess = true, Result = html });
                 }

@@ -35,6 +35,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.IsOut);
             Map(x => x.SendOn);
             Map(x => x.IsNew);
+            Map(x => x.OrderNo).Length(20); ;
         }
     }
 }
