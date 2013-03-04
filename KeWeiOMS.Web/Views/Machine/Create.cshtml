@@ -34,18 +34,29 @@
             editable: true
         });
         $('#c_UserName').combobox({
-            url: 'User/UserSrc',
-            editable: true,
-        });
-
+            url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true
+                });
         $('#c_UserNameOld').combobox({
-            url: 'User/UserSrc',
-            editable: true,
+            url: '@Url.Action("ListQ","User")',
+            panelHeight: 100,
+            mode: 'remote',
+            valueField: 'Realname',
+            textField: 'Realname',
+            editable: true
         });
 		$('#c_BuyBy').combobox({
-            url: 'User/UserSrc',
-            editable: true,
-		});
+		    url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true
+                });
 		$('#c_BuyDate').datebox();
 
         $('#c_StartDate').datebox();

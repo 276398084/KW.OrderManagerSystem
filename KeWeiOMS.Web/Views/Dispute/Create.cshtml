@@ -50,12 +50,15 @@
         $('#c_DisputeOn').datebox({
             required: true
         });
-        $('#c_SolveOn').datebox({ disabled: true });
          $('#c_SolveBy').combobox({
-          url: 'User/UserSrc',
-          editable: true,
-          disabled: true
-         });
+             url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true,
+                    disabled: true
+                });
          $("#c_RefundAmount").attr({
              disabled: true
          });

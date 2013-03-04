@@ -1274,6 +1274,7 @@
     <Content Include="Views\Machine\Create.cshtml" />
     <Content Include="Views\Machine\Edit.cshtml" />
     <Content Include="Views\Machine\Index.cshtml" />
+    <Content Include="Views\Dispute\Create.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
