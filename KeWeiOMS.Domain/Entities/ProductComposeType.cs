@@ -9,8 +9,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// SKUCodeType
-    /// SKUCode
+    /// ProductComposeType
+    /// 组合产品标记表
     /// 
     /// 修改纪录
     /// 
@@ -23,43 +23,37 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class SKUCodeType
+    public class ProductComposeType
     {
         /// <summary>
-        /// Id
+        /// 主键
         /// </summary>
         public virtual int Id { get; set; }
 
         /// <summary>
-        /// Code
+        /// 组合产品ID
         /// </summary>
-        public virtual int Code { get; set; }
+        public virtual int PId { get; set; }
 
         /// <summary>
-        /// SKU
+        /// 组合产品SKU
         /// </summary>
         public virtual String SKU { get; set; }
 
         /// <summary>
-        /// IsOut
+        /// 被组合产品ID
         /// </summary>
-        public virtual int IsOut { get; set; }
-        /// <summary>
-        /// IsOut
-        /// </summary>
-        public virtual int IsNew { get; set; }
+        public virtual int SrcPId { get; set; }
 
         /// <summary>
-        /// SendOn
+        /// 被组合产品SKU
         /// </summary>
-        public virtual string SendOn { get; set; }
+        public virtual String SrcSKU { get; set; }
 
         /// <summary>
-        /// OrderNo
+        /// 被组合产品数量
         /// </summary>
-        public virtual string OrderNo { get; set; }
-
-
+        public virtual int SrcQty { get; set; }
 
     }
 }

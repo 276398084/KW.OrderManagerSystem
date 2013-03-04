@@ -83,15 +83,14 @@ namespace KeWeiOMS.Web.Controllers
                 ModelState.AddModelError("Username", "验证码错误！");
                 return View();
             }
-            if (ModelState.IsValid)
+
+            bool iscon = Utilities.LoginByUser(user.Username, user.Password);
+            if (iscon)
             {
-                bool iscon = Utilities.LoginByUser(user.Username, user.Password);
-                if (iscon)
-                {
-                    Utilities.CreateCookies(user.Username, user.Password);
-                    return RedirectToAction("Index", "Home");
-                }
+                Utilities.CreateCookies(user.Username, user.Password);
+                return RedirectToAction("Index", "Home");
             }
+
             ModelState.AddModelError("Username", "用户名或者密码出错。");
             return View();
         }

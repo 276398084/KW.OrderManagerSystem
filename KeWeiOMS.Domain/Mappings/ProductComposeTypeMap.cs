@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// SKUCodeTypeMap
-    /// SKUCode
+    /// ProductComposeTypeMap
+    /// 组合产品标记表
     /// 
     /// 修改纪录
     /// 
@@ -24,18 +24,17 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class SKUCodeTypeMap : ClassMap<SKUCodeType>
+    public class ProductComposeTypeMap : ClassMap<ProductComposeType> 
     {
-        public SKUCodeTypeMap()
+        public ProductComposeTypeMap()
         {
-            Table("SKUCode");
+            Table("ProductCompose");
             Id(x => x.Id);
-            Map(x => x.Code);
-            Map(x => x.SKU).Length(20);
-            Map(x => x.IsOut);
-            Map(x => x.SendOn);
-            Map(x => x.IsNew);
-            Map(x => x.OrderNo).Length(20); ;
+            Map(x => x.PId);
+            Map(x => x.SKU).Length(50);
+            Map(x => x.SrcPId);
+            Map(x => x.SrcSKU).Length(50);
+            Map(x => x.SrcQty);
         }
     }
 }

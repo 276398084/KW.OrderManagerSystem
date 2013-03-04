@@ -283,7 +283,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
 
-
+            sku = sku.Trim();
             SqlConnection conn = new SqlConnection("server=122.227.207.204;database=Feidu;uid=sa;pwd=`1q2w3e4r");
             string sql = "select top 1 SKU from SkuCode where Code={0}or Code={1} ";
             conn.Open();
@@ -331,7 +331,7 @@ namespace KeWeiOMS.Web.Controllers
                 SKUCodeType sku = list[0];
                 if (sku.IsOut == 0)
                 {
-                    return Json(new { IsSuccess = true, Result = sku.SKU });
+                    return Json(new { IsSuccess = true, Result = sku.SKU.Trim() });
                 }
                 else
                 {
