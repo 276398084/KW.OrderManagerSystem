@@ -39,15 +39,8 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     obj.BuyDate = Convert.ToDateTime("2000-01-01");
                 }
-                IList<MachineType> objList = NSession.CreateQuery("from MachineType ")
-               .List<MachineType>();
-                foreach (var item in objList)
-                {
-                    if (obj.Code == item.Code)
-                    {
-                        return Json(new { errorMsg = "编号已经存在" });
-                    }
-                }
+                if (IsOk(obj.Id, obj.Code))
+                    return Json(new { errorMsg = "编号已经存在" });
                 NSession.Save(obj);
                 NSession.Flush();
             }
@@ -108,12 +101,10 @@ namespace KeWeiOMS.Web.Controllers
             object obj = NSession.CreateQuery("select count(Id) from MachineType where Code='" + s + "' and Id <> " + p).UniqueResult();
             if (Convert.ToInt32(obj) > 0)
             {
-                return false;
+                return true;
             }
-            return true;
-
-
-        }
+            return false;
+         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
