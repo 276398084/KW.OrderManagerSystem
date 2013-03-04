@@ -1,28 +1,77 @@
 ﻿@model KeWeiOMS.Domain.MachineType
+
 @{
     Layout = null;
 }
+
 <script type="text/javascript">
+
     $(function () {
-        //这里写加载下拉列表、修改编辑控件的初始化值
-	
+        $("#e_Code").validatebox({
+            required: true
+        });
+        $('#e_Name').combobox({
+            url: '@Url.Action("GetMachineName","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true,
+            required: true
+        });
+        $('#e_Status').combobox({
+            url: '@Url.Action("GetMachineStatus","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true,
+            required: true
+        });
+        $('#e_StatusOld').combobox({
+            url: '@Url.Action("GetMachineStatus","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true
+        });
+        $('#e_UserName').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+        $('#e_UserNameOld').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+        $('#e_BuyBy').combobox({
+            url: 'User/UserSrc',
+            editable: true
+        });
+        $('#e_BuyDate').datebox();
+
         $('#e_StartDate').datebox();
 
 
         $('#e_EndDate').datebox();
 
 
+        $('#e_StartDateOld').datebox();
+
+
+        $('#e_EndDateOld').datebox();
+
+
     });
+
 </script>
+
 @using (Html.BeginForm("Edit", "Machine", FormMethod.Post, new { id = "e_form" }))
 {
 <fieldset>
 <table class="editForm">
 	<tr>
-		<td>
+		@*<td>
             @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
 	</tr>
@@ -52,37 +101,122 @@
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.StatusOld,"过去状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StatusOld,new{@id="e_StatusOld"})
+		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.UserName,"使用者:")
+            @Html.LabelFor(model => model.UserName,"使用人:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.UserName,new{@id="e_UserName"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.UserNameOld,"过去使用人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserNameOld,new{@id="e_UserNameOld"})
+		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.StartDate,"开始使用时间:")
+            @Html.LabelFor(model => model.StartDate,"开始时间:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.StartDate,new{@id="e_StartDate"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.StartDateOld,"开始时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDateOld,new{@id="e_StartDateOld"})
+		</td>
 	</tr>
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.EndDate,"结束始用时间:")
+            @Html.LabelFor(model => model.EndDate,"结束时间:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.EndDate,new{@id="e_EndDate"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.EndDateOld,"结束时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDateOld,new{@id="e_EndDateOld"})
+		</td>
 	</tr>
 
+        	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyMoney,"购买金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyMoney,new{@id="e_BuyMoney"})
+		</td>
+	</tr>
 
-    
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyDate,"购买日期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyDate,new{@id="e_BuyDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyBy,"购买人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyBy,new{@id="e_BuyBy"})
+		</td>
+	</tr>
+@*	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserNameOld,"过去使用人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserNameOld,new{@id="e_UserNameOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StatusOld,"过去状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StatusOld,new{@id="e_StatusOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartDateOld,"开始时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartDateOld,new{@id="e_StartDateOld"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDateOld,"结束时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDateOld,new{@id="e_EndDateOld"})
+		</td>
+	</tr>*@
+
+
 </table>
 </fieldset>
 }
