@@ -1,0 +1,83 @@
+﻿@model KeWeiOMS.Domain.ProjectType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.ProjectType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.ProjectType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">项目名称</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProjectName)
+    </div>
+
+    <div class="display-label">状态（未开始，执行中，暂停中，已完成）</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+    <div class="display-label">项目负责人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProjectManager)
+    </div>
+
+    <div class="display-label">项目进程</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Content)
+    </div>
+
+    <div class="display-label">项目开始时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.BeginDate)
+    </div>
+
+    <div class="display-label">预计完成时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.EndDate)
+    </div>
+
+    <div class="display-label">工期</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.NeedDay)
+    </div>
+
+    <div class="display-label">实际完成时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RealEndDate)
+    </div>
+
+    <div class="display-label">创建时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">创建人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">评价</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Evaluate)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

@@ -1,0 +1,144 @@
+﻿@model KeWeiOMS.Domain.ProjectType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_BeginDate').datebox();
+
+
+        $('#e_EndDate').datebox();
+
+
+        $('#e_RealEndDate').datebox();
+
+
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Project", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProjectName,"项目名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProjectName,new{@id="e_ProjectName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态（未开始，执行中，暂停中，已完成）:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProjectManager,"项目负责人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProjectManager,new{@id="e_ProjectManager"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"项目进程:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="e_Content"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BeginDate,"项目开始时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BeginDate,new{@id="e_BeginDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EndDate,"预计完成时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EndDate,new{@id="e_EndDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NeedDay,"工期:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NeedDay,new{@id="e_NeedDay"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RealEndDate,"实际完成时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RealEndDate,new{@id="e_RealEndDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Evaluate,"评价:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Evaluate,new{@id="e_Evaluate"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

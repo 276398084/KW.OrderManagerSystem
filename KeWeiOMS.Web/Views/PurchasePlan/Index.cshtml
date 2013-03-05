@@ -48,7 +48,16 @@
 
                 ]]
             });
+            $('#StartDate').datebox();
 
+            $('#EndDate').datebox();
+            $('#SearchStatus').combobox({
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: [{ id: "所有", text: "所有" }, { id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分收到", text: "部分收到" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
+            });
         });
 
         function shooDao(id) {
@@ -256,7 +265,11 @@
                 return (undefined);
             }
             function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search=$('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                var a = $('#SearchStatus').combobox("getText");
+                if (a != "所有") {
+                    search += "Status&" + a + "^";
+                }
                 $("#dg").datagrid("load", {
                     search: search
 
@@ -272,7 +285,9 @@
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
-
+            开始时间:<input id="StartDate" />
+            结束时间:<input id="EndDate"/>&nbsp&nbsp
+            状态：<input id="SearchStatus"/>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
