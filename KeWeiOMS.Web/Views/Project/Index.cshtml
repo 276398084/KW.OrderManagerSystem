@@ -70,6 +70,9 @@
                             }, {
                                 text: '取消',
                                 handler: function () {
+                                    $.ajax({
+                                        url: '/Project/DelSession'
+                                    })
                                     $('#d_dlg').dialog('close');
                                 }
                             }]
