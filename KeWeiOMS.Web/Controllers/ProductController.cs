@@ -266,6 +266,30 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
+        public JsonResult ZuList(int page, int rows, string sort, string order, string search)
+        {
+            string where = "";
+            string orderby = " order by Id desc ";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<ProductComposeType> objList = NSession.CreateQuery("from ProductComposeType " + where + orderby)
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows)
+                .List<ProductComposeType>();
+            object count = NSession.CreateQuery("select count(Id) from ProductComposeType " + where).UniqueResult();
+            return Json(new { total = count, rows = objList });
+        }
+
         public JsonResult HasExist(string sku)
         {
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();

@@ -189,5 +189,15 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String Manager { get; set; }
 
+        /// <summary>
+        /// 产品管理人
+        /// </summary>
+        public virtual int IsZu { get; set; }
+
+        /// <summary>
+        /// rows
+        /// </summary>
+        public virtual String rows { get; set; }
+
     }
 }
