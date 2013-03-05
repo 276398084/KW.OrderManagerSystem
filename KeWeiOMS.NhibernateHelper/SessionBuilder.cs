@@ -56,7 +56,6 @@ namespace KeWeiOMS.NhibernateHelper
                         sessionFactory = Configuration.BuildSessionFactory();
                     }
                 }
-
                 return sessionFactory;
             }
         }
