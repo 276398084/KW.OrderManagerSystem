@@ -5,24 +5,35 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-	
-        $('#e_BeginDate').datebox();
+        $('#e_ProjectManager').combobox({
+            url: '@Url.Action("ListQ","User")',
+           panelHeight: 100,
+           mode: 'remote',
+           valueField: 'Realname',
+           textField: 'Realname',
+           editable: true,
+           required: true
+       });
 
+        $('#e_ProjectName').validatebox({ required: true });
 
-        $('#e_EndDate').datebox();
+		
+        $('#e_BeginDate').datebox({required:true});
 
+        $('#e_EndDate').datebox({ required: true });
+
+        $('#e_NeedDay').validatebox({required:true});
 
         $('#e_RealEndDate').datebox();
 
-
-        $('#e_CreateOn').datebox();
-
-        $('#e_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
+        $('#e_Status').combobox({
+            required: true,
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            editable: false,
+            data: [{ id: "未开始", text: "未开始" }, { id: "执行中", text: "执行中" }, { id: "暂停中", text: "暂停中" }, { id: "已完成", text: "已完成" }]
+        });
     });
 </script>
 @using (Html.BeginForm("Edit", "Project", FormMethod.Post, new { id = "e_form" }))
@@ -30,10 +41,10 @@
 <fieldset>
 <table class="editForm">
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
 	</tr>
@@ -49,7 +60,7 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.Status,"状态（未开始，执行中，暂停中，已完成）:")
+            @Html.LabelFor(model => model.Status,"状态:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
@@ -62,15 +73,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.ProjectManager,new{@id="e_ProjectManager"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Content,"项目进程:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Content,new{@id="e_Content"})
 		</td>
 	</tr>
 
@@ -111,19 +113,19 @@
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.CreateOn,"创建时间:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.CreateBy,"创建人:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
 		</td>
 	</tr>
@@ -133,7 +135,7 @@
             @Html.LabelFor(model => model.Evaluate,"评价:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Evaluate,new{@id="e_Evaluate"})
+            @Html.TextAreaFor(model => model.Evaluate,new{@id="e_Evaluate"})
 		</td>
 	</tr>
 

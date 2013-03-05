@@ -1268,7 +1268,6 @@
     <Content Include="Views\Placard\Index.cshtml" />
     <Content Include="Views\Attend\Create.cshtml" />
     <Content Include="Views\Attend\Delete.cshtml" />
-    <Content Include="Views\Attend\Details.cshtml" />
     <Content Include="Views\Attend\Edit.cshtml" />
     <Content Include="Views\Attend\Index.cshtml" />
     <Content Include="Views\Attend\IndexShow.cshtml" />

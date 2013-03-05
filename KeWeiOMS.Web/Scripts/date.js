@@ -28,6 +28,10 @@ function getDate(value) {
     return date.format("yyyy-MM-dd hh:mm:ss");
 }
 
+function getOnlyDate(value) {
+    var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+    return date.format("yyyy-MM-dd");
+}
 function getTrue(value) {
     if (value == 1)
         return "是";

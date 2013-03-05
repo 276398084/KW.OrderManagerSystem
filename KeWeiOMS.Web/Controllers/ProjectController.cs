@@ -27,7 +27,13 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                NSession.SaveOrUpdate(obj);
+                if (obj.RealEndDate < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.RealEndDate = Convert.ToDateTime("2000-01-01");
+                }
+                obj.CreateOn = DateTime.Now;
+                obj.CreateBy = CurrentUser.Realname;
+                NSession.Save(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -80,6 +86,33 @@ namespace KeWeiOMS.Web.Controllers
            
         }
 
+
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult Details(int id)
+        {
+            ProjectType obj = GetById(id);
+            Session["Content"] = obj.Content;
+            return View(obj);
+        }
+
+        [HttpPost]
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult Details(ProjectType obj)
+        {
+
+            try
+            {
+                obj.Content = Session["Content"]+DateTime.Now.Date.ToShortDateString()+": "+obj.Content+"<br>";
+                NSession.Update(obj);
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { errorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = "true" });
+
+        }
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
@@ -122,7 +155,10 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from ProjectType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
-
+        public void DelSession()
+        {
+            Session.Contents.Remove("Content");
+        }
     }
 }
 

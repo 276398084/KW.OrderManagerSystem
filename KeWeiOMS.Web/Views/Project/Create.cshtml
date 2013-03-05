@@ -7,25 +7,36 @@
 <script type="text/javascript">
 
     $(function () {
+        $('#c_ProjectManager').combobox({
+            url: '@Url.Action("ListQ","User")',
+                     panelHeight: 100,
+                     mode: 'remote',
+                     valueField: 'Realname',
+                     textField: 'Realname',
+                     editable: true,
+                     required: true
+                 });
+
+        $('#c_ProjectName').validatebox({ required: true });
 
 		
-        $('#c_BeginDate').datebox();
+        $('#c_BeginDate').datebox({required:true});
 
 
-        $('#c_EndDate').datebox();
+        $('#c_EndDate').datebox({ required: true });
 
+        $('#c_NeedDay').validatebox({required:true});
 
         $('#c_RealEndDate').datebox();
 
-
-        $('#c_CreateOn').datebox();
-
-        $('#c_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
+        $('#c_Status').combobox({
+            required: true,
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            editable: false,
+            data: [{ id: "未开始", text: "未开始" }, { id: "执行中", text: "执行中" }, { id: "暂停中", text: "暂停中" }, { id: "已完成", text: "已完成" }]
+        });
     });
     
 </script>
@@ -34,14 +45,6 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>
 
 	<tr>
 		<td>
@@ -54,7 +57,7 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.Status,"状态（未开始，执行中，暂停中，已完成）:")
+            @Html.LabelFor(model => model.Status,"状态:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
@@ -67,15 +70,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.ProjectManager,new{@id="c_ProjectManager"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Content,"项目进程:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
 		</td>
 	</tr>
 
@@ -117,28 +111,10 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.CreateOn,"创建时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateBy,"创建人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
             @Html.LabelFor(model => model.Evaluate,"评价:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Evaluate,new{@id="c_Evaluate"})
+            @Html.TextAreaFor(model => model.Evaluate,new{@id="c_Evaluate"})
 		</td>
 	</tr>
 
