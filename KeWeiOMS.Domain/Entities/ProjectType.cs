@@ -9,8 +9,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// MachinType
-    /// 设备管理
+    /// ProjectType
+    /// 项目管理
     /// 
     /// 修改纪录
     /// 
@@ -23,7 +23,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class MachineType
+    public class ProjectType
     {
         /// <summary>
         /// 主键
@@ -31,54 +31,59 @@ namespace KeWeiOMS.Domain
         public virtual int Id { get; set; }
 
         /// <summary>
-        /// 编号
+        /// 项目名称
         /// </summary>
-        public virtual String Code { get; set; }
+        public virtual String ProjectName { get; set; }
 
         /// <summary>
-        /// 名称
-        /// </summary>
-        public virtual String MachineClass { get; set; }
-
-        /// <summary>
-        /// 名称
-        /// </summary>
-        public virtual String Name { get; set; }
-
-        /// <summary>
-        /// 状态
+        /// 状态（未开始，执行中，暂停中，已完成）
         /// </summary>
         public virtual String Status { get; set; }
 
         /// <summary>
-        /// 使用人
+        /// 项目负责人
         /// </summary>
-        public virtual String UserName { get; set; }
+        public virtual String ProjectManager { get; set; }
 
         /// <summary>
-        /// 开始时间
+        /// 项目进程
         /// </summary>
-        public virtual DateTime StartDate { get; set; }
+        public virtual String Content { get; set; }
 
         /// <summary>
-        /// 结束时间
+        /// 项目开始时间
+        /// </summary>
+        public virtual DateTime BeginDate { get; set; }
+
+        /// <summary>
+        /// 预计完成时间
         /// </summary>
         public virtual DateTime EndDate { get; set; }
 
         /// <summary>
-        /// 购买时间
+        /// 工期
         /// </summary>
-        public virtual DateTime BuyDate { get; set; }
+        public virtual double NeedDay { get; set; }
 
         /// <summary>
-        /// 购买金额
+        /// 实际完成时间
         /// </summary>
-        public virtual String BuyMoney{ get; set; }
+        public virtual DateTime RealEndDate { get; set; }
 
         /// <summary>
-        /// 购买人
+        /// 创建时间
         /// </summary>
-        public virtual String BuyBy{ get; set; }
+        public virtual DateTime CreateOn { get; set; }
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public virtual String CreateBy { get; set; }
+
+        /// <summary>
+        /// 评价
+        /// </summary>
+        public virtual String Evaluate { get; set; }
 
     }
 }

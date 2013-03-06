@@ -47,10 +47,14 @@
         });
         $('#e_SolveOn').datebox({ disabled: true });
         $('#e_SolveBy').combobox({
-            url: 'User/UserSrc',
-            editable: true,
-            disabled: true
-        });
+            url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true,
+                    disabled: true
+                });
         $("#e_RefundAmount").attr({
             disabled: true
         });

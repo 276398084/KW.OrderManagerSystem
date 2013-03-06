@@ -1,4 +1,4 @@
-﻿if (typeof (JSON) == 'undefined') {
+if (typeof (JSON) == 'undefined') {
     $('head').append($("<script type='text/javascript' src='/Scripts/json2.js'>"));
 } else {
 

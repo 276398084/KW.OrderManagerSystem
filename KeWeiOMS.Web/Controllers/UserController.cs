@@ -230,6 +230,14 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
+        public JsonResult ListQ(string q)
+        {
+            IList<UserType> objList = NSession.CreateQuery("from UserType where Realname like '%" + q + "%'")
+                .List<UserType>();
+
+            return Json(objList,JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult QList(string Id)
         {
 

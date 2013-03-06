@@ -10,8 +10,8 @@
         $("#c_Code").validatebox({
             required: true
         });
-        $('#c_Name').combobox({
-            url: '@Url.Action("GetMachineName","Dictionary")',
+        $('#c_MachineClass').combobox({
+            url: '@Url.Action("GetMachineClass","Dictionary")',
                     valueField: 'FullName',
                     textField: 'FullName',
                     panelHeight: 'auto',
@@ -26,38 +26,27 @@
                     editable: true,
                     required:true
                 });
-        $('#c_StatusOld').combobox({
-            url: '@Url.Action("GetMachineStatus","Dictionary")',
-            valueField: 'FullName',
-            textField: 'FullName',
-            panelHeight: 'auto',
-            editable: true
-        });
         $('#c_UserName').combobox({
-            url: 'User/UserSrc',
-            editable: true,
-        });
-
-        $('#c_UserNameOld').combobox({
-            url: 'User/UserSrc',
-            editable: true,
-        });
+            url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true
+                });
 		$('#c_BuyBy').combobox({
-            url: 'User/UserSrc',
-            editable: true,
-		});
+		    url: '@Url.Action("ListQ","User")',
+                    panelHeight: 100,
+                    mode: 'remote',
+                    valueField: 'Realname',
+                    textField: 'Realname',
+                    editable: true
+                });
 		$('#c_BuyDate').datebox();
 
         $('#c_StartDate').datebox();
 
-
         $('#c_EndDate').datebox();
-
-
-        $('#c_StartDateOld').datebox();
-
-
-        $('#c_EndDateOld').datebox();
 
 
     });
@@ -85,6 +74,14 @@
             @Html.TextBoxFor(model => model.Code,new{@id="c_Code"})
 		</td>
 	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.MachineClass,"类别:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MachineClass,new{@id="c_MachineClass"})
+		</td>
+	</tr>
 
 	<tr>
 		<td>
@@ -102,12 +99,6 @@
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
 		</td>
-        <td>
-            @Html.LabelFor(model => model.StatusOld,"过去状态:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.StatusOld,new{@id="c_StatusOld"})
-		</td>
 	</tr>
 
 	<tr>
@@ -116,12 +107,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.UserName,new{@id="c_UserName"})
-		</td>
-        <td>
-            @Html.LabelFor(model => model.UserNameOld,"过去使用人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.UserNameOld,new{@id="c_UserNameOld"})
 		</td>
 	</tr>
 
@@ -132,12 +117,6 @@
 		<td>
             @Html.TextBoxFor(model => model.StartDate,new{@id="c_StartDate"})
 		</td>
-        <td>
-            @Html.LabelFor(model => model.StartDateOld,"开始时:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.StartDateOld,new{@id="c_StartDateOld"})
-		</td>
 	</tr>
 
 	<tr>
@@ -146,12 +125,6 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.EndDate,new{@id="c_EndDate"})
-		</td>
-        <td>
-            @Html.LabelFor(model => model.EndDateOld,"结束时:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.EndDateOld,new{@id="c_EndDateOld"})
 		</td>
 	</tr>
 
@@ -181,42 +154,6 @@
             @Html.TextBoxFor(model => model.BuyBy,new{@id="c_BuyBy"})
 		</td>
 	</tr>
-
-@*		<tr>
-		<td>
-            @Html.LabelFor(model => model.UserNameOld,"过去使用人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.UserNameOld,new{@id="c_UserNameOld"})
-		</td>
-	</tr>
-
-<tr>
-		<td>
-            @Html.LabelFor(model => model.StatusOld,"过去状态:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.StatusOld,new{@id="c_StatusOld"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.StartDateOld,"开始时:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.StartDateOld,new{@id="c_StartDateOld"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.EndDateOld,"结束时:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.EndDateOld,new{@id="c_EndDateOld"})
-		</td>
-	</tr>*@
 
 
 </table>

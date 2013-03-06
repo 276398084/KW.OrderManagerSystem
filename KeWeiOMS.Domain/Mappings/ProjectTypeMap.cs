@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// MachinTypeMap
-    /// 设备管理
+    /// ProjectTypeMap
+    /// 项目管理
     /// 
     /// 修改纪录
     /// 
@@ -24,22 +24,23 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class MachineTypeMap : ClassMap<MachineType> 
+    public class ProjectTypeMap : ClassMap<ProjectType> 
     {
-        public MachineTypeMap()
+        public ProjectTypeMap()
         {
-            Table("Machine");
+            Table("Projects");
             Id(x => x.Id);
-            Map(x => x.Code).Length(50);
-            Map(x => x.MachineClass).Length(50);
-            Map(x => x.Name).Length(50);
+            Map(x => x.ProjectName).Length(100);
             Map(x => x.Status).Length(50);
-            Map(x => x.UserName).Length(50);
-            Map(x => x.StartDate);
+            Map(x => x.ProjectManager).Length(100);
+            Map(x => x.Content).Length(2000);
+            Map(x => x.BeginDate);
             Map(x => x.EndDate);
-            Map(x => x.BuyDate);
-            Map(x => x.BuyMoney).Length(50);
-            Map(x => x.BuyBy).Length(50);
+            Map(x => x.NeedDay);
+            Map(x => x.RealEndDate);
+            Map(x => x.CreateOn);
+            Map(x => x.CreateBy).Length(200);
+            Map(x => x.Evaluate).Length(200);
         }
     }
 }

@@ -177,6 +177,7 @@
     <Compile Include="Controllers\ProductCategoryController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ProductSKUController.cs" />
+    <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\PurchasePlanController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
@@ -1268,13 +1269,18 @@
     <Content Include="Views\Placard\Index.cshtml" />
     <Content Include="Views\Attend\Create.cshtml" />
     <Content Include="Views\Attend\Delete.cshtml" />
-    <Content Include="Views\Attend\Details.cshtml" />
     <Content Include="Views\Attend\Edit.cshtml" />
     <Content Include="Views\Attend\Index.cshtml" />
     <Content Include="Views\Attend\IndexShow.cshtml" />
     <Content Include="Views\Machine\Create.cshtml" />
     <Content Include="Views\Machine\Edit.cshtml" />
     <Content Include="Views\Machine\Index.cshtml" />
+    <Content Include="Views\Dispute\Create.cshtml" />
+    <Content Include="Views\Project\Create.cshtml" />
+    <Content Include="Views\Project\Delete.cshtml" />
+    <Content Include="Views\Project\Details.cshtml" />
+    <Content Include="Views\Project\Edit.cshtml" />
+    <Content Include="Views\Project\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

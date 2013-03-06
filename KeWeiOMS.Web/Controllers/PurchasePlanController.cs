@@ -121,11 +121,24 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
+                string key = search.Substring(search.IndexOf("$") + 1); 
+                where = Utilities.Resolve(key);
+                 if (where.Length > 0)
                 {
                     where = " where " + where;
                 }
+                 string GetDate=  search.Substring(0,search.IndexOf("$"));
+                 string SearchDate = GetSearch(GetDate);
+                 if (!string.IsNullOrEmpty(SearchDate))
+                 {
+                     if (string.IsNullOrEmpty(where))
+                     {
+                         where =" where "+ SearchDate;
+                     }
+                     else {
+                         where += " and " + SearchDate; 
+                     }
+                 }
             }
             IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType "+ where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -146,6 +159,25 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<SupplierType> obj = NSession.CreateQuery("from SupplierType").List<SupplierType>();
             return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+
+        public static string GetSearch(string search)
+        {
+            string where = "";
+            string startdate = search.Substring(0, search.IndexOf("&"));
+            string enddate = search.Substring(search.IndexOf("&")+1);
+            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate) )
+            {
+                if (!string.IsNullOrEmpty(startdate))
+                    where += "BuyOn >=\'" + Convert.ToDateTime(startdate)+ "\'";
+                if (!string.IsNullOrEmpty(enddate))
+                {
+                    if (where != "")
+                        where += " and ";
+                    where += "BuyOn <\'" + Convert.ToDateTime(enddate).AddDays(1)+ "\'";
+                }
+            }
+            return where;
         }
 
     }
