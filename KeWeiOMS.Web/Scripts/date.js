@@ -65,7 +65,11 @@ function formPost(form, url, dlg, dg, t) {
                 }
                 if (dg) {
                     if (t) {
-                        $('#' + dg).treegrid('reload');
+                        if (t == 't')
+                            $('#' + dg).treegrid('reload');
+                        else {
+                            window.location.reload();
+                        }
                     }
                     else {
                         $('#' + dg).datagrid('reload');

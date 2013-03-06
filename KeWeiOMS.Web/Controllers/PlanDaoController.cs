@@ -31,13 +31,14 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 IList<PurchasePlanType> plan =
-                    NSession.CreateQuery("from PurchasePlanType where PlanNo=:p").SetString("p", obj.PlanNo).
+                    NSession.CreateQuery("from PurchasePlanType where Id=:p").SetInt32("p", Convert.ToInt32(obj.PlanNo)).
                         SetMaxResults(1)
                         .List<PurchasePlanType>();
                 if (plan.Count > 0)
                 {
                     if (plan[0].Status != "已收到")
                     {
+                        obj.PlanNo = plan[0].PlanNo;
                         obj.DaoOn = DateTime.Now;
                         obj.SendOn = DateTime.Now;
                         obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty);
@@ -67,8 +68,7 @@ namespace KeWeiOMS.Web.Controllers
             if (obj != null)
             {
                 NSession.Flush();
-                IList<PurchasePlanType> plans = NSession.CreateQuery("from PurchasePlanType where PlanNo=:p").SetString("p", obj.PlanNo).SetMaxResults(1)
-                      .List<PurchasePlanType>();
+                IList<PurchasePlanType> plans = NSession.CreateQuery("from PurchasePlanType where PlanNo=:p and SKU=:p2").SetString("p", obj.PlanNo).SetString("p2", obj.SKU).SetMaxResults(1).List<PurchasePlanType>();
                 PurchasePlanType plan = plans[0];
                 IList<SKUCodeType> list =
                      NSession.CreateQuery("from SKUCodeType where SKU=:p1 and Code>=:p2 order by Id").SetString("p1", obj.SKU).

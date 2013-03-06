@@ -102,7 +102,17 @@ namespace KeWeiOMS.Web.Controllers
                 Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
+                foreach (ProductComposeType productCompose in list1)
+                {
+                    productCompose.SKU = obj.SKU;
+                    productCompose.PId = obj.Id;
+                    NSession.Save(productCompose);
+                    NSession.Flush();
+                }
+
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+
 
                 //
                 //在仓库中添加产品库存
