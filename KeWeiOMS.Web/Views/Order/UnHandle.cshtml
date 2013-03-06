@@ -44,6 +44,8 @@
                 panelHeight: 'auto',
                 onChange: changePlatform
             });
+            $('#Platform').combobox("setValue", "ALL");
+            $('#Account').combotree("setValue", "ALL");
         });
 
         //新建
@@ -153,9 +155,6 @@
             $("#dg").datagrid("load", {
                 search: search
             });
-        }
-        function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
         }
 
         function showPrint() {
@@ -280,7 +279,6 @@
             <input type="text" id="Platform" />
             账户<input type="text" id="Account" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>

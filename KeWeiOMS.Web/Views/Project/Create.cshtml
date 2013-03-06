@@ -7,21 +7,9 @@
 <script type="text/javascript">
 
     $(function () {
-        $('#c_ProjectManager').combobox({
-            url: '@Url.Action("ListQ","User")',
-                     panelHeight: 100,
-                     mode: 'remote',
-                     valueField: 'Realname',
-                     textField: 'Realname',
-                     editable: true,
-                     required: true
-                 });
-
         $('#c_ProjectName').validatebox({ required: true });
 
-		
         $('#c_BeginDate').datebox({required:true});
-
 
         $('#c_EndDate').datebox({ required: true });
 

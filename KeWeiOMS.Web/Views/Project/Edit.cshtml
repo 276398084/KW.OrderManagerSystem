@@ -5,15 +5,6 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-        $('#e_ProjectManager').combobox({
-            url: '@Url.Action("ListQ","User")',
-           panelHeight: 100,
-           mode: 'remote',
-           valueField: 'Realname',
-           textField: 'Realname',
-           editable: true,
-           required: true
-       });
 
         $('#e_ProjectName').validatebox({ required: true });
 

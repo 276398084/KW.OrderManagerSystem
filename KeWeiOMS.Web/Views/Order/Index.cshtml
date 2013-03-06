@@ -52,7 +52,7 @@
                 width: 100,
                 panelHeight: 'auto'
             });
-
+            $('#OrderStatus').combobox("setValue","待处理");
             $('#IsPrint').combobox({
                 valueField: 0,
                 textField: 1,
@@ -60,6 +60,7 @@
                 data: checkPrint,
                 width: 100
             });
+            $('#IsPrint').combobox("setValue", "全部");
             $('#IsQue').combobox({
                 valueField: 0,
                 textField: 1,
@@ -67,7 +68,9 @@
                 data: checks,
                 width: 100
             });
-
+            $('#IsQue').combobox("setValue",1);
+            //$('#Account').combotree("setValue", "ALL");
+            $('#Platform').combobox("setValue", "ALL");
         });
 
         //新建
@@ -204,9 +207,6 @@
                 search: search
             });
         }
-        function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
-        }
 
         function showPrint() {
             var rows = $('#dg').datagrid('getSelections');
@@ -297,7 +297,7 @@
                 $.messager.alert("请选择一条数据");
                 return;
             }
-            var postUrl = "/Order/ExportDown";
+            var postUrl = "/Order/ExportDown"; ccount
             jQuery.ajax({
                 url: "/Order/ExportZM",
                 type: "post",
@@ -415,6 +415,7 @@
                 required: true,
                 width: 150
             });
+            $('#Account').combotree("setValue", "ALL");
         }
 
         function getOrderDate(v, r, i) {
@@ -466,7 +467,6 @@
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>

@@ -53,6 +53,10 @@
         $('#et').datebox({
             required: true
         });
+        $('#Platform').combobox("setValue", "LT");
+        $('#Account').combotree("setValue", "ALL");
+        $('#Platform2').combobox("setValue", "LT");
+        $('#Account2').combotree("setValue", "ALL");
     });
 
     function changePlatform2(n, o) {
@@ -63,6 +67,7 @@
             required: true,
             width: 150
         });
+        $('#Account2').combotree("setValue", "ALL");
     }
 
     function changePlatform(n, o) {
@@ -73,6 +78,7 @@
             required: true,
             width: 150
         });
+        $('#Account').combotree("setValue", "ALL");
     }
     function addOrder() {
         type = 0;

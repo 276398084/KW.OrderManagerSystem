@@ -85,9 +85,10 @@
                 { field: 'LogisticsCode', title: '代码', width: 100 }
             ]]
         });
+        $('#c_LogisticMode').combogrid("setValue", "NJGH");
         $('#c_Country').combogrid({
             panelWidth: 360,
-            value: 'USD',
+            value: 'United States',
             idField: 'ECountry',
             textField: 'ECountry',
             url: '/Country/ListALL',
@@ -109,6 +110,8 @@
             panelHeight: 'auto',
             onChange: changePlatform
         });
+        $('#c_Platform').combobox("setValue", "LT");
+        $('#c_Account').combotree("setValue", "ALL");
         $("#c_OrderNo").val('@ViewData["OrderNO"]');
     });
 

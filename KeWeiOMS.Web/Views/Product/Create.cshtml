@@ -63,6 +63,10 @@
             panelHeight: 50,
             data: checks
         });
+        $('#c_IsInfraction').combobox("setValue", 0);
+        $('#c_IsElectronic').combobox("setValue", 1);
+        $('#c_HasBattery').combobox("setValue", 0);
+
         $('#c_Purchaser').combobox({
             url: '/User/QList/' + Purchaser,
             valueField: 'Id',
@@ -71,6 +75,8 @@
             width: 200,
             panelHeight: 'auto'
         });
+
+        
         $('#c_Examiner').combobox({
             url: '/User/QList/' + Examiner,
             valueField: 'Id',
@@ -87,6 +93,9 @@
             width: 200,
             panelHeight: 'auto'
         });
+        $('#c_Purchaser').combobox("setValue", "储善昂");
+        $('#c_Examiner').combobox("setValue", "王凯");
+        $('#c_Packer').combobox("setValue", "朱丹凤");
         $('#c_Status').combobox({
             url: '/Home/ProductStatus/',
             valueField: 'id',
@@ -95,12 +104,14 @@
             width: 200,
             panelHeight: 'auto'
         });
+        $('#c_Status').combobox("setValue", "销售中");
         $('#c_Category').combotree({
             url: '/ProductCategory/PList',
 
             required: true,
             width: 200
         });
+        $('#c_Category').combotree("setValue","电脑、平板电脑、网络")
         $('#c_Location').combogrid({
             panelWidth: 360,
             idField: 'PositionsName',
@@ -113,7 +124,7 @@
                { field: 'Warehouse', title: '仓库', width: 200 }
             ]]
         });
-
+        $('#c_Location').combogrid("setValue","A001");
         $('#up_file').uploadify({
             'auto': false,
             'buttonText': '请选择图片',
