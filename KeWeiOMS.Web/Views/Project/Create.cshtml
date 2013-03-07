@@ -9,11 +9,19 @@
     $(function () {
         $('#c_ProjectName').validatebox({ required: true });
 
-        $('#c_BeginDate').datebox({required:true});
+        $('#c_BeginDate').datebox({
+            required: true,
+            onSelect: function () { startdatecheck() }
+        });
 
-        $('#c_EndDate').datebox({ required: true });
+        $('#c_EndDate').datebox({
+            required: true,
+            onSelect: function () { enddatecheck() }
+        });
 
-        $('#c_NeedDay').validatebox({required:true});
+        $('#c_NeedDay').validatebox({ required: true });
+
+        $('#c_ProjectManager').validatebox({ required: true });
 
         $('#c_RealEndDate').datebox();
 
@@ -25,8 +33,47 @@
             editable: false,
             data: [{ id: "未开始", text: "未开始" }, { id: "执行中", text: "执行中" }, { id: "暂停中", text: "暂停中" }, { id: "已完成", text: "已完成" }]
         });
+        $('#c_Status').combobox("setValue", "未开始");
+        var today = new Date();
+        var  startdate = getOnlyDate(today.setMinutes(1).toString())
+        var enddate = getOnlyDate(today.setDate(today.getDate()+7).toString());
+        $("#c_BeginDate").datebox("setValue", startdate);
+        $("#c_EndDate").datebox("setValue", enddate);
+        $('#c_NeedDay').attr("value",7);
     });
     
+    function startdatecheck() {
+        var start = $("#c_BeginDate").datebox("getValue");
+        var end = $("#c_EndDate").datebox("getValue");
+        if (start > end) {
+            alert("结束时间不能小于开始时间！");
+            $("#c_BeginDate").datebox("setValue","");
+        }
+    }
+    function enddatecheck() {
+        var start = $("#c_BeginDate").datebox("getValue");
+        var end = $("#c_EndDate").datebox("getValue");
+        if (start > end) {
+            alert("结束时间不能小于开始时间！");
+            $("#c_EndDate").datebox("setValue", "");
+        }
+        else {
+            var sDate1 = $("#c_BeginDate").datebox("getValue");
+            var sDate2 = $("#c_EndDate").datebox("getValue");
+            alert(sDate1); alert(sDate2);
+             
+            var aDate = sDate1.split("-");
+            var oDate1 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]);    //转换为3-1-2009格式
+             alert(oDate1);
+            var aDate = sDate2.split("-");
+            var oDate2 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]);
+            var iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24);
+            alert(da);
+             $('#c_NeedDay').attr("value",da);
+         }
+    }
+
+
 </script>
 
 @using (Html.BeginForm("Create", "Project", FormMethod.Post, new { id = "c_form" }))
@@ -72,7 +119,7 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.EndDate,"预计完成时间:")
+            @Html.LabelFor(model => model.EndDate,"预计完成时间:" )
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.EndDate,new{@id="c_EndDate"})

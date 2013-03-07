@@ -8,19 +8,27 @@
 
     $(function () {
 
-		        $('#c_PackBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
+        $('#c_PackBy').combobox({
+            url: '@Url.Action("ListQ","User")',
+            panelHeight: 100,
+            mode: 'remote',
+            valueField: 'Realname',
+            textField: 'Realname',
+            editable: true
+        });
 
         $('#c_ScanBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
+            url: '@Url.Action("ListQ","User")',
+            panelHeight: 100,
+            mode: 'remote',
+            valueField: 'Realname',
+            textField: 'Realname',
+            editable: true
       });
-
-
+        $('#c_PackBy').combobox("setValue", "李贵英");
+        $('#c_ScanBy').combobox("setValue", "徐红梅");
         $('#c_PackOn').datebox();
-
+        $('#c_PackOn').datebox("setValue",getStartDate(0));
 
     });
     

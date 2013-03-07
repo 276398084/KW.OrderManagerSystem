@@ -56,6 +56,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                if (IsCreateOk(obj.AccountName, obj.Platform))
+                    return Json(new { errorMsg = "此账号已存在！" });
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -64,6 +66,16 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
+        }
+
+        private bool IsCreateOk(string name, string platform)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from  AccountType where AccountName='" + name + "' and Platform='"+platform+"'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -98,6 +110,8 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+                if (IsOk(obj.Id, obj.AccountName, obj.Platform))
+                    return Json(new {errorMsg="此账号已存在！" });
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -107,6 +121,16 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = "true" });
 
+        }
+
+        private bool IsOk(int id, string name, string platform)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from  AccountType where AccountName='" + name + "' and Platform='" + platform + "' and Id<>'"+id+"'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         [HttpPost, ActionName("Delete")]

@@ -125,11 +125,11 @@
         }
 
         function seeArea(id) {
-            window.open('@Url.Action("Index", "LogisticsArea")?id=' + id)
+            window.open('/LogisticsArea/Index/' + id)
         }
         //添加明细
         function addMode(id) {
-            var url_str = '@Url.Action("Create", "LogisticsMode")?id=' + id;
+            var url_str = '@Url.Action("Create", "LogisticsMode")/' + id;
             showdlg(url_str, 'm_dlg', ajaxAddM)
         }
         function ajaxAddM() {
@@ -138,18 +138,18 @@
         }
         //修改明细
         function editMode(pid, id) {
-            var url_str = '@Url.Action("Edit", "LogisticsMode")?id=' + id;
+            var url_str = '@Url.Action("Edit", "LogisticsMode")/' + id;
             showdlg(url_str, 'me_dlg', ajaxUpdM)
         }
         function ajaxUpdM() {
-            formPost('me_form', '@Url.Action("Edit", "LogisticsMode")', 'me_dlg', 'modedg');
+            formPost('me_form', '@Url.Action("Edit", "LogisticsMode")','me_dlg', 'modedg');
             $("#dg").datagrid("reload");
         }
         //删除明细
         function delMode(id) {
             if (id != undefined) {
                 var url = '@Url.Action("Delete", "LogisticsMode")/' + id;
-                delData(url, 'dg');
+                delData(url,'dg');
             }
         }
 

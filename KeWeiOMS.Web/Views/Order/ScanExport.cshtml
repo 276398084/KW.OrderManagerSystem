@@ -2,6 +2,10 @@
     ViewBag.Title = "ScanExport";
 }
 <script type="text/javascript">
+    $(function () {
+        $('#st').datebox("setValue", getStartDate(3));
+        $('#et').datebox("setValue", getStartDate(-1));
+    })
     function exportexcel() {
         $('#c_form').form('submit', {
 

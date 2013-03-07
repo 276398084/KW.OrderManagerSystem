@@ -32,6 +32,12 @@ function getOnlyDate(value) {
     var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
     return date.format("yyyy-MM-dd");
 }
+
+function getStartDate(value) {
+    var today = new Date();
+    var enddate = getOnlyDate(today.setDate(today.getDate() - value).toString());
+    return enddate;
+}
 function getTrue(value) {
     if (value == 1)
         return "是";
@@ -87,27 +93,14 @@ function delData(url, dg, t) {
         $.messager.confirm('确认', '确定删除?', function (r) {
             if (r) {
                 $.post(url, function () {
-                }).success(function (result) {
-                    var result = eval('(' + result + ')');
+                }).success(function (data) {
                     var msgstr = "删除成功";
-                    if (result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
                             msg: msgstr,
                             timeout: 3000,
                             showType: 'slide'
                         });
-
-                    } else {
-                        msgstr = "删除失败" + result.ErrorMsg;
-                        $.messager.show({
-                            title: '提示',
-                            msg: msgstr,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                    }
-
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }

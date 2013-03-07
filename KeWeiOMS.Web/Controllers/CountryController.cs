@@ -32,6 +32,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                if(IsCreateOk(obj.ECountry))
+                return Json(new { errorMsg = "编号已经存在" });
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -40,6 +42,16 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
+        }
+
+        private bool IsCreateOk(string s)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from CountryType where ECountry='" + s + "'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -74,6 +86,8 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+                if (IsOk(obj.Id,obj.ECountry))
+                    return Json(new { errorMsg = "编号已经存在" });
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -84,6 +98,17 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
 
         }
+
+        private bool IsOk(int p, string s)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from CountryType where ECountry='" + s + "' and Id <> " + p).UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)

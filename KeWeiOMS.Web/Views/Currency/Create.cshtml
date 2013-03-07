@@ -10,7 +10,7 @@
 
 		
         $('#c_CreateOn').datebox();
-
+        $('#c_CreateOn').datebox("setValue",getStartDate(0));
 
     });
     
@@ -20,14 +20,14 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键表:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
 		<td>

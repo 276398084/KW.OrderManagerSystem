@@ -27,6 +27,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                if (IsCreateOk(obj.LogisticsCode))
+                    return Json(new {errorMsg="此代码已存在，请检查后再创建！"});
                 obj.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
@@ -36,6 +38,16 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
+        }
+
+        private bool IsCreateOk(string code)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from LogisticsType where LogisticsCode='"+code+"'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -70,6 +82,8 @@ namespace KeWeiOMS.Web.Controllers
            
             try
             {
+                if (IsOk(obj.Id, obj.LogisticsCode))
+                    return Json(new {errorMsg="此代码已存在，请检查后再作修改！" });
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -79,6 +93,16 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = "true" });
            
+        }
+
+        private bool IsOk(int id, string code)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from LogisticsType where LogisticsCode='"+code+"' and Id<>'"+id+"'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         [HttpPost, ActionName("Delete")]

@@ -12,9 +12,15 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
+
+ 
+
         var today = new Date();
-        $("#txtEndDate").datebox("setValue",today.toString('yyyy-MM-dd'));
-        $("#txtStartDate").datebox("setValue",today.setDate(1).toString('yyyy-MM-dd'));
+        var today1 = new Date();
+        var firstday=getOnlyDate(today.setDate(1).toString());
+        datetoday = getOnlyDate(today1.setMinutes(1).toString())
+        $("#txtEndDate").datebox("setValue",datetoday);
+        $("#txtStartDate").datebox("setValue",firstday);
     });
 
      function work(value) {

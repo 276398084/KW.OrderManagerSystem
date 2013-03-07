@@ -50,6 +50,7 @@
         $('#c_DisputeOn').datebox({
             required: true
         });
+        $('#c_DisputeOn').datebox("setValue", getStartDate(0));
          $('#c_SolveBy').combobox({
              url: '@Url.Action("ListQ","User")',
                     panelHeight: 100,
@@ -76,6 +77,7 @@
                     textField: 'FullName',
                     panelHeight: 'auto'
         });
+        $('#c_DisputeCategory').combobox("setValue","未收到");
 
     });
     

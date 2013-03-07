@@ -133,22 +133,12 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                                if (data != true) {
-                                    msgstr = "删除失败" + data;
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: msgstr,
-                                        timeout: 0,
-                                        showType: 'slide'
-                                    });
-                                } else {
                                     $.messager.show({
                                         title: '提示',
                                         msg: msgstr,
                                         timeout: 3000,
                                         showType: 'slide'
                                     });
-                                }
                                 $('#dg').datagrid('reload');
                             }).error(function () {
                                 $.messager.alert('错误', '删除发生错误');

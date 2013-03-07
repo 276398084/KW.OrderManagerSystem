@@ -134,23 +134,12 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                                if (data != true) {
-                                    msgstr = "删除失败" + data;
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: msgstr,
-                                        timeout: 0,
-                                        showType: 'slide'
-                                    });
-                                } else {
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: msgstr,
-                                        timeout: 3000,
-                                        showType: 'slide'
-                                    });
-                                }
-
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
                                 $('#dg').datagrid('reload');
                             }).error(function () {
                                 $.messager.alert('错误', '删除发生错误');
@@ -247,7 +236,7 @@
                 var rows = $('#dg1').datagrid('getSelections');
                 for (var i = 0; i < rows.length; i++) {
                     $.ajax({
-                        url: '/Dictionary/DelDictionary?id=' + rows[i].Id,
+                        url: '/Dictionary/DelDictionary/' + rows[i].Id,
                     });
                 }
                 $('#dg1').datagrid("reload");

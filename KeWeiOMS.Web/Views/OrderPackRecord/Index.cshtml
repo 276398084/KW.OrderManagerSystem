@@ -73,9 +73,6 @@
                     search: search
             });
         }
-        function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "OrderPackRecord")', 's_dlg', 'dg');
-    }
 
     </script>
     <div region="center">
@@ -111,7 +108,6 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'Id'">主键</div>

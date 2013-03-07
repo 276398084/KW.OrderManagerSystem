@@ -49,8 +49,9 @@
                 ]]
             });
             $('#StartDate').datebox();
-
             $('#EndDate').datebox();
+            $('#StartDate').datebox("setValue", getStartDate(3));
+            $('#EndDate').datebox("setValue", getStartDate(-1));
             $('#SearchStatus').combobox({
                 valueField: 'id',
                 textField: 'text',
@@ -58,6 +59,9 @@
                 editable: false,
                 data: [{ id: "所有", text: "所有" }, { id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分收到", text: "部分收到" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
             });
+
+            $('#SearchStatus').combobox("setValue", "所有");
+
         });
 
         function shooDao(id) {
@@ -220,23 +224,12 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                                if (data != true) {
-                                    msgstr = "删除失败" + data;
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: msgstr,
-                                        timeout: 0,
-                                        showType: 'slide'
-                                    });
-                                } else {
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: msgstr,
-                                        timeout: 3000,
-                                        showType: 'slide'
-                                    });
-                                }
-
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: msgstr,
+                                    timeout: 3000,
+                                    showType: 'slide'
+                                });
                                 $('#dg').datagrid('reload');
                             }).error(function () {
                                 $.messager.alert('错误', '删除发生错误');
