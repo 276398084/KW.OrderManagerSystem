@@ -43,9 +43,20 @@
             var id = getselectedRow();
             if (id != undefined) {
                 var url = '@Url.Action("Delete", "WarehouseStock")/' + id;
-            
+
                 delData(url, 'dg');
             }
+        }
+
+        function exportdt() {
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/WarehouseStock/Export/",
+                type: "post",
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
         }
 
         //获取选中行
@@ -110,6 +121,7 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="exportdt();">导出</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>

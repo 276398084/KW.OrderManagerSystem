@@ -8,8 +8,6 @@
 <script type="text/javascript">
 
     $(function () {
-
-
         $('#dg_zu').datagrid({
             url: '@Url.Action("ZuList", "Product")',
             width: 300,
@@ -67,11 +65,13 @@
         $('#c_IsElectronic').combobox("setValue", 1);
         $('#c_HasBattery').combobox("setValue", 0);
 
+            data: checks
+        });
         $('#c_Purchaser').combobox({
             url: '/User/QList/' + Purchaser,
             valueField: 'Id',
             textField: 'Realname',
-            required: true,
+         
             width: 200,
             panelHeight: 'auto'
         });
@@ -81,7 +81,7 @@
             url: '/User/QList/' + Examiner,
             valueField: 'Id',
             textField: 'Realname',
-            required: true,
+           
             width: 200,
             panelHeight: 'auto'
         });
@@ -89,7 +89,7 @@
             url: '/User/QList/' + Packer,
             valueField: 'Id',
             textField: 'Realname',
-            required: true,
+          
             width: 200,
             panelHeight: 'auto'
         });
@@ -137,10 +137,8 @@
                 if (endEditing()) {
                     $('#dg_zu').datagrid('acceptChanges');
                 }
-
                 $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
-                formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg');
-                window.location.reload();
+                formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg', 'a');
             }
         });
     });
@@ -214,7 +212,7 @@
 
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "c_form" }))
 {
-   
+
     <input type="button" value="保存" onclick="addProduct();" />
     <fieldset>
         <legend>产品信息</legend>
@@ -359,11 +357,30 @@
                 <td>
                     @Html.LabelFor(model => model.Location, "库位:")
                 </td>
-                <td colspan="5">
+                <td>
                     @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
                 </td>
+                <td>
+                    @Html.LabelFor(model => model.Location, "是否组合:")
+                </td>
+                <td colspan="3">
+                    @Html.HiddenFor(model => model.IsZu, new { @id = "c_IsZu" })
+                </td>
             </tr>
-
+            <tr>
+                <td>组合产品</td>
+                <td colspan="5">
+                    <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true">
+                        <thead>
+                            <tr>
+                                <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
+                                </th>
+                                <th field="SrcQty" width="100" data-options="editor:'text'">Qty
+                                </th>
+                        </thead>
+                    </table>
+                </td>
+            </tr>
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Summary, "简单描述:")
@@ -382,17 +399,6 @@
             </tr>
         </table>
     </fieldset>
-    
-    <fieldset>
-        <legend>被组合的产品</legend>
-        <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true">
-            <thead>
-                <tr>
-                    <th field="ExSKU" width="80" data-options="editor:'text'">SKU
-                    </th>
-                    <th field="Title" width="100" data-options="editor:'text'">Qty
-                    </th>
-            </thead>
-        </table>
-    </fieldset>
+
+
 }

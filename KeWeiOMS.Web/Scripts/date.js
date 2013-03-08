@@ -1,4 +1,4 @@
-﻿if (typeof (JSON) == 'undefined') {
+if (typeof (JSON) == 'undefined') {
     $('head').append($("<script type='text/javascript' src='/Scripts/json2.js'>"));
 } else {
 
@@ -28,10 +28,6 @@ function getDate(value) {
     return date.format("yyyy-MM-dd hh:mm:ss");
 }
 
-function getOnlyDate(value) {
-    var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
-    return date.format("yyyy-MM-dd");
-}
 
 function getStartDate(value) {
     var today = new Date();
@@ -40,17 +36,19 @@ function getStartDate(value) {
 }
 function getTrue(value) {
     if (value == 1)
-        return "是";
+        return "�
     else
-        return "否";
+        return "�;
 }
 
 
-var checks = [["1", "是"], ["0", "否"]];
+var checks = [["1", "�], ["0", "�]];
 
-var checkSex = '[["男"],["女"]]';
+var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
 
-var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];
+var checkSex = '[["�],["�]]';
+
+var checkPrint = [["0", "全部"], ["1", "未打�], ["2", "已打�]];
 var Packer = 5;
 var Examiner = 7;
 var Pei = 8;
@@ -75,7 +73,11 @@ function formPost(form, url, dlg, dg, t) {
                 }
                 if (dg) {
                     if (t) {
-                        $('#' + dg).treegrid('reload');
+                        if (t == 't')
+                            $('#' + dg).treegrid('reload');
+                        else {
+                            window.location.reload();
+                        }
                     }
                     else {
                         $('#' + dg).datagrid('reload');
@@ -94,13 +96,26 @@ function delData(url, dg, t) {
             if (r) {
                 $.post(url, function () {
                 }).success(function (data) {
+                   
                     var msgstr = "删除成功";
+                    if (result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
                             msg: msgstr,
                             timeout: 3000,
                             showType: 'slide'
                         });
+
+                    } else {
+                        msgstr = "删除失败" + result.ErrorMsg;
+                        $.messager.show({
+                            title: '提示',
+                            msg: msgstr,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    }
+
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }
@@ -136,7 +151,8 @@ function showdlg(url, dlg, handle) {
     }).dialog('open');
 }
 
-//“查询”按钮，弹出查询框
+//“查询”按钮，弹出查询�function showSrarch(url, dlg, dg) {
+//“查询”按钮，弹出查询�
 function showSrarch(url, dlg, dg) {
     $('#' + dlg).load(url, function () {
         $(this).dialog({

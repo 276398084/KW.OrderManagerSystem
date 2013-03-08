@@ -17,7 +17,6 @@
         //新建
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Product")';
-
             $('#c_dlg').load(url_str, function () {
                 $(this).dialog({
                     title: '新建',
@@ -74,6 +73,18 @@
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "Product")', 'e_dlg', 'dg');
         }
+
+
+        function exportdt() {
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/Product/Export/",
+                type: "post",
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
+        }
         //删除
         function del() {
             var id = getselectedRow();
@@ -116,12 +127,12 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-                    <th field="SKU" width="100">SKU
+                    <th field="SKU" width="100" sortable="true">SKU
                     </th>
-                    <th field="OldSKU" width="100">旧
+                    <th field="OldSKU" width="100" sortable="true">旧
                     </th>
 
-                    <th field="Category" width="100">类别
+                    <th field="Category" width="100" sortable="true">类别
                     </th>
                     <th field="SPicUrl" width="100" formatter='GetImg'>图片
                     </th>
@@ -130,9 +141,9 @@
 
                     <th field="Standard" width="100">规格
                     </th>
-                    <th field="Price" width="60">Price
+                    <th field="Price" width="60" sortable="true">Price
                     </th>
-                    <th field="Weight" width="60">重量
+                    <th field="Weight" width="60" sortable="true">重量
                     </th>
                     <th field="Long" width="100">长宽高
                     </th>
@@ -141,21 +152,22 @@
                     <th field="PackCoefficient" width="100">包装系数
                     </th>
 
-                    <th field="IsElectronic" width="100" formatter="getTrue">电子
+                    <th field="IsElectronic" width="100" formatter="getTrue" sortable="true">电子
                     </th>
-                    <th field="HasBattery" width="100" formatter="getTrue">电池
+                    <th field="HasBattery" width="100" formatter="getTrue" sortable="true">电池
                     </th>
-                    <th field="Location" width="100">库位
+                    <th field="Location" width="100" sortable="true">库位
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
 
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">新建</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">复制</a>
+
+
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="e_dlg();">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportdt();">导出</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
 
         </div>

@@ -1,4 +1,4 @@
-﻿@model KeWeiOMS.Domain.ProjectType
+@model KeWeiOMS.Domain.ProjectType
 
 @{
     Layout = null;
@@ -7,21 +7,25 @@
 <script type="text/javascript">
 
     $(function () {
+        $('#c_ProjectManager').combobox({
+            url: '@Url.Action("ListQ","User")',
+                     panelHeight: 100,
+                     mode: 'remote',
+                     valueField: 'Realname',
+                     textField: 'Realname',
+                     editable: true,
+                     required: true
+                 });
+
         $('#c_ProjectName').validatebox({ required: true });
 
-        $('#c_BeginDate').datebox({
-            required: true,
-            onSelect: function () { startdatecheck() }
-        });
+		
+        $('#c_BeginDate').datebox({required:true});
 
-        $('#c_EndDate').datebox({
-            required: true,
-            onSelect: function () { enddatecheck() }
-        });
 
-        $('#c_NeedDay').validatebox({ required: true });
+        $('#c_EndDate').datebox({ required: true });
 
-        $('#c_ProjectManager').validatebox({ required: true });
+        $('#c_NeedDay').validatebox({required:true});
 
         $('#c_RealEndDate').datebox();
 
@@ -33,62 +37,8 @@
             editable: false,
             data: [{ id: "未开始", text: "未开始" }, { id: "执行中", text: "执行中" }, { id: "暂停中", text: "暂停中" }, { id: "已完成", text: "已完成" }]
         });
-        $('#c_Status').combobox("setValue", "未开始");
-        var today = new Date();
-        var  startdate = getOnlyDate(today.setMinutes(1).toString())
-        var enddate = getOnlyDate(today.setDate(today.getDate()+7).toString());
-        $("#c_BeginDate").datebox("setValue", startdate);
-        $("#c_EndDate").datebox("setValue", enddate);
-        $('#c_NeedDay').attr("value",7);
     });
     
-    function startdatecheck() {
-        var start = $("#c_BeginDate").datebox("getValue");
-        var end = $("#c_EndDate").datebox("getValue");
-        if (start > end) {
-            alert("结束时间不能小于开始时间！");
-            $("#c_BeginDate").datebox("setValue", "");
-            $('#c_NeedDay').attr("value","");
-        }
-        else{
-            var sDate1 = $("#c_BeginDate").datebox("getValue");
-            var sDate2 = $("#c_EndDate").datebox("getValue");
-            sDate1 = sDate1.replace(/-/g, "/");
-            sDate2 = sDate2.replace(/-/g, "/");
-            var date1 = new Date(sDate1);
-            var date2 = new Date(sDate2);
-            //时间差的毫秒数
-            var date3 = date2.getTime() - date1.getTime()
-            //计算出相差天数
-            var days = Math.floor(date3 / (24 * 3600 * 1000));
-            $('#c_NeedDay').attr("value", days);
-          
-        }
-    }
-    function enddatecheck() {
-        var start = $("#c_BeginDate").datebox("getValue");
-        var end = $("#c_EndDate").datebox("getValue");
-        if (start > end) {
-            alert("结束时间不能小于开始时间！");
-            $("#c_EndDate").datebox("setValue", "");
-            $('#c_NeedDay').attr("value","");
-        }
-        else {
-            var sDate1 = $("#c_BeginDate").datebox("getValue");
-            var sDate2 = $("#c_EndDate").datebox("getValue");
-            sDate1 = sDate1.replace(/-/g, "/");
-            sDate2 = sDate2.replace(/-/g, "/");
-            var date1 = new Date(sDate1);
-            var date2 = new Date(sDate2);
-            //时间差的毫秒数
-             var date3 = date2.getTime() - date1.getTime()  
-            //计算出相差天数
-             var days = Math.floor(date3 / (24 * 3600 * 1000));
-           $('#c_NeedDay').attr("value",days);
-         }
-    }
-
-
 </script>
 
 @using (Html.BeginForm("Create", "Project", FormMethod.Post, new { id = "c_form" }))
@@ -134,7 +84,7 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.EndDate,"预计完成时间:" )
+            @Html.LabelFor(model => model.EndDate,"预计完成时间:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.EndDate,new{@id="c_EndDate"})

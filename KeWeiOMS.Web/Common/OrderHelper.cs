@@ -130,9 +130,6 @@ namespace KeWeiOMS.Web
                 {
                     results.Add(GetResult(OrderExNo, "订单已存在", "导入失败"));
                 }
-
-
-
             }
             return results;
 
@@ -322,7 +319,7 @@ namespace KeWeiOMS.Web
                         order.Country = foo.GoodsDataWare.AddressCountry;
                         order.BuyerName = foo.GoodsDataWare.FirstName + " " + foo.GoodsDataWare.LastName;
                         order.BuyerEmail = foo.GoodsDataWare.PayerEmail;
-                        order.TId = "";
+                        order.TId = foo.GoodsDataWare.TxnId;
                         order.Account = account.AccountName;
                         order.GenerateOn = foo.GoodsDataWare.PaymentDate;
                         order.Platform = PlatformEnum.B2C.ToString();
@@ -707,16 +704,36 @@ namespace KeWeiOMS.Web
             bool resultValue = true;
             order.ErrorInfo = "";
 
-            if (countrys.FindIndex(p => p.ECountry == order.Country || p.CountryCode.ToUpper() == order.Country.ToUpper()) == -1)
+            if (order.Country != null)
+            {
+                if (
+                    countrys.FindIndex(
+                        p => p.ECountry == order.Country || p.CountryCode.ToUpper() == order.Country.ToUpper()) == -1)
+                {
+                    resultValue = false;
+                    order.ErrorInfo += "国家不符 ";
+                }
+            }
+            else
             {
                 resultValue = false;
                 order.ErrorInfo += "国家不符 ";
             }
-            if (currencys.FindIndex(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper()) == -1)
+            if (order.CurrencyCode != null)
+            {
+                if (currencys.FindIndex(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper()) == -1)
+                {
+                    resultValue = false;
+                    order.ErrorInfo += "货币不符 ";
+                }
+
+            }
+            else
             {
                 resultValue = false;
                 order.ErrorInfo += "货币不符 ";
             }
+
             if (logistics.FindIndex(p => p.LogisticsCode == order.LogisticMode) == -1)
             {
                 resultValue = false;
