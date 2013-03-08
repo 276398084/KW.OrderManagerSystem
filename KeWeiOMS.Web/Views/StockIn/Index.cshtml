@@ -1,4 +1,4 @@
-
+﻿
 @model IEnumerable<KeWeiOMS.Domain.StockInType>
 @{
     ViewBag.Title = "Index";
@@ -14,7 +14,7 @@
         });
         $('#StartDate').datebox();
         $('#EndDate').datebox();
-        $('#StartDate').datebox("setValue", getStartDate(3));
+        $('#StartDate').datebox("setValue", getStartDate(30));
         $('#EndDate').datebox("setValue", getStartDate(-1));
     });
 
