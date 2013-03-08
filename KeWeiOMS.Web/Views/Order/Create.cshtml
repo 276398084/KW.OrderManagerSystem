@@ -177,8 +177,8 @@
         }
         effectRow["rows"] = JSON.stringify($('#dg_zu').datagrid("getRows"));
         $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
-        formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg', 't');
-        window.location.reload();
+        formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg', 'a');
+        
     }
 
 </script>

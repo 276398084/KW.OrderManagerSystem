@@ -14,8 +14,5 @@ namespace KeWeiOMS.Web
         /// 总订单数
         /// </summary>
         public int OCount { get; set; }
-
-
-
     }
 }

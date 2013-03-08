@@ -52,8 +52,8 @@
                         @Html.LabelFor(model => model.PlanNo, "采购计划编号:")
                     </td>
                     <td>
-                        <input readonly="readonly" name="PlanNo" value="@plan.PlanNo"/>
-
+                        <input readonly="readonly" value="@plan.PlanNo"/>
+                         <input type="hidden"  name="PlanNo" value="@plan.Id"/>
                     </td>
                 </tr>
                 <tr>
