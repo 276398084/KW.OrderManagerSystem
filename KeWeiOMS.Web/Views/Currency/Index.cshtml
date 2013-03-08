@@ -23,10 +23,10 @@
                 success: function (result) {
                     $('#dg').datagrid('loaded');
 
-                    if (result.errorMsg) {
+                    if (!result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
-                            msg: '保存失败:' + result.errorMsg,
+                            msg: '保存失败:' + result.ErrorMsg,
                             timeout: 0,
                             showType: 'slide'
                         });
@@ -105,11 +105,11 @@
                     return $(this).form('validate');
                 },
                 success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
+                 
+                    if (!result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
-                            msg: '保存失败:' + result.errorMsg,
+                            msg: '保存失败:' + result.ErrorMsg,
                             timeout: 0,
                             showType: 'slide'
                         });
@@ -134,11 +134,11 @@
                         return $(this).form('validate');
                     },
                     success: function (result) {
-                        var result = eval('(' + result + ')');
-                        if (result.errorMsg) {
+                     
+                        if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',
-                                msg: '保存失败:' + result.errorMsg,
+                                msg: '保存失败:' + result.ErrorMsg,
                                 timeout: 0,
                                 showType: 'slide'
                             });
@@ -167,7 +167,7 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                                if (data != true) {
+                              if (!data.IsSuccess){
                                     msgstr = "删除失败" + data;
                                     $.messager.show({
                                         title: '提示',

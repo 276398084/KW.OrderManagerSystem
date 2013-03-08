@@ -82,7 +82,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             IQuery Query = NSession.CreateQuery(string.Format("update OrderType set {0}='{1}' where {0}='{2}'", fieldName, newField, oldField));
             int num = Query.ExecuteUpdate();
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         public ActionResult Import()
@@ -104,7 +104,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 OrderHelper.ValiOrder(order, countrys, products, currencys, logistics);
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         [HttpPost]
@@ -115,7 +115,7 @@ namespace KeWeiOMS.Web.Controllers
             AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             string file = form["hfile"];
             OrderHelper.ImportByAmount(account, file);
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         [HttpPost]
@@ -211,9 +211,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         /// <summary>
@@ -251,7 +251,7 @@ namespace KeWeiOMS.Web.Controllers
                 key = "and ScanningBy= '" + key + "' ";
             }
             IList<LogisticsModeType> modes = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>();
-            string sql = "select OrderNo as 'PackageNo',Weight as 'PackageWeight',ScanningBy,TrackCode as 'TrackCode',ScanningOn as 'ShippedTime',LogisticMode,Country from Orders where Status in ('已发货','已完成') and {0}  ScanningOn  between '{1}' and '{2}' {3}  order by ScanningOn asc ";
+            string sql = "select OrderNo as 'PackageNo',Weight as 'PackageWeight',ScanningBy,TrackCode as 'TrackCode',ScanningOn as 'ShippedTime',LogisticMode as 'LogisticsMode',Country from Orders where Status in ('已发货','已完成') and {0}  ScanningOn  between '{1}' and '{2}' {3}  order by ScanningOn asc ";
             sql = string.Format(sql, u, st.ToString("yyyy/MM/dd HH:mm:ss"), et.ToString("yyyy/MM/dd HH:mm:ss"), key);
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
@@ -260,8 +260,8 @@ namespace KeWeiOMS.Web.Controllers
             da.Fill(ds);
             foreach (DataRow dataRow in ds.Tables[0].Rows)
             {
-                LogisticsModeType mode = modes.First(p => p.LogisticsCode == dataRow["LogisticMode"].ToString().Trim());
-                dataRow["LogisticMode"] = mode.LogisticsName.Trim();
+                LogisticsModeType mode = modes.First(p => p.LogisticsCode == dataRow["LogisticsMode"].ToString().Trim());
+                dataRow["LogisticsMode"] = mode.LogisticsName.Trim();
             }
             // 设置编码和附件格式 
             System.Web.HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
@@ -307,9 +307,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
 
         }
         [HttpPost]
@@ -442,14 +442,14 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p)
+        public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p, string dd)
         {
             StringBuilder sb = new StringBuilder();
             string sql = @"select '是' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
             if (string.IsNullOrEmpty(o))
             {
-                sql += " where O.Status='" + s + "' and O.Account='" + a + "' and  O.CreateOn between '" + st + "' and '" + et + "'";
+                sql += " where O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
             }
             else
             {
@@ -516,7 +516,6 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpPost]
         public ActionResult ExportBiLiShi(string o)
         {
-
             StringBuilder sb = new StringBuilder();
             string sql = "select  * from Orders where O.Id in(" + o + ")";
             DataSet ds = new DataSet();
@@ -552,9 +551,9 @@ left join Products P On OP.SKU=P.SKU ";
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
 

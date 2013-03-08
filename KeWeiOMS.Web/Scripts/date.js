@@ -30,13 +30,15 @@ function getDate(value) {
 
 function getTrue(value) {
     if (value == 1)
-        return "是";
+        return "是"
     else
         return "否";
 }
 
 
 var checks = [["1", "是"], ["0", "否"]];
+
+var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
 
 var checkSex = '[["男"],["女"]]';
 
@@ -88,7 +90,7 @@ function delData(url, dg, t) {
             if (r) {
                 $.post(url, function () {
                 }).success(function (result) {
-                    var result = eval('(' + result + ')');
+                   
                     var msgstr = "删除成功";
                     if (result.IsSuccess) {
                         $.messager.show({

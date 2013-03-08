@@ -15,18 +15,23 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult OrderCount(DateTime dt)
         {
-            IList<object[]> objs = NSession.CreateQuery("select Account,Count(Id) from OrderType   where CreateOn between '" + dt.ToString("yyyy/MM/dd 00:00:00") + "' and '" + dt.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' group by Account").List<object[]>();
+            IList<object[]> objs = NSession.CreateQuery("select Account,Count(Id),Platform from OrderType   where CreateOn between '" + dt.ToString("yyyy/MM/dd 00:00:00") + "' and '" + dt.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' group by Account,Platform").List<object[]>();
 
             List<OrderCount> list = new List<OrderCount>();
+            int sum = 0;
             foreach (object[] objectse in objs)
             {
-                OrderCount oc = new OrderCount { Account = objectse[0].ToString(), OCount = Convert.ToInt32(objectse[1]) };
+                OrderCount oc = new OrderCount { Account = objectse[0].ToString(), OCount = Convert.ToInt32(objectse[1]), Platform = objectse[2].ToString() };
+                sum += Convert.ToInt32(objectse[1]);
                 list.Add(oc);
             }
-            return Json(list.OrderByDescending(f => f.OCount));
+            List<object> footers = new List<object>();
+            footers.Add(new { OCount = sum });
+            return Json(new { rows = list.OrderByDescending(f => f.OCount), footer = footers, total = list.Count });
         }
 
         public ActionResult QueCount()
@@ -77,12 +82,12 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
 
         public JsonResult ExportQue(string s)
         {
-           if (s != null)
+            if (s != null)
             {
                 s = " and OP.SKU like '%" + s + "%'";
             }
-           
-            string sql =string.Format(@"select * ,(Qty-BuyQty) as NeedQty from (
+
+            string sql = string.Format(@"select * ,(Qty-BuyQty) as NeedQty from (
 select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty),0) from PurchasePlan where SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1 {0} group by SKU,Standard
 ) as tbl", s);
 

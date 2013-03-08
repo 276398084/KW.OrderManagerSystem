@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -88,6 +89,21 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
+        public ActionResult Export(string o)
+        {
+            StringBuilder sb = new StringBuilder();
+            string sql = "select  * from Products";
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
+        }
+
+        [HttpPost]
         public JsonResult Create(ProductType obj)
         {
             try
@@ -134,9 +150,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -175,9 +191,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -192,9 +208,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost, ActionName("DeleteSKU")]
@@ -208,7 +224,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true });
         }
@@ -309,7 +325,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             else
             {
-                return Json(new { IsSuccess = "true" });
+                return Json(new { IsSuccess = true });
             }
         }
 

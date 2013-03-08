@@ -41,9 +41,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         [HttpPost]
@@ -69,9 +69,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
         public void DelProduct(string id) 
         {
@@ -119,9 +119,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
 
         }
 
@@ -137,9 +137,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         public JsonResult List(int page, int rows)
@@ -179,9 +179,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
         public void DelProductE(string id)
         {

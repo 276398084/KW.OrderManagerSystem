@@ -192,6 +192,21 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 产品管理人
         /// </summary>
+        public virtual double SevenDay { get; set; }
+
+        /// <summary>
+        /// 产品管理人
+        /// </summary>
+        public virtual double ThirtyDay { get; set; }
+
+        /// <summary>
+        /// 产品管理人
+        /// </summary>
+        public virtual double SixtyDay { get; set; }
+
+        /// <summary>
+        /// 是否组合产品
+        /// </summary>
         public virtual int IsZu { get; set; }
 
         /// <summary>

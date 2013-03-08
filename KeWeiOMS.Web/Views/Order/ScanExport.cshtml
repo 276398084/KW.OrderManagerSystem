@@ -9,8 +9,8 @@
                 return $(this).form('validate');
             },
             success: function (result) {
-                var result = eval('(' + result + ')');
-                if (result.errorMsg) {
+             
+                if (!result.IsSuccess) {
 
                 } else {
 

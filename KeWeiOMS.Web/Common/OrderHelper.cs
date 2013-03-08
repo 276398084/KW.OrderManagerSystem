@@ -704,7 +704,17 @@ namespace KeWeiOMS.Web
             bool resultValue = true;
             order.ErrorInfo = "";
 
-            if (countrys.FindIndex(p => p.ECountry == order.Country || p.CountryCode.ToUpper() == order.Country.ToUpper()) == -1)
+            if (order.Country != null)
+            {
+                if (
+                    countrys.FindIndex(
+                        p => p.ECountry == order.Country || p.CountryCode.ToUpper() == order.Country.ToUpper()) == -1)
+                {
+                    resultValue = false;
+                    order.ErrorInfo += "国家不符 ";
+                }
+            }
+            else
             {
                 resultValue = false;
                 order.ErrorInfo += "国家不符 ";

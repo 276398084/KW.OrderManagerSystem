@@ -113,11 +113,11 @@
                                   return $(this).form('validate');
                               },
                               success: function (result) {
-                                  var result = eval('(' + result + ')');
-                                  if (result.errorMsg) {
+                               
+                                  if (!result.IsSuccess) {
                                       $.messager.show({
                                           title: '提示',
-                                          msg: '保存失败:' + result.errorMsg,
+                                          msg: '保存失败:' + result.ErrorMsg,
                                           timeout: 0,
                                           showType: 'slide'
                                       });

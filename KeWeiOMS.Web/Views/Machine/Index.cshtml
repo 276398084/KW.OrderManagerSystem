@@ -74,7 +74,7 @@
                         $.post(url, function () {
                         }).success(function (data) {
                             var msgstr = "删除成功";
-                            if (data != true) {
+                          if (!data.IsSuccess){
                                 msgstr = "删除失败" + data;
                                 $.messager.show({
                                     title: '提示',
