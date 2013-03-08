@@ -48,9 +48,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         /// <summary>
@@ -90,9 +90,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         [HttpPost, ActionName("Delete")]
@@ -109,7 +109,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { errorMsg = "出错" + ee.Message });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true  });
         }
 
         public JsonResult ListS(string search)

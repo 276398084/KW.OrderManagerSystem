@@ -57,6 +57,9 @@ namespace KeWeiOMS.Domain
             Map(x => x.IsElectronic);
             Map(x => x.IsLiquid);
             Map(x => x.IsScan);
+            Map(x => x.SevenDay);
+            Map(x => x.ThirtyDay);
+            Map(x => x.SixtyDay);
             Map(x => x.IsZu);
             Map(x => x.HasBattery);
             Map(x => x.Location).Length(50);

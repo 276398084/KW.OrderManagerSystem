@@ -1,4 +1,4 @@
-﻿@model IEnumerable<KeWeiOMS.Domain.PermissionItemType>
+@model IEnumerable<KeWeiOMS.Domain.PermissionItemType>
 @{
     ViewBag.Title = "Index";
 }
@@ -73,11 +73,11 @@
                     return $(this).form('validate');
                 },
                 success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
+                 
+                    if (!result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
-                            msg: '保存失败:' + result.errorMsg,
+                            msg: '保存失败:' + result.ErrorMsg,
                             timeout: 0,
                             showType: 'slide'
                         });
@@ -102,11 +102,11 @@
                         return $(this).form('validate');
                     },
                     success: function (result) {
-                        var result = eval('(' + result + ')');
-                        if (result.errorMsg) {
+                     
+                        if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',
-                                msg: '保存失败:' + result.errorMsg,
+                                msg: '保存失败:' + result.ErrorMsg,
                                 timeout: 0,
                                 showType: 'slide'
                             });
@@ -135,13 +135,24 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 3000,
-                                    showType: 'slide'
-                                });
-                                $('#dg').datagrid('reload');
+                              if (!data.IsSuccess){
+                                    msgstr = "删除失败" + data;
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 0,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 3000,
+                                        showType: 'slide'
+                                    });
+                                }
+
+                                $('#dg').treegrid('reload');
                             }).error(function () {
                                 $.messager.alert('错误', '删除发生错误');
                             });

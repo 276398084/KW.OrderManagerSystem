@@ -43,14 +43,14 @@
 	//新建
         function c_dlg() {
             var url_str = '@Url.Action("Create","NewGuide")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
+            showdlg(url_str, 'c_dlg', ajaxAdd);
         }
 
         //编辑框
     function e_dlg(i) {
            var row = $('#dg').datagrid('getRows')[i];
-           var url_str = '@Url.Action("Edit", "NewGuide")?id=' + row.Id;
-            showdlg(url_str, 'e_dlg', ajaxEdit)
+           var url_str = '@Url.Action("Edit", "NewGuide")/' + row.Id;
+        showdlg(url_str, 'e_dlg', ajaxEdit);
         }
 
         //异步新建提交
@@ -72,8 +72,8 @@
     //copy框
     function copy_dlg(i) {
         var row = $('#dg').datagrid('getRows')[i];
-        var url_str = '@Url.Action("Copy", "NewGuide")?id=' + row.Id;
-        showdlg(url_str, 'copy_dlg', ajaxCopy)
+        var url_str = '@Url.Action("Copy", "NewGuide")/' + row.Id;
+        showdlg(url_str, 'copy_dlg', ajaxCopy);
     }
     //异步copy提交
     function ajaxCopy() {
@@ -125,7 +125,7 @@
          <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
-            <div data-options="name:'NewSku'">新SKU</div>
+            <div data-options="name:'NewSku'" >新SKU</div>
             <div data-options="name:'OldSku'">旧SKU</div>
             <div data-options="name:'Title'">标题</div>
             <div data-options="name:'Remark'">备注</div>

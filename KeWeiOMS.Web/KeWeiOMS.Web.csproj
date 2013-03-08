@@ -134,6 +134,7 @@
     <Compile Include="Common\Statistics\OrderCount.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
+    <Compile Include="Common\Statistics\ProductData.cs" />
     <Compile Include="Common\Statistics\QueCount.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />

@@ -10,7 +10,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class DisputeController : BaseController
+    public class StockInController : BaseController
     {
         public ViewResult Index()
         {
@@ -23,16 +23,12 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Create(DisputeType obj)
+        public JsonResult Create(StockInType obj)
         {
             try
             {
-                if (obj.SolveOn < Convert.ToDateTime("2000-01-01"))
-                { 
-                    obj.SolveOn=Convert.ToDateTime("2000-01-01");
-                }
-                obj.CreateOn = DateTime.Now;
                 obj.CreateBy = CurrentUser.Realname;
+                obj.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -48,9 +44,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  DisputeType GetById(int Id)
+        public  StockInType GetById(int Id)
         {
-            DisputeType obj = NSession.Get<DisputeType>(Id);
+            StockInType obj = NSession.Get<StockInType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -64,16 +60,14 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            DisputeType obj = GetById(id);
-            ViewData["OrderNo"] = obj.OrderNo;
-            ViewData["SKU"] = obj.SKU;
-            ViewData["LogisticsMode"] = obj.LogisticsMode;
+            StockInType obj = GetById(id);
+            ViewData["sku"] = obj.SKU;
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(DisputeType obj)
+        public ActionResult Edit(StockInType obj)
         {
            
             try
@@ -95,7 +89,7 @@ namespace KeWeiOMS.Web.Controllers
           
             try
             {
-                DisputeType obj = GetById(id);
+                StockInType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -106,15 +100,44 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true  });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
+<<<<<<< HEAD
         {
-            string where = "";
             string orderby = " order by Id desc ";
+            string where = "";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
             }
-
+            if (!string.IsNullOrEmpty(search))
+            {
+                string key = search.Substring(search.IndexOf("$") + 1);
+                where = Utilities.Resolve(key);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+                string GetDate = search.Substring(0, search.IndexOf("$"));
+                string SearchDate = GetSearch(GetDate);
+                if (!string.IsNullOrEmpty(SearchDate))
+                {
+                    if (string.IsNullOrEmpty(where))
+                    {
+                        where = " where " + SearchDate;
+                    }
+                    else
+                    {
+                        where += " and " + SearchDate;
+                    }
+                }
+=======
+        {
+            string orderby = " order by Id desc ";
+            string where = "";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
             if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
@@ -122,25 +145,34 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     where = " where " + where;
                 }
+>>>>>>> KeWeiOMS/jmyd2
             }
-            IList<DisputeType> objList = NSession.CreateQuery("from DisputeType " + where + orderby)
+            IList<StockInType> objList = NSession.CreateQuery("from StockInType"+where+orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
-                .List<DisputeType>();
-
-            object count = NSession.CreateQuery("select count(Id) from DisputeType " + where ).UniqueResult();
+                .List<StockInType>();
+			
+            object count = NSession.CreateQuery("select count(Id) from StockInType "+where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
-        public JsonResult SearchOrder(string id)
+        public static string GetSearch(string search)
         {
-            IList<OrderType> obj = NSession.CreateQuery("from OrderType where OrderNo=:OrderNo").SetString("OrderNo", id).List<OrderType>();
-            return Json(obj, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult SearchOrderP(string id)
-        {
-            IList<OrderProductType> obj = NSession.CreateQuery("from OrderProductType where OrderNo=:OrderNo").SetString("OrderNo", id).List<OrderProductType>();
-            return Json(obj, JsonRequestBehavior.AllowGet);
+            string where = "";
+            string startdate = search.Substring(0, search.IndexOf("&"));
+            string enddate = search.Substring(search.IndexOf("&") + 1);
+            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
+            {
+                if (!string.IsNullOrEmpty(startdate))
+                    where += "CreateOn >=\'" + Convert.ToDateTime(startdate) + "\'";
+                if (!string.IsNullOrEmpty(enddate))
+                {
+                    if (where != "")
+                        where += " and ";
+                    where += "CreateOn <\'" + Convert.ToDateTime(enddate).AddDays(1) + "\'";
+                }
+            }
+            return where;
         }
 
     }

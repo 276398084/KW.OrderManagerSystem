@@ -26,16 +26,16 @@
      function work(value) {
          $.ajax({
              url: '@Url.Action("AttendOn", "Attend")/' + value,
-             success: function (result) {
+             success: function(result) {
                  $('#dg').datagrid('reload');
-                     $.messager.show({
-                         title: '提示',
-                         msg: result.Msg,
-                         timeout: 0,
-                         showType: 'slide'
-                     })
+                 $.messager.show({
+                     title: '提示',
+                     msg: result.Msg,
+                     timeout: 0,
+                     showType: 'slide'
+                 });
              }
-         })
+         });
 
      }
 
