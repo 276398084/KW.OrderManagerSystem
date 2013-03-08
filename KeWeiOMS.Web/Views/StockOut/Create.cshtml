@@ -26,7 +26,17 @@
             ]]
 
         })
-        $('#c_WId').combogrid("setValue",1);
+        $('#c_WId').combogrid("setValue", 1);
+        $('#c_OutType').combobox({
+            url: '@Url.Action("GetOutType","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true,
+                    required: true
+                });
+        $('#c_OutType').combobox("setValue", "扫描出库");
+
         $('#c_SKU').combogrid({
             required: true,
             panelWidth: 410,
@@ -95,6 +105,14 @@
             @Html.TextBoxFor(model => model.WName,new{@id="c_WName"})
         </td>
 	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.OutType,"出库类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OutType,new{@id="c_OutType"})
+		</td>
+	</tr>
 
 	<tr>
 		<td>
@@ -113,7 +131,14 @@
             @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
 		</td>
 	</tr>
-
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"备忘:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Memo,new{@id="c_Memo"})
+		</td>
+	</tr>
 @*	
     <tr>
 		<td>
