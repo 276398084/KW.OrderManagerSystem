@@ -28,6 +28,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                if (IsCreateOk(obj.ParentID, obj.LogisticsCode))
+                    return Json(new { errorMsg="此代码已存在！"});
                 NSession.Save(obj);
                 NSession.Flush();
             }
@@ -36,6 +38,16 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true  });
+        }
+
+        private bool IsCreateOk(int pid, string code)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from LogisticsModeType where ParentID='"+pid+"' and LogisticsCode='"+code+"'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            } 
+            return false;
         }
 
         public JsonResult GetMode(int id)
@@ -77,6 +89,8 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+                if (IsOk(obj.Id, obj.ParentID, obj.LogisticsCode))
+                    return Json(new { errorMsg="此代码已存在！"});
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -86,6 +100,17 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true  });
 
+        }
+
+        private bool IsOk(int id, int pid, string code)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from LogisticsModeType where ParentID='" + pid + "' and LogisticsCode='" + code + "' and Id<>'"+id+"'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         [HttpPost, ActionName("Delete")]

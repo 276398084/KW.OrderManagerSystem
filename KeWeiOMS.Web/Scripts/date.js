@@ -28,21 +28,27 @@ function getDate(value) {
     return date.format("yyyy-MM-dd hh:mm:ss");
 }
 
+
+function getStartDate(value) {
+    var today = new Date();
+    var enddate = getOnlyDate(today.setDate(today.getDate() - value).toString());
+    return enddate;
+}
 function getTrue(value) {
     if (value == 1)
-        return "是"
+        return "�
     else
-        return "否";
+        return "�;
 }
 
 
-var checks = [["1", "是"], ["0", "否"]];
+var checks = [["1", "�], ["0", "�]];
 
 var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
 
-var checkSex = '[["男"],["女"]]';
+var checkSex = '[["�],["�]]';
 
-var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];
+var checkPrint = [["0", "全部"], ["1", "未打�], ["2", "已打�]];
 var Packer = 5;
 var Examiner = 7;
 var Pei = 8;
@@ -89,7 +95,7 @@ function delData(url, dg, t) {
         $.messager.confirm('确认', '确定删除?', function (r) {
             if (r) {
                 $.post(url, function () {
-                }).success(function (result) {
+                }).success(function (data) {
                    
                     var msgstr = "删除成功";
                     if (result.IsSuccess) {
@@ -145,7 +151,8 @@ function showdlg(url, dlg, handle) {
     }).dialog('open');
 }
 
-//“查询”按钮，弹出查询框
+//“查询”按钮，弹出查询�function showSrarch(url, dlg, dg) {
+//“查询”按钮，弹出查询�
 function showSrarch(url, dlg, dg) {
     $('#' + dlg).load(url, function () {
         $(this).dialog({

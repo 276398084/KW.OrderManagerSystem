@@ -22,8 +22,10 @@
             panelHeight: 'auto',
             data: [{ id: '0', text: "否" }, { id: '1', text: "是" }]
         });
+        $('#c_IsTop').combobox("setValue",1);
         $('#c_Title').validatebox({ required: true });
         $('#c_Content').validatebox({ required: true });
+        $('#c_CardType').combobox("setValue","产品");
     });
     
 </script>

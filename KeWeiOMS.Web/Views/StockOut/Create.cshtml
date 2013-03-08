@@ -9,14 +9,20 @@
     $(function () {
 
 		        $('#c_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
+		            url: '@Url.Action("ListQ","User")',
+		            panelHeight: 100,
+		            mode: 'remote',
+		            valueField: 'Realname',
+		            textField: 'Realname',
+		            editable: true
+		        });
+        $('#c_CreateBy').combobox("setValue","张娟娟");
 		        $("#c_OrderNo").validatebox({
 		            required: true,
 		        });
 
-        $('#c_CreateOn').datebox();
+		        $('#c_CreateOn').datebox();
+		        $('#c_CreateOn').datebox("setValue",getStartDate(0));
         $('#c_WId').combogrid({
             required: true,
             panelWidth: 410,
@@ -35,6 +41,7 @@
             ]]
 
         })
+        $('#c_WId').combogrid("setValue",1);
         $('#c_SKU').combogrid({
             required: true,
             panelWidth: 410,

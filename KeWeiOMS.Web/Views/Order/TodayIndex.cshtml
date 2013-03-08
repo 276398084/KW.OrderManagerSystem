@@ -55,6 +55,9 @@
                 width: 100,
                 panelHeight: 'auto'
             });
+            $('#Platform').combobox("setValue", "LT");
+            $('#OrderStatus').combobox("setValue", "待处理");
+
         });
 
         //新建
@@ -239,6 +242,7 @@
                 required: true,
                 width: 150
             });
+            $('#Account').combotree("setValue", "ALL");
         }
 
         function getOrderDate(v, r, i) {

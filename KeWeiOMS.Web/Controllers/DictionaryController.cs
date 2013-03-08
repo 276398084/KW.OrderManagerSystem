@@ -154,7 +154,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult GetMachineClass()
         {
             IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Machine.Name")
+                .SetString("DicCode", "Machine.Class")
                 .List<DictionaryType>();
 
             return Json(objList, JsonRequestBehavior.AllowGet);

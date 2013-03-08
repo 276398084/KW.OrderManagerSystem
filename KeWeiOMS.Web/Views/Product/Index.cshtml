@@ -114,9 +114,6 @@
         function GetImg(v, r, i) {
             return '<img  src=' + v + '  height="64px" width="64px" />';
         }
-        function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "Product")', 's_dlg', 'dg')
-        }
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
             $("#dg").datagrid("load", {
@@ -172,7 +169,6 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportdt();">导出</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
 
         </div>
         <div id="mm" style="width: 120px">
