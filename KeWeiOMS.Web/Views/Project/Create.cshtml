@@ -47,7 +47,22 @@
         var end = $("#c_EndDate").datebox("getValue");
         if (start > end) {
             alert("结束时间不能小于开始时间！");
-            $("#c_BeginDate").datebox("setValue","");
+            $("#c_BeginDate").datebox("setValue", "");
+            $('#c_NeedDay').attr("value","");
+        }
+        else{
+            var sDate1 = $("#c_BeginDate").datebox("getValue");
+            var sDate2 = $("#c_EndDate").datebox("getValue");
+            sDate1 = sDate1.replace(/-/g, "/");
+            sDate2 = sDate2.replace(/-/g, "/");
+            var date1 = new Date(sDate1);
+            var date2 = new Date(sDate2);
+            //时间差的毫秒数
+            var date3 = date2.getTime() - date1.getTime()
+            //计算出相差天数
+            var days = Math.floor(date3 / (24 * 3600 * 1000));
+            $('#c_NeedDay').attr("value", days);
+          
         }
     }
     function enddatecheck() {
@@ -56,20 +71,20 @@
         if (start > end) {
             alert("结束时间不能小于开始时间！");
             $("#c_EndDate").datebox("setValue", "");
+            $('#c_NeedDay').attr("value","");
         }
         else {
             var sDate1 = $("#c_BeginDate").datebox("getValue");
             var sDate2 = $("#c_EndDate").datebox("getValue");
-            alert(sDate1); alert(sDate2);
-             
-            var aDate = sDate1.split("-");
-            var oDate1 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]);    //转换为3-1-2009格式
-             alert(oDate1);
-            var aDate = sDate2.split("-");
-            var oDate2 = new Date(aDate[1] + '-' + aDate[2] + '-' + aDate[0]);
-            var iDays = parseInt(Math.abs(oDate1 - oDate2) / 1000 / 60 / 60 / 24);
-            alert(da);
-             $('#c_NeedDay').attr("value",da);
+            sDate1 = sDate1.replace(/-/g, "/");
+            sDate2 = sDate2.replace(/-/g, "/");
+            var date1 = new Date(sDate1);
+            var date2 = new Date(sDate2);
+            //时间差的毫秒数
+             var date3 = date2.getTime() - date1.getTime()  
+            //计算出相差天数
+             var days = Math.floor(date3 / (24 * 3600 * 1000));
+           $('#c_NeedDay').attr("value",days);
          }
     }
 
