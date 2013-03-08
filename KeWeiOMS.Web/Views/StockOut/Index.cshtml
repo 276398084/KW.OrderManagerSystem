@@ -12,7 +12,10 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
-
+        $('#StartDate').datebox();
+        $('#EndDate').datebox();
+        $('#StartDate').datebox("setValue", getStartDate(3));
+        $('#EndDate').datebox("setValue", getStartDate(-1));
     });
 
     //新建
@@ -68,7 +71,8 @@
     }
 
 	//异步新建提交
-        function ajaxAdd() {
+    function ajaxAdd() {
+        $('#c_WName').attr("value", $('#c_WId').combogrid("getText"));
             $('#c_form').form('submit', {
                 url: '@Url.Action("Create","StockOut")',
                 onSubmit: function () {
@@ -97,7 +101,8 @@
             });
         }
 		//异步修改提交
-        function ajaxEdit() {
+    function ajaxEdit() {
+        $('#e_WName').attr("value", $('#e_WId').combogrid("getText"));
             $('#e_form').form('submit', {
                 url: '@Url.Action("Edit","StockOut")',
                 onSubmit: function () {
@@ -171,7 +176,7 @@
         return (undefined);
     }
     function doSearch() {
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        search = $('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
         $("#dg").datagrid("load", {
             search: search
 
@@ -204,8 +209,8 @@
                 原有库存
             </th>
 
-            <th field="WId" width="100" sortable="true">
-                仓库ID
+            <th field="WName" width="100" sortable="true">
+                仓库
             </th>
 
             <th field="CreateBy" width="100" sortable="true">
@@ -215,7 +220,9 @@
             <th field="CreateOn" width="100" formatter="getDate" sortable="true">
                 出库时间
             </th>
-
+            <th field="Memo" width="100" sortable="true">
+                备忘
+            </th>
 
     	</tr>
 		</thead>
@@ -224,6 +231,8 @@
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+         开始时间:<input id="StartDate" />
+         结束时间:<input id="EndDate"/>&nbsp&nbsp
         <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">

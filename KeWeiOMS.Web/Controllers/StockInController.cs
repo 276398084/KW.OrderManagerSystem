@@ -27,6 +27,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.CreateBy = CurrentUser.Realname;
+                obj.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -108,10 +110,24 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                where = Utilities.Resolve(search);
+                string key = search.Substring(search.IndexOf("$") + 1);
+                where = Utilities.Resolve(key);
                 if (where.Length > 0)
                 {
                     where = " where " + where;
+                }
+                string GetDate = search.Substring(0, search.IndexOf("$"));
+                string SearchDate = GetSearch(GetDate);
+                if (!string.IsNullOrEmpty(SearchDate))
+                {
+                    if (string.IsNullOrEmpty(where))
+                    {
+                        where = " where " + SearchDate;
+                    }
+                    else
+                    {
+                        where += " and " + SearchDate;
+                    }
                 }
             }
             IList<StockInType> objList = NSession.CreateQuery("from StockInType"+where+orderby)
@@ -121,6 +137,25 @@ namespace KeWeiOMS.Web.Controllers
 			
             object count = NSession.CreateQuery("select count(Id) from StockInType "+where).UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        public static string GetSearch(string search)
+        {
+            string where = "";
+            string startdate = search.Substring(0, search.IndexOf("&"));
+            string enddate = search.Substring(search.IndexOf("&") + 1);
+            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
+            {
+                if (!string.IsNullOrEmpty(startdate))
+                    where += "CreateOn >=\'" + Convert.ToDateTime(startdate) + "\'";
+                if (!string.IsNullOrEmpty(enddate))
+                {
+                    if (where != "")
+                        where += " and ";
+                    where += "CreateOn <\'" + Convert.ToDateTime(enddate).AddDays(1) + "\'";
+                }
+            }
+            return where;
         }
 
     }

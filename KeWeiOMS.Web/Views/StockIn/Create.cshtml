@@ -5,29 +5,13 @@
 }
 
 <script type="text/javascript">
-
     $(function () {
-
-		  $('#c_CreateBy').combobox({
-		      url: '@Url.Action("ListQ","User")',
-		      panelHeight: 100,
-		      mode: 'remote',
-		      valueField: 'Realname',
-		      textField: 'Realname',
-		      editable: true
-		  });
-        $('#c_CreateBy').combobox("setValue", "张娟娟");
-
-
-        $('#c_CreateOn').datebox();
-        $('#c_CreateOn').datebox("setValue", getStartDate(0));
         $('#c_WId').combogrid({
             required: true,
+            editable: false,
             panelWidth: 410,
-            mode: 'remote',
             idField: 'Id',
-            textField: 'Id',
-            required: true,
+            textField: 'WName',
             url: '/Warehouse/QList',
             fit: true,
             columns: [[
@@ -35,11 +19,10 @@
                 { field: 'WCode', title: '仓库代码', width: 100 },
                 { field: 'WName', title: '仓库名称', width: 100 },
                 { field: 'Address', title: '仓位地址', width: 100 }
-
             ]]
-
-        })
+        });
         $('#c_WId').combogrid("setValue", 1);
+        
         $('#c_SKU').combogrid({
             required: true,
             panelWidth: 410,
@@ -53,13 +36,50 @@
                 { field: 'SKU', title: 'SKU', width: 100 },
                 { field: 'ProductName', title: 'Title', width: 200 },
                 { field: 'Standard', title: '规格', width: 100 }
-
             ]]
 
         })
 
+        $('#c_InType').combobox({
+            url: '@Url.Action("GetIntType","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true,
+                    required: true
+        });
+        $('#c_InType').combobox("setValue", "采购到货");
+        $('#c_Price').numberbox({
+            precision: 2,
+            required: true,
+            onChange: function () {
+                nozero();
+            }
+        });
+        $('#c_Qty').numberbox({
+            required: true,
+            onChange: function () {
+                Qtynozero();
+            }
+        });
+       
     });
-    
+    function nozero() {
+        var num = $('#c_Price').attr("value");
+        if (num!="" & num <= 0) {
+            alert("金额输入有误");
+            $('#c_Price').numberbox("setValue", "");
+        }
+    }
+    function Qtynozero() {
+        var num = $('#c_Qty').attr("value");
+        if (num != "" & num <= 0) {
+            alert("数量输入有误");
+            $('#c_Qty').numberbox("setValue", "");
+        }
+    }
+
+
 </script>
 
 @using (Html.BeginForm("Create", "StockIn", FormMethod.Post, new { id = "c_form" }))
@@ -70,17 +90,28 @@
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
-		<td>
+		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
 	</tr>*@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.WId,"入库仓库Id:")
+            @Html.LabelFor(model => model.WId,"入库仓库:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.WId,new{@id="c_WId"})
+		</td>
+        <td style="display:none">
+            @Html.TextBoxFor(model => model.WName,new{@id="c_WName"})
+        </td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.InType,"入库类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.InType,new{@id="c_InType"})
 		</td>
 	</tr>
 
@@ -111,30 +142,22 @@
 		</td>
 	</tr>
 
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.SourceQty,"原有库存:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.SourceQty,new{@id="c_SourceQty"})
 		</td>
-	</tr>
+	</tr>*@
+
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.CreateBy,"入库人:")
+            @Html.LabelFor(model => model.Memo,"备忘:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateOn,"入库时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+            @Html.TextAreaFor(model => model.Memo,new{@id="c_Memo",style="resize:none"})
 		</td>
 	</tr>
 
