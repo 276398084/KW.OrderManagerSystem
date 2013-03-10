@@ -57,6 +57,7 @@
     <Compile Include="Entities\DictionaryClassType.cs" />
     <Compile Include="Entities\DictionaryType.cs" />
     <Compile Include="Entities\DisputeType.cs" />
+    <Compile Include="Entities\EbayType.cs" />
     <Compile Include="Entities\EmailReturnType.cs" />
     <Compile Include="Entities\EmailTemplateType.cs" />
     <Compile Include="Entities\EmailType.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Mappings\DictionaryClasTypeMap.cs" />
     <Compile Include="Mappings\DictionaryTypeMap.cs" />
     <Compile Include="Mappings\DisputeTypeMap.cs" />
+    <Compile Include="Mappings\EbayTypeMap.cs" />
     <Compile Include="Mappings\EmailReturnTypeMap.cs" />
     <Compile Include="Mappings\EmailTemplateTypeMap.cs" />
     <Compile Include="Mappings\EmailTypeMap.cs" />

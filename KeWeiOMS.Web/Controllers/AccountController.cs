@@ -110,10 +110,11 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
-                if (IsOk(obj.Id, obj.AccountName, obj.Platform))
-                    return Json(new {errorMsg="此账号已存在！" });
-                NSession.Update(obj);
-                NSession.Flush();
+                 EBayUtil.GetMyeBaySelling(obj);
+                //if (IsOk(obj.Id, obj.AccountName, obj.Platform))
+                //    return Json(new {errorMsg="此账号已存在！" });
+                //NSession.Update(obj);
+                //NSession.Flush();
             }
             catch (Exception ee)
             {
