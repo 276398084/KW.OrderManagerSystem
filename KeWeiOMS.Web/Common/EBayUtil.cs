@@ -186,21 +186,23 @@ namespace KeWeiOMS.Web
         {
             object obj = NSession.CreateQuery("select count(Id) from EbayType where ItemId='" + id + "'").UniqueResult();
             if (Convert.ToInt32(obj) > 0)
-            {
-                return false;
-            }
-            else
-            {
+            { 
                 IList<EbayType> ebay = NSession.CreateQuery("from EbayType where ItemId='" + id + "'").List<EbayType>();
-                foreach (var item in ebay)
+                foreach (EbayType item in ebay)
                 {
                     item.Price = price;
                     item.NowNum = num;
                     item.CreateOn = DateTime.Now;
                     NSession.Update(item);
+                    NSession.Flush();
                 }
+                return false;
             }
-            return true;
+            else
+            {
+                return true;
+            }
+            
         }
 
         public static void syn()
