@@ -79,6 +79,7 @@
          return '<a href="' + r.ProductUrl + '"  target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="128px" width="128px" /></a>'
      }
      function syn() {
+         $('#dg').datagrid("loading");
          $.ajax({
              url: '@Url.Action("Syn", "Ebay")',
              success: function (result) {
@@ -99,7 +100,7 @@
                      })
                  }
                  $('#dg').datagrid('reload');
-         }  
+            }  
          })
      }
 </script>
