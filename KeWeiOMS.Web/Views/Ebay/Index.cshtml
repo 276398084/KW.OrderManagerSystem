@@ -76,18 +76,27 @@
       }
 
      function url(v, r, i) {
-         return '<a href="' + r.ProductUrl + '" target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="160px" width="160px" /></a>'
+         return '<a href="' + r.ProductUrl + '"  target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="128px" width="128px" /></a>'
      }
      function syn() {
          $.ajax({
              url: '@Url.Action("Syn", "Ebay")',
-             success:function(msg){  
-                 var result = $.parseJSON(msg);
+             success: function (result) {
                  if (result.IsSuccess) {
-                     alert("同步成功");
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide',
+                     })
                  }
                  else {
-                     alert("同步出错");
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide'
+                     })
                  }
                  $('#dg').datagrid('reload');
          }  
@@ -136,7 +145,7 @@
             <th field="Account" width="100" sortable="true">
                 账号
             </th>
-
+            <td ></td>
 
     	</tr>
 		</thead>

@@ -134,9 +134,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
 
 
