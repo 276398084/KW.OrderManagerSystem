@@ -1,0 +1,133 @@
+﻿@model KeWeiOMS.Domain.EbayType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_StartTime').datebox();
+
+
+        $('#e_CreateOn').datebox();
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "Ebay", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ItemId,"编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ItemId,new{@id="e_ItemId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ItemTitle,"标题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ItemTitle,new{@id="e_ItemTitle"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Currency,"货币:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Currency,new{@id="e_Currency"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PicUrl,"图片链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PicUrl,new{@id="e_PicUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartNum,"初始数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartNum,new{@id="e_StartNum"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NowNum,"现在数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NowNum,new{@id="e_NowNum"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductUrl,"产品链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductUrl,new{@id="e_ProductUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.StartTime,"开始时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.StartTime,new{@id="e_StartTime"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"同步时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Account,"账号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account,new{@id="e_Account"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

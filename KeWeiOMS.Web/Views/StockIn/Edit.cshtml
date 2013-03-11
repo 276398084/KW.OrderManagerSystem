@@ -1,23 +1,18 @@
 ﻿@model KeWeiOMS.Domain.StockInType
+
 @{
     Layout = null;
 }
+
 <script type="text/javascript">
+
     $(function () {
-        //这里写加载下拉列表、修改编辑控件的初始化值
-	        $('#e_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-        $('#e_CreateOn').datebox();
         $('#e_WId').combogrid({
             required: true,
+            editable: false,
             panelWidth: 410,
-            mode: 'remote',
             idField: 'Id',
-            textField: 'Id',
+            textField: 'WName',
             required: true,
             url: '/Warehouse/QList',
             fit: true,
@@ -30,7 +25,6 @@
             ]]
 
         })
-
         $('#e_SKU').combogrid({
             required: true,
             panelWidth: 410,
@@ -44,19 +38,54 @@
                 { field: 'SKU', title: 'SKU', width: 100 },
                 { field: 'ProductName', title: 'Title', width: 200 },
                 { field: 'Standard', title: '规格', width: 100 }
-
             ]]
 
         })
         $('#e_SKU').combogrid("setText", '@ViewData["sku"]');
+        $('#e_InType').combobox({
+            url: '@Url.Action("GetIntType","Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true,
+            required: true
+        });
+        $('#e_Price').numberbox({
+            precision: 2,
+            required: true,
+            onChange: function () {
+                nozero();
+            }
+        });
+        $('#e_Qty').numberbox({
+            required: true,
+            onChange: function () {
+                Qtynozero();
+            }
+        });
     });
+    function nozero() {
+        var num = $('#e_Price').attr("value");
+        if (num != "" & num <= 0) {
+            alert("金额输入有误");
+            $('#e_Price').numberbox("setValue", "");
+        }
+    }
+    function Qtynozero() {
+        var num = $('#e_Qty').attr("value");
+        if (num != "" & num <= 0) {
+            alert("数量输入有误");
+            $('#e_Qty').numberbox("setValue", "");
+        }
+    }
 </script>
+
 @using (Html.BeginForm("Edit", "StockIn", FormMethod.Post, new { id = "e_form" }))
 {
 <fieldset>
 <table class="editForm">
 	<tr>
-@*		<td>
+		@*<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>*@
 		<td style="display:none">
@@ -66,10 +95,21 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.WId,"入库仓库Id:")
+            @Html.LabelFor(model => model.WId,"入库仓库:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.WId,new{@id="e_WId"})
+		</td>
+        <td style="display:none">
+            @Html.TextBoxFor(model => model.WName,new{@id="e_WName"})
+        </td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.InType,"入库类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.InType,new{@id="e_InType"})
 		</td>
 	</tr>
 
@@ -101,34 +141,43 @@
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.SourceQty,"原有库存:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SourceQty,new{@id="e_SourceQty"})
+		</td>*@
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.SourceQty,new{@id="c_SourceQty"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.CreateBy,"入库人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>*@
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.CreateOn,"入库时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>*@
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
 		</td>
 	</tr>
 
 
-    
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"备忘:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Memo,new{@id="e_Memo",style="resize:none"})
+		</td>
+	</tr>
+
+
 </table>
 </fieldset>
 }

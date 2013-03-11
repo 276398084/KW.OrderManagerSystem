@@ -127,6 +127,7 @@
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
     <Compile Include="Common\EbayHelper.cs" />
+    <Compile Include="Common\EBayUtil.cs" />
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\ExcelHelper.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
@@ -147,6 +148,7 @@
     <Compile Include="Controllers\DictionaryClassController.cs" />
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\DisputeController.cs" />
+    <Compile Include="Controllers\EbayController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
@@ -1281,6 +1283,11 @@
     <Content Include="Views\Project\Details.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
     <Content Include="Views\Project\Index.cshtml" />
+    <Content Include="Views\Ebay\Create.cshtml" />
+    <Content Include="Views\Ebay\Delete.cshtml" />
+    <Content Include="Views\Ebay\Details.cshtml" />
+    <Content Include="Views\Ebay\Edit.cshtml" />
+    <Content Include="Views\Ebay\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

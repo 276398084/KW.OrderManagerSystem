@@ -1,25 +1,19 @@
 ﻿@model KeWeiOMS.Domain.StockOutType
+
 @{
     Layout = null;
 }
-<script type="text/javascript">
-    $(function () {
-        //这里写加载下拉列表、修改编辑控件的初始化值
-	        $('#e_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
 
-	        $("#e_OrderNo").validatebox({
-	            required: true,
-	        });
-        $('#e_CreateOn').datebox();
+<script type="text/javascript">
+
+    $(function () {
+        $('#e_OrderNo').validatebox({ required: true });
         $('#e_WId').combogrid({
             required: true,
             panelWidth: 410,
             mode: 'remote',
             idField: 'Id',
-            textField: 'Id',
+            textField: 'WName',
             required: true,
             url: '/Warehouse/QList',
             fit: true,
@@ -32,6 +26,14 @@
             ]]
 
         })
+        $('#e_OutType').combobox({
+            url: '@Url.Action("GetOutType","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true,
+                    required: true
+                });
 
         $('#e_SKU').combogrid({
             required: true,
@@ -51,21 +53,37 @@
 
         })
         $('#e_SKU').combogrid("setText", '@ViewData["sku"]');
-
+        $('#e_Qty').numberbox({
+            required: true,
+            onChange: function () {
+                Qtynozero();
+            }
+        });
     });
+
+    function Qtynozero() {
+        alert(2);
+        var num = $('#e_Qty').attr("value");
+        if (num != "" & num <= 0) {
+            alert("数量输入有误");
+            $('#e_Qty').numberbox("setValue", "");
+        }
+    }
 </script>
+
 @using (Html.BeginForm("Edit", "StockOut", FormMethod.Post, new { id = "e_form" }))
 {
 <fieldset>
 <table class="editForm">
-	<tr>
-@*		<td>
+        <tr>
+		@*	<td>
             @Html.LabelFor(model => model.Id,"主键:")
-		</td>*@
+		</td> *@
 		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
 	</tr>
+   
 
 	<tr>
 		<td>
@@ -73,6 +91,26 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+		</td>
+	</tr>
+
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.WId,"仓库:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WId,new{@id="e_WId"})
+		</td>
+        <td style="display:none">
+            @Html.TextBoxFor(model => model.WName,new{@id="e_WName"})
+        </td>
+	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.OutType,"出库类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OutType,new{@id="e_OutType"})
 		</td>
 	</tr>
 
@@ -94,44 +132,37 @@
 		</td>
 	</tr>
 
-	<tr>
-		<td>
+
+    <tr>
+@*			<td>
             @Html.LabelFor(model => model.SourceQty,"原有库存:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.SourceQty,new{@id="e_SourceQty"})
 		</td>
 	</tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.WId,"仓库ID:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WId,new{@id="e_WId"})
-		</td>
-	</tr>
 
-	<tr>
-		<td>
+    <tr>
+@*		<td>
             @Html.LabelFor(model => model.CreateBy,"出库人:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.CreateOn,"出库时间:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
 		</td>
 	</tr>
-
-
     
+
+
 </table>
 </fieldset>
 }

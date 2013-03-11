@@ -1,4 +1,4 @@
-if (typeof (JSON) == 'undefined') {
+﻿if (typeof (JSON) == 'undefined') {
     $('head').append($("<script type='text/javascript' src='/Scripts/json2.js'>"));
 } else {
 
@@ -14,7 +14,7 @@ Date.prototype.format = function (format) {
         "s+": this.getSeconds(), //second
         "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
         "S": this.getMilliseconds() //millisecond
-    };
+    }
     if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
     (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (var k in o) if (new RegExp("(" + k + ")").test(format))
@@ -28,16 +28,16 @@ function getDate(value) {
     return date.format("yyyy-MM-dd hh:mm:ss");
 }
 
-function getStartDate(value) {
-    var today = new Date();
-    var enddate = getOnlyDate(today.setDate(today.getDate() - value).toString());
-    return enddate;
-}
 function getOnlyDate(value) {
     var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
     return date.format("yyyy-MM-dd");
 }
 
+function getStartDate(value) {
+    var today = new Date();
+    var enddate = getOnlyDate(today.setDate(today.getDate() - value).toString());
+    return enddate;
+}
 function getTrue(value) {
     if (value == 1)
         return "是";
@@ -48,18 +48,13 @@ function getTrue(value) {
 
 var checks = [["1", "是"], ["0", "否"]];
 
-var checksall = [["ALL", "ALL"], ["1", "是"], ["0", "否"]];
-
-var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
-
 var checkSex = '[["男"],["女"]]';
 
-var checkPrint = [["ALL", "ALL"], ["1", "未打印"], ["2", "已打印"]];
+var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];
 var Packer = 5;
 var Examiner = 7;
 var Pei = 8;
 var Purchaser = 9;
-
 
 
 
@@ -71,6 +66,7 @@ function formPost(form, url, dlg, dg, t) {
             return $(this).form('validate');
         },
         success: function (msg) {
+
             var result = $.parseJSON(msg);
             if (result.IsSuccess) {
                 alert("操作成功");
@@ -79,11 +75,7 @@ function formPost(form, url, dlg, dg, t) {
                 }
                 if (dg) {
                     if (t) {
-                        if (t == 't')
-                            $('#' + dg).treegrid('reload');
-                        else {
-                            window.location.reload();
-                        }
+                        $('#' + dg).treegrid('reload');
                     }
                     else {
                         $('#' + dg).datagrid('reload');
@@ -101,27 +93,14 @@ function delData(url, dg, t) {
         $.messager.confirm('确认', '确定删除?', function (r) {
             if (r) {
                 $.post(url, function () {
-                }).success(function (msg) {
-                    var result = $.parseJSON(msg);
+                }).success(function (data) {
                     var msgstr = "删除成功";
-                    if (result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
                             msg: msgstr,
                             timeout: 3000,
                             showType: 'slide'
                         });
-
-                    } else {
-                        msgstr = "删除失败" + result.ErrorMsg;
-                        $.messager.show({
-                            title: '提示',
-                            msg: msgstr,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                    }
-
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }

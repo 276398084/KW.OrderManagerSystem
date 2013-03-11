@@ -7,28 +7,13 @@
 <script type="text/javascript">
 
     $(function () {
-
-		        $('#c_CreateBy').combobox({
-		            url: '@Url.Action("ListQ","User")',
-		            panelHeight: 100,
-		            mode: 'remote',
-		            valueField: 'Realname',
-		            textField: 'Realname',
-		            editable: true
-		        });
-        $('#c_CreateBy').combobox("setValue","张娟娟");
-		        $("#c_OrderNo").validatebox({
-		            required: true,
-		        });
-
-		        $('#c_CreateOn').datebox();
-		        $('#c_CreateOn').datebox("setValue",getStartDate(0));
+        $('#c_OrderNo').validatebox({required:true});
         $('#c_WId').combogrid({
             required: true,
             panelWidth: 410,
             mode: 'remote',
             idField: 'Id',
-            textField: 'Id',
+            textField: 'WName',
             required: true,
             url: '/Warehouse/QList',
             fit: true,
@@ -41,7 +26,17 @@
             ]]
 
         })
-        $('#c_WId').combogrid("setValue",1);
+        $('#c_WId').combogrid("setValue", 1);
+        $('#c_OutType').combobox({
+            url: '@Url.Action("GetOutType","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    editable: true,
+                    required: true
+                });
+        $('#c_OutType').combobox("setValue", "扫描出库");
+
         $('#c_SKU').combogrid({
             required: true,
             panelWidth: 410,
@@ -59,8 +54,21 @@
             ]]
 
         })
+        $('#c_Qty').numberbox({
+            required: true,
+            onChange: function (){
+                Qtynozero();
+            }
+        });
     });
     
+    function Qtynozero() {
+        var num = $('#c_Qty').attr("value");
+        if (num != "" & num <= 0) {
+            alert("数量输入有误");
+            $('#c_Qty').numberbox("setValue", "");
+        }
+    }
 </script>
 
 @using (Html.BeginForm("Create", "StockOut", FormMethod.Post, new { id = "c_form" }))
@@ -74,7 +82,8 @@
 		<td>
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
-	</tr>*@
+	</tr>
+    *@
 
 	<tr>
 		<td>
@@ -82,6 +91,26 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>
+	</tr>
+
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.WId,"仓库:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WId,new{@id="c_WId"})
+		</td>
+        <td style="display:none">
+            @Html.TextBoxFor(model => model.WName,new{@id="c_WName"})
+        </td>
+	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.OutType,"出库类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OutType,new{@id="c_OutType"})
 		</td>
 	</tr>
 
@@ -102,8 +131,16 @@
             @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
 		</td>
 	</tr>
-
-	<tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.Memo,"备忘:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Memo,new{@id="c_Memo"})
+		</td>
+	</tr>
+@*	
+    <tr>
 		<td>
             @Html.LabelFor(model => model.SourceQty,"原有库存:")
 		</td>
@@ -112,16 +149,8 @@
 		</td>
 	</tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.WId,"仓库ID:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WId,new{@id="c_WId"})
-		</td>
-	</tr>
 
-	<tr>
+    <tr>
 		<td>
             @Html.LabelFor(model => model.CreateBy,"出库人:")
 		</td>
@@ -138,6 +167,7 @@
             @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
 		</td>
 	</tr>
+    *@
 
 
 </table>

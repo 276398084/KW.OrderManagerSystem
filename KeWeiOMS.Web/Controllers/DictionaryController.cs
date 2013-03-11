@@ -33,7 +33,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+                return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true  });
         }
@@ -159,7 +159,22 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(objList, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult GetIntType()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Stock.IntType")
+                .List<DictionaryType>();
 
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
+       public JsonResult GetOutType()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Stock.OutType")
+                .List<DictionaryType>();
+
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
     }
 }
 

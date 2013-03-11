@@ -1,32 +1,30 @@
-
 @model IEnumerable<KeWeiOMS.Domain.StockOutType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","StockOut")',
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "StockOut")',
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
         $('#StartDate').datebox();
         $('#EndDate').datebox();
-        $('#StartDate').datebox("setValue", getStartDate(30));
+        $('#StartDate').datebox("setValue", getStartDate(3));
         $('#EndDate').datebox("setValue", getStartDate(-1));
     });
 
     //新建
     function c_dlg() {
-        var url_str = '@Url.Action("Create","StockOut")';
-		
+        var url_str = '@Url.Action("Create", "StockOut")';
         $('#c_dlg').load(url_str, function () {
             $(this).dialog({
                 title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
+                modal:true,
+                loadingMessage:'正在加载...',
                 buttons: [{
                     text: '提交',
                     iconCls: 'icon-ok',
@@ -47,17 +45,17 @@
     function e_dlg() {
         var id = getselectedRow();
         if (id != undefined) {
-            var url = '@Url.Action("Edit","StockOut")/' + id;
+            var url = '@Url.Action("Edit", "StockOut")/' + id;
             $('#e_dlg').load(url, function () {
                 $(this).dialog({
                     title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
+                    modal:true,
+                    loadingMessage:'正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-							ajaxEdit();
+                            ajaxEdit();
                         }
                     }, {
                         text: '取消',
@@ -70,23 +68,30 @@
         }
     }
 
+<<<<<<< HEAD
 	//异步新建提交
     function ajaxAdd() {
         $('#c_WName').attr("value", $('#c_WId').combogrid("getText"));
             $('#c_form').form('submit', {
                 url: '@Url.Action("Create","StockOut")',
+=======
+    //异步新建提交
+    function ajaxAdd() {
+        $('#c_form').form('submit', {
+            url: '@Url.Action("Create", "StockOut")',
+>>>>>>> KeWeiOMS/jmyd2
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                 
+                    if (!result.IsSuccess) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#c_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -100,23 +105,27 @@
                 }
             });
         }
+<<<<<<< HEAD
 		//异步修改提交
     function ajaxEdit() {
         $('#e_WName').attr("value", $('#e_WId').combogrid("getText"));
+=======
+        //异步修改提交
+        function ajaxEdit() {
+>>>>>>> KeWeiOMS/jmyd2
             $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","StockOut")',
+                url: '@Url.Action("Edit", "StockOut")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                    if (!result.IsSuccess) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#e_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -132,30 +141,41 @@
         }
    
 
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","StockOut")/' + id;
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                $.messager.confirm('确认', '确定删除?', function (r) {
+                    if (r) {
+                        var url = '@Url.Action("Delete", "StockOut")/' + id;
                     $.post(url, function () {
                     }).success(function (data) {
                         var msgstr = "删除成功";
-                        $.messager.show({
-                            title: '提示',
-                            msg: msgstr,
-                            timeout: 3000,
-                            showType: 'slide'
-                        });
-                        $('#dg').datagrid('reload');
-                    }).error(function () {
-                        $.messager.alert('错误', '删除发生错误');
-                    });
+                        if (!data.IsSuccess){
+                            msgstr = "删除失败" + data;
+                            $.messager.show({
+                                title: '提示',
+                                msg: msgstr,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        }else{
+	                        $.messager.show({
+	                            title: '提示',
+	                            msg: msgstr,
+	                            timeout: 3000,
+	                            showType: 'slide'
+	                        });
+                    }
 
-                }
+                        $('#dg').datagrid('reload');
+                }) .error(function () {
+                    $.messager.alert('错误', '删除发生错误');
+                });
+
+            }
             });
-        }
+    }
     }
 
     //获取选中行
@@ -182,69 +202,79 @@
 
         });
     }
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-@*            <th field="Id" width="100">
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    @*            <th field="Id" width="100">
                 主键
             </th>*@
 
-            <th field="OrderNo" width="100" sortable="true">
-                订单编号
-            </th>
+                    <th field="OrderNo" width="100" sortable="true">订单编号
+                    </th>
+
+                    <th field="SKU" width="100" sortable="true">SKU
+                    </th>
+
+                    <th field="Qty" width="100" sortable="true">数量
+                    </th>
+
+                    <th field="SourceQty" width="100" sortable="true">原有库存
+                    </th>
+
+<<<<<<< HEAD
             <th field="WName" width="100" sortable="true">
                 仓库
             </th>
-            <th field="OutType" width="100" sortable="true">
-                出库类型
-            </th>
-            <th field="SKU" width="100" sortable="true">
-                SKU
-            </th>
+=======
+                    <th field="WId" width="100" sortable="true">仓库ID
+                    </th>
+>>>>>>> KeWeiOMS/jmyd2
 
-            <th field="Qty" width="100" sortable="true">
-                数量
-            </th>
+                    <th field="CreateBy" width="100" sortable="true">出库人
+                    </th>
 
-            <th field="SourceQty" width="100" sortable="true">
-                原有库存
-            </th>
-
-
-
-            <th field="CreateBy" width="100" sortable="true">
-                出库人
-            </th>
-
+<<<<<<< HEAD
             <th field="CreateOn" width="100" formatter="getDate" sortable="true">
                 出库时间
             </th>
             <th field="Memo" width="100" sortable="true">
                 备忘
             </th>
+=======
+                    <th field="CreateOn" width="100" formatter="getDate" sortable="true">出库时间
+                    </th>
 
-    	</tr>
-		</thead>
-		</table>
+>>>>>>> KeWeiOMS/jmyd2
+
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
+<<<<<<< HEAD
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
          开始时间:<input id="StartDate" />
          结束时间:<input id="EndDate"/>&nbsp&nbsp
         <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+=======
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+>>>>>>> KeWeiOMS/jmyd2
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>
             <div data-options="name:'SKU'">SKU</div>
             <div data-options="name:'CreateBy'">出库人</div>
         </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
 
-</div>
+    </div>
 </body>
