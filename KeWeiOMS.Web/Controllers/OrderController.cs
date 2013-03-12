@@ -82,7 +82,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             IQuery Query = NSession.CreateQuery(string.Format("update OrderType set {0}='{1}' where {0}='{2}'", fieldName, newField, oldField));
             int num = Query.ExecuteUpdate();
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public ActionResult Import()
@@ -104,7 +104,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 OrderHelper.ValiOrder(order, countrys, products, currencys, logistics);
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]
@@ -115,7 +115,7 @@ namespace KeWeiOMS.Web.Controllers
             AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             string file = form["hfile"];
             OrderHelper.ImportByAmount(account, file);
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]
@@ -213,7 +213,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
         [HttpPost]
@@ -553,7 +553,7 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
 
@@ -697,7 +697,6 @@ left join Products P On OP.SKU=P.SKU ";
                                 html += string.Format(html2, p.SKU, p.Qty, p.Standard, p.Id, p.Qty);
                             }
                         }
-
                     }
                     html += "</table>";
                     return Json(new { IsSuccess = true, Result = html });

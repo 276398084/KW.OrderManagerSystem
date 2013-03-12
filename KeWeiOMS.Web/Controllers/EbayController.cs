@@ -35,7 +35,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { ErrorMsg = "出错了", IsSuccess = false });
             }
             return Json(new { IsSuccess = "true" });
         }
@@ -45,7 +45,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  EbayType GetById(int Id)
+        public EbayType GetById(int Id)
         {
             EbayType obj = NSession.Get<EbayType>(Id);
             if (obj == null)
@@ -69,7 +69,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(EbayType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,16 +77,16 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { ErrorMsg = "出错了", IsSuccess = false });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 EbayType obj = GetById(id);
@@ -95,12 +95,12 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { ErrorMsg = "出错了", IsSuccess = false });
             }
             return Json(new { IsSuccess = "true" });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
             string orderby = " order by Id desc ";
@@ -122,7 +122,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows)
                 .List<EbayType>();
 
-            object count = NSession.CreateQuery("select count(Id) from EbayType " + where ).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from EbayType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
@@ -134,9 +134,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { ErrorMsg = "出错了", IsSuccess = false });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true }, JsonRequestBehavior.AllowGet);
         }
 
 
