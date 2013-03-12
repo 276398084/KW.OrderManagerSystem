@@ -1288,6 +1288,7 @@
     <Content Include="Views\Ebay\Details.cshtml" />
     <Content Include="Views\Ebay\Edit.cshtml" />
     <Content Include="Views\Ebay\Index.cshtml" />
+    <Content Include="Views\Product\ProductProfits.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

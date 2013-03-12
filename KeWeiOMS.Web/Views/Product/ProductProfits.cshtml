@@ -1,0 +1,202 @@
+﻿@{
+    ViewBag.Title = "ProductProfits";
+}
+<div>
+
+    <script type="text/javascript">
+        var price = null;
+        var weight = null;
+        var qty = null;
+        var onlineprice = null;
+        var currency = null;
+        var logisticMode = null;
+        var country = null;
+        $(function(){
+            $('#Currency').combogrid({
+                panelWidth: 360,
+                idField: 'CurrencyValue',
+                textField: 'CurrencyValue',
+                url: '/Currency/QList',
+                onChange: function (value) {
+                    currency = value;
+                    Calculate();
+                },
+                fit: true,
+                columns: [[
+                    { field: 'CurrencyName', title: '货币', width: 150 },
+                    { field: 'CurrencyCode', title: '代码', width: 100 },
+                    { field: 'CurrencyValue', title: '汇率', width: 100 }
+
+                ]]
+            });
+            $('#sku').combogrid({
+                required: true,
+                panelWidth: 410,
+                mode: 'remote',
+                idField: 'SKU',
+                textField: 'SKU',
+                onChange: function (sku) {
+                    SeachSKU(sku);
+                },
+                required: true,
+                url: '/Product/ListQ',
+                fit: true,
+                columns: [[
+                    { field: 'SKU', title: 'SKU', width: 100 },
+                    { field: 'ProductName', title: 'Title', width: 200 },
+                    { field: 'Standard', title: '规格', width: 100 }
+                ]]
+            });
+
+            $('#LogisticMode').combogrid({
+                panelWidth: 360,
+                idField: 'LogisticsCode',
+                textField: 'LogisticsName',
+                url: '/LogisticsMode/ALLList',
+                onChange: function (value) {
+                    logisticMode = value;
+                    Calculate();
+                },
+                fit: true,
+                columns: [[
+                    { field: 'LogisticsName', title: '名称', width: 250 },
+                    { field: 'LogisticsCode', title: '代码', width: 100 }
+                ]]
+            });
+            $('#LogisticMode').combogrid("setValue", "NJGH");
+            $('#Country').combogrid({
+                panelWidth: 360,
+                idField: 'ECountry',
+                textField: 'ECountry',
+                url: '/Country/ListALL',
+                onChange: function (value) {
+                    country = value;
+                    Calculate();
+                },
+                fit: true,
+                columns: [[
+                    { field: 'CCountry', title: '中文', width: 150 },
+                    { field: 'ECountry', title: '英文', width: 100 },
+                    { field: 'CountryCode', title: '简码', width: 100 }
+                ]]
+            });
+
+        })
+        function SeachSKU(sku) {
+            $.getJSON('@Url.Action("SearchSKU", "Product")/' + sku, function (json) {
+                    if (json) {
+                        $("#price").attr("value", json[0].Price);
+                        $("#weight").attr("value", json[0].Weight);
+                        qty = json[0].Price;
+                        weight = json[0].Weight;
+                        Calculate();
+                    }
+            });
+            
+        }
+
+        function Calculate() {
+            price = $("#price").attr("value");
+            weight = $("#weight").attr("value");
+            qty = $("#qty").attr("value");
+            onlineprice = $("#onlineprice").attr("value");
+            //alert(price); alert(weight); alert(qty); alert(onlineprice); alert(currency); alert(logisticMode); alert(country);
+            if (price && weight && qty && onlineprice&& currency && logisticMode && country) {
+            
+                alert("nonull");
+            }
+            else {
+                $("#profit").attr("value","");
+            }
+        }
+    </script>
+<form>
+  <fieldset>
+    <legend>产品信息</legend>
+      <table>
+          <tr>
+            <td>
+                <label>SKU:</label>
+             </td>
+              <td>
+                <input id="sku" type="text" />
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <label>价格:</label>
+             </td>  
+             <td>
+                <input id="price" type="text"  onblur = "Calculate()"  />
+             </td> 
+          </tr>
+          <tr>
+            <td>
+                <label>重量：</label>
+            </td>
+            <td>
+               <input id="weight" type="text" onblur = "Calculate()"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <label>数量:</label>
+            </td>
+            <td>
+                <input id="qty" type="text" onblur = "Calculate()"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <label>平台销售价格:</label>
+            </td>
+            <td>
+                <input id="onlineprice" type="text" onblur = "Calculate()"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <label>汇率:</label>
+            </td>
+            <td>
+                <input id="Currency" type="text" onblur = "Calculate()"/>
+            </td>
+          </tr>
+      </table>
+  </fieldset>
+  <fieldset>
+    <legend>物流信息</legend>
+         <table>
+          <tr>
+            <td>
+                <label>发货方式:</label>
+             </td>
+              <td>
+                <input id="LogisticMode" type="text" onblur = "Calculate()"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+                <label>国家:</label>
+             </td>  
+             <td>
+                <input id="Country" type="text" onblur = "Calculate()"/>
+             </td> 
+          </tr>
+      </table>
+  </fieldset>
+      <fieldset>
+    <legend>利润信息</legend>
+         <table>
+          <tr>
+            <td>
+                <label>利润:</label>
+             </td>  
+             <td>
+                <input id="profit" type="text"/>
+             </td> 
+          </tr>
+      </table>
+  </fieldset>
+</form>
+</div>

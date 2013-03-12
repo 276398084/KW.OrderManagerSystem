@@ -20,6 +20,10 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult ProductProfits()
+        {
+            return View();
+        }
         public ActionResult Create()
         {
             return View();
@@ -390,6 +394,12 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = false, Result = "没有找到这个产品！" });
 
+        }
+
+        public JsonResult SearchSKU(string id) 
+        {
+            IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU='"+id+"'").List<ProductType>();
+            return Json(obj,JsonRequestBehavior.AllowGet);
         }
     }
 }
