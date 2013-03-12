@@ -136,7 +136,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { ErrorMsg = "出错了", IsSuccess = false });
             }
-            return Json(new { IsSuccess = true }, JsonRequestBehavior.AllowGet);
+            return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
 
 
