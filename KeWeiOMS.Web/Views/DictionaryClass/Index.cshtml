@@ -15,7 +15,6 @@
         //新建
         function c_dlg() {
             var url_str = '@Url.Action("Create", "DictionaryClass")';
-
             $('#c_dlg').load(url_str, function () {
                 $(this).dialog({
                     title: '新建',
@@ -72,7 +71,7 @@
                     return $(this).form('validate');
                 },
                 success: function (result) {
-                 
+
                     if (!result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
@@ -101,7 +100,7 @@
                         return $(this).form('validate');
                     },
                     success: function (result) {
-                     
+
                         if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',
@@ -134,7 +133,7 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                              if (!data.IsSuccess){
+                                if (!data.IsSuccess) {
                                     msgstr = "删除失败" + data;
                                     $.messager.show({
                                         title: '提示',
@@ -155,7 +154,6 @@
                             }).error(function () {
                                 $.messager.alert('错误', '删除发生错误');
                             });
-
                         }
                     });
                 }
@@ -309,7 +307,7 @@
                     <tr>
                         <th field="Id" width="100" data-options="hidden:true">操作
                         </th>
-                        <th field='ck', checkbox="true">
+                        <th field='ck' checkbox="true">
                         </th>
                         <th field="DicCode" width="100">分类代码
                         </th>

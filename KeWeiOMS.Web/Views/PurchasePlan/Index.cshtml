@@ -159,9 +159,9 @@
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
-                success: function (result) {
-                 
-                    if (!result.IsSuccess) {
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
+                    if(!result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
                             msg: '保存失败:' + result.ErrorMsg,
@@ -188,8 +188,8 @@
                     onSubmit: function () {
                         return $(this).form('validate');
                     },
-                    success: function (result) {
-                     
+                    success: function (msg) {
+                        var result = $.parseJSON(msg);
                         if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',

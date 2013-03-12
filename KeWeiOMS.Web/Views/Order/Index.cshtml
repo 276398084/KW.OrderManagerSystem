@@ -45,7 +45,7 @@
                 onChange: changePlatform
             });
             $('#OrderStatus').combobox({
-                url: '/Home/OrderStatus',
+                url: '/Home/OrderStatus/1',
                 valueField: 'id',
                 textField: 'text',
                 required: true,
@@ -64,7 +64,7 @@
                 valueField: 0,
                 textField: 1,
                 panelHeight: 'auto',
-                data: checks,
+                data: checksall,
                 width: 100
             });
             $('#orderdateType').combobox({
@@ -74,7 +74,13 @@
                 data: orderDateType,
                 width: 100
             });
+            $('#OrderStatus').combobox("setValue", "ALL");
+            $('#IsPrint').combobox("setValue", "ALL");
             $('#orderdateType').combobox("setValue", "CreateOn");
+            $('#IsQue').combobox("setValue", "ALL");
+            $('#Platform').combobox("setValue", "ALL");
+            $('#CreateOn_st').datebox("setValue", getStartDate(60));
+            $('#CreateOn_et').datebox("setValue", getStartDate(-1));
         });
 
         //新建
@@ -199,7 +205,7 @@
             }
             var f = $('#CreateOn_et').combobox("getValue");
             if (f != "ALL" && f != "" && f != "0") {
-                search += t + "_et&" + e + "^";
+                search += t + "_et&" + f + "^";
             }
             var g = $('#IsQue').combobox("getValue");
             if (g != "ALL" && g != "" && g != "0") {

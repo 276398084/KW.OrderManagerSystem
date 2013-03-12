@@ -14,7 +14,7 @@ Date.prototype.format = function (format) {
         "s+": this.getSeconds(), //second
         "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
         "S": this.getMilliseconds() //millisecond
-    }
+    };
     if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
     (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (var k in o) if (new RegExp("(" + k + ")").test(format))
@@ -28,6 +28,10 @@ function getDate(value) {
     return date.format("yyyy-MM-dd hh:mm:ss");
 }
 
+<<<<<<< HEAD
+function getStartDate(value) {
+    var today = new Date();
+=======
 function getOnlyDate(value) {
     var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
     return date.format("yyyy-MM-dd");
@@ -35,9 +39,15 @@ function getOnlyDate(value) {
 
 function getStartDate(value) {
     var today = new Date();
+>>>>>>> kewei/ttt
     var enddate = getOnlyDate(today.setDate(today.getDate() - value).toString());
     return enddate;
 }
+function getOnlyDate(value) {
+    var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
+    return date.format("yyyy-MM-dd");
+}
+
 function getTrue(value) {
     if (value == 1)
         return "是";
@@ -45,16 +55,30 @@ function getTrue(value) {
         return "否";
 }
 
-var checks = [["1", "是"], ["0", "否"]];
-var checksall = [["ALL", "ALL"], ["1", "是"], ["0", "否"]];
-var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
-var checkSex = '[["男"],["女"]]';
-var checkPrint = [["ALL", "ALL"], ["1", "未打印"], ["2", "已打印"]];
 
+var checks = [["1", "是"], ["0", "否"]];
+<<<<<<< HEAD
+
+var checksall = [["ALL", "ALL"], ["1", "是"], ["0", "否"]];
+
+var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
+
+var checkSex = '[["男"],["女"]]';
+
+var checkPrint = [["ALL", "ALL"], ["1", "未打印"], ["2", "已打印"]];
+=======
+
+var checkSex = '[["男"],["女"]]';
+
+var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];
+>>>>>>> kewei/ttt
 var Packer = 5;
 var Examiner = 7;
 var Pei = 8;
 var Purchaser = 9;
+
+
+
 
 function formPost(form, url, dlg, dg, t) {
 
@@ -64,7 +88,6 @@ function formPost(form, url, dlg, dg, t) {
             return $(this).form('validate');
         },
         success: function (msg) {
-
             var result = $.parseJSON(msg);
             if (result.IsSuccess) {
                 alert("操作成功");
@@ -91,14 +114,19 @@ function delData(url, dg, t) {
         $.messager.confirm('确认', '确定删除?', function (r) {
             if (r) {
                 $.post(url, function () {
+<<<<<<< HEAD
+                }).success(function (msg) {
+                    var result = $.parseJSON(msg);
+=======
                 }).success(function (data) {
+>>>>>>> kewei/ttt
                     var msgstr = "删除成功";
-                    $.messager.show({
-                        title: '提示',
-                        msg: msgstr,
-                        timeout: 3000,
-                        showType: 'slide'
-                    });
+                        $.messager.show({
+                            title: '提示',
+                            msg: msgstr,
+                            timeout: 3000,
+                            showType: 'slide'
+                        });
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }
