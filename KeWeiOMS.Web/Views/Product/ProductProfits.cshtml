@@ -11,12 +11,13 @@
         var currency = null;
         var logisticMode = null;
         var country = null;
-        $(function(){
+        $(function () {
             $('#Currency').combogrid({
                 panelWidth: 360,
                 idField: 'CurrencyValue',
-                textField: 'CurrencyValue',
+                textField: 'CurrencyCode',
                 url: '/Currency/QList',
+                required:true,
                 onChange: function (value) {
                     currency = value;
                     Calculate();
@@ -29,8 +30,8 @@
 
                 ]]
             });
+            $('#Currency').combogrid("setValue","");
             $('#sku').combogrid({
-                required: true,
                 panelWidth: 410,
                 mode: 'remote',
                 idField: 'SKU',
@@ -38,7 +39,6 @@
                 onChange: function (sku) {
                     SeachSKU(sku);
                 },
-                required: true,
                 url: '/Product/ListQ',
                 fit: true,
                 columns: [[
@@ -63,10 +63,10 @@
                     { field: 'LogisticsCode', title: '代码', width: 100 }
                 ]]
             });
-            $('#LogisticMode').combogrid("setValue", "NJGH");
+            $('#LogisticMode').combogrid("setValue", "NBGH");
             $('#Country').combogrid({
                 panelWidth: 360,
-                idField: 'ECountry',
+                idField: 'Id',
                 textField: 'ECountry',
                 url: '/Country/ListALL',
                 onChange: function (value) {
@@ -80,6 +80,7 @@
                     { field: 'CountryCode', title: '简码', width: 100 }
                 ]]
             });
+            $('#Country').combogrid("setValue","218");
 
         })
         function SeachSKU(sku) {
@@ -87,9 +88,10 @@
                     if (json) {
                         $("#price").attr("value", json[0].Price);
                         $("#weight").attr("value", json[0].Weight);
-                        qty = json[0].Price;
-                        weight = json[0].Weight;
-                        Calculate();
+                              qty = json[0].Price;
+                              weight = json[0].Weight;
+                              Calculate();
+                       
                     }
             });
             
@@ -100,17 +102,23 @@
             weight = $("#weight").attr("value");
             qty = $("#qty").attr("value");
             onlineprice = $("#onlineprice").attr("value");
-            //alert(price); alert(weight); alert(qty); alert(onlineprice); alert(currency); alert(logisticMode); alert(country);
-            if (price && weight && qty && onlineprice&& currency && logisticMode && country) {
-            
-                alert("nonull");
+            if (price && weight && qty && onlineprice && currency && logisticMode && country) {
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Freight", "Product")',
+                    data: "price=" + price + "&weight=" + weight + "&qty=" + qty + "&onlineprice=" + onlineprice + "&currency=" + currency + "&logisticMode=" + logisticMode + "&country=" + country,
+                    success: function (msg) {
+                        $("#profit").attr("value",msg);
+                    }
+                });
             }
             else {
                 $("#profit").attr("value","");
             }
         }
     </script>
-<form>
+@using (Html.BeginForm("Freight", "Product", FormMethod.Post, new { id = "profitform" }))
+{
   <fieldset>
     <legend>产品信息</legend>
       <table>
@@ -119,7 +127,7 @@
                 <label>SKU:</label>
              </td>
               <td>
-                <input id="sku" type="text" />
+                <input id="sku" style="width:150px" type="text" />
             </td>
           </tr>
           <tr>
@@ -127,12 +135,12 @@
                 <label>价格:</label>
              </td>  
              <td>
-                <input id="price" type="text"  onblur = "Calculate()"  />
+                <input name="price" id="price" type="text"  onblur = "Calculate()"  />
              </td> 
           </tr>
           <tr>
             <td>
-                <label>重量：</label>
+                <label>重量:</label>
             </td>
             <td>
                <input id="weight" type="text" onblur = "Calculate()"/>
@@ -159,7 +167,7 @@
                 <label>汇率:</label>
             </td>
             <td>
-                <input id="Currency" type="text" onblur = "Calculate()"/>
+                <input id="Currency" type="text" style="width:150px" onblur = "Calculate()"/>
             </td>
           </tr>
       </table>
@@ -198,5 +206,5 @@
           </tr>
       </table>
   </fieldset>
-</form>
+}
 </div>

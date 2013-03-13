@@ -19,7 +19,7 @@
     }
 
     function ExportOrder() {
-
+        $('#dg').datagrid("loading");
         var postUrl = "/Order/ExportDown/1";
         jQuery.ajax({
             url: "/Statistics/ExportQue",
@@ -27,6 +27,7 @@
             data: "s=" + $('#cc').val(),
             success: function (sss) {
                 location.href = postUrl;
+                $('#dg').datagrid("reload");
             }
         });
     }

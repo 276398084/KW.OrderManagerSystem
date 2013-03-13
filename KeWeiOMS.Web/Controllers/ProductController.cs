@@ -401,6 +401,45 @@ namespace KeWeiOMS.Web.Controllers
             IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU='"+id+"'").List<ProductType>();
             return Json(obj,JsonRequestBehavior.AllowGet);
         }
+        public JsonResult Freight(double price, double weight, int qty, double onlineprice, double Currency, string LogisticMode, int Country)
+        {
+            double freight =double.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
+            double profit =(onlineprice * Currency - price - freight) * qty;
+            return Json(profit, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost, ActionName("ProductProfits")]
+        private double GetFreight(double weight, string logisticMode, int country)
+        {
+            double discount = 0;
+            double ReturnFreight = 0;
+            IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='"+logisticMode+"'").List<LogisticsModeType>();
+            foreach(var item in logmode)
+            {
+                discount =item.Discount;
+                IList<LogisticsAreaType> area = NSession.CreateQuery("from LogisticsAreaType where LId='"+item.ParentID+"'").List<LogisticsAreaType>();
+                foreach (var it in area) 
+                {
+                    object obj=NSession.CreateQuery("select count(Id) from LogisticsAreaCountryType where CountryCode='" + country + "' and AreaCode='"+it.Id+"'").UniqueResult();
+                    if(Convert.ToInt32(obj)>0)
+                    {
+                        IList<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType where AReaCode='"+it.Id+"'").List<LogisticsFreightType>();
+                        foreach (var fre in list)
+                        {
+                            if (fre.EveryFee != 0)
+                            {
+                                ReturnFreight = (weight * fre.EveryFee + fre.ProcessingFee) * discount;
+                            }
+                            else
+                            { 
+                            
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ReturnFreight; 
+        }
     }
 }
 

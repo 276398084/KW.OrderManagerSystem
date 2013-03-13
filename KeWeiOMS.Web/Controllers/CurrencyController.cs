@@ -164,6 +164,16 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(new { total = objList.Count, rows = objList });
         }
+        public JsonResult GetCurrency(string id) 
+        {
+            double curr=0;
+            IList<CurrencyType> list = NSession.CreateQuery("from CurrencyType where CurrencyCode='"+id+"'").List<CurrencyType>();
+            foreach(var s in list)
+            {
+                curr = s.CurrencyValue;
+            }
+            return Json(curr,JsonRequestBehavior.AllowGet);
+        }
 
     }
 }
