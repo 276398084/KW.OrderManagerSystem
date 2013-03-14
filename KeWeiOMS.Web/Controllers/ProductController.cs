@@ -406,7 +406,7 @@ namespace KeWeiOMS.Web.Controllers
             double freight =double.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
             double currency = GetCurrency(Currency);
             double profit =(onlineprice * currency - price - freight) * qty;
-            return Json(Math.Round(profit,2), JsonRequestBehavior.AllowGet);
+            return Json(profit, JsonRequestBehavior.AllowGet);
         }
         private double GetFreight(double weight, string logisticMode, int country)
         {

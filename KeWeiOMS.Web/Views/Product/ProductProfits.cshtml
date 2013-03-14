@@ -42,7 +42,7 @@
                 fit: true,
                 columns: [[
                     { field: 'SKU', title: 'SKU', width: 100 },
-                    { field: 'ProductName', title: 'Title', width: 200 },
+                    { field: 'ProductName', title: 'Title', width: 200},
                     { field: 'Standard', title: '规格', width: 100 }
                 ]]
             });
@@ -85,12 +85,11 @@
         function SeachSKU(sku) {
             $.getJSON('@Url.Action("SearchSKU", "Product")/' + sku, function (json) {
                     if (json) {
-                        $("#price").attr("value", json[0].Price);
-                        $("#weight").attr("value", json[0].Weight);
+                        $("#price").numberbox("setValue", json[0].Price);
+                        $("#weight").numberbox("setValue", json[0].Weight);
                               qty = json[0].Price;
                               weight = json[0].Weight;
                               Calculate();
-                       
                     }
             });
             
@@ -107,12 +106,12 @@
                     url: '@Url.Action("Freight", "Product")',
                     data: "price=" + price + "&weight=" + weight + "&qty=" + qty + "&onlineprice=" + onlineprice + "&currency=" + currency + "&logisticMode=" + logisticMode + "&country=" + country,
                     success: function (msg) {
-                        $("#profit").attr("value",msg);
+                        $("#profit").numberbox("setValue", msg);
                     }
                 });
             }
             else {
-                $("#profit").attr("value","");
+                $("#profit").numberbox("setValue","");
             }
         }
     </script>
@@ -134,7 +133,7 @@
                 <label>价格:</label>
              </td>  
              <td>
-                <input name="price" id="price" type="text"  onblur = "Calculate()"  />
+                <input  id="price" type="text" class="easyui-numberbox" data-options="precision:2,required:true"  onblur = "Calculate()"  />
              </td> 
           </tr>
           <tr>
@@ -142,7 +141,7 @@
                 <label>重量:</label>
             </td>
             <td>
-               <input id="weight" type="text" onblur = "Calculate()"/>
+               <input id="weight" type="text"  class="easyui-numberbox" data-options="precision:2,required:true" onblur = "Calculate()"/>
             </td>
           </tr>
           <tr>
@@ -150,7 +149,7 @@
                 <label>数量:</label>
             </td>
             <td>
-                <input id="qty" type="text" onblur = "Calculate()"/>
+                <input id="qty" type="text"  class="easyui-numberbox" data-options="required:true" type="text" onblur = "Calculate()"/>
             </td>
           </tr>
           <tr>
@@ -158,7 +157,7 @@
                 <label>平台销售价格:</label>
             </td>
             <td>
-                <input id="onlineprice" type="text" onblur = "Calculate()"/>
+                <input id="onlineprice" type="text"  class="easyui-numberbox" data-options="precision:2,required:true" onblur = "Calculate()"/>
             </td>
           </tr>
           <tr>
@@ -200,7 +199,7 @@
                 <label>利润:</label>
              </td>  
              <td>
-                <input id="profit" type="text"/>
+                <input id="profit" type="text" class="easyui-numberbox" data-options="precision:2"/>
              </td> 
           </tr>
       </table>
