@@ -406,7 +406,7 @@ namespace KeWeiOMS.Web.Controllers
             double freight =double.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
             double currency = GetCurrency(Currency);
             double profit =(onlineprice * currency - price - freight) * qty;
-            return Json(profit, JsonRequestBehavior.AllowGet);
+            return Json(Math.Round(profit,2), JsonRequestBehavior.AllowGet);
         }
         private double GetFreight(double weight, string logisticMode, int country)
         {
@@ -430,8 +430,8 @@ namespace KeWeiOMS.Web.Controllers
                                 ReturnFreight = (weight * fre.EveryFee + fre.ProcessingFee) * discount;
                             }
                             else
-                            { 
-                            
+                            {
+                                ReturnFreight = fre.FristFreight + fre.ProcessingFee + (weight - fre.FristWeight) / fre.IncrementWeight * fre.IncrementFreight;
                             }
                         }
                     }
@@ -446,7 +446,7 @@ namespace KeWeiOMS.Web.Controllers
               IList<CurrencyType> list = NSession.CreateQuery("from CurrencyType where CurrencyCode='"+code+"'").List<CurrencyType>();
             foreach(var s in list)
             {
-                curr = s.CurrencyValue;
+                curr =s.CurrencyValue;
             }
             return curr;
         }
