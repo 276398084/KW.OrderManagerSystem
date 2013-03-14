@@ -245,7 +245,7 @@
                 var rows = $('#dg1').datagrid('getSelections');
                 for (var i = 0; i < rows.length; i++) {
                     $.ajax({
-                        url: '/Dictionary/DelDictionary?id=' + rows[i].Id,
+                        url: '/Dictionary/DelDictionary/' + rows[i].Id,
                     });
                 }
                 $('#dg1').datagrid("reload");

@@ -401,13 +401,13 @@ namespace KeWeiOMS.Web.Controllers
             IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU='"+id+"'").List<ProductType>();
             return Json(obj,JsonRequestBehavior.AllowGet);
         }
-        public JsonResult Freight(double price, double weight, int qty, double onlineprice, double Currency, string LogisticMode, int Country)
+        public JsonResult Freight(double price, double weight, int qty, double onlineprice, string Currency, string LogisticMode, int Country)
         {
             double freight =double.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
-            double profit =(onlineprice * Currency - price - freight) * qty;
+            double currency = GetCurrency(Currency);
+            double profit =(onlineprice * currency - price - freight) * qty;
             return Json(profit, JsonRequestBehavior.AllowGet);
         }
-        [HttpPost, ActionName("ProductProfits")]
         private double GetFreight(double weight, string logisticMode, int country)
         {
             double discount = 0;
@@ -439,6 +439,16 @@ namespace KeWeiOMS.Web.Controllers
             }
 
             return ReturnFreight; 
+        }
+        public double GetCurrency(string code)
+        {
+            double curr = 0;
+              IList<CurrencyType> list = NSession.CreateQuery("from CurrencyType where CurrencyCode='"+code+"'").List<CurrencyType>();
+            foreach(var s in list)
+            {
+                curr = s.CurrencyValue;
+            }
+            return curr;
         }
     }
 }

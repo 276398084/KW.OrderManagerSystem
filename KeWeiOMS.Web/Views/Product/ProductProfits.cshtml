@@ -14,7 +14,7 @@
         $(function () {
             $('#Currency').combogrid({
                 panelWidth: 360,
-                idField: 'CurrencyValue',
+                idField: 'CurrencyCode',
                 textField: 'CurrencyCode',
                 url: '/Currency/QList',
                 required:true,
@@ -27,10 +27,9 @@
                     { field: 'CurrencyName', title: '货币', width: 150 },
                     { field: 'CurrencyCode', title: '代码', width: 100 },
                     { field: 'CurrencyValue', title: '汇率', width: 100 }
-
                 ]]
             });
-            $('#Currency').combogrid("setValue","");
+            $('#Currency').combogrid("setValue","USD");
             $('#sku').combogrid({
                 panelWidth: 410,
                 mode: 'remote',
