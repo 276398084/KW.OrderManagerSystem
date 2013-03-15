@@ -20,6 +20,10 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult ProductProfits()
+        {
+            return View();
+        }
         public ActionResult Create()
         {
             return View();
@@ -484,6 +488,61 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = false, Result = "没有找到这个产品！" });
 
+        }
+
+        public JsonResult SearchSKU(string id) 
+        {
+            IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU='"+id+"'").List<ProductType>();
+            return Json(obj,JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult Freight(decimal price, decimal weight, int qty, decimal onlineprice, string Currency, string LogisticMode, int Country)
+        {
+            decimal freight = decimal.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
+            decimal currency =decimal.Parse(Math.Round(GetCurrency(Currency),2).ToString());
+            decimal profit =(onlineprice * currency - price - freight) * qty;
+            return Json(profit, JsonRequestBehavior.AllowGet);
+        }
+        private decimal GetFreight(decimal weight, string logisticMode, int country)
+        {
+            decimal discount = 0;
+            decimal ReturnFreight = 0;
+            IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='"+logisticMode+"'").List<LogisticsModeType>();
+            foreach(var item in logmode)
+            {
+                discount =decimal.Parse(item.Discount.ToString());
+                IList<LogisticsAreaType> area = NSession.CreateQuery("from LogisticsAreaType where LId='"+item.ParentID+"'").List<LogisticsAreaType>();
+                foreach (var it in area) 
+                {
+                    object obj=NSession.CreateQuery("select count(Id) from LogisticsAreaCountryType where CountryCode='" + country + "' and AreaCode='"+it.Id+"'").UniqueResult();
+                    if(Convert.ToInt32(obj)>0)
+                    {
+                        IList<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType where AReaCode='"+it.Id+"'").List<LogisticsFreightType>();
+                        foreach (var fre in list)
+                        {
+                            if (fre.EveryFee != 0)
+                            {
+                                ReturnFreight =weight *decimal.Parse(fre.EveryFee.ToString()) +decimal.Parse(fre.ProcessingFee.ToString()) *decimal.Parse( discount.ToString());
+                            }
+                            else
+                            {
+                                ReturnFreight =decimal.Parse(fre.FristFreight.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) + (weight - decimal.Parse(fre.FristWeight.ToString())) / decimal.Parse(fre.IncrementWeight.ToString()) * decimal.Parse(fre.IncrementFreight.ToString());
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ReturnFreight; 
+        }
+        public double GetCurrency(string code)
+        {
+            double curr = 0;
+              IList<CurrencyType> list = NSession.CreateQuery("from CurrencyType where CurrencyCode='"+code+"'").List<CurrencyType>();
+            foreach(var s in list)
+            {
+                curr =s.CurrencyValue;
+            }
+            return curr;
         }
     }
 }

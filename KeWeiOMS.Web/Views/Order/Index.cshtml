@@ -300,6 +300,7 @@
         }
 
         function exportZM() {
+            $('#dg').datagrid("loading");
             s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
@@ -316,11 +317,13 @@
                 data: "o=" + s_ids.join(','),
                 success: function (sss) {
                     location.href = postUrl;
+                    $('#dg').datagrid("reload");
                 }
             });
         }
 
         function exportOrder() {
+            $('#dg').datagrid("loading");
             s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
@@ -375,6 +378,7 @@
                 data: "o=" + s_ids.join(',') + search + "&dd=" + t,
                 success: function (sss) {
                     location.href = postUrl;
+                    $('#dg').datagrid("reload");
                 }
             });
         }

@@ -87,7 +87,7 @@
         var rows = $('#dgFeright').datagrid('getSelections');
         for (var i = 0; i < rows.length; i++) {
             $.ajax({
-                url: '/LogisticsFreight/DelFreight?id=' + rows[i].Id,
+                url: '/LogisticsFreight/DelFreight/' + rows[i].Id,
             });
         }
         $('#dgFeright').datagrid("reload");
