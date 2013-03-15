@@ -403,9 +403,11 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult Freight(decimal price, decimal weight, int qty, decimal onlineprice, string Currency, string LogisticMode, int Country)
         {
-            decimal freight = decimal.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
+            decimal freight = decimal.Parse((GetFreight(weight*qty, LogisticMode, Country)).ToString("f6"));
+            if(freight==-1)
+                return Json("cz", JsonRequestBehavior.AllowGet);
             decimal currency =decimal.Parse(Math.Round(GetCurrency(Currency),2).ToString());
-            decimal profit =(onlineprice * currency - price - freight) * qty;
+            decimal profit =(onlineprice * currency - price) * qty - freight;
             return Json(profit, JsonRequestBehavior.AllowGet);
         }
         private decimal GetFreight(decimal weight, string logisticMode, int country)
@@ -425,13 +427,20 @@ namespace KeWeiOMS.Web.Controllers
                         IList<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType where AReaCode='"+it.Id+"'").List<LogisticsFreightType>();
                         foreach (var fre in list)
                         {
-                            if (fre.EveryFee != 0)
+                            if (weight <= decimal.Parse(fre.EndWeight.ToString()))
                             {
-                                ReturnFreight =weight *decimal.Parse(fre.EveryFee.ToString()) +decimal.Parse(fre.ProcessingFee.ToString()) *decimal.Parse( discount.ToString());
+                                if (fre.EveryFee != 0)
+                                {
+                                    ReturnFreight = weight * decimal.Parse(fre.EveryFee.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) * decimal.Parse(discount.ToString());
+                                }
+                                else
+                                {
+                                    ReturnFreight = decimal.Parse(fre.FristFreight.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) + (weight - decimal.Parse(fre.FristWeight.ToString())) / decimal.Parse(fre.IncrementWeight.ToString()) * decimal.Parse(fre.IncrementFreight.ToString());
+                                }
                             }
                             else
                             {
-                                ReturnFreight =decimal.Parse(fre.FristFreight.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) + (weight - decimal.Parse(fre.FristWeight.ToString())) / decimal.Parse(fre.IncrementWeight.ToString()) * decimal.Parse(fre.IncrementFreight.ToString());
+                                return -1;
                             }
                         }
                     }

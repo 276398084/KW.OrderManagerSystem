@@ -106,6 +106,12 @@
                     url: '@Url.Action("Freight", "Product")',
                     data: "price=" + price + "&weight=" + weight + "&qty=" + qty + "&onlineprice=" + onlineprice + "&currency=" + currency + "&logisticMode=" + logisticMode + "&country=" + country,
                     success: function (msg) {
+                        if (msg == "cz")
+                        {
+                            alert("此批货物超重,请重新输入重量");
+                            $("#profit").numberbox("setValue","");
+                        }
+                         else
                         $("#profit").numberbox("setValue", msg);
                     }
                 });
