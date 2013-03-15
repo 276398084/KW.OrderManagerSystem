@@ -401,21 +401,21 @@ namespace KeWeiOMS.Web.Controllers
             IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU='"+id+"'").List<ProductType>();
             return Json(obj,JsonRequestBehavior.AllowGet);
         }
-        public JsonResult Freight(double price, double weight, int qty, double onlineprice, string Currency, string LogisticMode, int Country)
+        public JsonResult Freight(decimal price, decimal weight, int qty, decimal onlineprice, string Currency, string LogisticMode, int Country)
         {
-            double freight =double.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
-            double currency = GetCurrency(Currency);
-            double profit =(onlineprice * currency - price - freight) * qty;
+            decimal freight = decimal.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
+            decimal currency =decimal.Parse(Math.Round(GetCurrency(Currency),2).ToString());
+            decimal profit =(onlineprice * currency - price - freight) * qty;
             return Json(profit, JsonRequestBehavior.AllowGet);
         }
-        private double GetFreight(double weight, string logisticMode, int country)
+        private decimal GetFreight(decimal weight, string logisticMode, int country)
         {
-            double discount = 0;
-            double ReturnFreight = 0;
+            decimal discount = 0;
+            decimal ReturnFreight = 0;
             IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='"+logisticMode+"'").List<LogisticsModeType>();
             foreach(var item in logmode)
             {
-                discount =item.Discount;
+                discount =decimal.Parse(item.Discount.ToString());
                 IList<LogisticsAreaType> area = NSession.CreateQuery("from LogisticsAreaType where LId='"+item.ParentID+"'").List<LogisticsAreaType>();
                 foreach (var it in area) 
                 {
@@ -427,11 +427,11 @@ namespace KeWeiOMS.Web.Controllers
                         {
                             if (fre.EveryFee != 0)
                             {
-                                ReturnFreight = (weight * fre.EveryFee + fre.ProcessingFee) * discount;
+                                ReturnFreight =weight *decimal.Parse(fre.EveryFee.ToString()) +decimal.Parse(fre.ProcessingFee.ToString()) *decimal.Parse( discount.ToString());
                             }
                             else
                             {
-                                ReturnFreight = fre.FristFreight + fre.ProcessingFee + (weight - fre.FristWeight) / fre.IncrementWeight * fre.IncrementFreight;
+                                ReturnFreight =decimal.Parse(fre.FristFreight.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) + (weight - decimal.Parse(fre.FristWeight.ToString())) / decimal.Parse(fre.IncrementWeight.ToString()) * decimal.Parse(fre.IncrementFreight.ToString());
                             }
                         }
                     }
