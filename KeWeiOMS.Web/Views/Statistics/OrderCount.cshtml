@@ -1,5 +1,4 @@
-﻿查询时间<input id="cc" type="text">
-<script>
+﻿<script>
 
     $(function () {
         var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
@@ -7,8 +6,8 @@
 
             url: '@Url.Action("OrderCount", "Statistics")',
             queryParams: { "dt": dt },
-            showFooter:true
-            
+            showFooter: true
+
         });
         $("#cc").datebox({
             parser: myparser,
@@ -29,12 +28,15 @@
         }
     }
     function onSelect(date) {
-       var dt = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+        var dt = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
         $('#dg').datagrid("load", {
             dt: dt
         });
     }
 </script>
+查询时间<input id="cc" type="text">
+平台<input id="pp" type="text">
+账户<input id="aa" type="text">
 <table id="dg" class="easyui-datagrid"
     rownumbers="true" fitcolumns="true" singleselect="true">
     <thead>
