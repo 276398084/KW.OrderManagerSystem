@@ -90,6 +90,7 @@
     <Compile Include="Entities\ProductType.cs" />
     <Compile Include="Entities\ProjectType.cs" />
     <Compile Include="Entities\PurchasePlanType.cs" />
+    <Compile Include="Entities\PurchaseTroubleType.cs" />
     <Compile Include="Entities\ReturnAddresType.cs" />
     <Compile Include="Entities\RoleType.cs" />
     <Compile Include="Entities\SerialNumberType.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Mappings\ProductTypeMap.cs" />
     <Compile Include="Mappings\ProjectTypeMap.cs" />
     <Compile Include="Mappings\PurchasePlanTypeMap.cs" />
+    <Compile Include="Mappings\PurchaseTroubleTypeMap.cs" />
     <Compile Include="Mappings\ReturnAddresTypeMap.cs" />
     <Compile Include="Mappings\RoleTypeMap.cs" />
     <Compile Include="Mappings\SerialNumberTypeMap.cs" />

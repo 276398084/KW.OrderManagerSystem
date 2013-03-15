@@ -1,0 +1,234 @@
+﻿@model KeWeiOMS.Domain.PurchaseTroubleType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_BuyOn').datebox();
+
+
+        $('#c_ReceiveOn').datebox();
+
+        $('#c_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_CreateOn').datebox();
+
+        $('#c_DealBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_DealOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "PurchaseTrouble", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"问题状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PurchaseId,"采购计划Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PurchaseId,new{@id="c_PurchaseId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PurchaseCode,"采购计划编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PurchaseCode,new{@id="c_PurchaseCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Qty,"数量:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Price,"单价:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="c_Price"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Freight,"运费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Freight,new{@id="c_Freight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Supplier,"供应商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Supplier,new{@id="c_Supplier"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsMode,"物流方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="c_LogisticsMode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsCode,"快递单:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="c_LogisticsCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BuyOn,"购买时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BuyOn,new{@id="c_BuyOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="c_ReceiveOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TroubleType,"问题类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TroubleType,new{@id="c_TroubleType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TroubleDetail,"问题描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TroubleDetail,new{@id="c_TroubleDetail"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DealBy,"处理人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DealBy,new{@id="c_DealBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DealOn,"处理时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DealOn,new{@id="c_DealOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SolutionType,"解决方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SolutionType,new{@id="c_SolutionType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SolutionDetail,"解决描述:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SolutionDetail,new{@id="c_SolutionDetail"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}
