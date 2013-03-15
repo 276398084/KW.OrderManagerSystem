@@ -41,7 +41,8 @@ namespace KeWeiOMS.Web.Controllers
                         obj.PlanNo = plan[0].PlanNo;
                         obj.DaoOn = DateTime.Now;
                         obj.SendOn = DateTime.Now;
-                        obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty);
+
+                        obj.IsAudit = 0;
                         NSession.SaveOrUpdate(obj);
                         NSession.Flush();
                         plan[0].Status = obj.Status;
@@ -60,6 +61,27 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true });
+        }
+
+        public JsonResult AuditDao(int Id)
+        {
+            PlanDaoType obj = NSession.Get<PlanDaoType>(Id);
+            if (obj != null)
+            {
+                if (obj.IsAudit == 0)
+                {
+                    //obj.DaoOn = DateTime.Now;
+                    obj.IsAudit = 1;
+                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo);
+
+                    NSession.SaveOrUpdate(obj);
+                    NSession.Flush();
+                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo);
+                    return Json(new { IsSuccess = true });
+                }
+                return Json(new { ErrorMsg = "已经审核了", IsSuccess = false });
+            }
+            return Json(new { ErrorMsg = "状态出错!", IsSuccess = false });
         }
 
         public JsonResult PrintSKU(int Id)

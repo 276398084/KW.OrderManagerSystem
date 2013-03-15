@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = "SKUScan";
+}
+
+<script type="text/javascript">
+    //if (document.all) {
+    //    document.write(' <OBJECT id="Player"');
+    //    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    //    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    //}
+    //else {
+    //    document.write(' <OBJECT id="Player"');
+    //    document.write(' type="application/x-ms-wmp"');
+    //    document.write(' src= "/audio/ring.wav" width=0 height=0> </OBJECT>');
+    //}
+
+    //if (document.all) {
+    //    document.write(' <OBJECT id="Player2"');
+    //    document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+    //    document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    //}
+    //else {
+    //    document.write(' <OBJECT id="Player2"');
+    //    document.write(' type="application/x-ms-wmp"');
+    //    document.write(' src= "/audio/security.wav" width=0 height=0> </OBJECT>');
+    //}
+
+</script>
+<table>
+    <tr>
+        <td width="" colspan="2">
+            <font style="color: Red; font-size: 30px"><span id="spanStatus">清点产品</span></font>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <font style="color: Red; font-size: 28px"> <span id="spanInfo"></span></font>
+        </td>
+    </tr>
+    <tr>
+        <td height="25" width="22%">
+            <h2>
+                <b>条码</b></h2>
+        </td>
+        <td width="">
+            <input id="txt" onkeydown="return SetSKUCode(event);" style="font-size: 50px; background-image: none; width: 511px" /><br />
+            <font style="color: blue; font-size: 30px"><span id="sccc">0</span></font>
+        </td>
+    </tr>
+</table>
+<script>
+    var spanStatus = document.getElementById("spanStatus");
+    var spanInfo = document.getElementById("spanInfo");
+    var sccc = document.getElementById("sccc");
+    function SetSKUCode(e) {
+        var keynum;
+
+        if (window.event) //IE
+        {
+            keynum = e.keyCode;
+        }
+        else if (e.which) //Netscape/Firefox/Opera
+        {
+            keynum = e.which;
+        }
+
+        if (keynum == 13) {
+            jQuery.ajax({
+                url: "/Product/SetSKUCode2/",
+                type: "post",
+                data: "code=" + $("#txt").val() + "&sku=" + $("#cc").val(),
+                success: function (msg) {
+                    if (msg.IsSuccess) {
+                        ShowMessage(msg.Result, "扫描正确，请继续扫描", true);
+                        sccc.innerHTML = msg.ccc;
+                        $("#txt").val('');
+                    } else {
+                        ShowMessage("", "错误：" + msg.Result, false);
+                        $("#txt").val('');
+
+                    }
+                }
+            });
+        }
+    }
+    function ShowMessage(msgInfo, msgStatus, isOk) {
+        if (msgInfo != null) {
+            spanInfo.innerHTML = msgInfo;
+        }
+        if (msgStatus != null) {
+            spanStatus.innerHTML = msgStatus;
+        }
+        if (isOk) {
+            spanInfo.style.color = "Blue";
+        }
+        else {
+            spanInfo.style.color = "Red";
+        }
+    }
+
+</script>

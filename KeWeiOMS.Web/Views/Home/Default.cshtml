@@ -1,4 +1,4 @@
-<script type="text/javascript" charset="utf-8">
+﻿<script type="text/javascript" charset="utf-8">
     var panels = [];
     $(function () {
         panels = [{
@@ -6,7 +6,7 @@
             title: '公告',
             height: 100,
             collapsible: true,
-            href: '/Statistics/OrderCount/'
+            content: '<h1>订单统计在《数据分析》的菜单中</h1>'
         }, {
             id: 'p2',
             title: '今日签到',
@@ -46,7 +46,7 @@
         });
 
 
-        state = 'p1,p2,p3:p4,p6,p5';/*冒号代表列，逗号代表行*/
+        var state = 'p1,p2,p3:p4,p6,p5';
 
         addPortalPanels(state);
         $('#layout_portal_portal').portal('resize');
@@ -84,8 +84,7 @@
     <div region="center" border="false">
         <div id="layout_portal_portal" style="position: relative">
             <div></div>
-            <a target='_blank'></a>
-            <div></div>
+             <div></div>
         </div>
     </div>
 

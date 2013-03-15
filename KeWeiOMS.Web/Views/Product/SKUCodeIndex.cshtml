@@ -11,7 +11,22 @@
                 pageSize: 20,
                 pageList: [20, 40, 60, 80, 100]
             });
-
+            $('#Pei').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#Send').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#Pei').combobox("setValue", "ALL");
+            $('#Send').combobox("setValue", "ALL");
         });
 
         //删除
@@ -45,6 +60,22 @@
         }
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            var d = $('#Pei').combobox("getValue");
+            if (d != "ALL" && d != "" && d != "0") {
+                if (d == "1") {
+                    search += "IsOut_es&1^";
+                } else {
+                    search += "IsOut_es&0^";
+                }
+            }
+            var f = $('#Send').combobox("getValue");
+            if (f != "ALL" && d != "" && d != "0") {
+                if (f == "1") {
+                    search += "IsSend_es&1^";
+                } else {
+                    search += "IsSend_es&0^";
+                }
+            }
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -56,29 +87,42 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-                    <th field="Code" width="100">Code
+                    <th field="Code" width="100" sortable="true">Code
                     </th>
 
-                    <th field="SKU" width="100">SKU
+                    <th field="SKU" width="100" sortable="true">SKU
                     </th>
-                    <th field="IsOut" width="100" formatter="getTrue">是否出库
+                    <th field="PlanNo" width="100" sortable="true">采购编号
                     </th>
-                    <th field="SendOn" width="100">出库时间
+                    <th field="CreateOn" width="100" sortable="true">到货时间
                     </th>
-                    <th field="OrderNo" width="100">订单
+                    <th field="IsOut" width="100" formatter="getTrue" sortable="true">是否配货
+                    </th>
+                    <th field="PeiOn" width="100">配货时间
+                    </th>
+
+                    <th field="IsSend" width="100" formatter="getTrue" sortable="true">是否出库
+                    </th>
+                    <th field="SendOn" width="100" sortable="true">出库时间
+                    </th>
+
+                    <th field="OrderNo" width="100" sortable="true">订单
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            配货：<input type="text" id="Pei" />
+            发货：<input type="text" id="Send" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-
         </div>
         <div id="mm" style="width: 120px">
 
             <div data-options="name:'Code'">Code</div>
             <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'OrderNo'">订单号</div>
+            <div data-options="name:'PlanNo'">采购单号</div>
 
         </div>
 

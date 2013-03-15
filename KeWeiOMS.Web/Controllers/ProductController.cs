@@ -39,6 +39,67 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult WarningPurchaseList()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult WarningList(string order, string sort)
+        {
+            List<PurchaseData> list = new List<PurchaseData>();
+            IList<WarehouseStockType> stocks = new List<WarehouseStockType>();
+            IList<PurchasePlanType> plans = new List<PurchasePlanType>();
+            IList<ProductType> products =
+                NSession.CreateQuery(
+                    " From ProductType p where (round((SevenDay/7*0.5+Fifteen/15*0.3+ThirtyDay/30*0.2),0)*5)>( select SUM(Qty) from WarehouseStockType where SKU= p.SKU)")
+                    .List<ProductType>();
+            string ids = "";
+            foreach (var p in products)
+            {
+                ids += "'" + p.SKU + "',";
+            }
+            stocks =
+                NSession.CreateQuery("from WarehouseStockType where SKU in(" + ids.Trim(',') + ")").List<WarehouseStockType>();
+            plans = NSession.CreateQuery("from PurchasePlanType where Status not in('异常','已收到')  and SKU in(" + ids.Trim(',') + ")").List<PurchasePlanType>();
+            foreach (var p in products)
+            {
+                PurchaseData data = new PurchaseData();
+                data.ItemName = p.ProductName;
+                data.SKU = p.SKU;
+                data.SPic = p.SPicUrl;
+                data.SevenDay = p.SevenDay;
+                data.FifteenDay = p.Fifteen;
+                data.ThirtyDay = p.ThirtyDay;
+                data.WarningQty =
+                    Convert.ToInt32(Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 0) * 5);
+                if (data.WarningQty < 1)
+                {
+                    data.WarningQty = 1;
+                }
+                data.IsImportant = 0;
+                data.AvgQty = Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 2);
+                WarehouseStockType stock = stocks.First(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper());
+                if (stock != null)
+                {
+                    data.NowQty = stock.Qty;
+                }
+
+                if (Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 0) * 3 < data.NowQty)
+                {
+                    data.IsImportant = 1;
+                }
+
+                data.BuyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
+                if ((data.NowQty + data.BuyQty - data.WarningQty) < 0)
+                {
+                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10);
+                    list.Add(data);
+                }
+            }
+            return Json(new { total = list.Count, rows = list });
+        }
+
         [HttpPost]
         public ActionResult ImportProduct(string fileName)
         {
@@ -64,7 +125,6 @@ namespace KeWeiOMS.Web.Controllers
                 p.IsLiquid = Convert.ToInt32(dt.Rows[i]["液体"].ToString());
                 p.PackCoefficient = Convert.ToInt32(dt.Rows[i]["包装系数"].ToString());
                 p.Manager = dt.Rows[i]["管理人"].ToString();
-
                 NSession.SaveOrUpdate(p);
                 //
                 //在仓库中添加产品库存
@@ -128,7 +188,6 @@ namespace KeWeiOMS.Web.Controllers
                 }
 
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
-
 
                 //
                 //在仓库中添加产品库存
@@ -240,6 +299,10 @@ namespace KeWeiOMS.Web.Controllers
 
 
         public ActionResult SKUScan()
+        {
+            return View();
+        }
+        public ActionResult SKUScan2()
         {
             return View();
         }
@@ -369,8 +432,39 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, Result = "没有这个产品！" });
             }
-
         }
+
+        public ActionResult SetSKUCode2(int code)
+        {
+            IList<SKUCodeType> list =
+                 NSession.CreateQuery("from SKUCodeType where Code=:p").SetInt32("p", code).SetMaxResults(1).List
+                     <SKUCodeType>();
+            if (list.Count > 0)
+            {
+                SKUCodeType sku = list[0];
+                if (sku.IsOut == 1 || sku.IsSend == 1)
+                {
+                    return Json(new { IsSuccess = false, Result = "条码：" + code + " 已经配过货,SKU:" + sku.SKU + " 出库时间：" + sku.PeiOn + ",出库订单:" + sku.OrderNo + " ,请将此产品单独挑出来！" });
+                }
+                if (sku.IsScan == 1)
+                {
+                    return Json(new { IsSuccess = false, Result = "条码：" + code + " 已经清点扫描了,SKU:" + sku.SKU + " 刚刚已经扫描过了。你查看下是条码重复扫描了，还是有贴重复的了！" });
+                }
+                sku.IsScan = 1;
+                NSession.Save(sku);
+                NSession.Flush();
+                object obj =
+                    NSession.CreateQuery("select count(Id) from SKUCodeType where SKU=:p and IsScan=1 and IsOut=0").SetString("p", sku.SKU).
+                        UniqueResult();
+                return Json(new { IsSuccess = true, Result = "条码：" + code + " 的信息.SKU：" + sku.SKU + " 此条码未出库。条码正确！！！", ccc = sku.SKU + "已经扫描了" + obj + "个" });
+            }
+            else
+            {
+                return Json(new { IsSuccess = false, Result = "条码：" + code + " 无法找到 ,请查看扫描是否正确！" });
+            }
+        }
+
+
         public ActionResult GetSKUByCode(string code)
         {
             IList<SKUCodeType> list =

@@ -59,7 +59,7 @@
                 editable: false,
                 data: [{ id: "所有", text: "所有" }, { id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分收到", text: "部分收到" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
             });
-            $('#SearchStatus').combobox("setValue","所有");
+            $('#SearchStatus').combobox("setValue", "所有");
         });
 
         function shooDao(id) {
@@ -76,7 +76,7 @@
                         return $(this).form('validate');
                     },
                     success: function (result) {
-                     
+
                         if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',
@@ -161,7 +161,7 @@
                 },
                 success: function (msg) {
                     var result = $.parseJSON(msg);
-                    if(!result.IsSuccess) {
+                    if (!result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
                             msg: '保存失败:' + result.ErrorMsg,
@@ -222,7 +222,7 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                              if (!data.IsSuccess){
+                                if (!data.IsSuccess) {
                                     msgstr = "删除失败" + data;
                                     $.messager.show({
                                         title: '提示',
@@ -238,12 +238,10 @@
                                         showType: 'slide'
                                     });
                                 }
-
                                 $('#dg').datagrid('reload');
                             }).error(function () {
                                 $.messager.alert('错误', '删除发生错误');
                             });
-
                         }
                     });
                 }
@@ -267,14 +265,31 @@
                 return (undefined);
             }
             function doSearch() {
-                search=$('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search = $('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 var a = $('#SearchStatus').combobox("getText");
                 if (a != "所有") {
                     search += "Status&" + a + "^";
                 }
                 $("#dg").datagrid("load", {
                     search: search
+                });
+            }
 
+            function exportPlan(parameters) {
+
+                search = "st=" + $('#StartDate').datebox("getValue") + "&" + "et=" + $('#EndDate').datebox("getValue");
+                var a = $('#SearchStatus').combobox("getText");
+                if (a != "所有") {
+                    search += "s&" + a + "^";
+                }
+                var postUrl = "/Order/ExportDown/1";
+                jQuery.ajax({
+                    url: "/PurchasePlan/ExportPlan/",
+                    type: "post",
+                    data: search,
+                    success: function (sss) {
+                        location.href = postUrl;
+                    }
                 });
             }
 
@@ -287,9 +302,10 @@
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="exportPlan()">导出</a>
             开始时间:<input id="StartDate" />
-            结束时间:<input id="EndDate"/>&nbsp&nbsp
-            状态：<input id="SearchStatus"/>
+            结束时间:<input id="EndDate" />&nbsp&nbsp
+            状态：<input id="SearchStatus" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">

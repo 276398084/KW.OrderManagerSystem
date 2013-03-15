@@ -6,7 +6,9 @@
         $('#dg').datagrid({
 
             url: '@Url.Action("OrderCount", "Statistics")',
-            queryParams: { "dt": dt }
+            queryParams: { "dt": dt },
+            showFooter:true
+            
         });
         $("#cc").datebox({
             parser: myparser,

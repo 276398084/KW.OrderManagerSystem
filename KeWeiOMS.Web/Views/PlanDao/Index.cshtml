@@ -42,11 +42,9 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "PlanDao")/' + id;
                 alert(1);
                 delData(url, 'dg');
-
             }
         }
 
@@ -76,7 +74,7 @@
 
 
         function printSKU(id) {
-            alert('');
+
             jQuery.ajax({
                 url: "/PlanDao/PrintSKU/" + id,
                 type: "post",
@@ -84,11 +82,37 @@
                     window.open('/Home/PrintDetail/33');
                 }
             });
-           
         }
 
-        function showPrint(v) {
-            return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a>';
+        function AuditDao(id) {
+
+            $.messager.confirm("提示", "确定要审核吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/PlanDao/AuditDao/" + id,
+                        type: "post",
+                        success: function (msg) {
+
+
+                            if (msg.IsSuccess) {
+                                alert("审核成功!");
+                            } else {
+                                alert(msg.ErrorMsg);
+                            }
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function showPrint(v, r) {
+            if (r.IsAudit == 1)
+                return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a>';
+            else {
+                return '<a href="javascript:void(0)" onclick="AuditDao(' + v + ')">审核</a>';
+            }
         }
 
     </script>

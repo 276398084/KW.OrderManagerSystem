@@ -112,9 +112,10 @@ namespace KeWeiOMS.Web
             }
         }
 
-        public static int CreateSKUCode(string sku, int count)
+        public static int CreateSKUCode(string sku, int count, string planNo)
         {
             int code = GetSKUCode(count);
+            string create = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             using (var tr = NSession.BeginTransaction())
             {
                 for (int i = code; i < code + count; i++)
@@ -124,10 +125,17 @@ namespace KeWeiOMS.Web
                     SKUCode.SKU = sku;
                     SKUCode.IsOut = 0;
                     SKUCode.IsNew = 1;
+                    SKUCode.IsSend = 0;
+                    SKUCode.IsScan = 0;
+                    SKUCode.CreateOn = create;
+                    SKUCode.PlanNo = planNo;
+                    SKUCode.SendOn = "";
+                    SKUCode.PeiOn = "";
                     NSession.Save(SKUCode);
                 }
                 tr.Commit();
             }
+
 
             return code;
         }

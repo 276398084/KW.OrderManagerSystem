@@ -136,6 +136,7 @@
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
     <Compile Include="Common\Statistics\ProductData.cs" />
+    <Compile Include="Common\Statistics\PurchaseData.cs" />
     <Compile Include="Common\Statistics\QueCount.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
@@ -1288,6 +1289,12 @@
     <Content Include="Views\Ebay\Details.cshtml" />
     <Content Include="Views\Ebay\Edit.cshtml" />
     <Content Include="Views\Ebay\Index.cshtml" />
+    <Content Include="Views\Product\PrePurchaseList.cshtml" />
+    <Content Include="Views\Product\WarningPurchaseList.cshtml" />
+    <Content Include="Views\PurchasePlan\CreateByW.cshtml" />
+    <Content Include="Views\Order\OrderExport.cshtml" />
+    <Content Include="Views\Product\SKUScan2.cshtml" />
+    <Content Include="Views\Order\IsNotQue.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

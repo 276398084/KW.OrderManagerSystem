@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class PlanDaoTypeMap : ClassMap<PlanDaoType> 
+    public class PlanDaoTypeMap : ClassMap<PlanDaoType>
     {
         public PlanDaoTypeMap()
         {
@@ -34,6 +34,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.SKU).Length(50);
             Map(x => x.Title).Length(200);
             Map(x => x.BuyOn);
+            Map(x => x.IsAudit);
             Map(x => x.SendOn);
             Map(x => x.LogisticMode).Length(200);
             Map(x => x.TrackCode).Length(200);

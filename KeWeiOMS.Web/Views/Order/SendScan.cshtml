@@ -186,13 +186,13 @@
         });
     }
     function OutStock(str) {
-        alert("1");
+
         var l = $("#ll").combogrid("getValue");
         var s = $("#ww").combobox("getValue");
         if (!$("#ckQ").attr("checked")) {
             l = "";
         }
-        alert("2");
+
         jQuery.ajax({
             url: "/Order/OutStockBySend/",
             type: "post",
