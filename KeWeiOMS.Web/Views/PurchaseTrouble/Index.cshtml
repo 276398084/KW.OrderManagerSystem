@@ -12,43 +12,21 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
+        $("#txtEndDate").datebox("setValue",getStartDate(-1));
+        $("#txtStartDate").datebox("setValue", getStartDate(7));
 
     });
 
-
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","PurchaseTrouble")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
-        }
-
         //编辑框
-        function e_dlg() {
+        function e_dlg(id) {
             var url = '@Url.Action("Edit","PurchaseTrouble")/' + id;
             if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
                 showdlg(url, 'e_dlg', ajaxEdit)
             }
-        }
-
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "PurchaseTrouble")', 'c_dlg', 'dg');
         }
         //异步修改提交
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "PurchaseTrouble")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-
-                var url = '@Url.Action("Delete", "PurchaseTrouble")/' + id;
-                alert(1);
-                delData(url, 'dg');
-
-            }
         }
 
     //获取选中行
@@ -69,12 +47,39 @@
         return (undefined);
     }
      function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$"+ $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 $("#dg").datagrid("load", {
                     search: search
                 });
       }
-
+     function deal(v, r, i) {
+         if (r.Status!="已解决")
+             return '<a href="javascript:void(0);" onclick="e_dlg(' + v + ')">处理</a>';
+         return "";
+     }
+     function datecheck(value) {
+         var day = new Date("2000-01-02");
+         var date =new Date(getOnlyDate(value));
+         if (date < day)
+             return "";
+         return getOnlyDate(value);
+     }
+     function toExcel() {
+         var postUrl = "/Order/ExportDown/1";
+         $.ajax({
+             url: '@Url.Action("ToExcel", "PurchaseTrouble")/',
+            success: function (result) {
+                $('#dg').datagrid('reload');
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl
+            }
+        })
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -82,87 +87,86 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
-                主键
+            <th field="Id" width="100" formatter="deal">
+                操作
             </th>
-
-            <th field="Status" width="100">
+            <th field="Status" width="100" sortable="true">
                 问题状态
             </th>
 
-            <th field="PurchaseId" width="100">
+            <th field="PurchaseId" width="100" sortable="true">
                 采购计划Id
             </th>
 
-            <th field="PurchaseCode" width="100">
+            <th field="PurchaseCode" width="100" sortable="true">
                 采购计划编号
             </th>
 
-            <th field="SKU" width="100">
+            <th field="SKU" width="100" sortable="true">
                 SKU
             </th>
 
-            <th field="Qty" width="100">
+            <th field="Qty" width="100" sortable="true">
                 数量
             </th>
 
-            <th field="Price" width="100">
+            <th field="Price" width="100" sortable="true"> 
                 单价
             </th>
 
-            <th field="Freight" width="100">
+            <th field="Freight" width="100" sortable="true">
                 运费
             </th>
 
-            <th field="Supplier" width="100">
+            <th field="Supplier" width="100" sortable="true">
                 供应商
             </th>
 
-            <th field="LogisticsMode" width="100">
+            <th field="LogisticsMode" width="100" sortable="true">
                 物流方式
             </th>
 
-            <th field="LogisticsCode" width="100">
+            <th field="LogisticsCode" width="100" sortable="true">
                 快递单
             </th>
 
-            <th field="BuyOn" width="100">
+            <th field="BuyOn" width="100" formatter="datecheck" sortable="true">
                 购买时间
             </th>
 
-            <th field="ReceiveOn" width="100">
+            <th field="ReceiveOn" width="100" formatter="datecheck" sortable="true">
                 到货时间
             </th>
 
-            <th field="TroubleType" width="100">
+            <th field="TroubleType" width="100" sortable="true">
                 问题类型
             </th>
 
-            <th field="TroubleDetail" width="100">
+            <th field="TroubleDetail" width="100" sortable="true">
                 问题描述
             </th>
 
-            <th field="CreateBy" width="100">
+            <th field="CreateBy" width="100" sortable="true">
                 创建人
             </th>
 
-            <th field="CreateOn" width="100">
+            <th field="CreateOn" width="100" formatter="datecheck" sortable="true">
                 创建时间
             </th>
 
-            <th field="DealBy" width="100">
+            <th field="DealBy" width="100" sortable="true">
                 处理人
             </th>
 
-            <th field="DealOn" width="100">
+            <th field="DealOn" width="100" formatter="datecheck" sortable="true">
                 处理时间
             </th>
 
-            <th field="SolutionType" width="100">
+            <th field="SolutionType" width="100" sortable="true">
                 解决方式
             </th>
 
-            <th field="SolutionDetail" width="100">
+            <th field="SolutionDetail" width="100" sortable="true">
                 解决描述
             </th>
 
@@ -170,11 +174,12 @@
     	</tr>
 		</thead>
 		</table>
-        <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+        <div id="toolbar"> 
+                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div> 
 		<div id="mm" style="width: 120px">
             <div data-options="name:'PurchaseCode'">采购计划编号</div>

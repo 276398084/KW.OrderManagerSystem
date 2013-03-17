@@ -6,112 +6,86 @@
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
 	
-        $('#e_BuyOn').datebox();
-
-
-        $('#e_ReceiveOn').datebox();
-
-        $('#e_CreateBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-        $('#e_CreateOn').datebox();
-
-        $('#e_DealBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
-        $('#e_DealOn').datebox();
-
-
+        $('#e_SolutionType').combobox({
+            url: '@Url.Action("PruchaseTroubleDeal", "Dictionary")',
+            panelHeight: 'auto',
+            valueField: 'FullName',
+            textField: 'FullName'
+        });
+        $('#e_SolutionType').combobox("setValue","重发")
     });
 </script>
 @using (Html.BeginForm("Edit", "PurchaseTrouble", FormMethod.Post, new { id = "e_form" }))
 {
-<fieldset>
+<fieldset style="border:0">
 <table class="editForm">
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
 		</td>
 	</tr>
 
-	<tr>
+@*	<tr>
 		<td>
             @Html.LabelFor(model => model.Status,"问题状态:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
 		</td>
-	</tr>
+	</tr>*@
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.PurchaseId,"采购计划Id:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.PurchaseId,new{@id="e_PurchaseId"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
+		</td>	
+        	<td>
             @Html.LabelFor(model => model.PurchaseCode,"采购计划编号:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.PurchaseCode,new{@id="e_PurchaseCode"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
+            @Html.TextBoxFor(model => model.PurchaseCode,new{@id="e_PurchaseCode",@readonly="readonly"})
+		</td>	
+       <td>
             @Html.LabelFor(model => model.SKU,"SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
-		</td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU",@readonly="readonly"})
+		</td>	
 	</tr>
 
 	<tr>
-		<td>
+         <td>
             @Html.LabelFor(model => model.Qty,"数量:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty",@readonly="readonly"})
+		</td>		
+        <td>
             @Html.LabelFor(model => model.Price,"单价:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
-		</td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price",@readonly="readonly"})
+		</td>	
 	</tr>
 
 	<tr>
-		<td>
+
+        <td>
             @Html.LabelFor(model => model.Freight,"运费:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Freight,new{@id="e_Freight"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
+            @Html.TextBoxFor(model => model.Freight,new{@id="e_Freight",@readonly="readonly"})
+		</td>	
+       	<td>
             @Html.LabelFor(model => model.Supplier,"供应商:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Supplier,new{@id="e_Supplier"})
+            @Html.TextBoxFor(model => model.Supplier,new{@id="e_Supplier",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -120,43 +94,39 @@
             @Html.LabelFor(model => model.LogisticsMode,"物流方式:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode"})
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode",@readonly="readonly"})
 		</td>
-	</tr>
-
-	<tr>
-		<td>
+        <td>
             @Html.LabelFor(model => model.LogisticsCode,"快递单:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="e_LogisticsCode"})
+            @Html.TextBoxFor(model => model.LogisticsCode,new{@id="e_LogisticsCode",@readonly="readonly"})
 		</td>
 	</tr>
+
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.BuyOn,"购买时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.BuyOn,new{@id="e_BuyOn"})
+            @Html.TextBoxFor(model => model.BuyOn,new{@id="e_BuyOn",@readonly="readonly"})
 		</td>
-	</tr>
-
-	<tr>
-		<td>
+        <td>
             @Html.LabelFor(model => model.ReceiveOn,"到货时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="e_ReceiveOn"})
+            @Html.TextBoxFor(model => model.ReceiveOn,new{@id="e_ReceiveOn",@readonly="readonly"})
 		</td>
 	</tr>
+
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.TroubleType,"问题类型:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.TroubleType,new{@id="e_TroubleType"})
+            @Html.TextBoxFor(model => model.TroubleType,new{@id="e_TroubleType",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -164,47 +134,28 @@
 		<td>
             @Html.LabelFor(model => model.TroubleDetail,"问题描述:")
 		</td>
-		<td>
-            @Html.TextBoxFor(model => model.TroubleDetail,new{@id="e_TroubleDetail"})
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.TroubleDetail,new{@id="e_TroubleDetail",@style="width:400px;height:50px",@readonly="readonly"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.CreateBy,"创建人:")
-		</td>
-		<td>
+		</td>*@
+		<td style="display:none">
             @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
+@*		<td>
             @Html.LabelFor(model => model.CreateOn,"创建时间:")
-		</td>
-		<td>
+		</td>*@
+		<td  style="display:none">
             @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
 		</td>
 	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.DealBy,"处理人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.DealBy,new{@id="e_DealBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.DealOn,"处理时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.DealOn,new{@id="e_DealOn"})
-		</td>
-	</tr>
-
 	<tr>
 		<td>
             @Html.LabelFor(model => model.SolutionType,"解决方式:")
@@ -218,8 +169,8 @@
 		<td>
             @Html.LabelFor(model => model.SolutionDetail,"解决描述:")
 		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SolutionDetail,new{@id="e_SolutionDetail"})
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.SolutionDetail,new{@id="e_SolutionDetail",@style="width:400px;height:50px"})
 		</td>
 	</tr>
 
