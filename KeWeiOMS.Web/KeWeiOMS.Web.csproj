@@ -183,6 +183,7 @@
     <Compile Include="Controllers\ProductSKUController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\PurchasePlanController.cs" />
+    <Compile Include="Controllers\PurchaseTroubleController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
@@ -1291,11 +1292,14 @@
     <Content Include="Views\Ebay\Edit.cshtml" />
     <Content Include="Views\Ebay\Index.cshtml" />
     <Content Include="Views\Product\ProductProfits.cshtml" />
-    <Content Include="Views\Product\WarningPurchaseList.cshtml" />
-    <Content Include="Views\PurchasePlan\CreateByW.cshtml" />
-    <Content Include="Views\Order\OrderExport.cshtml" />
-    <Content Include="Views\Product\SKUScan2.cshtml" />
-    <Content Include="Views\Order\IsNotQue.cshtml" />
+    <Content Include="Views\PurchaseTrouble\Create.cshtml" />
+    <Content Include="Views\PurchaseTrouble\Delete.cshtml" />
+    <Content Include="Views\PurchaseTrouble\Details.cshtml" />
+    <Content Include="Views\PurchaseTrouble\Edit.cshtml" />
+    <Content Include="Views\PurchaseTrouble\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
