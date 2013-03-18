@@ -89,7 +89,7 @@
         return "供应商：" + v + "<br>物流方式：" + r.LogisticsMode + "<br>快递单：" + r.LogisticsCode;
     }
     function buyon(v, r, i) {
-        return "购买：<br>" + datecheck(v) + "<br>到货：<br>" + datecheck(r.ReceiveOn);
+        return "购买：<br>" + datecheck(v) + "<br>到货：<br>"+datecheck(r.ReceiveOn);
     }
     function createby(v, r, i) {
         return "创建人：<br>" + v + "<br>时间：<br>" + datecheck(r.CreateOn);
