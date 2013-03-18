@@ -65,20 +65,37 @@
          return getOnlyDate(value);
      }
      function toExcel() {
+         $('#dg').datagrid('loading');
          var postUrl = "/Order/ExportDown/1";
          $.ajax({
              url: '@Url.Action("ToExcel", "PurchaseTrouble")/',
             success: function (result) {
-                $('#dg').datagrid('reload');
+                
                 $.messager.show({
                     title: '提示',
                     msg: result.Msg,
                     timeout: 0,
                     showType: 'slide',
                 })
-                location.href = postUrl
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
             }
         })
+     }
+    function sku(v,r,i) {
+        return "SKU:" + v + "<br>数量：" + r.Qty + "<br>单价：" + r.Price + "<br>运费：" + r.Freight;
+    }
+    function supplier(v,r,i) {
+        return "供应商：" + v + "<br>物流方式：" + r.LogisticsMode + "<br>快递单：" + r.LogisticsCode;
+    }
+    function buyon(v, r, i) {
+        return "购买：<br>" + datecheck(v) + "<br>到货：<br>" + datecheck(r.ReceiveOn);
+    }
+    function createby(v, r, i) {
+        return "创建人：<br>" + v + "<br>时间：<br>" + datecheck(r.CreateOn);
+    }
+    function dealby(v, r, i) {
+        return "处理人：<br>" + v + "<br>时间：<br>" + datecheck(r.DealOn);
     }
 </script>
 <div region="center">
@@ -94,48 +111,19 @@
                 问题状态
             </th>
 
-            <th field="PurchaseId" width="100" sortable="true">
-                采购计划Id
-            </th>
-
             <th field="PurchaseCode" width="100" sortable="true">
                 采购计划编号
             </th>
 
-            <th field="SKU" width="100" sortable="true">
-                SKU
+            <th field="SKU" width="100" sortable="true" formatter="sku">
+                商品信息
             </th>
 
-            <th field="Qty" width="100" sortable="true">
-                数量
-            </th>
-
-            <th field="Price" width="100" sortable="true"> 
-                单价
-            </th>
-
-            <th field="Freight" width="100" sortable="true">
-                运费
-            </th>
-
-            <th field="Supplier" width="100" sortable="true">
+            <th field="Supplier" width="100" sortable="true" formatter="supplier">
                 供应商
             </th>
-
-            <th field="LogisticsMode" width="100" sortable="true">
-                物流方式
-            </th>
-
-            <th field="LogisticsCode" width="100" sortable="true">
-                快递单
-            </th>
-
-            <th field="BuyOn" width="100" formatter="datecheck" sortable="true">
-                购买时间
-            </th>
-
-            <th field="ReceiveOn" width="100" formatter="datecheck" sortable="true">
-                到货时间
+            <th field="BuyOn" width="100" formatter="buyon" sortable="true">
+               时间信息
             </th>
 
             <th field="TroubleType" width="100" sortable="true">
@@ -146,20 +134,12 @@
                 问题描述
             </th>
 
-            <th field="CreateBy" width="100" sortable="true">
-                创建人
+            <th field="CreateBy" width="100" sortable="true" formatter="createby">
+                创建信息
             </th>
 
-            <th field="CreateOn" width="100" formatter="datecheck" sortable="true">
-                创建时间
-            </th>
-
-            <th field="DealBy" width="100" sortable="true">
-                处理人
-            </th>
-
-            <th field="DealOn" width="100" formatter="datecheck" sortable="true">
-                处理时间
+            <th field="DealBy" width="100" sortable="true" formatter="dealby">
+                处理
             </th>
 
             <th field="SolutionType" width="100" sortable="true">

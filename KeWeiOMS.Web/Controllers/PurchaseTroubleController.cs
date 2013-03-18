@@ -133,8 +133,8 @@ namespace KeWeiOMS.Web.Controllers
                 string date = search.Substring(0, search.IndexOf("$"));
                 string key = Utilities.Resolve(search.Substring(search.IndexOf("$")+1));
                 where = GetSearch(date);
-                if (!string.IsNullOrEmpty(where))
-                    where +=" "+ key;
+                if (!string.IsNullOrEmpty(where)&&!string.IsNullOrEmpty(key))
+                    where +=" and "+ key;
                 else
                 {
                     if (!string.IsNullOrEmpty(key))
