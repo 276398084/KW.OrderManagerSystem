@@ -69,13 +69,13 @@
 
         //异步新建提交
         function ajaxAddDao() {
-            $.messager.confirm('确认', '确定到货吗?', function () {
+            $.messager.confirm('确认', '确定到货吗?', function() {
                 $('#c_form').form('submit', {
                     url: '@Url.Action("Create", "PlanDao")',
-                    onSubmit: function () {
+                    onSubmit: function() {
                         return $(this).form('validate');
                     },
-                    success: function (result) {
+                    success: function(result) {
 
                         if (!result.IsSuccess) {
                             $.messager.show({
@@ -97,7 +97,7 @@
                         }
                     }
                 });
-            })
+            });
 
         }
 
@@ -276,7 +276,6 @@
             }
 
             function exportPlan(parameters) {
-
                 search = "st=" + $('#StartDate').datebox("getValue") + "&" + "et=" + $('#EndDate').datebox("getValue");
                 var a = $('#SearchStatus').combobox("getText");
                 if (a != "所有") {

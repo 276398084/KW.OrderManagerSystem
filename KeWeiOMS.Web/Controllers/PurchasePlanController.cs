@@ -132,8 +132,6 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult ExportPlan(string st, string et, string s)
         {
-
-
             string sql = @"select * from  PurchasePlan";
 
             if (!string.IsNullOrEmpty(s))
@@ -144,8 +142,6 @@ namespace KeWeiOMS.Web.Controllers
             {
                 sql += " where CreateOn  between '" + st + "' and '" + et + "'";
             }
-
-
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql + " order by CreateOn asc";
@@ -156,11 +152,9 @@ namespace KeWeiOMS.Web.Controllers
 
             List<string> list = new List<string>();
             string str = "";
-
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
-
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)

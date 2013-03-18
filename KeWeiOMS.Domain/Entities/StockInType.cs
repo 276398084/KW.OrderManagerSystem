@@ -31,6 +31,11 @@ namespace KeWeiOMS.Domain
         public virtual int Id { get; set; }
 
         /// <summary>
+        /// 主键
+        /// </summary>
+        public virtual int IsAudit { get; set; }
+
+        /// <summary>
         /// 入库仓库Id
         /// </summary>
         public virtual int WId { get; set; }

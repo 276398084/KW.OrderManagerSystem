@@ -464,6 +464,8 @@ namespace KeWeiOMS.Web
         #endregion
 
 
+
+
         public static bool StockOut(int wid, string sku, int num, string outType, string user, string memo, string orderNo)
         {
             ISession NSession = NHibernateHelper.CreateSession();
@@ -516,8 +518,8 @@ namespace KeWeiOMS.Web
 
                     }
                 }
-
                 StockInType stockInType = new StockInType();
+                stockInType.IsAudit = 0;
                 stockInType.Price = price;
                 stockInType.Qty = num;
                 stockInType.SKU = sku;

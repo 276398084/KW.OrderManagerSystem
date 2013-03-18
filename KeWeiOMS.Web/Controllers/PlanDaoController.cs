@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -82,6 +83,28 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { ErrorMsg = "已经审核了", IsSuccess = false });
             }
             return Json(new { ErrorMsg = "状态出错!", IsSuccess = false });
+        }
+
+
+        public JsonResult ExportDao(string st, string et)
+        {
+            string sql = @"select * from  PlanDao";
+            sql += " where IsAudit=1 and DaoOn  between '" + st + "' and '" + et + "'";
+
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql + " order by DaoOn asc";
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+
+            DataTable dt = ds.Tables[0];
+
+            List<string> list = new List<string>();
+            string str = "";
+
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult PrintSKU(int Id)

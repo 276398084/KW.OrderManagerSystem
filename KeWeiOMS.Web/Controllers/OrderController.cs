@@ -172,6 +172,77 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
+        public ActionResult GExport(string f)
+        {
+            try
+            {
+                int intColCount = 0;
+                DataTable mydt = new DataTable("myTableName");
+
+                DataColumn mydc;
+                DataRow mydr;
+                int col = 0;
+                CsvReader csvReader = new CsvReader(f, Encoding.Default);
+                List<string[]> liststrs = csvReader.ReadAllRow();
+                string ids = "";
+                for (int i = 0; i < liststrs.Count; i++)
+                {
+                    string[] aryline = liststrs[i];
+                    if (i == 0)
+                    {
+                        for (int j = 0; j < aryline.Length; j++)
+                        {
+                            if (aryline[j] == "Cart no.")
+                            {
+                                col = j;
+                            }
+                            mydc = new DataColumn(aryline[j]);
+                            mydt.Columns.Add(mydc);
+                        }
+                    }
+                    else
+                    {
+                        mydr = mydt.NewRow();
+                        for (int j = 0; j < mydt.Columns.Count; j++)
+                        {
+
+                            if (j == col)
+                            {
+                                ids += aryline[j] + ",";
+                            }
+                            if (aryline.Length > j)
+                                mydr[j] = aryline[j];
+                        }
+                        mydt.Rows.Add(mydr);
+                    }
+                }
+
+                ids = ids.Trim(',');
+                ids = ids.Replace(",", "','");
+                List<OrderType> list = NSession.CreateQuery("from OrderType where OrderExNo in('" + ids + "')").List<OrderType>().ToList();
+                foreach (DataRow dataRow in mydt.Rows)
+                {
+                    OrderType order = list.Find(p => p.OrderExNo.Trim().ToUpper() == dataRow["Cart no."].ToString().Trim().ToUpper());
+                    if (order != null)
+                    {
+                        dataRow["Tracking no."] = order.TrackCode;
+                        dataRow["Delivery company"] = "Chinapost registered airmail";
+                    }
+                }
+                DataSet ds = new DataSet();
+                ds.Tables.Add(mydt);
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+                return Json(new { IsSuccess = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
+
+            }
+
+        }
+
+        [HttpPost]
         public ActionResult Synchronous(string Platform, int Account, DateTime st, DateTime et)
         {
 
@@ -359,7 +430,6 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Clear();
             OrderType obj = GetById(Utilities.ToInt(o));
             obj.IsRepeat = 1;
-
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
@@ -367,6 +437,10 @@ namespace KeWeiOMS.Web.Controllers
             obj.Amount = 0;
             obj.IsPrint = 0;
             obj.IsRepeat = 1;
+            obj.TrackCode = "";
+            obj.Weight = 0;
+            obj.Status = OrderStatusEnum.已处理.ToString();
+            obj.IsOutOfStock = 0;
             obj.OrderNo = Utilities.GetOrderNo();
             NSession.Save(obj);
 
@@ -395,6 +469,7 @@ namespace KeWeiOMS.Web.Controllers
                                           CurrentUser.Realname, "");
                     }
                     orderType.Status = OrderStatusEnum.待发货.ToString();
+
                     NSession.Save(orderType);
                     NSession.Flush();
                 }
@@ -577,6 +652,30 @@ left join Products P On OP.SKU=P.SKU ";
             }
         }
 
+        [HttpPost]
+        public ActionResult ReError(string o)
+        {
+            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.已处理.ToString() + "',IsError=0 where Id in(" + o + ")").ExecuteUpdate();
+            if (t > 0)
+                return Json(new { IsSuccess = true });
+            else
+            {
+                return Json(new { IsSuccess = false });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ReQue(string o)
+        {
+            int t = NSession.CreateQuery(" Update OrderType set IsOutOfStock=0 where Id in(" + o + ")").ExecuteUpdate();
+            if (t > 0)
+                return Json(new { IsSuccess = true });
+            else
+            {
+                return Json(new { IsSuccess = false });
+            }
+        }
+
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
@@ -654,10 +753,14 @@ left join Products P On OP.SKU=P.SKU ";
                 {
                     if (order.IsOutOfStock != 1)
                     {
-                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td><b>Desc</b></td></tr>";
+                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td  width='120px'><b>库存</b></td><td><b>Desc</b></td></tr>";
                         foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                         {
-                            html += string.Format("<tr><td align='right'><input type='checkbox'  name='ck_{0}' code='{0}' checked=checked /></td><td>{1}</td><td>{2}</td><td>{3}</td></tr>", item.Id, item.SKU, item.Qty, item.Standard);
+
+                            object obj = NSession.CreateQuery("select sum(Qty) from WarehouseStockType where SKU='" + item.SKU + "'").UniqueResult();
+                            if (obj == null)
+                                obj = 0;
+                            html += string.Format("<tr><td align='right'><input type='checkbox'  name='ck_{0}' code='{0}' checked=checked /></td><td>{1}</td><td>{2}</td><td>{4}</td><td>{3}</td></tr>", item.Id, item.SKU, item.Qty, item.Standard, obj);
                         }
                         html += "</table>";
                         return Json(new { IsSuccess = true, Result = html });

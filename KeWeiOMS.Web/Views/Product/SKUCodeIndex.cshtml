@@ -61,7 +61,7 @@
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
             var d = $('#Pei').combobox("getValue");
-            if (d != "ALL" && d != "" && d != "0") {
+            if (d != "ALL" && d != "") {
                 if (d == "1") {
                     search += "IsOut_es&1^";
                 } else {
@@ -69,7 +69,7 @@
                 }
             }
             var f = $('#Send').combobox("getValue");
-            if (f != "ALL" && d != "" && d != "0") {
+            if (f != "ALL" && f != "") {
                 if (f == "1") {
                     search += "IsSend_es&1^";
                 } else {
@@ -100,12 +100,10 @@
                     </th>
                     <th field="PeiOn" width="100">配货时间
                     </th>
-
                     <th field="IsSend" width="100" formatter="getTrue" sortable="true">是否出库
                     </th>
                     <th field="SendOn" width="100" sortable="true">出库时间
                     </th>
-
                     <th field="OrderNo" width="100" sortable="true">订单
                     </th>
                 </tr>
@@ -118,14 +116,10 @@
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
-
             <div data-options="name:'Code'">Code</div>
             <div data-options="name:'SKU'">SKU</div>
             <div data-options="name:'OrderNo'">订单号</div>
             <div data-options="name:'PlanNo'">采购单号</div>
-
         </div>
-
-
     </div>
 </body>

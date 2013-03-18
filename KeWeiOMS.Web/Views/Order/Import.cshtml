@@ -28,6 +28,31 @@
                 $('c_Import').clear();
             }
         });
+        $('#up_file2').uploadify({
+            'auto': false,
+            'buttonText': '请选择Gmarket文件',
+            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
+            'uploader': '/Home/SaveFile/',
+            'multi': false,
+            'onUploadSuccess': function (file, data, response) {
+                eval("data=" + data);
+                $('#hfile2').val(data.SaveName);
+
+                var postUrl = "/Order/ExportDown/1";
+                jQuery.ajax({
+                    url: "/Order/GExport/",
+                    type: "post",
+                    data: "f=" + data.SaveName,
+                    success: function (sss) {
+                        location.href = postUrl;
+
+                    }
+                });
+
+
+
+            }
+        });
         $('#Platform').combobox({
             url: '/Account/Platform',
             valueField: 'id',
@@ -89,6 +114,11 @@
     function importAmount() {
         type = 1;
         $('#up_file').uploadify('upload', '*');
+    }
+
+    function Gexport() {
+        type = 1;
+        $('#up_file2').uploadify('upload', '*');
     }
 
     function Synchronous() {
@@ -162,6 +192,25 @@
                     <td></td>
                     <td>
                         <input type="button" value="保存" onclick="Synchronous();" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+    <div title="Gmarket追踪条码导出" style="overflow: auto; padding: 20px;">
+        @using (Html.BeginForm("GExport", "Order", FormMethod.Post, new { id = "c_GExport" }))
+        {
+            <table class="dv-table" border="0" style="width: 400px; height: 250px;">
+
+                <tr>
+                    <td>文件:</td>
+                    <td>
+                        <input id="hfile2" type="hidden" value="" name="hfile" />
+                        <input id="up_file2" type="file" name="up_file" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="保存" onclick="Gexport();" /></td>
                 </tr>
             </table>
         }
