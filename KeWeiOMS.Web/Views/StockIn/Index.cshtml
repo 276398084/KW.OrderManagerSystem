@@ -13,8 +13,8 @@
             });
             $('#StartDate').datebox();
             $('#EndDate').datebox();
-            $('#StartDate').datebox("setValue", getStartDate(30));
-            $('#EndDate').datebox("setValue", getStartDate(-1));
+            $('#txtStartDate').datebox("setValue", getStartDate(30));
+            $('#txtEndDate').datebox("setValue", getStartDate(-1));
         });
 
         //新建
@@ -185,13 +185,31 @@
                 });
                 return (undefined);
             }
-            function doSearch() {
-                search = $('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                $("#dg").datagrid("load", {
-                    search: search
+            function toExcel() {
+                $('#dg').datagrid('loading');
+                var postUrl = "/Order/ExportDown/1";
+                $.ajax({
+                    url: '@Url.Action("ToExcel", "StockIn")/',
+            success: function (result) {
 
-                });
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
             }
+        })
+    }
+
+    function doSearch() {
+        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
             function showPrint(v, r) {
                 if (r.IsAudit == 1)
                     return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a>';
@@ -267,9 +285,10 @@
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">入库</a>
 
-            开始时间:<input id="StartDate" />
-            结束时间:<input id="EndDate" />&nbsp&nbsp
+                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
         <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+                  <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'WName'">入库仓库</div>

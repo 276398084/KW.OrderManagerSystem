@@ -1297,6 +1297,8 @@
     <Content Include="Views\PurchaseTrouble\Details.cshtml" />
     <Content Include="Views\PurchaseTrouble\Edit.cshtml" />
     <Content Include="Views\PurchaseTrouble\Index.cshtml" />
+    <Content Include="Views\Product\WarningPurchaseList.cshtml" />
+    <Content Include="Views\Order\IsNotQue.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

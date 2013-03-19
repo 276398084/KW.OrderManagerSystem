@@ -497,13 +497,13 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult Freight(decimal price, decimal weight, int qty, decimal onlineprice, string Currency, string LogisticMode, int Country)
         {
-            decimal freight = decimal.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
+            decimal freight = decimal.Parse((GetFreight(weight * qty, LogisticMode, Country)).ToString("f6"));
+            if (freight == -1)
+                return Json(new { IsSuccess = false, ErrorMsg ="cz"}, JsonRequestBehavior.AllowGet);
             decimal currency = decimal.Parse(Math.Round(GetCurrency(Currency), 2).ToString());
-            decimal profit = (onlineprice * currency - price - freight) * qty;
-            return Json(profit, JsonRequestBehavior.AllowGet);
+            decimal profit = (onlineprice * currency - price) * qty - freight;
+            return Json(new { IsSuccess =true, profit=profit,freight=freight}, JsonRequestBehavior.AllowGet);
         }
-
-
         private decimal GetFreight(decimal weight, string logisticMode, int country)
         {
             decimal discount = 0;
