@@ -972,7 +972,7 @@ select SKU,SUM(Qty) as Qty,isnull(Standard,0) as Standard,(select isnull(SUM(Qty
                 }
                 list.Add(oc);
             }
-            Session["ToExcel"] = list;
+            Session["ToExcel"]= list;
             return Json(new { total = list.Count, rows = list });
         }
 
@@ -981,7 +981,9 @@ select SKU,SUM(Qty) as Qty,isnull(Standard,0) as Standard,(select isnull(SUM(Qty
         {
             try
             {
-
+               IList<QueCount>  signout =Session["ToExcel"] as List<QueCount>;
+               DataSet ds = ConvertToDataSet<QueCount>(signout);
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             }
             catch (Exception ee)
             {
