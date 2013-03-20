@@ -104,7 +104,9 @@ namespace KeWeiOMS.Web.Controllers
                     data.NeedQty = Convert.ToInt32(data.AvgQty * 10) + data.QueQty;
                     list.Add(data);
                 }
+               
             }
+            Session["ToExcel"] = list;
             return Json(new { total = list.Count, rows = list });
         }
 
@@ -498,13 +500,13 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult Freight(decimal price, decimal weight, int qty, decimal onlineprice, string Currency, string LogisticMode, int Country)
         {
-            decimal freight = decimal.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
+            decimal freight = decimal.Parse((GetFreight(weight * qty, LogisticMode, Country)).ToString("f6"));
+            if (freight == -1)
+                return Json(new { IsSuccess = false, ErrorMsg ="cz"}, JsonRequestBehavior.AllowGet);
             decimal currency = decimal.Parse(Math.Round(GetCurrency(Currency), 2).ToString());
-            decimal profit = (onlineprice * currency - price - freight) * qty;
-            return Json(profit, JsonRequestBehavior.AllowGet);
+            decimal profit = (onlineprice * currency - price) * qty - freight;
+            return Json(new { IsSuccess =true, profit=profit,freight=freight}, JsonRequestBehavior.AllowGet);
         }
-
-
         private decimal GetFreight(decimal weight, string logisticMode, int country)
         {
             decimal discount = 0;
@@ -553,6 +555,67 @@ namespace KeWeiOMS.Web.Controllers
                 curr = s.CurrencyValue;
             }
             return curr;
+        }
+
+        public JsonResult ToExcel()
+        {
+            try
+            {
+                IList<PurchaseData> signout = Session["ToExcel"] as List<PurchaseData>;
+                DataSet ds = ConvertToDataSet<PurchaseData>(signout);
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            }
+            catch (Exception ee)
+            {
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+        }
+        //IList转DataSet
+        public static DataSet ConvertToDataSet<T>(IList<T> list)
+        {
+            if (list == null || list.Count <= 0)
+            {
+                return null;
+            }
+
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable(typeof(T).Name);
+            DataColumn column;
+            DataRow row;
+
+            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            foreach (T t in list)
+            {
+                if (t == null)
+                {
+                    continue;
+                }
+
+                row = dt.NewRow();
+
+                for (int i = 0, j = myPropertyInfo.Length; i < j; i++)
+                {
+                    System.Reflection.PropertyInfo pi = myPropertyInfo[i];
+
+                    string name = pi.Name;
+
+                    if (dt.Columns[name] == null)
+                    {
+                        column = new DataColumn(name, pi.PropertyType);
+                        dt.Columns.Add(column);
+                    }
+
+                    row[name] = pi.GetValue(t, null);
+                }
+
+                dt.Rows.Add(row);
+            }
+
+            ds.Tables.Add(dt);
+
+            return ds;
         }
     }
 }

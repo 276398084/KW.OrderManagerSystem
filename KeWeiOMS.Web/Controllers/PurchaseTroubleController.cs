@@ -140,8 +140,9 @@ namespace KeWeiOMS.Web.Controllers
                     if (!string.IsNullOrEmpty(key))
                         where = " where " + key;
                 }
-                Session["ToExcel"] = where + orderby;
+                
             }
+            Session["ToExcel"] = where + orderby;
             IList<PurchaseTroubleType> objList = NSession.CreateQuery("from PurchaseTroubleType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)

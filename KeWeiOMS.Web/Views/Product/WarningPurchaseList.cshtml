@@ -29,6 +29,25 @@
     function update() {
         $('#dg').datagrid("reload");
     }
+
+    function toExcel() {
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "Product")/',
+            success: function (result) {
+
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        })
+    }
 </script>
 <body class="easyui-layout">
     <div region="center">
@@ -69,6 +88,7 @@
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="update();">刷新</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
     </div>
     <div id="c_dlg"></div>

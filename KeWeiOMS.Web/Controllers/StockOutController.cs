@@ -7,6 +7,8 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -139,26 +141,19 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                string key = search.Substring(search.IndexOf("$") + 1);
-                where = Utilities.Resolve(key);
-                if (where.Length > 0)
+                string date = search.Substring(0, search.IndexOf("$"));
+                string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1));
+                where = GetSearch(date);
+                if (!string.IsNullOrEmpty(where) && !string.IsNullOrEmpty(key))
+                    where += " and " + key;
+                else
                 {
-                    where = " where " + where;
+                    if (!string.IsNullOrEmpty(key))
+                        where = " where " + key;
                 }
-                string GetDate = search.Substring(0, search.IndexOf("$"));
-                string SearchDate = GetSearch(GetDate);
-                if (!string.IsNullOrEmpty(SearchDate))
-                {
-                    if (string.IsNullOrEmpty(where))
-                    {
-                        where = " where " + SearchDate;
-                    }
-                    else
-                    {
-                        where += " and " + SearchDate;
-                    }
-                }
+
             }
+            Session["ToExcel"] = where + orderby;
             IList<StockOutType> objList = NSession.CreateQuery("from StockOutType" + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -167,6 +162,25 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from StockOutType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+       public JsonResult ToExcel()
+        {
+            try
+            {
+                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
+                con.Open();
+                SqlDataAdapter da = new SqlDataAdapter("select * from StockOut " + Session["ToExcel"].ToString(), con);
+                DataSet ds = new DataSet();
+                da.Fill(ds, "content");
+                con.Close();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            }
+            catch (Exception ee)
+            {
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+        }
+
         public static string GetSearch(string search)
         {
             string where = "";
@@ -180,8 +194,9 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     if (where != "")
                         where += " and ";
-                    where += "CreateOn <\'" + Convert.ToDateTime(enddate).AddDays(1) + "\'";
+                    where += "CreateOn <=\'" + Convert.ToDateTime(enddate) + "\'";
                 }
+                where = " where " + where;
             }
             return where;
         }

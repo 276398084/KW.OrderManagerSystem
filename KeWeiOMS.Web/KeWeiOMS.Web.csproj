@@ -1300,6 +1300,8 @@
     <Content Include="Views\PurchaseTrouble\Index.cshtml" />
     <Content Include="Views\OrderAmount\Create.cshtml" />
     <Content Include="Views\OrderAmount\Delete.cshtml" />
+    <Content Include="Views\Product\WarningPurchaseList.cshtml" />
+    <Content Include="Views\Order\IsNotQue.cshtml" />
     <Content Include="Views\OrderAmount\Details.cshtml" />
     <Content Include="Views\OrderAmount\Edit.cshtml" />
     <Content Include="Views\OrderAmount\Index.cshtml" />

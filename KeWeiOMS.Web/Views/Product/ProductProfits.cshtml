@@ -106,18 +106,21 @@
                     url: '@Url.Action("Freight", "Product")',
                     data: "price=" + price + "&weight=" + weight + "&qty=" + qty + "&onlineprice=" + onlineprice + "&currency=" + currency + "&logisticMode=" + logisticMode + "&country=" + country,
                     success: function (msg) {
-                        if (msg == "cz")
-                        {
+                        if (!msg.IsSuccess) {
                             alert("此批货物超重,请重新输入重量");
-                            $("#profit").numberbox("setValue","");
+                            $("#profit").numberbox("setValue", "");
+                            $("#freight").numberbox("setValue","");
                         }
-                         else
-                        $("#profit").numberbox("setValue", msg);
+                        else {
+                            $("#profit").numberbox("setValue", msg.profit);
+                            $("#freight").numberbox("setValue", msg.freight);
+                        }
                     }
                 });
             }
             else {
-                $("#profit").numberbox("setValue","");
+                $("#profit").numberbox("setValue", "");
+                $("#freight").numberbox("setValue", "");
             }
         }
     </script>
@@ -200,12 +203,20 @@
       <fieldset>
     <legend>利润信息</legend>
          <table>
+                       <tr>
+            <td>
+                <label>运费:</label>
+             </td>  
+             <td>
+                <input id="freight" type="text" readonly="readonly" class="easyui-numberbox" data-options="precision:2"/>
+             </td> 
+          </tr>
           <tr>
             <td>
                 <label>利润:</label>
              </td>  
              <td>
-                <input id="profit" type="text" class="easyui-numberbox" data-options="precision:2"/>
+                <input id="profit" type="text"  readonly="readonly" class="easyui-numberbox" data-options="precision:2"/>
              </td> 
           </tr>
       </table>
