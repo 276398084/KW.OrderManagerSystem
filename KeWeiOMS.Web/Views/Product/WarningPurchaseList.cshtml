@@ -17,63 +17,10 @@
 
     function showPlan(v, q) {
         c_dlg(v, q);
-        // $("#c_Qty").val(q);
+
     }
 
-    //异步新建提交
-    function ajaxAdd() {
-        $('#c_form').form('submit', {
-            url: '@Url.Action("Create", "PurchasePlan")',
-            onSubmit: function () {
-                return $(this).form('validate');
-            },
-            success: function (msg) {
-                var result = $.parseJSON(msg);
-                if (!result.IsSuccess) {
-                    $.messager.show({
-                        title: '提示',
-                        msg: '保存失败:' + result.ErrorMsg,
-                        timeout: 0,
-                        showType: 'slide'
-                    });
-                } else {
-                    $('#c_dlg').dialog('close');
-                    $('#dg').datagrid('reload');
-                    $.messager.show({
-                        title: '提示',
-                        msg: '保存成功',
-                        timeout: 2000,
-                        showType: 'slide'
-                    });
-                }
-            }
-        });
-    }
 
-    //新建
-    function c_dlg(v, q) {
-        var url_str = '@Url.Action("CreateByW", "PurchasePlan")/' + v;
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-                modal: true,
-                loadingMessage: '正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-            $("#c_Qty").val(q);
-        }).dialog('open');
-    }
 
     function work(v, r) {
         return '<a href="javascript:void(0);" onclick="showPlan(\'' + r.SKU + '\',\'' + r.NeedQty + '\')">采购</a>';
@@ -111,6 +58,8 @@
                     <th field="AvgQty" width="100" formatter="getAvg">平均
                     </th>
                     <th field="WarningQty" width="100">预警所需
+                    </th>
+                    <th field="QueQty" width="100">缺
                     </th>
                     <th field="BuyQty" width="100">已购买
                     </th>

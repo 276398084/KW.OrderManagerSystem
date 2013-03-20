@@ -40,6 +40,8 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String PlanNo { get; set; }
 
+        public virtual int PlanId { get; set; }
+
         /// <summary>
         /// 采购SKU
         /// </summary>

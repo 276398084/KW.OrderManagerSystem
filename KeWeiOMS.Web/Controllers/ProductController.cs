@@ -63,9 +63,12 @@ namespace KeWeiOMS.Web.Controllers
             {
                 ids += "'" + p.SKU + "',";
             }
+
             stocks =
                 NSession.CreateQuery("from WarehouseStockType where SKU in(" + ids.Trim(',') + ")").List<WarehouseStockType>();
             plans = NSession.CreateQuery("from PurchasePlanType where Status not in('异常','已收到')  and SKU in(" + ids.Trim(',') + ")").List<PurchasePlanType>();
+
+            IList<OrderProductType> orderProducts = NSession.CreateQuery("from OrderProductType where SKU in(" + ids.Trim(',') + ") and IsQue=1 and OId In(select Id from OrderType where IsOutOfStock=1)").List<OrderProductType>();
             foreach (var p in products)
             {
                 PurchaseData data = new PurchaseData();
@@ -93,11 +96,12 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     data.IsImportant = 1;
                 }
-
-                data.BuyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
-                if ((data.NowQty + data.BuyQty - data.WarningQty) < 0)
+                int buyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.DaoQty);
+                data.BuyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty) - buyQty;
+                data.QueQty = orderProducts.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
+                if ((data.NowQty + data.BuyQty - data.WarningQty - data.QueQty) < 0)
                 {
-                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10);
+                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10) + data.QueQty;
                     list.Add(data);
                 }
             }
@@ -175,20 +179,24 @@ namespace KeWeiOMS.Web.Controllers
                 string filePath = Server.MapPath("~");
                 obj.CreateOn = DateTime.Now;
                 string pic = obj.PicUrl;
-                obj.Status = ProductStatusEnum.销售中.ToString();
+
                 obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
                 obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
+
                 Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
                 Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
+                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
+                if (list1.Count > 0)
+                    obj.IsZu = 1;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
-                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
                 foreach (ProductComposeType productCompose in list1)
                 {
                     productCompose.SKU = obj.SKU;
                     productCompose.PId = obj.Id;
                     NSession.Save(productCompose);
                     NSession.Flush();
+
                 }
 
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
@@ -249,6 +257,17 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
+                NSession.Delete("from ProductComposeType where SKU='" + obj.SKU + "'");
+                NSession.Flush();
+                foreach (ProductComposeType productCompose in list1)
+                {
+                    productCompose.SKU = obj.SKU;
+                    productCompose.PId = obj.Id;
+                    NSession.Save(productCompose);
+                    NSession.Flush();
+                    obj.IsZu = 1;
+                }
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -359,28 +378,10 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
-        public JsonResult ZuList(int page, int rows, string sort, string order, string search)
+        public JsonResult ZuList(String Id)
         {
-            string where = "";
-            string orderby = " order by Id desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
-            IList<ProductComposeType> objList = NSession.CreateQuery("from ProductComposeType " + where + orderby)
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
-                .List<ProductComposeType>();
-            object count = NSession.CreateQuery("select count(Id) from ProductComposeType " + where).UniqueResult();
-            return Json(new { total = count, rows = objList });
+            IList<ProductComposeType> objList = NSession.CreateQuery("from ProductComposeType where SKU='" + Id + "'").List<ProductComposeType>();
+            return Json(new { total = objList.Count, rows = objList });
         }
 
         public JsonResult HasExist(string sku)
@@ -388,7 +389,7 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
             if (Convert.ToInt32(count) > 0)
             {
-                return Json(new { IsSuccess = "false" });
+                return Json(new { IsSuccess = false });
             }
             else
             {

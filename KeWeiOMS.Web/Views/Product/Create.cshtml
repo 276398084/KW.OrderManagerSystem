@@ -1,12 +1,9 @@
 ﻿@model KeWeiOMS.Domain.ProductType
-@{
-    //Layout = null;
-}
 <link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
 <script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
-<script type="text/javascript">
 
+<script type="text/javascript">
     $(function () {
         $('#dg_zu').datagrid({
             url: '@Url.Action("ZuList", "Product")',
@@ -16,7 +13,6 @@
                 text: '添加',
                 iconCls: 'icon-add',
                 handler: function () {
-
                     addp();
                 }
             }, {
@@ -61,27 +57,25 @@
             panelHeight: 50,
             data: checks
         });
-        $('#c_IsInfraction').combobox("setValue", 0);
-        $('#c_IsElectronic').combobox("setValue", 1);
-        $('#c_HasBattery').combobox("setValue", 0);
-
+        $('#c_IsZu').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
             data: checks
         });
         $('#c_Purchaser').combobox({
             url: '/User/QList/' + Purchaser,
             valueField: 'Id',
             textField: 'Realname',
-         
+            required: true,
             width: 200,
             panelHeight: 'auto'
         });
-
-        
         $('#c_Examiner').combobox({
             url: '/User/QList/' + Examiner,
             valueField: 'Id',
             textField: 'Realname',
-           
+            required: true,
             width: 200,
             panelHeight: 'auto'
         });
@@ -89,13 +83,10 @@
             url: '/User/QList/' + Packer,
             valueField: 'Id',
             textField: 'Realname',
-          
+            required: true,
             width: 200,
             panelHeight: 'auto'
         });
-        $('#c_Purchaser').combobox("setValue", "储善昂");
-        $('#c_Examiner').combobox("setValue", "王凯");
-        $('#c_Packer').combobox("setValue", "朱丹凤");
         $('#c_Status').combobox({
             url: '/Home/ProductStatus/',
             valueField: 'id',
@@ -104,14 +95,11 @@
             width: 200,
             panelHeight: 'auto'
         });
-        $('#c_Status').combobox("setValue", "销售中");
         $('#c_Category').combotree({
             url: '/ProductCategory/PList',
-
             required: true,
             width: 200
         });
-        $('#c_Category').combotree("setValue","电脑、平板电脑、网络")
         $('#c_Location').combogrid({
             panelWidth: 360,
             idField: 'PositionsName',
@@ -124,7 +112,7 @@
                { field: 'Warehouse', title: '仓库', width: 200 }
             ]]
         });
-        $('#c_Location').combogrid("setValue","A001");
+
         $('#up_file').uploadify({
             'auto': false,
             'buttonText': '请选择图片',
@@ -183,37 +171,32 @@
             $('#dg_zu').datagrid('acceptChanges');
         }
     }
-
-
     function addProduct() {
         $.ajax({
             type: "POST",
             url: "/Product/HasExist/",
             data: "sku=" + $('#c_SKU').val(),
             success: function (msg) {
-                if (msg.IsSuccess == "true") {
+                if (msg.IsSuccess) {
                     $('#up_file').uploadify('upload');
-
                 }
                 else {
                     $.messager.show({
                         title: '提示',
-                        msg: '改编号已经存在',
+                        msg: '编号已经存在',
                         timeout: 0,
                         showType: 'slide'
                     });
                 }
             }
         });
-
     }
-
 </script>
 
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "c_form" }))
 {
-
     <input type="button" value="保存" onclick="addProduct();" />
+
     <fieldset>
         <legend>产品信息</legend>
         <table class="editForm">
@@ -280,7 +263,9 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.Long, new { @id = "c_Long", @style = "width:50px" })×
+                   
                     @Html.TextBoxFor(model => model.Wide, new { @id = "c_Wide", @style = "width:50px" })×
+                   
                     @Html.TextBoxFor(model => model.High, new { @id = "c_High", @style = "width:50px" })
                 </td>
 
@@ -356,31 +341,30 @@
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Location, "库位:")
-                </td>
-                <td>
+                </td >
+                <td colspan="5"> 
                     @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
                 </td>
-                <td>
-                    @Html.LabelFor(model => model.Location, "是否组合:")
-                </td>
-                <td colspan="3">
-                    @Html.HiddenFor(model => model.IsZu, new { @id = "c_IsZu" })
-                </td>
+                
+
             </tr>
             <tr>
-                <td>组合产品</td>
-                <td colspan="5">
-                    <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true">
+                <td>组合产品设置</td>
+                <td colspan="5" style="height: 150px">
+
+                    <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
                         <thead>
                             <tr>
                                 <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
-                                </th>
+                    </th>
                                 <th field="SrcQty" width="100" data-options="editor:'text'">Qty
-                                </th>
+                    </th>
                         </thead>
                     </table>
+
                 </td>
             </tr>
+
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Summary, "简单描述:")
@@ -399,6 +383,5 @@
             </tr>
         </table>
     </fieldset>
-
-
+   
 }

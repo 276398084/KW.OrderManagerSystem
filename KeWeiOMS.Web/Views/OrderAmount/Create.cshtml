@@ -1,0 +1,167 @@
+﻿@model KeWeiOMS.Domain.OrderAmountType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "OrderAmount", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OId,"订单ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OId,new{@id="c_OId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderExNo,"订单平台ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="c_OrderExNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AgainCount,"重发次数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AgainCount,new{@id="c_AgainCount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SplitCount,"拆分次数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SplitCount,new{@id="c_SplitCount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TotalFreight,"总运费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TotalFreight,new{@id="c_TotalFreight"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TotalCosts,"总产品陈本:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TotalCosts,new{@id="c_TotalCosts"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Fee,"订单手续费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Fee,new{@id="c_Fee"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TransactionFees,"订单交易费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TransactionFees,new{@id="c_TransactionFees"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OtherFees,"订单其他费:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OtherFees,new{@id="c_OtherFees"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderAmount,"订单金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderAmount,new{@id="c_OrderAmount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CurrencyCode,"货币:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="c_CurrencyCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ExchangeRate,"汇率:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ExchangeRate,new{@id="c_ExchangeRate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RMB,"RMB:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RMB,new{@id="c_RMB"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="c_Status"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

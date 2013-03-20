@@ -26,6 +26,8 @@ namespace KeWeiOMS.Web
         /// </summary>
         public int BuyQty { get; set; }
 
+        public int QueQty { get; set; }
+
         public int PreQty { get; set; }
 
         public int SevenDay { get; set; }

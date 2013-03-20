@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class PurchasePlanTypeMap : ClassMap<PurchasePlanType> 
+    public class PurchasePlanTypeMap : ClassMap<PurchasePlanType>
     {
         public PurchasePlanTypeMap()
         {
@@ -34,6 +34,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.SKU).Length(50);
             Map(x => x.Price);
             Map(x => x.Qty);
+            Map(x => x.DaoQty);
             Map(x => x.Freight);
             Map(x => x.ProductName).Length(200);
             Map(x => x.ProductUrl).Length(300);

@@ -164,6 +164,7 @@
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NewGuideController.cs" />
     <Compile Include="Controllers\OrderAddresController.cs" />
+    <Compile Include="Controllers\OrderAmountController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrderPackRecordController.cs" />
@@ -1297,6 +1298,16 @@
     <Content Include="Views\PurchaseTrouble\Details.cshtml" />
     <Content Include="Views\PurchaseTrouble\Edit.cshtml" />
     <Content Include="Views\PurchaseTrouble\Index.cshtml" />
+    <Content Include="Views\OrderAmount\Create.cshtml" />
+    <Content Include="Views\OrderAmount\Delete.cshtml" />
+    <Content Include="Views\OrderAmount\Details.cshtml" />
+    <Content Include="Views\OrderAmount\Edit.cshtml" />
+    <Content Include="Views\OrderAmount\Index.cshtml" />
+    <Content Include="Views\Product\PrePurchaseList.cshtml" />
+    <Content Include="Views\Product\WarningPurchaseList.cshtml" />
+    <Content Include="Views\Product\SKUScan2.cshtml" />
+    <Content Include="Views\Order\IsNotQue.cshtml" />
+    <Content Include="Views\Order\OrderExport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

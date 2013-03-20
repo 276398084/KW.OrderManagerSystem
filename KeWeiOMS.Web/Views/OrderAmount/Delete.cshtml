@@ -1,0 +1,107 @@
+﻿@model KeWeiOMS.Domain.OrderAmountType
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KeWeiOMS.Domain.OrderAmountType</title>
+</head>
+<body>
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>KeWeiOMS.Domain.OrderAmountType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">订单ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OId)
+    </div>
+
+    <div class="display-label">订单编号</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderNo)
+    </div>
+
+    <div class="display-label">订单平台ID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderExNo)
+    </div>
+
+    <div class="display-label">重发次数</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AgainCount)
+    </div>
+
+    <div class="display-label">拆分次数</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SplitCount)
+    </div>
+
+    <div class="display-label">总运费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TotalFreight)
+    </div>
+
+    <div class="display-label">总产品陈本</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TotalCosts)
+    </div>
+
+    <div class="display-label">订单手续费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Fee)
+    </div>
+
+    <div class="display-label">订单交易费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TransactionFees)
+    </div>
+
+    <div class="display-label">订单其他费</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OtherFees)
+    </div>
+
+    <div class="display-label">订单金额</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderAmount)
+    </div>
+
+    <div class="display-label">货币</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CurrencyCode)
+    </div>
+
+    <div class="display-label">汇率</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ExchangeRate)
+    </div>
+
+    <div class="display-label">RMB</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RMB)
+    </div>
+
+    <div class="display-label">状态</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Status)
+    </div>
+
+
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("返回列表", "Index")
+    </p>
+}
+
+
+</body>
+</html>

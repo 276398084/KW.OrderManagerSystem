@@ -36,6 +36,11 @@ namespace KeWeiOMS.Domain
         public virtual int Id { get; set; }
 
         /// <summary>
+        /// 拆分订单主订单ID
+        /// </summary>
+        public virtual int MId { get; set; }
+
+        /// <summary>
         /// 订单编号
         /// </summary>
         public virtual String OrderNo { get; set; }
@@ -94,6 +99,11 @@ namespace KeWeiOMS.Domain
         /// 总金额
         /// </summary>
         public virtual double Amount { get; set; }
+
+        /// <summary>
+        /// 总金额
+        /// </summary>
+        public virtual double RMB { get; set; }
 
         /// <summary>
         /// 流水交易号

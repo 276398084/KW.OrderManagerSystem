@@ -32,34 +32,6 @@ namespace KeWeiOMS.Web
             return ds.Tables[0];
         }
 
-        public static DataTable csvToDataTable(string file)
-        {
-            string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + file + ";Extended Properties='Excel 8.0;IMEX=1'"; // Excel file  
-            if (file.EndsWith(".csv"))
-                strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + file + ";DEFAULTDIR=D:;Extensions=CSV;"; // csv file:HDR=Yes-- first line is header  
-            OleDbConnection oleConn = new OleDbConnection(strConn);
-            oleConn.Open();
-            DataTable sheets = oleConn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-            if (sheets == null || sheets.Rows.Count < 1)
-            {
-                return null;
-            }
-            String fileName = sheets.Rows[0]["TABLE_NAME"].ToString(); // sheets.Rows[0] -- first sheet of excel  
-            if (file.EndsWith(".csv"))
-                fileName = file.Substring(file.LastIndexOf("/"));
-            string olestr = "select * from [" + fileName + "]";
-            if (file.EndsWith(".csv"))
-                olestr = "select * from [" + fileName + "]";
-            OleDbCommand oleComm = new OleDbCommand(olestr, oleConn);
-            oleComm.Connection = oleConn;
-            OleDbDataAdapter oleDa = new OleDbDataAdapter();
-            oleDa.SelectCommand = oleComm;
-            DataSet ds = new DataSet();
-            oleDa.Fill(ds);
-            oleConn.Close();
-            return ds.Tables[0];
-        }
-
         #region 订单数据导入
         public static List<ResultInfo> ImportByAmount(AccountType account, string fileName)
         {
@@ -78,9 +50,9 @@ namespace KeWeiOMS.Web
             ISession NSession = SessionBuilder.CreateSession();
 
             List<ResultInfo> results = new List<ResultInfo>();
+
             foreach (DataRow dr in GetDataTable(fileName).Rows)
             {
-
                 string OrderExNo = dr["订单号"].ToString();
                 string o = dr["订单状态"].ToString();
                 if (o != "等待您发货")
@@ -748,11 +720,13 @@ namespace KeWeiOMS.Web
             }
             if (order.CurrencyCode != null)
             {
-                if (currencys.FindIndex(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper()) == -1)
+                CurrencyType currency = currencys.Find(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper());
+                if (currency == null)
                 {
                     resultValue = false;
                     order.ErrorInfo += "货币不符 ";
                 }
+
 
             }
             else
@@ -785,11 +759,29 @@ namespace KeWeiOMS.Web
                     break;
                 }
             }
-            NSession.Clear();
+
             if (resultValue)
             {
+                CurrencyType currency = currencys.Find(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper());
                 order.Status = OrderStatusEnum.已处理.ToString();
+                order.RMB = currency.CurrencyValue * order.Amount;
+                OrderAmountType orderAmount = new OrderAmountType();
+                orderAmount.Account = order.Account;
+                orderAmount.OrderNo = order.OrderNo;
+                orderAmount.OrderExNo = order.OrderExNo;
+                orderAmount.OrderAmount = order.Amount;
+                orderAmount.OId = order.Id;
+                orderAmount.ExchangeRate = currency.CurrencyValue;
+                orderAmount.CurrencyCode = order.CurrencyCode;
+                orderAmount.Platform = order.Platform;
+                orderAmount.Country = order.Country;
+                orderAmount.RMB = order.RMB;
+                NSession.Save(orderAmount);
+                NSession.Flush();
             }
+
+
+            NSession.Clear();
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             return resultValue;

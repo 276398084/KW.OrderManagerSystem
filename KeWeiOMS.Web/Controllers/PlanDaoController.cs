@@ -39,15 +39,16 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     if (plan[0].Status != "已收到")
                     {
+                        obj.PlanId = plan[0].Id;
                         obj.PlanNo = plan[0].PlanNo;
                         obj.DaoOn = DateTime.Now;
                         obj.SendOn = DateTime.Now;
-
                         obj.IsAudit = 0;
                         NSession.SaveOrUpdate(obj);
                         NSession.Flush();
                         plan[0].Status = obj.Status;
                         plan[0].ReceiveOn = DateTime.Now;
+                        plan[0].DaoQty += obj.RealQty;
                         NSession.SaveOrUpdate(plan[0]);
                         NSession.Flush();
                     }

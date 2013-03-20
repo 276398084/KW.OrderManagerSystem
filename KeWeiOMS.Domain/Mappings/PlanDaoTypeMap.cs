@@ -34,6 +34,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.SKU).Length(50);
             Map(x => x.Title).Length(200);
             Map(x => x.BuyOn);
+            Map(x => x.PlanId);
             Map(x => x.IsAudit);
             Map(x => x.SendOn);
             Map(x => x.LogisticMode).Length(200);

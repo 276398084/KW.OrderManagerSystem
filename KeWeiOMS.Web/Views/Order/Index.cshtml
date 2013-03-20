@@ -67,6 +67,20 @@
                 data: checksall,
                 width: 100
             });
+            $('#IsChai').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsChong').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
             $('#orderdateType').combobox({
                 valueField: 0,
                 textField: 1,
@@ -78,6 +92,8 @@
             $('#IsPrint').combobox("setValue", "ALL");
             $('#orderdateType').combobox("setValue", "CreateOn");
             $('#IsQue').combobox("setValue", "ALL");
+            $('#IsChai').combobox("setValue", "ALL");
+            $('#IsChong').combobox("setValue", "ALL");
             $('#Platform').combobox("setValue", "ALL");
             $('#CreateOn_st').datebox("setValue", getStartDate(60));
             $('#CreateOn_et').datebox("setValue", getStartDate(-1));
@@ -197,7 +213,6 @@
                     search += "IsPrint_si&1^";
                 }
             }
-
             var t = $('#orderdateType').combobox("getValue");
             var e = $('#CreateOn_st').combobox("getValue");
             if (e != "ALL" && e != "" && e != "0") {
@@ -211,6 +226,22 @@
             if (g != "ALL" && g != "" && g != "0") {
 
                 search += "IsOutOfStock_si&1^";
+            }
+            var q = $('#IsChai').combobox("getValue");
+            if (q != "ALL" && q != "" && q != "0") {
+                if (q == "1") {
+                    search += "IsSplit_ds&1^";
+                } else {
+                    search += "IsSplit_ds&0^";
+                }
+            }
+            var w = $('#IsChong').combobox("getValue");
+            if (w != "ALL" && w != "" && w != "0") {
+                if (w == "1") {
+                    search += "IsRepeat_ds&1^";
+                } else {
+                    search += "IsRepeat_ds&0^";
+                }
             }
             $("#dg").datagrid("load", {
                 search: search
@@ -350,7 +381,6 @@
                 } else {
                     alert("请选择订单状态！");
                 }
-
                 var a = $('#Account').combobox("getText");
                 if (a != "ALL" && a != "") {
                     search += "&a=" + a + "";
@@ -535,6 +565,8 @@
             状态<input type="text" id="OrderStatus" />
             打印状态:<input type="text" id="IsPrint" />
             缺货:<input type="text" id="IsQue" />
+            拆包:<input type="text" id="IsChai" />
+            重发:<input type="text" id="IsChong" />
             时间类型:<input type="text" id="orderdateType" />
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />

@@ -51,6 +51,11 @@ namespace KeWeiOMS.Domain
         public virtual int Qty { get; set; }
 
         /// <summary>
+        /// 到货数量
+        /// </summary>
+        public virtual int DaoQty { get; set; }
+
+        /// <summary>
         /// 运费
         /// </summary>
         public virtual double Freight { get; set; }

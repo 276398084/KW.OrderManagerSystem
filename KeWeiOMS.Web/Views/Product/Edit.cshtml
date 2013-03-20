@@ -1,13 +1,43 @@
 ﻿@model KeWeiOMS.Domain.ProductType
-@{
-    Layout = null;
-}
 <link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
 <script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
-<script type="text/javascript">
 
+<script type="text/javascript">
     $(function () {
+        $('#dg_zu').datagrid({
+            url: '@Url.Action("ZuList", "Product")/@Model.SKU',
+            width: 300,
+            toolbar: [{
+                id: 'btnadd',
+                text: '添加',
+                iconCls: 'icon-add',
+                handler: function () {
+                    addp();
+                }
+            }, {
+                id: 'btndel',
+                text: '删除',
+                iconCls: 'icon-add',
+                handler: function () {
+                    if (editIndex == undefined) {
+                        return;
+                    }
+                    $('#dg_zu').datagrid('cancelEdit', editIndex)
+                            .datagrid('deleteRow', editIndex);
+                    editIndex = undefined;
+                }
+            }, {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    accept();
+                }
+            }],
+            onClickRow: onClickRow
+        });
+
         $('#e_IsInfraction').combobox({
             valueField: 0,
             textField: 1,
@@ -27,13 +57,19 @@
             panelHeight: 50,
             data: checks
         });
+        $('#e_IsZu').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            data: checks
+        });
         $('#e_Purchaser').combobox({
             url: '/User/QList/' + Purchaser,
             valueField: 'Id',
             textField: 'Realname',
             required: true,
             width: 200,
-            panelHeight: 'auto',
+            panelHeight: 'auto'
         });
         $('#e_Examiner').combobox({
             url: '/User/QList/' + Examiner,
@@ -41,7 +77,7 @@
             textField: 'Realname',
             required: true,
             width: 200,
-            panelHeight: 'auto',
+            panelHeight: 'auto'
         });
         $('#e_Packer').combobox({
             url: '/User/QList/' + Packer,
@@ -49,7 +85,7 @@
             textField: 'Realname',
             required: true,
             width: 200,
-            panelHeight: 'auto',
+            panelHeight: 'auto'
         });
         $('#e_Status').combobox({
             url: '/Home/ProductStatus/',
@@ -57,11 +93,10 @@
             textField: 'text',
             required: true,
             width: 200,
-            panelHeight: 'auto',
+            panelHeight: 'auto'
         });
         $('#e_Category').combotree({
             url: '/ProductCategory/PList',
-
             required: true,
             width: 200
         });
@@ -78,64 +113,88 @@
             ]]
         });
 
-        $('#up_file').uploadify({
-            'auto': false,
-            'buttonText': '请选择图片',
-            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
-            'uploader': '/Home/SaveFile/',
-            'multi': false,
-            'onUploadSuccess': function (file, data, response) {
-                eval("data=" + data);
-                $('#e_PicUrl').val(data.SaveName);
-                formPost('e_form', '@Url.Action("Create", "Product")', 'e_dlg', 'dg');
-                $('e_form').clear();
-            }
-        });
+
     });
 
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) {
+            return true;
+        }
+        if ($('#dg_zu').datagrid('validateRow', editIndex)) {
+            $('#dg_zu').datagrid('endEdit', editIndex);
+
+            editIndex = undefined;
+
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dg_zu').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dg_zu').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function addp() {
+        if (endEditing()) {
+            $('#dg_zu').datagrid('appendRow', { Qty: 1, Price: 0 });
+            editIndex = $('#dg_zu').datagrid('getRows').length - 1;
+            $('#dg_zu').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function accept() {
+        if (endEditing()) {
+            $('#dg_zu').datagrid('acceptChanges');
+        }
+    }
 
 
     function addProduct() {
-        $.ajax({
-            type: "POST",
-            url: "/Product/HasExist/",
-            data: "sku=" + $('#e_SKU').val(),
-            success: function (msg) {
-                if (msg.IsSuccess == "true") {
-                    $('#up_file').uploadify('upload')
+
+        if (endEditing()) {
+            $('#dg_zu').datagrid('acceptChanges');
+        }
+        $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
+        formPost('e_form', '@Url.Action("Edit", "Product")', 'e_dlg', 'dg', 'a');
+
+
+
 
                 }
-                else {
-                    $.messager.show({
-                        title: '提示',
-                        msg: '改编号已经存在',
-                        timeout: 0,
-                        showType: 'slide'
-                    })
-                }
-            }
-        });
-
-    }
 
 </script>
 
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "e_form" }))
 {
+    
     <fieldset>
-        <legend>产品信息</legend>
+        <legend>产品信息
+            <input type="button" value="保存" onclick="addProduct();" /></legend>
         <table class="editForm">
             <tr>
                 <td>
                     @Html.LabelFor(model => model.SKU, "商品编号:")
                 </td>
                 <td>
+                    <input type="hidden" id="rows" name="rows" />
                     @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.CreateOn)
                     @Html.HiddenFor(model => model.OldSKU)
                     @Html.HiddenFor(model => model.CreateBy)
                     @Html.HiddenFor(model => model.SPicUrl)
                     @Html.HiddenFor(model => model.PicUrl)
+                    @Html.HiddenFor(model => model.SevenDay)
+                    @Html.HiddenFor(model => model.ThirtyDay)
+                    @Html.HiddenFor(model => model.Fifteen)
                     @Html.TextBoxFor(model => model.SKU, new { @id = "e_SKU", @class = "easyui-validatebox", @required = "true" })
                 </td>
                 <td>
@@ -145,13 +204,7 @@
                     @Html.TextBoxFor(model => model.ProductName, new { @id = "e_ProductName", @class = "easyui-validatebox", @required = "true" })
                 </td>
 
-                @* <td rowspan="3">
-                    @Html.LabelFor(model => model.PicUrl, "大图片网址:")
-                </td>
-                <td rowspan="3">
-                    <input id="up_file" type="file" name="up_file" />
-                    @Html.HiddenFor(model => model.PicUrl, new { @id = "e_PicUrl" })
-                </td>*@
+
             </tr>
             <tr>
                 <td>
@@ -274,7 +327,22 @@
                     @Html.HiddenFor(model => model.Location, new { @id = "e_Location" })
                 </td>
             </tr>
+            <tr>
+                <td>组合产品设置</td>
+                <td colspan="5" style="height: 150px">
 
+                    <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
+                        <thead>
+                            <tr>
+                                <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
+                    </th>
+                                <th field="SrcQty" width="100" data-options="editor:'text'">Qty
+                    </th>
+                        </thead>
+                    </table>
+
+                </td>
+            </tr>
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Summary, "简单描述:")
