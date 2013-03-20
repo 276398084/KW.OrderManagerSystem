@@ -63,9 +63,12 @@ namespace KeWeiOMS.Web.Controllers
             {
                 ids += "'" + p.SKU + "',";
             }
+
             stocks =
                 NSession.CreateQuery("from WarehouseStockType where SKU in(" + ids.Trim(',') + ")").List<WarehouseStockType>();
             plans = NSession.CreateQuery("from PurchasePlanType where Status not in('异常','已收到')  and SKU in(" + ids.Trim(',') + ")").List<PurchasePlanType>();
+
+            IList<OrderProductType> orderProducts = NSession.CreateQuery("from OrderProductType where SKU in(" + ids.Trim(',') + ") and IsQue=1 and OId In(select Id from OrderType where IsOutOfStock=1)").List<OrderProductType>();
             foreach (var p in products)
             {
                 PurchaseData data = new PurchaseData();
@@ -93,14 +96,17 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     data.IsImportant = 1;
                 }
-
-                data.BuyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
-                if ((data.NowQty + data.BuyQty - data.WarningQty) < 0)
+                int buyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.DaoQty);
+                data.BuyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty) - buyQty;
+                data.QueQty = orderProducts.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
+                if ((data.NowQty + data.BuyQty - data.WarningQty - data.QueQty) < 0)
                 {
-                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10);
+                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10) + data.QueQty;
                     list.Add(data);
                 }
+               
             }
+            Session["ToExcel"] = list;
             return Json(new { total = list.Count, rows = list });
         }
 
@@ -175,20 +181,24 @@ namespace KeWeiOMS.Web.Controllers
                 string filePath = Server.MapPath("~");
                 obj.CreateOn = DateTime.Now;
                 string pic = obj.PicUrl;
-                obj.Status = ProductStatusEnum.销售中.ToString();
+
                 obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
                 obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
+
                 Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
                 Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
+                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
+                if (list1.Count > 0)
+                    obj.IsZu = 1;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
-                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
                 foreach (ProductComposeType productCompose in list1)
                 {
                     productCompose.SKU = obj.SKU;
                     productCompose.PId = obj.Id;
                     NSession.Save(productCompose);
                     NSession.Flush();
+
                 }
 
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
@@ -249,6 +259,17 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
+                NSession.Delete("from ProductComposeType where SKU='" + obj.SKU + "'");
+                NSession.Flush();
+                foreach (ProductComposeType productCompose in list1)
+                {
+                    productCompose.SKU = obj.SKU;
+                    productCompose.PId = obj.Id;
+                    NSession.Save(productCompose);
+                    NSession.Flush();
+                    obj.IsZu = 1;
+                }
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -359,28 +380,10 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
-        public JsonResult ZuList(int page, int rows, string sort, string order, string search)
+        public JsonResult ZuList(String Id)
         {
-            string where = "";
-            string orderby = " order by Id desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
-            IList<ProductComposeType> objList = NSession.CreateQuery("from ProductComposeType " + where + orderby)
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
-                .List<ProductComposeType>();
-            object count = NSession.CreateQuery("select count(Id) from ProductComposeType " + where).UniqueResult();
-            return Json(new { total = count, rows = objList });
+            IList<ProductComposeType> objList = NSession.CreateQuery("from ProductComposeType where SKU='" + Id + "'").List<ProductComposeType>();
+            return Json(new { total = objList.Count, rows = objList });
         }
 
         public JsonResult HasExist(string sku)
@@ -388,7 +391,7 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
             if (Convert.ToInt32(count) > 0)
             {
-                return Json(new { IsSuccess = "false" });
+                return Json(new { IsSuccess = false });
             }
             else
             {
@@ -490,59 +493,129 @@ namespace KeWeiOMS.Web.Controllers
 
         }
 
-        public JsonResult SearchSKU(string id) 
+        public JsonResult SearchSKU(string id)
         {
-            IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU='"+id+"'").List<ProductType>();
-            return Json(obj,JsonRequestBehavior.AllowGet);
+            IList<ProductType> obj = NSession.CreateQuery("from ProductType where SKU='" + id + "'").List<ProductType>();
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
         public JsonResult Freight(decimal price, decimal weight, int qty, decimal onlineprice, string Currency, string LogisticMode, int Country)
         {
-            decimal freight = decimal.Parse((GetFreight(weight, LogisticMode, Country)).ToString("f6"));
-            decimal currency =decimal.Parse(Math.Round(GetCurrency(Currency),2).ToString());
-            decimal profit =(onlineprice * currency - price - freight) * qty;
-            return Json(profit, JsonRequestBehavior.AllowGet);
+            decimal freight = decimal.Parse((GetFreight(weight * qty, LogisticMode, Country)).ToString("f6"));
+            if (freight == -1)
+                return Json(new { IsSuccess = false, ErrorMsg ="cz"}, JsonRequestBehavior.AllowGet);
+            decimal currency = decimal.Parse(Math.Round(GetCurrency(Currency), 2).ToString());
+            decimal profit = (onlineprice * currency - price) * qty - freight;
+            return Json(new { IsSuccess =true, profit=profit,freight=freight}, JsonRequestBehavior.AllowGet);
         }
         private decimal GetFreight(decimal weight, string logisticMode, int country)
         {
             decimal discount = 0;
             decimal ReturnFreight = 0;
-            IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='"+logisticMode+"'").List<LogisticsModeType>();
-            foreach(var item in logmode)
+            IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='" + logisticMode + "'").List<LogisticsModeType>();
+            foreach (var item in logmode)
             {
-                discount =decimal.Parse(item.Discount.ToString());
-                IList<LogisticsAreaType> area = NSession.CreateQuery("from LogisticsAreaType where LId='"+item.ParentID+"'").List<LogisticsAreaType>();
-                foreach (var it in area) 
+                discount = decimal.Parse(item.Discount.ToString());
+                IList<LogisticsAreaType> area = NSession.CreateQuery("from LogisticsAreaType where LId='" + item.ParentID + "'").List<LogisticsAreaType>();
+                foreach (var it in area)
                 {
-                    object obj=NSession.CreateQuery("select count(Id) from LogisticsAreaCountryType where CountryCode='" + country + "' and AreaCode='"+it.Id+"'").UniqueResult();
-                    if(Convert.ToInt32(obj)>0)
+                    object obj = NSession.CreateQuery("select count(Id) from LogisticsAreaCountryType where CountryCode='" + country + "' and AreaCode='" + it.Id + "'").UniqueResult();
+                    if (Convert.ToInt32(obj) > 0)
                     {
-                        IList<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType where AReaCode='"+it.Id+"'").List<LogisticsFreightType>();
+                        IList<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType where AReaCode='" + it.Id + "'").List<LogisticsFreightType>();
                         foreach (var fre in list)
                         {
-                            if (fre.EveryFee != 0)
+                            if (weight <= decimal.Parse(fre.EndWeight.ToString()))
                             {
-                                ReturnFreight =weight *decimal.Parse(fre.EveryFee.ToString()) +decimal.Parse(fre.ProcessingFee.ToString()) *decimal.Parse( discount.ToString());
+                                if (fre.EveryFee != 0)
+                                {
+                                    ReturnFreight = weight * decimal.Parse(fre.EveryFee.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) * decimal.Parse(discount.ToString());
+                                }
+                                else
+                                {
+                                    ReturnFreight = decimal.Parse(fre.FristFreight.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) + (weight - decimal.Parse(fre.FristWeight.ToString())) / decimal.Parse(fre.IncrementWeight.ToString()) * decimal.Parse(fre.IncrementFreight.ToString());
+                                }
                             }
                             else
                             {
-                                ReturnFreight =decimal.Parse(fre.FristFreight.ToString()) + decimal.Parse(fre.ProcessingFee.ToString()) + (weight - decimal.Parse(fre.FristWeight.ToString())) / decimal.Parse(fre.IncrementWeight.ToString()) * decimal.Parse(fre.IncrementFreight.ToString());
+                                return -1;
                             }
                         }
                     }
                 }
             }
 
-            return ReturnFreight; 
+            return ReturnFreight;
         }
         public double GetCurrency(string code)
         {
             double curr = 0;
-              IList<CurrencyType> list = NSession.CreateQuery("from CurrencyType where CurrencyCode='"+code+"'").List<CurrencyType>();
-            foreach(var s in list)
+            IList<CurrencyType> list = NSession.CreateQuery("from CurrencyType where CurrencyCode='" + code + "'").List<CurrencyType>();
+            foreach (var s in list)
             {
-                curr =s.CurrencyValue;
+                curr = s.CurrencyValue;
             }
             return curr;
+        }
+
+        public JsonResult ToExcel()
+        {
+            try
+            {
+                IList<PurchaseData> signout = Session["ToExcel"] as List<PurchaseData>;
+                DataSet ds = ConvertToDataSet<PurchaseData>(signout);
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            }
+            catch (Exception ee)
+            {
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+        }
+        //IList转DataSet
+        public static DataSet ConvertToDataSet<T>(IList<T> list)
+        {
+            if (list == null || list.Count <= 0)
+            {
+                return null;
+            }
+
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable(typeof(T).Name);
+            DataColumn column;
+            DataRow row;
+
+            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            foreach (T t in list)
+            {
+                if (t == null)
+                {
+                    continue;
+                }
+
+                row = dt.NewRow();
+
+                for (int i = 0, j = myPropertyInfo.Length; i < j; i++)
+                {
+                    System.Reflection.PropertyInfo pi = myPropertyInfo[i];
+
+                    string name = pi.Name;
+
+                    if (dt.Columns[name] == null)
+                    {
+                        column = new DataColumn(name, pi.PropertyType);
+                        dt.Columns.Add(column);
+                    }
+
+                    row[name] = pi.GetValue(t, null);
+                }
+
+                dt.Rows.Add(row);
+            }
+
+            ds.Tables.Add(dt);
+
+            return ds;
         }
     }
 }

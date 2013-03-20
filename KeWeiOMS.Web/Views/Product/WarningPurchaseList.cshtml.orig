@@ -1,0 +1,97 @@
+﻿@model KeWeiOMS.Web.PurchaseData
+@{
+    ViewBag.Title = "预警采购";
+}
+<script type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '/Product/WarningList/'
+        });
+    });
+    function getImg(v) {
+        return '<img width="128px" height="128px"  src="' + v + '">';
+    }
+    function getAvg(v) {
+        return Math.round(v) + '(' + v + ')';
+    }
+
+    function showPlan(v, q) {
+        c_dlg(v, q);
+
+    }
+
+
+
+    function work(v, r) {
+        return '<a href="javascript:void(0);" onclick="showPlan(\'' + r.SKU + '\',\'' + r.NeedQty + '\')">采购</a>';
+    }
+
+    function update() {
+        $('#dg').datagrid("reload");
+    }
+
+    function toExcel() {
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "Product")/',
+            success: function (result) {
+
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        })
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" singleselect="true">
+            <thead>
+                <tr>
+                    <th width="100" formatter="work">操作
+                    </th>
+                    <th field="SKU" width="100">SKU
+                    </th>
+                    <th field="ItemName" width="150">产品名称
+                    </th>
+                    <th field="SPic" width="100" formatter="getImg">图片
+                    </th>
+                    <th field="NowQty" width="100">库存
+                    </th>
+
+                    <th field="SevenDay" width="40">7
+                    </th>
+
+                    <th field="FifteenDay" width="40">15
+                    </th>
+                    <th field="ThirtyDay" width="40">30
+                    </th>
+                    <th field="AvgQty" width="100" formatter="getAvg">平均
+                    </th>
+                    <th field="WarningQty" width="100">预警所需
+                    </th>
+                    <th field="QueQty" width="100">缺
+                    </th>
+                    <th field="BuyQty" width="100">已购买
+                    </th>
+                    <th field="NeedQty" width="100">所需数</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="update();">刷新</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+        </div>
+    </div>
+    <div id="c_dlg"></div>
+</body>
+
+

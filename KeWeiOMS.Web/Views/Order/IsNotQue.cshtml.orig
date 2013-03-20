@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "没有缺货但是设置为缺货的订单";
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '/Order/GetNotQueList/'
+        });
+    });
+    function getImg(v) {
+        return '<img width="128px" height="128px"  src="' + v + '">';
+    }
+    function getAvg(v) {
+        return Math.round(v) + '(' + v + ')';
+    }
+    function update() {
+        $('#dg').datagrid("reload");
+    }
+
+    function toExcel() {
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "Order")/',
+            success: function (result) {
+
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        })
+    }
+</script>
+<body class="easyui-layout">
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" singleselect="true">
+            <thead>
+                <tr>
+                    <th field='SKU' sortable="true" width="100px">SKU</th>
+                    <th field='Standard' sortable="true" width="100px">描述</th>
+                    <th field='Qty' sortable="true" width="100px">缺</th>
+                    <th field='NowQty' sortable="true" width="100px">库存</th>
+                    <th field='OrderQty' sortable="true" width="100px">订单数量</th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="update();">刷新</a>
+          <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+        </div>
+    </div>
+    <div id="c_dlg"></div>
+</body>
+
