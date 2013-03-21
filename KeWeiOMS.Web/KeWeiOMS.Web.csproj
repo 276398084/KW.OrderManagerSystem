@@ -201,6 +201,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="OMSWebService.asmx.cs">
+      <DependentUpon>OMSWebService.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -226,6 +230,7 @@
     <Content Include="Content\images\Display.png" />
     <Content Include="Content\images\file_man_ce.ico" />
     <Content Include="Content\images\tab_tool_mac.ico" />
+    <Content Include="OMSWebService.asmx" />
     <Content Include="Scripts\easyUI\jquery.portal.js" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
     <Content Include="Scripts\griectl.cab" />
