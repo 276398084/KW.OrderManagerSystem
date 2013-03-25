@@ -6,12 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using KeWeiOMS.Domain;
 
 namespace KeWeiOMS.Web.Controllers
 {
     public class StatisticsController : BaseController
     {
         public ActionResult OrderCount()
+        {
+            return View();
+        }
+
+        public ActionResult PurchaseInfo()
+        {
+            return View();
+        }
+
+        public ActionResult OrderSendInfo()
         {
             return View();
         }
@@ -68,7 +79,7 @@ namespace KeWeiOMS.Web.Controllers
 
         private string SqlWhere(DateTime st, DateTime et, string a, string p)
         {
-            string sqlWhere = " where CreateOn between '" + st.ToString("yyyy/MM/dd 00:00:00") + "' and '" +
+            string sqlWhere = " where IsSplit=0 and IsRepeat=0 and CreateOn between '" + st.ToString("yyyy/MM/dd 00:00:00") + "' and '" +
                               et.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' and";
             if (!string.IsNullOrEmpty(p) && p != "ALL")
             {
@@ -100,7 +111,7 @@ namespace KeWeiOMS.Web.Controllers
                 s = " and OP.SKU like '%" + s + "%'";
             }
             IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * ,(Qty-BuyQty) as NeedQty from (
-select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty),0) from PurchasePlan where SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1 {0} group by SKU,Standard
+select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty-DaoQty),0) from PurchasePlan where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and O.Status<>'作废订单' and  O.Status<>'已发货' and OP.IsQue=1 {0} group by SKU,Standard
 ) as tbl {1}", s, orderby)).List<object[]>();
 
             List<QueCount> list = new List<QueCount>();
@@ -136,7 +147,7 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             }
 
             string sql = string.Format(@"select * ,(Qty-BuyQty) as NeedQty from (
-select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty),0) from PurchasePlan where SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1 {0} group by SKU,Standard
+select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty),0) from PurchasePlan where SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and  O.Status<>'作废订单' and OP.IsQue=1 {0} group by SKU,Standard
 ) as tbl", s);
 
             DataSet ds = new DataSet();
@@ -147,6 +158,48 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
+        }
+
+
+
+        public ActionResult PurchaseStatistcs(int Id)
+        {
+
+            //Id ：1为 三天未采购 2为5天未到货
+            IList<PurchasePlanType> list = new List<PurchasePlanType>();
+            if (Id == 1)
+            {
+                list = NSession.CreateQuery("from PurchasePlanType where Status in ('已采购') and  BuyOn <=dateadd(day,-3,GETDATE())").List<PurchasePlanType>();
+            }
+            else
+            {
+                list = NSession.CreateQuery("from PurchasePlanType where Status in ('已发货','部分发货') and  BuyOn <=dateadd(day,-5,GETDATE())").List<PurchasePlanType>();
+            }
+            List<object> footers = new List<object>();
+
+            return Json(new { rows = list.OrderBy(f => f.BuyOn), total = list.Count });
+        }
+
+        public ActionResult OrderSendStatistcs(int Id)
+        {
+            IList<OrderType> orderTypes = new List<OrderType>();
+            DateTime dt = DateTime.Now;
+
+            switch (Id)
+            {
+                case 1:
+                    orderTypes = NSession.CreateQuery("from OrderType where Status='已处理' and IsOutOfStock=0 and CreateOn<'" + dt.AddDays(-1).ToString("yyyy/MM/dd HH:mm:ss") + "'").List<OrderType>();
+                    break;
+
+                case 2:
+                    orderTypes = NSession.CreateQuery("from OrderType where Status='待包装' and IsOutOfStock=0 and CreateOn<'" + dt.AddHours(-12).ToString("yyyy/MM/dd HH:mm:ss") + "'").List<OrderType>();
+                    break;
+                case 3:
+                    orderTypes = NSession.CreateQuery("from OrderType where Status='待发货' and IsOutOfStock=0 and CreateOn<'" + dt.AddHours(-12).ToString("yyyy/MM/dd HH:mm:ss") + "'").List<OrderType>();
+                    break;
+
+            }
+            return Json(new { rows = orderTypes.OrderBy(f => f.CreateOn), total = orderTypes.Count });
         }
 
     }

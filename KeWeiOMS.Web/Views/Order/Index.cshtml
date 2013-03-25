@@ -81,12 +81,50 @@
                 data: checksall,
                 width: 100
             });
+            $('#IsLiu').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+
             $('#orderdateType').combobox({
                 valueField: 0,
                 textField: 1,
                 panelHeight: 'auto',
                 data: orderDateType,
                 width: 100
+            });
+            $('#IsNo').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checkOrdersAll,
+                width: 160,
+                onSelect: function (record) {
+                    if (record[0] == "ALL")
+                        return;
+                    var search = "";
+
+                    var a = $('#Account').combobox("getText");
+                    if (a != "ALL" && a != "") {
+                        search += "Account_es&" + a + "^";
+                    }
+                    var b = $('#Platform').combobox("getText");
+                    if (b != "ALL" && b != "") {
+                        search += "Platform_es&" + b + "^";
+                    }
+                    if (record[0] == 0)
+                        search += "Status_es&已处理^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(1, "d") + "^";;
+                    if (record[0] == 1)
+                        search = "Status_es&待包装^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
+                    if (record[0] == 2)
+                        search = "Status_es&待发货^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
+                    $("#dg").datagrid("load", {
+                        search: search
+                    });
+                }
             });
             $('#OrderStatus').combobox("setValue", "ALL");
             $('#IsPrint').combobox("setValue", "ALL");
@@ -95,6 +133,7 @@
             $('#IsChai').combobox("setValue", "ALL");
             $('#IsChong').combobox("setValue", "ALL");
             $('#Platform').combobox("setValue", "ALL");
+            $('#IsNo').combobox("setValue", "ALL");
             $('#CreateOn_st').datebox("setValue", getStartDate(60));
             $('#CreateOn_et').datebox("setValue", getStartDate(-1));
         });
@@ -367,25 +406,25 @@
                 if (e != "ALL" && e != "" && e != "0") {
                     search += "&st=" + e + "";
                 } else {
-                    alert("请选择开始时间！");
+                    alert("请选择开始时间！"); return;
                 }
                 var f = $('#CreateOn_et').combobox("getValue");
                 if (f != "ALL" && f != "" && f != "0") {
                     search += "&et=" + f + "";
                 } else {
-                    alert("请选择结束时间！");
+                    alert("请选择结束时间！"); return;
                 }
                 var c = $('#OrderStatus').combobox("getText");
                 if (c != "ALL" && c != "") {
                     search += "&s=" + c + "";
                 } else {
-                    alert("请选择订单状态！");
+                    alert("请选择订单状态！"); return;
                 }
                 var a = $('#Account').combobox("getText");
                 if (a != "ALL" && a != "") {
                     search += "&a=" + a + "";
                 } else {
-                    alert("请选择账户！");
+                    alert("请选择账户！"); return;
                 }
                 var b = $('#Platform').combobox("getText");
                 if (b != "ALL" && b != "") {
@@ -462,7 +501,7 @@
 
         }
 
-        function o_ReError(parameters) {
+        function o_ReError() {
             s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
@@ -484,7 +523,30 @@
                     });
                 }
             });
+        }
 
+        function o_SplitZu() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            $.messager.confirm("提示", "检验可能有组合产品的" + s_ids.length + "条订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/SplitZu",
+                        type: "post",
+                        data: "o=" + s_ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
         }
 
 
@@ -512,7 +574,6 @@
                 width: 150
             });
         }
-
         function getOrderDate(v, r, i) {
             var html = "";
             html += "同:<b>" + getDate(r.CreateOn) + "</b>";
@@ -559,7 +620,9 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportZM();">中美导出</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportOrder();">订单导出</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReError()">失效订单修正</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReQue()">缺货订单修正</a><br />
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReQue()">缺货订单修正</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_SplitZu()">分割组合产品</a><br />
+
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
             状态<input type="text" id="OrderStatus" />
@@ -567,11 +630,13 @@
             缺货:<input type="text" id="IsQue" />
             拆包:<input type="text" id="IsChai" />
             重发:<input type="text" id="IsChong" />
+            留言:<input type="text" id="IsLiu" />
             时间类型:<input type="text" id="orderdateType" />
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+            异常订单选择:<input type="text" id="IsNo" />
+
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>

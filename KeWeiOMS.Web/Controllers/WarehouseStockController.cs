@@ -84,7 +84,6 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(WarehouseStockType obj)
         {
-
             try
             {
                 NSession.Update(obj);
@@ -133,11 +132,29 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            IList<WarehouseStockType> objList = NSession.CreateQuery("from WarehouseStockType " + where + orderby)
+            List<WarehouseStockType> objList = NSession.CreateQuery(" from WarehouseStockType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
-                .List<WarehouseStockType>();
+                .List<WarehouseStockType>().ToList();
+            string ids = "";
+            foreach (var warehouseStockType in objList)
+            {
+                ids += warehouseStockType.SKU + ",";
+            }
+            if (ids.Length > 0)
+            {
+                ids = ids.Trim(',');
+            }
+            IList<object[]> objs =
+                NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
+            foreach (var objectse in objs)
+            {
 
+                WarehouseStockType warehouse =
+                objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().Trim());
+                if (warehouse != null)
+                    warehouse.UnPeiQty = Convert.ToInt32(objectse[1]);
+            }
             object count = NSession.CreateQuery("select count(Id) from WarehouseStockType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }

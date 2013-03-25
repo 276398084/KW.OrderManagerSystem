@@ -21,8 +21,9 @@
                      },
                      {
                          field: 'SendOn', width: 100, formatter: function (v, r, i) {
-                            return '<a href="javascript:void(0);" onclick="trouble('+r.Id+')">有问题</a>';             
-                     }},
+                             return '<a href="javascript:void(0);" onclick="trouble(' + r.Id + ')">有问题</a>';
+                         }
+                     },
                     { field: 'PlanNo', title: '计划编号', width: 100, sortable: true },
                     {
                         field: 'PicUrl', title: '图片', width: 200, sortable: true,
@@ -33,6 +34,7 @@
 
                     { field: 'Price', title: '单价', width: 30, sortable: true },
                     { field: 'Qty', title: '数量', width: 30, sortable: true },
+                    { field: 'DaoQty', title: '到', width: 30, sortable: true },
                     { field: 'Freight', title: '运费', width: 30, sortable: true },
                     { field: 'Suppliers', title: '供应商', width: 80, sortable: true },
                      { field: 'BuyBy', title: '采购人', width: 80, sortable: true },
@@ -61,30 +63,50 @@
                 textField: 'text',
                 panelHeight: 'auto',
                 editable: false,
-                data: [{ id: "所有", text: "所有" }, { id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分收到", text: "部分收到" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
+                data: [{ id: "所有", text: "所有" }, { id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分到货", text: "部分到货" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
+            });
+            $('#IsNo').combobox({
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: [{ id: "ALL", text: "ALL" }, { id: "0", text: "3天未发货" }, { id: "1", text: "5天未到货" }],
+                onSelect: function (record) {
+                    if (record[0] == "ALL") {
+                        doSearch();
+                    }
+                    var search = "";
+                    if (record["id"] == 1)
+                        search += "Status_es&已发货^BuyOn_et&" + getStartDateTime(5, "d") + "^";
+                    if (record["id"] == 0)
+                        search += "Status_es&已采购^BuyOn_et&" + getStartDateTime(3, "d") + "^";
+
+                    $("#dg").datagrid("load", {
+                        search: search
+                    });
+                }
             });
             $('#SearchStatus').combobox("setValue", "所有");
+            $('#IsNo').combobox("setValue", "ALL");
         });
-
         function shooDao(id) {
             var url_str = '@Url.Action("Create", "PlanDao")/' + id;
             showdlg(url_str, 'c_dlg', ajaxAddDao);
         }
         function trouble(id) {
-            $.getJSON('@Url.Action("GetTroubleing","PurchaseTrouble")/' + id, function (json) {
+            $.getJSON('@Url.Action("GetTroubleing", "PurchaseTrouble")/' + id, function (json) {
                 if (json != "否") {
-                    alert("该条记录已经在问题列表中了！")
-                }
-                else {
+                    alert("该条记录已经在问题列表中了！");
+                } else {
                     var url_str = '@Url.Action("Create", "PurchaseTrouble")/' + id;
-                                showdlg(url_str, 't_dlg', ajaxTrouble);
+                    showdlg(url_str, 't_dlg', ajaxTrouble);
                 }
 
-            })
-            
+            });
+
         }
         function ajaxTrouble() {
-                formPost('t_form','@Url.Action("Create", "PurchaseTrouble")','t_dlg','dg');
+            formPost('t_form', '@Url.Action("Create", "PurchaseTrouble")', 't_dlg', 'dg');
         }
 @*        function troubleing(id)
         {
@@ -96,13 +118,13 @@
 
         //异步新建提交
         function ajaxAddDao() {
-            $.messager.confirm('确认', '确定到货吗?', function() {
+            $.messager.confirm('确认', '确定到货吗?', function () {
                 $('#c_form').form('submit', {
                     url: '@Url.Action("Create", "PlanDao")',
-                    onSubmit: function() {
+                    onSubmit: function () {
                         return $(this).form('validate');
                     },
-                    success: function(result) {
+                    success: function (result) {
 
                         if (!result.IsSuccess) {
                             $.messager.show({
@@ -292,7 +314,7 @@
                 return (undefined);
             }
             function doSearch() {
-                search = $('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search = "BuyOn_st&" + $('#StartDate').datebox("getValue") + "^BuyOn_et&" + $('#EndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 var a = $('#SearchStatus').combobox("getText");
                 if (a != "所有") {
                     search += "Status&" + a + "^";
@@ -340,6 +362,7 @@
             结束时间:<input id="EndDate" />&nbsp&nbsp
             状态：<input id="SearchStatus" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            异常采购：<input id="IsNo" />
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'PlanNo'">计划编号</div>

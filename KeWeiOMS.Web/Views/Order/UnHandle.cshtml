@@ -189,7 +189,6 @@
                     text: '提交',
                     iconCls: 'icon-ok',
                     handler: function () {
-
                         jQuery.ajax({
                             url: "/Order/OrderReplace/",
                             type: "post",
@@ -223,6 +222,17 @@
                 }
             });
         }
+        
+        function e_Meger() {
+            jQuery.ajax({
+                url: "/Order/OrderMerger",
+                type: "post",
+                success: function (sss) {
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+        
         function changePlatform(n, o) {
             $('#Account').combotree({
                 url: '/Account/AccountList/' + n,
@@ -272,6 +282,7 @@
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_vali()">验证订单</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_Meger()">相同卖家合并订单</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
 

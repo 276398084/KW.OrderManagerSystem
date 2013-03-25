@@ -1,0 +1,68 @@
+﻿<script>
+
+    $(function () {
+        var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
+        $('#dg').datagrid({
+            url: '@Url.Action("PurchaseStatistcs", "Statistics")/1',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            showFooter: true,
+            height: 400,
+            width: 450,
+            striped: true
+        });
+
+        $('#dg2').datagrid({
+            url: '@Url.Action("PurchaseStatistcs", "Statistics")/2',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            height: 400,
+            width: 450,
+            showFooter: true,
+            striped: true
+        });
+
+
+    });
+
+
+</script>
+
+<table>
+    <tr>
+        <td>
+            <table id="dg" class="easyui-datagrid" title="三天未发货"
+                rownumbers="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="PlanNo" width="100">PlanNo
+                        </th>
+                        <th field="SKU" width="80">Sku
+                        </th>
+                        <th field="Qty" width="30">Qty
+                        </th>
+                        <th field="BuyOn" width="170" formatter="getDate">BuyOn
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+        <td>
+            <table id="dg2" class="easyui-datagrid" title="五天未收到"
+                rownumbers="true" fitcolumns="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="PlanNo" width="100">PlanNo
+                        </th>
+                        <th field="SKU" width="80">Sku
+                        </th>
+                        <th field="Qty" width="30">Qty
+                        </th>
+                        <th field="BuyOn" width="170" formatter="getDate">BuyOn
+                        </th>
+
+                    </tr>
+                </thead>
+            </table>
+        </td>
+    </tr>
+</table>
+

@@ -91,6 +91,11 @@ namespace KeWeiOMS.Domain
         public virtual int IsRepeat { get; set; }
 
         /// <summary>
+        /// Enabled
+        /// </summary>
+        public virtual int Enabled { get; set; }
+
+        /// <summary>
         /// 货币
         /// </summary>
         public virtual String CurrencyCode { get; set; }

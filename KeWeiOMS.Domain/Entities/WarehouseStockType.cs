@@ -61,9 +61,14 @@ namespace KeWeiOMS.Domain
         public virtual String Title { get; set; }
 
         /// <summary>
-        /// 盘点数量
+        /// 数量
         /// </summary>
         public virtual int Qty { get; set; }
+
+        /// <summary>
+        /// 在仓库
+        /// </summary>
+        public virtual int UnPeiQty { get; set; }
 
         /// <summary>
         /// 更新时间

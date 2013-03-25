@@ -167,25 +167,13 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                string key = search.Substring(search.IndexOf("$") + 1);
-                where = Utilities.Resolve(key);
+
+                where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
                     where = " where " + where;
                 }
-                string GetDate = search.Substring(0, search.IndexOf("$"));
-                string SearchDate = GetSearch(GetDate);
-                if (!string.IsNullOrEmpty(SearchDate))
-                {
-                    if (string.IsNullOrEmpty(where))
-                    {
-                        where = " where " + SearchDate;
-                    }
-                    else
-                    {
-                        where += " and " + SearchDate;
-                    }
-                }
+
             }
             IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))

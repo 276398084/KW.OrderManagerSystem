@@ -860,6 +860,28 @@ namespace KeWeiOMS.Web
         }
         #endregion
 
+
+        public static void SplitProduct(OrderProductType orderProduct, List<ProductComposeType> productComposes)
+        {
+            ISession NSession = SessionBuilder.CreateSession();
+            int qty = orderProduct.Qty;
+            int id = orderProduct.Id;
+            foreach (ProductComposeType productComposeType in productComposes)
+            {
+
+                orderProduct.SKU = productComposeType.SrcSKU;
+                orderProduct.Qty = productComposeType.SrcQty * qty;
+                orderProduct.Id = 0;
+                NSession.Clear();
+                NSession.Save(orderProduct);
+                NSession.Flush();
+
+            }
+            NSession.Clear();
+            NSession.Delete(" from OrderProductType where Id=" + id);
+            NSession.Flush();
+        }
+
         public static Dictionary<string, string> GetDic(string fileName)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();

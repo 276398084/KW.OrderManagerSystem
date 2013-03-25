@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -118,6 +120,91 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
         }
+
+        public ActionResult OrderMerger()
+        {
+            IList<OrderType> orderTypes = NSession.CreateQuery("from OrderType where Status='待处理' and Platform='Ebay' and Enabled=0 and BuyerName in (select BuyerName from OrderType where Status='待处理'  and Platform='Ebay' and Enabled=0   group by BuyerName,Country,Account having count (BuyerName)>1)").List<OrderType>();
+            string ids = "";
+            foreach (var order in orderTypes)
+            {
+                ids += order.AddressId + ",";
+            }
+            List<OrderAddressType> orderAddressTypes = NSession.CreateQuery("from OrderAddressType where Id in(" + ids.Trim(',') + ")").List<OrderAddressType>().ToList();
+
+            foreach (OrderType o in orderTypes)
+            {
+                o.AddressInfo = orderAddressTypes.Find(x => x.Id == o.AddressId);
+            }
+            List<int> strs = new List<int>();
+            List<OrderType> copyOrders = new List<OrderType>(orderTypes.ToArray());
+            foreach (OrderType o in orderTypes)
+            {
+                if (strs.Contains(o.Id))
+                    continue;
+                List<OrderType> orders =
+                    copyOrders.Where(
+                        x =>
+                        x.BuyerName == o.BuyerName && x.Country == o.Country && x.Account == o.Account &&
+                        x.AddressInfo.Street == o.AddressInfo.Street).ToList();
+                OrderType order = new OrderType();
+
+                if (orders.Count > 1)
+                {
+                    NSession.Clear();
+                    order = CloneObjectEx(o) as OrderType;
+                    order.Id = 0;
+                    order.OrderNo = Utilities.GetOrderNo();
+                    order.Amount = 0;
+                    order.IsMerger = 1;
+                    NSession.SaveOrUpdate(order);
+                    NSession.Flush();
+                    foreach (var orderType in orders)
+                    {
+                        strs.Add(orderType.Id);
+                        order.Amount += orderType.Amount;
+                        order.OrderExNo += "|" + orderType.OrderExNo;
+                        order.TId += "|" + orderType.TId;
+                        orderType.MId = order.Id;
+                        orderType.IsMerger = 1;
+                        orderType.Enabled = 1;
+                        NSession.Clear();
+                        NSession.SaveOrUpdate(orderType);
+                        NSession.Flush();
+                        IList<OrderProductType> orderProductTypes =
+                        NSession.CreateQuery(" from OrderProductType where OId=" + orderType.Id).List<OrderProductType>();
+                        foreach (var orderProductType in orderProductTypes)
+                        {
+                            orderProductType.Id = 0;
+                            orderProductType.OId = order.Id;
+                            orderProductType.OrderNo = order.OrderNo;
+                            NSession.Clear();
+                            NSession.SaveOrUpdate(orderProductType);
+                            NSession.Flush();
+                        }
+                    }
+                    NSession.Clear();
+                    NSession.SaveOrUpdate(order);
+                    NSession.Flush();
+                }
+            }
+            return Json(new { IsSuccess = true });
+        }
+
+        public object CloneObjectEx(object ObjectInstance)
+        {
+
+            BinaryFormatter bFormatter = new BinaryFormatter();
+
+            MemoryStream stream = new MemoryStream();
+
+            bFormatter.Serialize(stream, ObjectInstance);
+
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return bFormatter.Deserialize(stream);
+
+        }
+
 
         [HttpPost]
         public ActionResult ImportAmount(FormCollection form)
@@ -333,7 +420,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 key = "and ScanningBy= '" + key + "' ";
             }
-            IList<LogisticsModeType> modes = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>();
+            List<LogisticsModeType> modes = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>().ToList();
             string sql = "select OrderNo as 'PackageNo',Weight as 'PackageWeight',ScanningBy,TrackCode as 'TrackCode',ScanningOn as 'ShippedTime',LogisticMode as 'LogisticsMode',Country from Orders where Status in ('已发货','已完成') and {0}  ScanningOn  between '{1}' and '{2}' {3}  order by ScanningOn asc ";
             sql = string.Format(sql, u, st.ToString("yyyy/MM/dd HH:mm:ss"), et.ToString("yyyy/MM/dd HH:mm:ss"), key);
             DataSet ds = new DataSet();
@@ -343,8 +430,9 @@ namespace KeWeiOMS.Web.Controllers
             da.Fill(ds);
             foreach (DataRow dataRow in ds.Tables[0].Rows)
             {
-                LogisticsModeType mode = modes.First(p => p.LogisticsCode == dataRow["LogisticsMode"].ToString().Trim());
-                dataRow["LogisticsMode"] = mode.LogisticsName.Trim();
+                LogisticsModeType mode = modes.Find(p => p.LogisticsCode == dataRow["LogisticsMode"].ToString().Trim());
+                if (mode != null)
+                    dataRow["LogisticsMode"] = mode.LogisticsName.Trim();
             }
             // 设置编码和附件格式 
             System.Web.HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
@@ -424,7 +512,6 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(orderProductType);
                 NSession.Flush();
             }
-
             GetOrderRecord(obj, "拆分订单！", CurrentUser.Realname + "拆分新建！");
             return Json(new { IsSuccess = true });
         }
@@ -444,6 +531,7 @@ namespace KeWeiOMS.Web.Controllers
             obj.IsRepeat = 1;
             obj.TrackCode = "";
             obj.Weight = 0;
+            obj.CreateOn = DateTime.Now;
             obj.MId = obj.Id;
             obj.RMB = 0;
             obj.Status = OrderStatusEnum.已处理.ToString();
@@ -662,6 +750,19 @@ left join Products P On OP.SKU=P.SKU ";
             }
         }
 
+        public ActionResult SplitZu(string o)
+        {
+            IList<OrderProductType> orders = NSession.CreateQuery("from OrderProductType where OId In (" + o + ")").List<OrderProductType>();
+            IList<ProductComposeType> products = NSession.CreateQuery("from ProductComposeType").List<ProductComposeType>();
+            foreach (OrderProductType orderProductType in orders)
+            {
+                List<ProductComposeType> compose = products.Where(x => x.SKU.Trim().ToUpper() == orderProductType.SKU.Trim().ToUpper()).ToList();
+                if (compose.Count > 0)
+                    OrderHelper.SplitProduct(orderProductType, compose);
+            }
+            return Json(new { IsSuccess = true });
+        }
+
         [HttpPost]
         public ActionResult ReError(string o)
         {
@@ -763,6 +864,10 @@ left join Products P On OP.SKU=P.SKU ";
 
                     GetOrderRecord(order, "订单扫描发货！", CurrentUser.Realname + "将订单扫描发货了！");
 
+
+
+
+
                     string html = "订单： " + order.OrderNo + "已经发货";
                     return Json(new { IsSuccess = true, Result = html, OId = order.Id });
                 }
@@ -770,6 +875,49 @@ left join Products P On OP.SKU=P.SKU ";
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
+        [HttpGet]
+        public JsonResult AAAA()
+        {
+            IList<OrderType> orders =
+                NSession.CreateQuery("from OrderType where Account='www.gamesalor.com' and Status='已发货'").List
+                    <OrderType>();
+            foreach (var orderType in orders)
+            {
+                Thread.Sleep(1000);
+                new System.Threading.Thread(TrackCodeUpLoad) { IsBackground = true }.Start(orderType);
+            }
+            return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
+        }
+
+        void TrackCodeUpLoad(object order)
+        {
+            OrderType o = order as OrderType;
+            if (o != null)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection("server=97.74.123.157;database=FeiduGS;uid=sa;pwd=`1q2w3e4r"))
+                    {
+                        string sql = "update GS_Order set ems='" + o.TrackCode + "' where OrderNo='" + o.OrderExNo + "'";
+                        SqlCommand sqlCommand = new SqlCommand(sql, connection);
+                        connection.Open();
+                        sqlCommand.ExecuteNonQuery();
+                        connection.Close();
+                        connection.Dispose();
+                    }
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+
+                //String strUrl = string.Format("http://www.gamesalor.com/UpdateEMS_TxnId.ashx?TxnId={0}&EMS={1}",
+                //             o.OrderExNo, o.TrackCode);
+                //new System.Net.WebClient().DownloadData(strUrl);
+            }
+
+        }
+
         public JsonResult GetOrderByQue(string orderNo)
         {
             List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + orderNo + "'").List<OrderType>().ToList();
@@ -863,11 +1011,11 @@ left join Products P On OP.SKU=P.SKU ";
                         {
                             if (products[0].IsScan == 1)
                             {
-                                html += string.Format(html2, p.SKU, p.Qty, p.Standard, p.Id, 0);
+                                html += string.Format(html2, p.SKU.Trim().ToUpper(), p.Qty, p.Standard, p.Id, 0);
                             }
                             else
                             {
-                                html += string.Format(html2, p.SKU, p.Qty, p.Standard, p.Id, p.Qty);
+                                html += string.Format(html2, p.SKU.Trim().ToUpper(), p.Qty, p.Standard, p.Id, p.Qty);
                             }
                         }
                     }
@@ -975,12 +1123,12 @@ left join Products P On OP.SKU=P.SKU ";
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
-                    where = " where Status" + flag + "'待处理' and " + where;
+                    where = " where Enabled=0 and  Status" + flag + "'待处理' and " + where;
                 }
             }
             if (where.Length == 0)
             {
-                where = " where Status" + flag + "'待处理'";
+                where = " where Enabled=0 and  Status" + flag + "'待处理'";
             }
             IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -990,6 +1138,7 @@ left join Products P On OP.SKU=P.SKU ";
             object count = NSession.CreateQuery("select count(Id) from OrderType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+
         public JsonResult ListQ(string q)
         {
             IList<OrderType> objList = NSession.CreateQuery("from OrderType where OrderNo like '%" + q + "%'")
@@ -1002,23 +1151,16 @@ left join Products P On OP.SKU=P.SKU ";
         public JsonResult GetNotQueList()
         {
             IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * from (
-select SKU,SUM(Qty) as Qty,isnull(Standard,0) as Standard,(select isnull(SUM(Qty),0) from WarehouseStock where SKU=OP.SKU ) as NowQty,COUNT(O.Id) as'OrderQty' from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1  group by SKU,Standard
-) as tbl  where (Qty-NowQty) <0")).List<object[]>();
-
+select SKU,SUM(Qty) as Qty,(select isnull(SUM(Qty),0) from WarehouseStock where SKU=OP.SKU ) as NowQty,(select count(Id) from SKUCode where SKU=OP.SKU and IsOut=0) as unPeiQty,COUNT(O.Id) as'OrderQty' from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1 and O.Status<>'作废订单' group by SKU
+) as tbl  where NowQty>0")).List<object[]>();
             List<QueCount> list = new List<QueCount>();
             foreach (object[] objectse in objs)
             {
-                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), NowQty = Utilities.ToInt(objectse[3]), OrderQty = Utilities.ToInt(objectse[4]) };
-                if (objectse[2] is DBNull || objectse[2] == null)
-                {
-                }
-                else
-                {
-                    oc.Standard = objectse[2].ToString();
-                }
+                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), NowQty = Utilities.ToInt(objectse[2]), UnPeiQty = Utilities.ToInt(objectse[3]), OrderQty = Utilities.ToInt(objectse[4]) };
+
                 list.Add(oc);
             }
-            Session["ToExcel"]= list;
+            Session["ToExcel"] = list;
             return Json(new { total = list.Count, rows = list });
         }
 
@@ -1027,8 +1169,8 @@ select SKU,SUM(Qty) as Qty,isnull(Standard,0) as Standard,(select isnull(SUM(Qty
         {
             try
             {
-               IList<QueCount>  signout =Session["ToExcel"] as List<QueCount>;
-               DataSet ds = ConvertToDataSet<QueCount>(signout);
+                IList<QueCount> signout = Session["ToExcel"] as List<QueCount>;
+                DataSet ds = ConvertToDataSet<QueCount>(signout);
                 Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             }
             catch (Exception ee)

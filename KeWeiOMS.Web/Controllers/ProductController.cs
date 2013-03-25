@@ -56,7 +56,288 @@ namespace KeWeiOMS.Web.Controllers
             IList<PurchasePlanType> plans = new List<PurchasePlanType>();
             IList<ProductType> products =
                 NSession.CreateQuery(
-                    " From ProductType p where (round((SevenDay/7*0.5+Fifteen/15*0.3+ThirtyDay/30*0.2),0)*5)>( select SUM(Qty) from WarehouseStockType where SKU= p.SKU)")
+                   @" From ProductType p where (
+(round((SevenDay/7*0.5+Fifteen/15*0.3+ThirtyDay/30*0.2),0)*5)>(select SUM(Qty) from WarehouseStockType where SKU= p.SKU)
+Or (select SUM(Qty) from WarehouseStockType where SKU= p.SKU)=0
+Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType where IsOutOfStock=1 and  Status<>'作废订单'))
+)and IsScan=1 and SKU not in('9613',
+'9624',
+'9625',
+'9626',
+'9627',
+'9628',
+'9636',
+'9637',
+'9640',
+'9641',
+'00PK9660',
+'9665',
+'00WE9660',
+'9666',
+'9671',
+'9672',
+'9673',
+'9674',
+'9675',
+'9676',
+'9689',
+'9755',
+'9775',
+'00RD9787',
+'00WE9787',
+'00LU9787',
+'00PK9787',
+'00BK9788',
+'00PK9788',
+'00BK9789',
+'00PK9789',
+'00WE9789',
+'00BK9790',
+'00RE9790',
+'9806',
+'9716',
+'9817',
+'9818',
+'9819',
+'9820',
+'9822',
+'9828',
+'00BK9842',
+'00RD9842',
+'9865',
+'9878',
+'9879',
+'9886',
+'9890',
+'9891',
+'9892',
+'9893',
+'9894',
+'9895',
+'9896',
+'9897',
+'9898',
+'9990',
+'9380',
+'9532',
+'9535',
+'9599',
+'9600',
+'9601',
+'9602',
+'9610',
+'9611',
+'9612',
+'8301',
+'9570',
+'9573',
+'9576',
+'9579',
+'9598',
+'8023',
+'8027',
+'8079',
+'8204',
+'00OE8220',
+'8237',
+'00WE8346',
+'00BE8347',
+'00WE8347',
+'00RE8347',
+'00PK8347',
+'00GN8347',
+'00YW8348',
+'00PE8348',
+'00WE8348',
+'00BE8348',
+'00CE8348',
+'00GN8348',
+'00BK8348',
+'00PK8348',
+'00RE8348',
+'8356',
+'8391',
+'00YW8506',
+'85BE5154',
+'85BK5154',
+'85GN5154',
+'85PK5154',
+'85YW5154',
+'90BE5154',
+'90BK5154',
+'90PK5154',
+'95BE5154',
+'95BK5154',
+'95PK5154',
+'95YW5154',
+'00WE5190',
+'00BE5192',
+'27BE5194',
+'27YW5194',
+'30YW5194',
+'02CE5198',
+'03BE5198',
+'5199',
+'48WE5208',
+'52BE5208',
+'52BK5208',
+'54BK5208',
+'54GY5208',
+'54WE5208',
+'04BK5210',
+'3015215',
+'3025215',
+'3035215',
+'3045215',
+'3055215',
+'3065215',
+'3075215',
+'3085215',
+'3095215',
+'3105215',
+'3115215',
+'3125215',
+'4015215',
+'4025215',
+'4035215',
+'4045215',
+'4055215',
+'4065215',
+'4075215',
+'4085215',
+'4095215',
+'4105215',
+'4115215',
+'4125215',
+'5015215',
+'5025215',
+'5035215',
+'5045215',
+'5055215',
+'5065215',
+'5075215',
+'5085215',
+'5095215',
+'5105215',
+'5115215',
+'5125215',
+'32005221',
+'35005221',
+'02GY5223',
+'02WE5223',
+'03WE5223',
+'04BK5223',
+'04BN5223',
+'06BN5223',
+'06WE5223',
+'1005227',
+'3005227',
+'02BE5229',
+'02BK5229',
+'02BN5229',
+'02GN5229',
+'02GY5229',
+'02OE5229',
+'02PE5229',
+'02PK5229',
+'02RD5229',
+'02WE5229',
+'02YW5229',
+'03BE5229',
+'03BK5229',
+'03BN5229',
+'03GN5229',
+'03GY5229',
+'03OE5229',
+'03PE5229',
+'03PK5229',
+'03RD5229',
+'03WE5229',
+'03YW5229',
+'04BE5229',
+'04BK5229',
+'04BN5229',
+'04GN5229',
+'04GY5229',
+'04OE5229',
+'04PE5229',
+'04PK5229',
+'04RD5229',
+'04WE5229',
+'04YW5229',
+'05BE5229',
+'05BK5229',
+'05BN5229',
+'05GN5229',
+'05GY5229',
+'05OE5229',
+'05PE5229',
+'05PK5229',
+'05RD5229',
+'05WE5229',
+'05YW5229',
+'00YW5231',
+'00BK5292',
+'00GY5292',
+'5120',
+'3005267',
+'4005285',
+'3005300',
+'02RD8779',
+'04RD8779',
+'05RD8779',
+'05BE8779',
+'1008212',
+'2008212',
+'4008212',
+'5008212',
+'7008212',
+'1008191',
+'00BK3120',
+'00BE9662',
+'00BK9662',
+'00PK9662',
+'00WE9662',
+'03GY5308',
+'02BK5308',
+'YSP0082',
+'0A003127',
+'0B003127',
+'0C003127',
+'0D003127',
+'0E003127',
+'0F003127',
+'0H003127',
+'7025',
+'00CL7009',
+'0A005000',
+'0B005000',
+'0C005000',
+'0D005000',
+'0E005000',
+'5005',
+'5006',
+'5007',
+'5008',
+'5010',
+'5022',
+'5023',
+'5025',
+'5026',
+'5027',
+'5028',
+'5030',
+'x013',
+'4011',
+'4012',
+'4015',
+'4014',
+'4018',
+'4019',
+'4022',
+'4023',
+'9664',
+'x030')")
                     .List<ProductType>();
             string ids = "";
             foreach (var p in products)
@@ -68,7 +349,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.CreateQuery("from WarehouseStockType where SKU in(" + ids.Trim(',') + ")").List<WarehouseStockType>();
             plans = NSession.CreateQuery("from PurchasePlanType where Status not in('异常','已收到')  and SKU in(" + ids.Trim(',') + ")").List<PurchasePlanType>();
 
-            IList<OrderProductType> orderProducts = NSession.CreateQuery("from OrderProductType where SKU in(" + ids.Trim(',') + ") and IsQue=1 and OId In(select Id from OrderType where IsOutOfStock=1)").List<OrderProductType>();
+            IList<OrderProductType> orderProducts = NSession.CreateQuery("from OrderProductType where SKU in(" + ids.Trim(',') + ") and IsQue=1 and OId In(select Id from OrderType where IsOutOfStock=1 and Status<>'作废订单')").List<OrderProductType>();
             foreach (var p in products)
             {
                 PurchaseData data = new PurchaseData();
@@ -86,12 +367,7 @@ namespace KeWeiOMS.Web.Controllers
                 }
                 data.IsImportant = 0;
                 data.AvgQty = Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 2);
-                WarehouseStockType stock = stocks.First(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper());
-                if (stock != null)
-                {
-                    data.NowQty = stock.Qty;
-                }
-
+                data.NowQty = stocks.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
                 if (Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 0) * 3 < data.NowQty)
                 {
                     data.IsImportant = 1;
@@ -99,15 +375,20 @@ namespace KeWeiOMS.Web.Controllers
                 int buyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.DaoQty);
                 data.BuyQty = plans.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty) - buyQty;
                 data.QueQty = orderProducts.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
+
                 if ((data.NowQty + data.BuyQty - data.WarningQty - data.QueQty) < 0)
                 {
-                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10) + data.QueQty;
+
+                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10) + data.QueQty - data.NowQty - data.BuyQty;
                     list.Add(data);
                 }
-               
+
+
+
             }
             Session["ToExcel"] = list;
-            return Json(new { total = list.Count, rows = list });
+            ;
+            return Json(new { total = list.Count, rows = list.OrderByDescending(x => x.NeedQty).ToList() });
         }
 
         [HttpPost]
@@ -198,7 +479,6 @@ namespace KeWeiOMS.Web.Controllers
                     productCompose.PId = obj.Id;
                     NSession.Save(productCompose);
                     NSession.Flush();
-
                 }
 
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
@@ -428,6 +708,7 @@ namespace KeWeiOMS.Web.Controllers
                     SKUCodeType skuCode = new SKUCodeType { Code = code, SKU = sku, IsNew = 0, IsOut = 0 };
                     NSession.Save(skuCode);
                     NSession.Flush();
+                    Utilities.StockIn(1, sku, 1, 0, "条码清点入库", CurrentUser.Realname, "");
                     return Json(new { IsSuccess = true, Result = "添加成功！" });
                 }
                 else
@@ -502,10 +783,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             decimal freight = decimal.Parse((GetFreight(weight * qty, LogisticMode, Country)).ToString("f6"));
             if (freight == -1)
-                return Json(new { IsSuccess = false, ErrorMsg ="cz"}, JsonRequestBehavior.AllowGet);
+                return Json(new { IsSuccess = false, ErrorMsg = "cz" }, JsonRequestBehavior.AllowGet);
             decimal currency = decimal.Parse(Math.Round(GetCurrency(Currency), 2).ToString());
             decimal profit = (onlineprice * currency - price) * qty - freight;
-            return Json(new { IsSuccess =true, profit=profit,freight=freight}, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSuccess = true, profit = profit, freight = freight }, JsonRequestBehavior.AllowGet);
         }
         private decimal GetFreight(decimal weight, string logisticMode, int country)
         {

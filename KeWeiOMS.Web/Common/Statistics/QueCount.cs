@@ -25,6 +25,8 @@ namespace KeWeiOMS.Web
 
         public int BuyQty { get; set; }
 
+        public int UnPeiQty { get; set; }
+
         public int NowQty { get; set; }
 
         public int NeedQty { get; set; }

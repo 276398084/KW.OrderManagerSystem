@@ -32,12 +32,24 @@ function getOnlyDate(value) {
     var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
     return date.format("yyyy-MM-dd");
 }
+function getStartDateTime(value, t) {
+    var today = new Date();
+    var enddate;
+    if (t == "d")
+        enddate = getDate(today.setDate(today.getDate() - value).toString());
+    else {
+        enddate = getDate(today.setHours(today.getHours() - value).toString());
+    }
+    return enddate;
+}
 
 function getStartDate(value) {
     var today = new Date();
     var enddate = getOnlyDate(today.setDate(today.getDate() - value).toString());
     return enddate;
 }
+
+
 function getTrue(value) {
     if (value == 1)
         return "是";
@@ -47,6 +59,8 @@ function getTrue(value) {
 
 var checks = [["1", "是"], ["0", "否"]];
 var checksall = [["ALL", "ALL"], ["1", "是"], ["0", "否"]];
+var checkOrdersAll = [["ALL", "ALL"], ["0", "处理后24小时未配货"], ["1", "配货后12小时未包装"], ["2", "包装后12小时未发货"]];
+var checkPurAll = [["ALL", "ALL"], ["0", "3天未发货"], ["1", "5天未到货"]];
 var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
 var checkSex = '[["男"],["女"]]';
 var checkPrint = [["ALL", "ALL"], ["1", "未打印"], ["2", "已打印"]];

@@ -1310,6 +1310,8 @@
     <Content Include="Views\Product\SKUScan2.cshtml" />
     <Content Include="Views\Order\IsNotQue.cshtml" />
     <Content Include="Views\Order\OrderExport.cshtml" />
+    <Content Include="Views\Statistics\PurchaseInfo.cshtml" />
+    <Content Include="Views\Statistics\OrderSendInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

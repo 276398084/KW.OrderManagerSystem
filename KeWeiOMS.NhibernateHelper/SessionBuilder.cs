@@ -18,7 +18,7 @@ namespace KeWeiOMS.NhibernateHelper
 
         private static void CreateConfiguration()
         {
-            // HibernatingRhinos.NHibernate.Profiler.Appender.NHibernateProfiler.Initialize();//查看HQL生成的SQL
+            //HibernatingRhinos.NHibernate.Profiler.Appender.NHibernateProfiler.Initialize();//查看HQL生成的SQL
             //configuration = new Configuration().Configure(System.Web.HttpContext.Current.Request.PhysicalApplicationPath + "Configuration\\hibernate.cfg.xml");
             configuration = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2008.ConnectionString(c => c.FromConnectionStringWithKey("db")))
@@ -62,11 +62,12 @@ namespace KeWeiOMS.NhibernateHelper
 
         public static ISession CreateSession()
         {
+            return SessionFactory.OpenSession();
             ISession s = sessionStorage.Get();
             if (s == null)
             {
                 s = SessionFactory.OpenSession();
-                sessionStorage.Set(s);
+                //sessionStorage.Set(s);
             }
             return s;
         }

@@ -53,7 +53,7 @@
                     </td>
                     <td>
                         <input readonly="readonly" value="@plan.PlanNo"/>
-                         <input type="hidden"  name="PlanNo" value="@plan.Id"/>
+                        <input type="hidden"  name="PlanNo" value="@plan.Id"/>
                     </td>
                 </tr>
                 <tr>
@@ -106,6 +106,7 @@
                     </td>
                     <td>
                         <input readonly="readonly" name="PlanQty" id="c_PlanQty" value="@plan.Qty"/>
+                        已到：@plan.DaoQty
                     </td>
                     <td>
                         @Html.LabelFor(model => model.Price, "金额:")
@@ -131,7 +132,7 @@
     <script type="text/javascript">
         function alldao() {
 
-            $('#c_RealQty').numberbox("setValue", $('#c_PlanQty').val());
+            $('#c_RealQty').numberbox("setValue",'@plan.Qty-@plan.DaoQty');
             $('#c_Status').combobox("setValue", "已收到");
         }
     </script>

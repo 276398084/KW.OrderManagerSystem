@@ -23,6 +23,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
+    [Serializable]
     public class OrderAddressType
     {
         /// <summary>
