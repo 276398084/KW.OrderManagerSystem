@@ -9,6 +9,7 @@
         $('#dg').datagrid({
             url: '@Url.Action("List","GMarket")',
             pageNumber: 1,
+            nowrap: false,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
@@ -120,7 +121,7 @@
                 价格
             </th>
 
-            <th field="NowNum" width="100" sortable="true">
+            <th field="NowNum" width="150" sortable="true">
                 现在数量
             </th>
 

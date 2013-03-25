@@ -21,7 +21,7 @@ namespace KeWeiOMS.Web
     {
         public ISession NSession = SessionBuilder.CreateSession();
         [WebMethod]
-        public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, int Nownum, string ProductUrl, string Account)
+        public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, string Nownum, string ProductUrl, string Account)
         {
             try
             {

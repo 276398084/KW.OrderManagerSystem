@@ -53,7 +53,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 现在数量
         /// </summary>
-        public virtual int NowNum { get; set; }
+        public virtual String NowNum { get; set; }
 
         /// <summary>
         /// 产品链接
