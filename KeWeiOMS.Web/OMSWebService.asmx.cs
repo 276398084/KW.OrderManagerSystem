@@ -21,7 +21,7 @@ namespace KeWeiOMS.Web
     {
         public ISession NSession = SessionBuilder.CreateSession();
         [WebMethod]
-        public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, string Nownum, string ProductUrl, string Account)
+        public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, string Nownum,int Qty, string ProductUrl, string Account)
         {
             try
             {
@@ -33,8 +33,9 @@ namespace KeWeiOMS.Web
                 obj.NowNum = Nownum;
                 obj.ProductUrl = ProductUrl;
                 obj.Account = Account;
+                obj.Qty = Qty;
                 obj.CreateOn = DateTime.Now;
-                int check = GetId(ItemId);
+                int check = GetId(ItemId,Nownum);
                 if (check > 0)
                 {
                     obj.Id = check;
@@ -52,9 +53,9 @@ namespace KeWeiOMS.Web
             return "保存一条记录成功";
         }
 
-        public int GetId(string ItemId)
+        public int GetId(string ItemId, string Nownum)
         {
-            IList<GMarketType> list = NSession.CreateQuery("from GMarketType where ItemId='"+ItemId+"'").List<GMarketType>();
+            IList<GMarketType> list = NSession.CreateQuery("from GMarketType where ItemId='"+ItemId+"' and NowNum='"+Nownum+"'").List<GMarketType>();
             NSession.Clear();
             if (list.Count > 0)
             {

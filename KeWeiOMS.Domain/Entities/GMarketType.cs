@@ -51,9 +51,14 @@ namespace KeWeiOMS.Domain
         public virtual String PicUrl { get; set; }
 
         /// <summary>
-        /// 现在数量
+        /// 数量标题
         /// </summary>
         public virtual String NowNum { get; set; }
+
+        /// <summary>
+        /// 现在数量
+        /// </summary>
+        public virtual int Qty { get; set; }
 
         /// <summary>
         /// 产品链接
