@@ -151,6 +151,7 @@
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\DisputeController.cs" />
     <Compile Include="Controllers\EbayController.cs" />
+    <Compile Include="Controllers\EbayMessageController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
@@ -1306,6 +1307,11 @@
     <Content Include="Views\Product\WarningPurchaseList.cshtml" />
     <Content Include="Views\Order\IsNotQue.cshtml" />
     <Content Include="Views\GMarket\Index.cshtml" />
+    <Content Include="Views\EbayMessage\Create.cshtml" />
+    <Content Include="Views\EbayMessage\Delete.cshtml" />
+    <Content Include="Views\EbayMessage\Details.cshtml" />
+    <Content Include="Views\EbayMessage\Edit.cshtml" />
+    <Content Include="Views\EbayMessage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
