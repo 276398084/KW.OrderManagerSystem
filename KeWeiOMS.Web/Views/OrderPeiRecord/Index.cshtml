@@ -11,14 +11,16 @@
                 pageSize: 20,
                 pageList: [20, 40, 60, 80, 100]
             });
-            $("#txtEndDate").datebox("setValue", getStartDate(-1));
-            $("#txtStartDate").datebox("setValue", getStartDate(7));
+
         });
+
+
         //新建
-        function c_dlg(){
+        function c_dlg() {
             var url_str = '@Url.Action("Create", "OrderPeiRecord")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
+
         //编辑框
         function e_dlg() {
             var url = '@Url.Action("Edit", "OrderPeiRecord")/' + id;
@@ -40,8 +42,11 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
+
                 var url = '@Url.Action("Delete", "OrderPeiRecord")/' + id;
+
                 delData(url, 'dg');
+
             }
         }
 
@@ -63,28 +68,14 @@
             return (undefined);
         }
         function doSearch() {
-            search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
             $("#dg").datagrid("load", {
                     search: search
             });
         }
-        function toExcel() {
-            $('#dg').datagrid('loading');
-            var postUrl = "/Order/ExportDown/1";
-            $.ajax({
-                url: '@Url.Action("ToExcel", "OrderPeiRecord")/',
-            success: function (result) {
-                $.messager.show({
-                    title: '提示',
-                    msg: result.Msg,
-                    timeout: 0,
-                    showType: 'slide',
-                })
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        })
-    }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "OrderPeiRecord")', 's_dlg', 'dg');
+        }
 
     </script>
     <div region="center">
@@ -113,13 +104,13 @@
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
-                            开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
-                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
         <div id="mm" style="width: 120px">
+            <div data-options="name:'Id'">主键</div>
+            <div data-options="name:'OId'">订单ID</div>
             <div data-options="name:'OrderNo'">订单</div>
+            <div data-options="name:'CreateOn'">扫描时间</div>
             <div data-options="name:'PeiBy'">配货人</div>
             <div data-options="name:'ValiBy'">检验人</div>
             <div data-options="name:'ScanBy'">扫描人</div>

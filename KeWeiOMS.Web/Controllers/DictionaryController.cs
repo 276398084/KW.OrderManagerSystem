@@ -175,22 +175,6 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(objList, JsonRequestBehavior.AllowGet);
         }
-       public JsonResult PruchaseTrouble()
-       {
-           IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-               .SetString("DicCode", "Purchase.Trouble")
-               .List<DictionaryType>();
-
-           return Json(objList, JsonRequestBehavior.AllowGet);
-       }
-       public JsonResult PruchaseTroubleDeal()
-       {
-           IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-               .SetString("DicCode", "Purchase.TroubleDeal")
-               .List<DictionaryType>();
-
-           return Json(objList, JsonRequestBehavior.AllowGet);
-       }
     }
 }
 

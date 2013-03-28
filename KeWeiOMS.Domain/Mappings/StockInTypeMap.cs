@@ -31,7 +31,6 @@ namespace KeWeiOMS.Domain
             Table("StockIn");
             Id(x => x.Id);
             Map(x => x.WId);
-            Map(x => x.IsAudit);
             Map(x => x.SKU).Length(50);
             Map(x => x.WName).Length(50);
             Map(x => x.InType).Length(50);

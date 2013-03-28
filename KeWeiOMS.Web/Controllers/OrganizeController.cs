@@ -36,7 +36,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true });
+            return Json(new { IsSuccess = true  });
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true });
+            return Json(new { IsSuccess = true  });
 
         }
 
@@ -96,7 +96,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true });
+            return Json(new { IsSuccess = true  });
         }
 
         public JsonResult List()
@@ -122,20 +122,17 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult BuMenList(int id)
         {
-
-
-
-            IList<OrganizeType> objList = NSession.CreateQuery("from OrganizeType").List<OrganizeType>();
-            IList<OrganizeType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
+            IList<OrganizeType> objList = NSession.CreateQuery("from OrganizeType where ParentId=" + id).List<OrganizeType>();
+            IList<OrganizeType> list = NSession.CreateQuery("from OrganizeType").List<OrganizeType>();
             List<SystemTree> tree = new List<SystemTree>();
 
-            foreach (OrganizeType item in fristList)
+            foreach (OrganizeType item in objList)
             {
-                List<OrganizeType> fooList = objList.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
+                List<OrganizeType> fooList = list.Where(p => p.ParentId == item.Id).OrderByDescending(p => p.SortCode).ToList();
                 item.children = fooList;
                 List<SystemTree> tree2 = ConvertToTree(fooList);
                 tree.Add(new SystemTree { id = item.Id.ToString(), text = item.ShortName, children = tree2 });
-                GetChildren(objList, item, tree2);
+                GetChildren(list, item, tree2);
 
 
             }

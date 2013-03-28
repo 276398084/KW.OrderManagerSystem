@@ -32,34 +32,6 @@ namespace KeWeiOMS.Web
             return ds.Tables[0];
         }
 
-        public static DataTable csvToDataTable(string file)
-        {
-            string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + file + ";Extended Properties='Excel 8.0;IMEX=1'"; // Excel file  
-            if (file.EndsWith(".csv"))
-                strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + file + ";DEFAULTDIR=D:;Extensions=CSV;"; // csv file:HDR=Yes-- first line is header  
-            OleDbConnection oleConn = new OleDbConnection(strConn);
-            oleConn.Open();
-            DataTable sheets = oleConn.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-            if (sheets == null || sheets.Rows.Count < 1)
-            {
-                return null;
-            }
-            String fileName = sheets.Rows[0]["TABLE_NAME"].ToString(); // sheets.Rows[0] -- first sheet of excel  
-            if (file.EndsWith(".csv"))
-                fileName = file.Substring(file.LastIndexOf("/"));
-            string olestr = "select * from [" + fileName + "]";
-            if (file.EndsWith(".csv"))
-                olestr = "select * from [" + fileName + "]";
-            OleDbCommand oleComm = new OleDbCommand(olestr, oleConn);
-            oleComm.Connection = oleConn;
-            OleDbDataAdapter oleDa = new OleDbDataAdapter();
-            oleDa.SelectCommand = oleComm;
-            DataSet ds = new DataSet();
-            oleDa.Fill(ds);
-            oleConn.Close();
-            return ds.Tables[0];
-        }
-
         #region 订单数据导入
         public static List<ResultInfo> ImportByAmount(AccountType account, string fileName)
         {
@@ -226,6 +198,7 @@ namespace KeWeiOMS.Web
                     {
                         CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", listOrder[OrderExNo], OrderExNo);
                         continue;
+
                     }
                     bool isExist = IsExist(OrderExNo);
                     if (isExist)

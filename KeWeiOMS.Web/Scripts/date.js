@@ -45,16 +45,18 @@ function getTrue(value) {
         return "否";
 }
 
-var checks = [["1", "是"], ["0", "否"]];
-var checksall = [["ALL", "ALL"], ["1", "是"], ["0", "否"]];
-var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
-var checkSex = '[["男"],["女"]]';
-var checkPrint = [["ALL", "ALL"], ["1", "未打印"], ["2", "已打印"]];
 
+var checks = [["1", "是"], ["0", "否"]];
+
+var checkSex = '[["男"],["女"]]';
+
+var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];
 var Packer = 5;
 var Examiner = 7;
 var Pei = 8;
 var Purchaser = 9;
+
+
 
 function formPost(form, url, dlg, dg, t) {
 
@@ -93,12 +95,12 @@ function delData(url, dg, t) {
                 $.post(url, function () {
                 }).success(function (data) {
                     var msgstr = "删除成功";
-                    $.messager.show({
-                        title: '提示',
-                        msg: msgstr,
-                        timeout: 3000,
-                        showType: 'slide'
-                    });
+                        $.messager.show({
+                            title: '提示',
+                            msg: msgstr,
+                            timeout: 3000,
+                            showType: 'slide'
+                        });
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }

@@ -44,11 +44,6 @@ namespace KeWeiOMS.Domain
         /// IsOut
         /// </summary>
         public virtual int IsOut { get; set; }
-
-        /// <summary>
-        /// IsOut
-        /// </summary>
-        public virtual int IsSend { get; set; }
         /// <summary>
         /// IsOut
         /// </summary>
@@ -58,26 +53,6 @@ namespace KeWeiOMS.Domain
         /// SendOn
         /// </summary>
         public virtual string SendOn { get; set; }
-
-        /// <summary>
-        /// SendOn
-        /// </summary>
-        public virtual string CreateOn { get; set; }
-
-        /// <summary>
-        /// SendOn
-        /// </summary>
-        public virtual string PeiOn { get; set; }
-
-        /// <summary>
-        /// 是否已经清点
-        /// </summary>
-        public virtual int IsScan { get; set; }
-
-        /// <summary>
-        /// SendOn
-        /// </summary>
-        public virtual string PlanNo { get; set; }
 
         /// <summary>
         /// OrderNo

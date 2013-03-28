@@ -51,10 +51,6 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult OrderStatus(string Id)
         {
             List<object> list = new List<object>();
-            if (!string.IsNullOrEmpty(Id))
-            {
-                list.Add(new { id = "ALL", text = "ALL" });
-            }
             foreach (string item in Enum.GetNames(typeof(OrderStatusEnum)))
             {
                 list.Add(new { id = item, text = item });
@@ -178,7 +174,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             Session["ids"] = ids;
 
-            return Json(new { IsSuccess = true });
+            return Json(new { IsSuccess = true  });
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
@@ -217,7 +213,7 @@ left join ReturnAddress R On r.Id=" + r;
             ds.Tables.Clear();
             ds.Tables.Add(dt);
             Session["data"] = ds.GetXml();
-            return Json(new { IsSuccess = true });
+            return Json(new { IsSuccess = true  });
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]

@@ -27,8 +27,6 @@
                     $('#dg').datagrid('fixDetailRowHeight', index);
                 }
         });
-        $("#txtEndDate").datebox("setValue", getStartDate(-1));
-        $("#txtStartDate").datebox("setValue", getStartDate(30));
 
     });
 
@@ -62,6 +60,7 @@
             });
         }).dialog('open');;
     }
+
     //编辑框
     function e_dlg() {
         var id = getselectedRow();
@@ -97,6 +96,67 @@
         }
         }
 
+@*	//异步新建提交
+        function ajaxAdd() {
+            $('#c_form').form('submit', {
+                url: '@Url.Action("Create","Supplier")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                 
+                    if (!result.IsSuccess) {
+                       $.messager.show({
+							title: '提示',
+							msg: '保存失败:' + result.ErrorMsg,
+							timeout: 0,
+							showType: 'slide'
+						});
+                    } else {
+                        $('#c_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
+                }
+            });
+           
+        }
+		//异步修改提交
+        function ajaxEdit() {
+            $('#e_form').form('submit', {
+                url: '@Url.Action("Edit","Supplier")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                 
+                    if (!result.IsSuccess) {
+                       $.messager.show({
+							title: '提示',
+							msg: '保存失败:' + result.ErrorMsg,
+							timeout: 0,
+							showType: 'slide'
+						});
+                    } else {
+                        $('#e_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
+                    $('#dg').datagrid('reload');
+                }
+            });
+            
+        }*@
    
 
     //删除
@@ -153,30 +213,11 @@
         });
         return (undefined);
     }
-
-  function toExcel() {
-        $('#dg').datagrid('loading');
-        var postUrl = "/Order/ExportDown/1";
-        $.ajax({
-            url: '@Url.Action("ToExcel", "Supplier")/',
-            success: function (result) {
-
-                $.messager.show({
-                    title: '提示',
-                    msg: result.Msg,
-                    timeout: 0,
-                    showType: 'slide',
-                })
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        })
-    }
-
     function doSearch() {
         search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
         $("#dg").datagrid("load", {
             search: search
+
         });
     }
 </script>
@@ -225,11 +266,8 @@
         <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a> 
-@*                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
-                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;*@
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-        <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'SuppliersName'">供应商</div>
