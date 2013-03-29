@@ -85,5 +85,14 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual DateTime CreateOn { get; set; }
 
+        /// <summary>
+        /// 问题回复人
+        /// </summary>
+        public virtual string ReplayBy { get; set; }
+
+        /// <summary>
+        /// 同步时间
+        /// </summary>
+        public virtual DateTime ReplayOn { get; set; }
     }
 }

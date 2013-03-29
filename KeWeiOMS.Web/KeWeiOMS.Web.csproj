@@ -127,6 +127,7 @@
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
     <Compile Include="Common\EbayHelper.cs" />
+    <Compile Include="Common\EbayMessageUtil.cs" />
     <Compile Include="Common\EBayUtil.cs" />
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\ExcelHelper.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Controllers\DisputeController.cs" />
     <Compile Include="Controllers\EbayController.cs" />
     <Compile Include="Controllers\EbayMessageController.cs" />
+    <Compile Include="Controllers\EbayMessageReController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
@@ -1312,6 +1314,11 @@
     <Content Include="Views\EbayMessage\Details.cshtml" />
     <Content Include="Views\EbayMessage\Edit.cshtml" />
     <Content Include="Views\EbayMessage\Index.cshtml" />
+    <Content Include="Views\EbayMessageRe\Create.cshtml" />
+    <Content Include="Views\EbayMessageRe\Delete.cshtml" />
+    <Content Include="Views\EbayMessageRe\Details.cshtml" />
+    <Content Include="Views\EbayMessageRe\Edit.cshtml" />
+    <Content Include="Views\EbayMessageRe\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

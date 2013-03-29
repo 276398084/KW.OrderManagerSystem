@@ -9,179 +9,92 @@
         $('#dg').datagrid({
             url: '@Url.Action("List","EbayMessage")',
             pageNumber: 1,
+            nowrap: false,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
-
+        $("#txtEndDate").datebox("setValue", getStartDate(-1));
+        $("#txtStartDate").datebox("setValue", getStartDate(7));
     });
 
     //新建
     function c_dlg() {
-        var url_str = '@Url.Action("Create","EbayMessage")';
-		
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-        }).dialog('open');;
-    }
-
-    //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit","EbayMessage")/' + id;
-            $('#e_dlg').load(url, function () {
-                $(this).dialog({
-                    title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
-                    buttons: [{
-                        text: '提交',
-                        iconCls: 'icon-ok',
-                        handler: function () {
-							ajaxEdit();
-                        }
-                    }, {
-                        text: '取消',
-                        handler: function () {
-                            $('#e_dlg').dialog('close');
-                        }
-                    }]
-                });
-            }).dialog('open');
+        var url_str = '@Url.Action("Create","EbayMessageRe")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
         }
-    }
 
-	//异步新建提交
-        function ajaxAdd() {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create","EbayMessage")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
-                    } else {
-                        $('#c_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
-                }
-            });
-        }
-		//异步修改提交
-        function ajaxEdit() {
-            $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","EbayMessage")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                    var result = eval('(' + result + ')');
-                    if (result.errorMsg) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.errorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
-                    } else {
-                        $('#e_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
-                }
-            });
-        }
-   
+    function toExcel() {
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "EbayMessage")/',
+            success: function (result) {
 
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","EbayMessage")/' + id;
-                    $.post(url, function () {
-                    }).success(function (data) {
-                        var msgstr = "删除成功";
-                        if (data != true) {
-                            msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
-
-                        $('#dg').datagrid('reload');
-                    }) .error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
-                }
-            });
-        }
-    }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
             }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
+        })
     }
-   
+
+    function doSearch() {
+        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+
+    function syn() {
+        $('#dg').datagrid("loading");
+        $.ajax({
+            url: '@Url.Action("Syn", "EbayMessage")',
+             success: function (result) {
+                 if (result.IsSuccess) {
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide',
+                     })
+                 }
+                 else {
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide'
+                     })
+                 }
+                 $('#dg').datagrid('reload');
+             }
+         })
+    }
+    function url(v, r, i) {
+         return "<a href='http://www.ebay.com/itm/ebay/"+r.ItemId + "' target=_blank >" + v + "</a>"
+    }
+    function buyer(v,r,i) {
+        return "<br>买家邮箱：<br>" + v + "<br>买家账号：<br>" + r.SenderID+"<br> ";
+    }
+    function time(v,r,i) {
+        return "创建时间：<br>" +getDate(v) + "<br>同步时间：<br>" + getDate(r.CreateOn);
+    }
+    function replay(v,r,i) {
+        return "回复时间：<br>" + getDate(v) + "<br>回复人：<br>"+r.ReplayBy;
+    }
+    function opeart(v,r,i){
+        return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'re(' + v + ')\'>回复</a>&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(' + v + ')\'>详细</a>';
+    }
+    function re(value) {
+         
+    }
+    function detail(value) {
+
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -189,64 +102,52 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
-                主键
-            </th>
 
-            <th field="MessageId" width="100">
-                消息Id
+            <th field="Id" width="50" formatter="opeart">
+                操作
             </th>
 
             <th field="MessageType" width="100">
                 消息类型
             </th>
 
-            <th field="QuestionType" width="100">
-                问题类型
+            <th field="SenderEmail" width="150" formatter="buyer">
+                买家信息
             </th>
 
-            <th field="SenderEmail" width="100">
-                买家邮箱
-            </th>
-
-            <th field="SenderID" width="100">
-                买家Id
-            </th>
-
-            <th field="Subject" width="100">
+            <th field="Subject" width="200" formatter="url">
                 消息主题
             </th>
 
-            <th field="Body" width="100">
-                消息内容
-            </th>
-
-            <th field="MessageStatus" width="100">
+            <th field="MessageStatus" width="50">
                 消息状态
             </th>
 
-            <th field="ItemId" width="100">
-                商品编号
-            </th>
-
-            <th field="CreationDate" width="100">
+            <th field="CreationDate" width="100" formatter="time">
                 问题创建时间
             </th>
 
-            <th field="CreateOn" width="100">
-                同步时间
+            <th field="ReplayOn" width="100" formatter="replay">
+                回复信息
             </th>
-
 
     	</tr>
 		</thead>
 		</table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+       <a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="syn();">同步</a>  
+                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+          <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div> 
-        
+		<div id="mm" style="width: 120px">
+            <div data-options="name:'MessageType'">消息类型</div>
+            <div data-options="name:'SenderEmail'">买家邮箱</div>
+            <div data-options="name:'SenderID'">买家Id</div>
+            <div data-options="name:'Subject'">消息主题</div>
+            <div data-options="name:'ItemId'">商品编号</div>
+        </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 

@@ -1,0 +1,85 @@
+﻿@model KeWeiOMS.Domain.EbayMessageReType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_ReplayOn').datebox();
+
+        $('#c_ReplayBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "EbayMessageRe", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageId,"回复消息Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageId,new{@id="c_MessageId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SubjectRe,"回复主题:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SubjectRe,new{@id="c_SubjectRe"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.BodyRe,"回复内容:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.BodyRe,new{@id="c_BodyRe"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplayOn,"回复时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayOn,new{@id="c_ReplayOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplayBy,"回复人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayBy,new{@id="c_ReplayBy"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

@@ -97,6 +97,7 @@ namespace KeWeiOMS.Web
             {
 
                 IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where MessageId='" + MessageId + "'").List<EbayMessageType>();
+                NSession.Clear();
                 foreach (var item in list)
                 {
                     id = item.Id;

@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// EbayMessageTypeMap
-    /// Ebay消息
+    /// EbayMessageReTypeMap
+    /// Ebay邮件回复
     /// 
     /// 修改纪录
     /// 
@@ -24,25 +24,17 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class EbayMessageTypeMap : ClassMap<EbayMessageType> 
+    public class EbayMessageReTypeMap : ClassMap<EbayMessageReType> 
     {
-        public EbayMessageTypeMap()
+        public EbayMessageReTypeMap()
         {
-            Table("EbayMessage");
+            Table("EbayMessageRe");
             Id(x => x.Id);
             Map(x => x.MessageId);
-            Map(x => x.MessageType);
-            Map(x => x.QuestionType);
-            Map(x => x.SenderEmail);
-            Map(x => x.SenderID);
-            Map(x => x.Subject);
-            Map(x => x.Body);
-            Map(x => x.MessageStatus);
-            Map(x => x.ItemId);
-            Map(x => x.CreationDate);
-            Map(x => x.CreateOn);
-            Map(x => x.ReplayBy);
+            Map(x => x.SubjectRe).Length(255);
+            Map(x => x.BodyRe).Length(1000);
             Map(x => x.ReplayOn);
+            Map(x => x.ReplayBy).Length(255);
         }
     }
 }
