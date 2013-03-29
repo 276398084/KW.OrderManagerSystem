@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -42,8 +41,7 @@ namespace KeWeiOMS.Web.Controllers
                         obj.PlanNo = plan[0].PlanNo;
                         obj.DaoOn = DateTime.Now;
                         obj.SendOn = DateTime.Now;
-
-                        obj.IsAudit = 0;
+                        obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty);
                         NSession.SaveOrUpdate(obj);
                         NSession.Flush();
                         plan[0].Status = obj.Status;
@@ -61,49 +59,6 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true });
-        }
-
-        public JsonResult AuditDao(int Id)
-        {
-            PlanDaoType obj = NSession.Get<PlanDaoType>(Id);
-            if (obj != null)
-            {
-                if (obj.IsAudit == 0)
-                {
-                    //obj.DaoOn = DateTime.Now;
-                    obj.IsAudit = 1;
-                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo);
-
-                    NSession.SaveOrUpdate(obj);
-                    NSession.Flush();
-                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo);
-                    return Json(new { IsSuccess = true });
-                }
-                return Json(new { ErrorMsg = "已经审核了", IsSuccess = false });
-            }
-            return Json(new { ErrorMsg = "状态出错!", IsSuccess = false });
-        }
-
-
-        public JsonResult ExportDao(string st, string et)
-        {
-            string sql = @"select * from  PlanDao";
-            sql += " where IsAudit=1 and DaoOn  between '" + st + "' and '" + et + "'";
-
-            DataSet ds = new DataSet();
-            IDbCommand command = NSession.Connection.CreateCommand();
-            command.CommandText = sql + " order by DaoOn asc";
-            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
-            da.Fill(ds);
-
-            DataTable dt = ds.Tables[0];
-
-            List<string> list = new List<string>();
-            string str = "";
-
-            // 设置编码和附件格式 
-            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
         }
 

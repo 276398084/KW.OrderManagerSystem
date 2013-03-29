@@ -16,10 +16,10 @@
                           var id = r.Id;
                           if (r.IsTop == 1) {
                               top = "[顶]";
-                              top += '<a href="@Url.Action("ShowIndex", "Placard")/' + id + '" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>' + ":";
+                              top += '<a href="@Url.Action("ShowIndex", "Placard")/?id=' + id + '" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>' + ":";
                           }
                           else {
-                              top = '<a href="@Url.Action("ShowIndex", "Placard")/' + id + '" target="_blank"  class="easyui-linkbutton" >' + v + '</a>' + ":";
+                              top = '<a href="@Url.Action("ShowIndex", "Placard")/?id=' + id + '" target="_blank"  class="easyui-linkbutton" >' + v + '</a>' + ":";
                           }
                           return top;
                       }
@@ -30,10 +30,10 @@
                           var c = "";
                           var id = r.Id;
                           if (r.IsTop == 1) {
-                              c = '<a href="@Url.Action("ShowIndex", "Placard")/'+id+'" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>'
+                              c = '<a href="@Url.Action("ShowIndex", "Placard")/?id='+id+'" target="_blank"  class="easyui-linkbutton" style="font-size:16px">' + v + '</a>'
                           }
                           else {
-                              c = '<a href="@Url.Action("ShowIndex", "Placard")/' + id + '" target="_blank"  class="easyui-linkbutton" >' + v + '</a>'
+                              c = '<a href="@Url.Action("ShowIndex", "Placard")/?id=' + id + '" target="_blank"  class="easyui-linkbutton" >' + v + '</a>'
                           }
                           return c;
                       }

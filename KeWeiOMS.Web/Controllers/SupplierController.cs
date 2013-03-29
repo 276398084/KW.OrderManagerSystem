@@ -7,8 +7,6 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
-using System.Data.SqlClient;
-using System.Data;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -152,7 +150,6 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-            Session["ToExcel"] = where + orderby;
             IList<SupplierType> objList = NSession.CreateQuery("from SupplierType"+where+orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -168,25 +165,6 @@ namespace KeWeiOMS.Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult ToExcel()
-        {
-            try
-            {
-                SqlConnection con = new SqlConnection
-("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from Suppliers " + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
-            }
-            catch (Exception ee)
-            {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
-            }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
-        }
     }
 }
 

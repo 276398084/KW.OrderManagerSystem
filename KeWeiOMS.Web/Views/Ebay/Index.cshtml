@@ -12,83 +12,12 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
-        $("#txtEndDate").datebox("setValue", getStartDate(-1));
-        $("#txtStartDate").datebox("setValue", getStartDate(7));
+
     });
 
-
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","Ebay")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
-        }
-
-        //编辑框
-        function e_dlg() {
-            var url = '@Url.Action("Edit","Ebay")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
-            }
-        }
-
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "Ebay")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "Ebay")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-
-                var url = '@Url.Action("Delete", "Ebay")/' + id;
-                delData(url, 'dg');
-
-            }
-        }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
-            }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-    function toExcel() {
-        $('#dg').datagrid('loading');
-        var postUrl = "/Order/ExportDown/1";
-        $.ajax({
-            url: '@Url.Action("ToExcel", "Ebay")/',
-             success: function (result) {
-
-                 $.messager.show({
-                     title: '提示',
-                     msg: result.Msg,
-                     timeout: 0,
-                     showType: 'slide',
-                 })
-                 location.href = postUrl;
-                 $('#dg').datagrid('reload');
-             }
-         })
-     }
-
+                alert(1);
      function doSearch() {
-         search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 $("#dg").datagrid("load", {
                     search: search
                 });
@@ -98,7 +27,6 @@
          return '<a href="' + r.ProductUrl + '"  target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="128px" width="128px" /></a>'
      }
      function syn() {
-         $('#dg').datagrid("loading");
          $.ajax({
              url: '@Url.Action("Syn", "Ebay")',
              success: function (result) {
@@ -119,7 +47,7 @@
                      })
                  }
                  $('#dg').datagrid('reload');
-            }  
+         }  
          })
      }
 </script>
@@ -172,10 +100,9 @@
 		</table>
         <div id="toolbar">
        <a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="syn();">同步</a>  
-                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
-                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
+@*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a> *@
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-          <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div> 
 		<div id="mm" style="width: 120px">
             <div data-options="name:'ItemId'">编号</div>

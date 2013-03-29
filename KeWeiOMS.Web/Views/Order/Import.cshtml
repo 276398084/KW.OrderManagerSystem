@@ -28,31 +28,6 @@
                 $('c_Import').clear();
             }
         });
-        $('#up_file2').uploadify({
-            'auto': false,
-            'buttonText': '请选择Gmarket文件',
-            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
-            'uploader': '/Home/SaveFile/',
-            'multi': false,
-            'onUploadSuccess': function (file, data, response) {
-                eval("data=" + data);
-                $('#hfile2').val(data.SaveName);
-
-                var postUrl = "/Order/ExportDown/1";
-                jQuery.ajax({
-                    url: "/Order/GExport/",
-                    type: "post",
-                    data: "f=" + data.SaveName,
-                    success: function (sss) {
-                        location.href = postUrl;
-
-                    }
-                });
-
-
-
-            }
-        });
         $('#Platform').combobox({
             url: '/Account/Platform',
             valueField: 'id',
@@ -106,53 +81,21 @@
         $('#Account').combotree("setValue", "ALL");
     }
     function addOrder() {
-        $("#tt").tabs("loading","导入中。。。")
         type = 0;
         $('#up_file').uploadify('upload', '*');
-        $("#tt").tabs("loaded")
     }
 
 
     function importAmount() {
-        $("#tt").tabs("loading", "导入中。。。")
         type = 1;
         $('#up_file').uploadify('upload', '*');
-        $("#tt").tabs("loaded")
-    }
-
-    function Gexport() {
-        type = 1;
-        $('#up_file2').uploadify('upload', '*');
     }
 
     function Synchronous() {
         formPost('c_Synchronous', '@Url.Action("Synchronous", "Order")');
         $('c_Synchronous').clear();
     }
- (function () {
-        $.extend($.fn.tabs.methods, {
-            //显示遮罩  
-            loading: function (jq, msg) {
-                return jq.each(function () {
-                    var panel = $(this).tabs("getSelected");
-                    if (msg == undefined) {
-                        msg = "  正在加载数据，请稍候.                                                                                                                                                                                                                           ..";
-                    }
-                    $("<div class=\"datagrid-mask\"></div>").css({ display: "block", width: panel.width(), height: panel.height() }).appendTo(panel);
-                    $("<div class=\"datagrid-mask-msg\"></div>").html(msg).appendTo(panel).css({ display: "block", left: (panel.width() - $("div.datagrid-mask-msg", panel).outerWidth()) / 2, top: (panel.height() - $("div.datagrid-mask-msg", panel).outerHeight()) / 2 });
-                });
-            }
-    ,
-            //隐藏遮罩  
-            loaded: function (jq) {
-                return jq.each(function () {
-                    var panel = $(this).tabs("getSelected");
-                    panel.find("div.datagrid-mask-msg").remove();
-                    panel.find("div.datagrid-mask").remove();
-                });
-            }
-        });
-    })(jQuery);
+
 </script>
 
 
@@ -161,7 +104,7 @@
         @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { id = "c_Import" }))
         {
            
-            <table  class="dv-table" border="0" style="width: 400px; height: 250px;">
+            <table class="dv-table" border="0" style="width: 400px; height: 250px;">
                 <tr>
                     <td>平台:</td>
                     <td>
@@ -219,25 +162,6 @@
                     <td></td>
                     <td>
                         <input type="button" value="保存" onclick="Synchronous();" /></td>
-                </tr>
-            </table>
-        }
-    </div>
-    <div title="Gmarket追踪条码导出" style="overflow: auto; padding: 20px;">
-        @using (Html.BeginForm("GExport", "Order", FormMethod.Post, new { id = "c_GExport" }))
-        {
-            <table class="dv-table" border="0" style="width: 400px; height: 250px;">
-
-                <tr>
-                    <td>文件:</td>
-                    <td>
-                        <input id="hfile2" type="hidden" value="" name="hfile" />
-                        <input id="up_file2" type="file" name="up_file" /></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="button" value="保存" onclick="Gexport();" /></td>
                 </tr>
             </table>
         }

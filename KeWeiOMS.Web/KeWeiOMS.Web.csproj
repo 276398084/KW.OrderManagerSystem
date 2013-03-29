@@ -20,7 +20,6 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,7 +64,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\paypal_base.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
@@ -73,13 +71,16 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
@@ -116,7 +117,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.1.0.20105.408\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AudioHelper.cs" />
@@ -127,6 +127,7 @@
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
     <Compile Include="Common\EbayHelper.cs" />
+    <Compile Include="Common\EbayMessageUtil.cs" />
     <Compile Include="Common\EBayUtil.cs" />
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\ExcelHelper.cs" />
@@ -136,8 +137,6 @@
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
     <Compile Include="Common\Statistics\ProductData.cs" />
-    <Compile Include="Common\Statistics\ProportionData.cs" />
-    <Compile Include="Common\Statistics\PurchaseData.cs" />
     <Compile Include="Common\Statistics\QueCount.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
@@ -151,11 +150,9 @@
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\DisputeController.cs" />
     <Compile Include="Controllers\EbayController.cs" />
-    <Compile Include="Controllers\EbayMessageController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
-    <Compile Include="Controllers\GMarketController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LogisticsController.cs" />
     <Compile Include="Controllers\LogisticsAreaController.cs" />
@@ -185,7 +182,6 @@
     <Compile Include="Controllers\ProductSKUController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\PurchasePlanController.cs" />
-    <Compile Include="Controllers\PurchaseTroubleController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
@@ -201,10 +197,6 @@
     <Compile Include="Controllers\WarehouseStockController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="OMSWebService.asmx.cs">
-      <DependentUpon>OMSWebService.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -231,7 +223,6 @@
     <Content Include="Content\images\Display.png" />
     <Content Include="Content\images\file_man_ce.ico" />
     <Content Include="Content\images\tab_tool_mac.ico" />
-    <Content Include="OMSWebService.asmx" />
     <Content Include="Scripts\easyUI\jquery.portal.js" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
     <Content Include="Scripts\griectl.cab" />
@@ -1298,23 +1289,6 @@
     <Content Include="Views\Ebay\Details.cshtml" />
     <Content Include="Views\Ebay\Edit.cshtml" />
     <Content Include="Views\Ebay\Index.cshtml" />
-    <Content Include="Views\Product\ProductProfits.cshtml" />
-    <Content Include="Views\PurchaseTrouble\Create.cshtml" />
-    <Content Include="Views\PurchaseTrouble\Delete.cshtml" />
-    <Content Include="Views\PurchaseTrouble\Details.cshtml" />
-    <Content Include="Views\PurchaseTrouble\Edit.cshtml" />
-    <Content Include="Views\PurchaseTrouble\Index.cshtml" />
-    <Content Include="Views\Product\WarningPurchaseList.cshtml" />
-    <Content Include="Views\Order\IsNotQue.cshtml" />
-    <Content Include="Views\GMarket\Index.cshtml" />
-    <Content Include="Views\EbayMessage\Create.cshtml" />
-    <Content Include="Views\EbayMessage\Delete.cshtml" />
-    <Content Include="Views\EbayMessage\Details.cshtml" />
-    <Content Include="Views\EbayMessage\Edit.cshtml" />
-    <Content Include="Views\EbayMessage\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

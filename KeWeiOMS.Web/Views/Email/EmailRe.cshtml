@@ -9,7 +9,7 @@
         $('#dg').datagrid({
             singleSelect: true,
             onClickRow: function (index, row) {
-                $.getJSON("/Email/getEmailTempDetail/" + row.Id, function (json) {
+                $.getJSON("/Email/getEmailTempDetail?id=" + row.Id, function (json) {
                     $('#r_Content').attr('value', json[0].Content);
                 })
             }
@@ -23,7 +23,7 @@
             $.messager.confirm('确认', '该邮件已经回复过，是否进入下一封?', function (r) {
                 if (r) {
                     var i = parseInt(@ViewData["EId"]) + parseInt(1);
-                    window.location = '@Url.Action("EmailRe", "Email")/' + i;
+                    window.location = '@Url.Action("EmailRe", "Email")?id=' + i;
                 }
             })
         }
@@ -37,7 +37,7 @@
     function send() {
         formPost('r_form', '@Url.Action("EmailRe", "Email")');
         var i = parseInt(@ViewData["EId"]) + parseInt(1);
-        window.location = '@Url.Action("EmailRe", "Email")/' + i;
+        window.location = '@Url.Action("EmailRe", "Email")?id=' + i;
 
     }
 

@@ -91,7 +91,7 @@
     function s_delE() {
         var rows = $('#dg_producte').datagrid('getSelections');
         $.ajax({
-            url: '/SuppliersProduct/DelProductE/' + rows[0].SKU,
+            url: '/SuppliersProduct/DelProductE?id=' + rows[0].SKU,
         });
         var row = $('#dg_producte').datagrid('getSelected');
         var index = $('#dg_producte').datagrid('getRowIndex', row);
