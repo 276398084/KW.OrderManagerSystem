@@ -56,6 +56,18 @@ namespace KeWeiOMS.Web.Controllers
             return View();
 
         }
+
+        public ActionResult IsNotQue()
+        {
+            return View();
+
+        }
+
+
+        public ActionResult OrderExport()
+        {
+            return View();
+        }
         public ActionResult JiScan()
         {
             return View();
@@ -82,7 +94,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             IQuery Query = NSession.CreateQuery(string.Format("update OrderType set {0}='{1}' where {0}='{2}'", fieldName, newField, oldField));
             int num = Query.ExecuteUpdate();
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public ActionResult Import()
@@ -104,7 +116,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 OrderHelper.ValiOrder(order, countrys, products, currencys, logistics);
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]
@@ -115,7 +127,7 @@ namespace KeWeiOMS.Web.Controllers
             AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             string file = form["hfile"];
             OrderHelper.ImportByAmount(account, file);
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]
@@ -149,6 +161,77 @@ namespace KeWeiOMS.Web.Controllers
                     default:
                         break;
                 }
+                return Json(new { IsSuccess = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
+
+            }
+
+        }
+
+        [HttpPost]
+        public ActionResult GExport(string f)
+        {
+            try
+            {
+                int intColCount = 0;
+                DataTable mydt = new DataTable("myTableName");
+
+                DataColumn mydc;
+                DataRow mydr;
+                int col = 0;
+                CsvReader csvReader = new CsvReader(f, Encoding.Default);
+                List<string[]> liststrs = csvReader.ReadAllRow();
+                string ids = "";
+                for (int i = 0; i < liststrs.Count; i++)
+                {
+                    string[] aryline = liststrs[i];
+                    if (i == 0)
+                    {
+                        for (int j = 0; j < aryline.Length; j++)
+                        {
+                            if (aryline[j] == "Cart no.")
+                            {
+                                col = j;
+                            }
+                            mydc = new DataColumn(aryline[j]);
+                            mydt.Columns.Add(mydc);
+                        }
+                    }
+                    else
+                    {
+                        mydr = mydt.NewRow();
+                        for (int j = 0; j < mydt.Columns.Count; j++)
+                        {
+
+                            if (j == col)
+                            {
+                                ids += aryline[j] + ",";
+                            }
+                            if (aryline.Length > j)
+                                mydr[j] = aryline[j];
+                        }
+                        mydt.Rows.Add(mydr);
+                    }
+                }
+
+                ids = ids.Trim(',');
+                ids = ids.Replace(",", "','");
+                List<OrderType> list = NSession.CreateQuery("from OrderType where OrderExNo in('" + ids + "')").List<OrderType>().ToList();
+                foreach (DataRow dataRow in mydt.Rows)
+                {
+                    OrderType order = list.Find(p => p.OrderExNo.Trim().ToUpper() == dataRow["Cart no."].ToString().Trim().ToUpper());
+                    if (order != null)
+                    {
+                        dataRow["Tracking no."] = order.TrackCode;
+                        dataRow["Delivery company"] = "Chinapost registered airmail";
+                    }
+                }
+                DataSet ds = new DataSet();
+                ds.Tables.Add(mydt);
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
                 return Json(new { IsSuccess = true });
             }
             catch (Exception ex)
@@ -213,7 +296,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -309,7 +392,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
         [HttpPost]
@@ -347,7 +430,6 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Clear();
             OrderType obj = GetById(Utilities.ToInt(o));
             obj.IsRepeat = 1;
-
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
@@ -355,6 +437,10 @@ namespace KeWeiOMS.Web.Controllers
             obj.Amount = 0;
             obj.IsPrint = 0;
             obj.IsRepeat = 1;
+            obj.TrackCode = "";
+            obj.Weight = 0;
+            obj.Status = OrderStatusEnum.已处理.ToString();
+            obj.IsOutOfStock = 0;
             obj.OrderNo = Utilities.GetOrderNo();
             NSession.Save(obj);
 
@@ -383,6 +469,7 @@ namespace KeWeiOMS.Web.Controllers
                                           CurrentUser.Realname, "");
                     }
                     orderType.Status = OrderStatusEnum.待发货.ToString();
+
                     NSession.Save(orderType);
                     NSession.Flush();
                 }
@@ -441,6 +528,19 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true });
         }
 
+        public ActionResult ExportOrder2(string ids, string s)
+        {
+            string sql = @"select '是' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+left join Products P On OP.SKU=P.SKU ";
+
+            sql += " where O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Replace("\n", "','") + "')";
+
+            DataSet ds = GetOrderExport(sql);
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
+        }
+
         [HttpPost]
         public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p, string dd)
         {
@@ -449,12 +549,29 @@ namespace KeWeiOMS.Web.Controllers
 left join Products P On OP.SKU=P.SKU ";
             if (string.IsNullOrEmpty(o))
             {
-                sql += " where O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                if (!string.IsNullOrEmpty(s))
+                {
+                    sql += " where O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                }
+                else
+                {
+                    sql += " where O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                }
+
             }
             else
             {
                 sql += " where  O.Id in(" + o + ")";
             }
+            DataSet ds = GetOrderExport(sql);
+
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
+        }
+
+        private DataSet GetOrderExport(string sql)
+        {
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql + " order by O.OrderExNo,O.OrderNo asc";
@@ -479,7 +596,6 @@ left join Products P On OP.SKU=P.SKU ";
                     }
                     else
                     {
-
                     }
 
                     dr[2] = "";
@@ -490,7 +606,6 @@ left join Products P On OP.SKU=P.SKU ";
                     dr[7] = "";
                     dr[8] = "";
                     dr[9] = "";
-
                 }
                 else
                 {
@@ -507,10 +622,7 @@ left join Products P On OP.SKU=P.SKU ";
                     list.Add(dr["OrderExNo"].ToString().Trim());
                 }
             }
-
-            // 设置编码和附件格式 
-            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
-            return Json(new { IsSuccess = true });
+            return ds;
         }
 
         [HttpPost]
@@ -540,6 +652,30 @@ left join Products P On OP.SKU=P.SKU ";
             }
         }
 
+        [HttpPost]
+        public ActionResult ReError(string o)
+        {
+            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.已处理.ToString() + "',IsError=0 where Id in(" + o + ")").ExecuteUpdate();
+            if (t > 0)
+                return Json(new { IsSuccess = true });
+            else
+            {
+                return Json(new { IsSuccess = false });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ReQue(string o)
+        {
+            int t = NSession.CreateQuery(" Update OrderType set IsOutOfStock=0 where Id in(" + o + ")").ExecuteUpdate();
+            if (t > 0)
+                return Json(new { IsSuccess = true });
+            else
+            {
+                return Json(new { IsSuccess = false });
+            }
+        }
+
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
@@ -553,7 +689,7 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
 
@@ -599,6 +735,7 @@ left join Products P On OP.SKU=P.SKU ";
                     {
                         Utilities.StockOut(s, orderProductType.SKU, orderProductType.Qty, "扫描出库", CurrentUser.Realname, "", order.OrderNo);
                     }
+                    NSession.CreateQuery("update SKUCodeType set IsSend=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "' where OrderNo ='" + order.OrderNo + "'").ExecuteUpdate();
                     string html = "订单： " + order.OrderNo + "已经发货";
                     return Json(new { IsSuccess = true, Result = html, OId = order.Id });
                 }
@@ -616,10 +753,14 @@ left join Products P On OP.SKU=P.SKU ";
                 {
                     if (order.IsOutOfStock != 1)
                     {
-                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td><b>Desc</b></td></tr>";
+                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td  width='120px'><b>库存</b></td><td><b>Desc</b></td></tr>";
                         foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                         {
-                            html += string.Format("<tr><td align='right'><input type='checkbox'  name='ck_{0}' code='{0}' checked=checked /></td><td>{1}</td><td>{2}</td><td>{3}</td></tr>", item.Id, item.SKU, item.Qty, item.Standard);
+
+                            object obj = NSession.CreateQuery("select sum(Qty) from WarehouseStockType where SKU='" + item.SKU + "'").UniqueResult();
+                            if (obj == null)
+                                obj = 0;
+                            html += string.Format("<tr><td align='right'><input type='checkbox'  name='ck_{0}' code='{0}' checked=checked /></td><td>{1}</td><td>{2}</td><td>{4}</td><td>{3}</td></tr>", item.Id, item.SKU, item.Qty, item.Standard, obj);
                         }
                         html += "</table>";
                         return Json(new { IsSuccess = true, Result = html });
@@ -697,12 +838,11 @@ left join Products P On OP.SKU=P.SKU ";
                                 html += string.Format(html2, p.SKU, p.Qty, p.Standard, p.Id, p.Qty);
                             }
                         }
-
                     }
                     html += "</table>";
                     return Json(new { IsSuccess = true, Result = html });
                 }
-                return Json(new { IsSuccess = false, Result = "订单状态不符！" });
+                return Json(new { IsSuccess = false, Result = "订单状态不符！此订单的状态是：" + order.Status });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
@@ -719,10 +859,12 @@ left join Products P On OP.SKU=P.SKU ";
                     NSession.Save(orderPeiRecord);
                     NSession.Flush();
                     order.Status = OrderStatusEnum.待包装.ToString();
+                    order.IsOutOfStock = 0;
                     NSession.Update(order);
                     NSession.Flush();
+                    NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + order.Id).ExecuteUpdate();
                     if (skuCode != "")
-                        NSession.CreateQuery("update SKUCodeType set IsOut=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='" + order.OrderNo + "' where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
+                        NSession.CreateQuery("update SKUCodeType set IsOut=1,PeiOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='" + order.OrderNo + "' where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
                     string html = "订单：" + order.OrderNo + " 配货完成！";
                     return Json(new { IsSuccess = true, Result = html });
                 }
@@ -730,6 +872,8 @@ left join Products P On OP.SKU=P.SKU ";
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
+
+
 
         public JsonResult OutStockByJi(string p, string o)
         {
@@ -802,18 +946,98 @@ left join Products P On OP.SKU=P.SKU ";
         }
         public JsonResult ListQ(string q)
         {
-
-
             IList<OrderType> objList = NSession.CreateQuery("from OrderType where OrderNo like '%" + q + "%'")
                 .SetFirstResult(0)
                 .SetMaxResults(10)
                 .List<OrderType>();
-
             return Json(new { total = objList.Count, rows = objList });
         }
 
+        public JsonResult GetNotQueList()
+        {
+            IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * from (
+select SKU,SUM(Qty) as Qty,isnull(Standard,0) as Standard,(select isnull(SUM(Qty),0) from WarehouseStock where SKU=OP.SKU ) as NowQty,COUNT(O.Id) as'OrderQty' from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1  group by SKU,Standard
+) as tbl  where (Qty-NowQty) <0")).List<object[]>();
 
+            List<QueCount> list = new List<QueCount>();
+            foreach (object[] objectse in objs)
+            {
+                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), NowQty = Utilities.ToInt(objectse[3]), OrderQty = Utilities.ToInt(objectse[4]) };
+                if (objectse[2] is DBNull || objectse[2] == null)
+                {
+                }
+                else
+                {
+                    oc.Standard = objectse[2].ToString();
+                }
+                list.Add(oc);
+            }
+            Session["ToExcel"]= list;
+            return Json(new { total = list.Count, rows = list });
+        }
 
+        //导出为Excel
+        public JsonResult ToExcel()
+        {
+            try
+            {
+               IList<QueCount>  signout =Session["ToExcel"] as List<QueCount>;
+               DataSet ds = ConvertToDataSet<QueCount>(signout);
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            }
+            catch (Exception ee)
+            {
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+        }
+
+        //IList转DataSet
+        public static DataSet ConvertToDataSet<T>(IList<T> list)
+        {
+            if (list == null || list.Count <= 0)
+            {
+                return null;
+            }
+
+            DataSet ds = new DataSet();
+            DataTable dt = new DataTable(typeof(T).Name);
+            DataColumn column;
+            DataRow row;
+
+            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+            foreach (T t in list)
+            {
+                if (t == null)
+                {
+                    continue;
+                }
+
+                row = dt.NewRow();
+
+                for (int i = 0, j = myPropertyInfo.Length; i < j; i++)
+                {
+                    System.Reflection.PropertyInfo pi = myPropertyInfo[i];
+
+                    string name = pi.Name;
+
+                    if (dt.Columns[name] == null)
+                    {
+                        column = new DataColumn(name, pi.PropertyType);
+                        dt.Columns.Add(column);
+                    }
+
+                    row[name] = pi.GetValue(t, null);
+                }
+
+                dt.Rows.Add(row);
+            }
+
+            ds.Tables.Add(dt);
+
+            return ds;
+        }
     }
 }
 

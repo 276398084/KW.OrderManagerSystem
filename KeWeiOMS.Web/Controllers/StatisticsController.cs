@@ -16,10 +16,19 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 获得订单数
+        /// </summary>
+        /// <param name="st"></param>
+        /// <param name="et"></param>
+        /// <param name="a"></param>
+        /// <param name="p"></param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult OrderCount(DateTime dt)
+        public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
         {
-            IList<object[]> objs = NSession.CreateQuery("select Account,Count(Id),Platform from OrderType   where CreateOn between '" + dt.ToString("yyyy/MM/dd 00:00:00") + "' and '" + dt.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' group by Account,Platform").List<object[]>();
+            var sqlWhere = SqlWhere(st, et, a, p);
+            IList<object[]> objs = NSession.CreateQuery(string.Format("select Account,Count(Id),Platform from OrderType {0} group by Account,Platform", sqlWhere)).List<object[]>();
 
             List<OrderCount> list = new List<OrderCount>();
             int sum = 0;
@@ -32,6 +41,45 @@ namespace KeWeiOMS.Web.Controllers
             List<object> footers = new List<object>();
             footers.Add(new { OCount = sum });
             return Json(new { rows = list.OrderByDescending(f => f.OCount), footer = footers, total = list.Count });
+        }
+        [HttpPost]
+        public ActionResult OrderCountryData(DateTime st, DateTime et, string a, string p)
+        {
+            var sqlWhere = SqlWhere(st, et, a, p);
+            IList<object[]> objs = NSession.CreateQuery(string.Format("select Country,COUNT(Id) from OrderType {0} group by Country", sqlWhere)).List<object[]>();
+            object obj =
+                NSession.CreateQuery(string.Format("select COUNT(Id) from OrderType {0} ", sqlWhere))
+                    .UniqueResult();
+            decimal sum = Convert.ToDecimal(obj);
+            List<ProportionData> list = new List<ProportionData>();
+            foreach (object[] objectse in objs)
+            {
+                ProportionData pd = new ProportionData();
+                pd.Count = Convert.ToInt32(objectse[1]);
+                pd.Key = objectse[0].ToString();
+                pd.Proportion = Math.Round((Convert.ToDecimal(pd.Count) / sum) * 100, 2);
+                list.Add(pd);
+            }
+            List<object> footers = new List<object>();
+            footers.Add(new { Count = sum });
+            return Json(new { rows = list.OrderByDescending(f => f.Proportion), footer = footers, total = list.Count });
+        }
+
+
+        private string SqlWhere(DateTime st, DateTime et, string a, string p)
+        {
+            string sqlWhere = " where CreateOn between '" + st.ToString("yyyy/MM/dd 00:00:00") + "' and '" +
+                              et.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' and";
+            if (!string.IsNullOrEmpty(p) && p != "ALL")
+            {
+                sqlWhere += " Platform='" + p + "' and";
+            }
+            if (!string.IsNullOrEmpty(a) && a != "ALL")
+            {
+                sqlWhere += " Account='" + a + "' and";
+            }
+            sqlWhere = sqlWhere.Substring(0, sqlWhere.Length - 3);
+            return sqlWhere;
         }
 
         public ActionResult QueCount()

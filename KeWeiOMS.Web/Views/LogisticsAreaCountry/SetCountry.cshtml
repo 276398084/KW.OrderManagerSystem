@@ -51,12 +51,12 @@
     });
     function addCountry(c) {
         $.ajax({
-            url: '/LogisticsAreaCountry/AddAreaCountry?id=' + c
+            url: '/LogisticsAreaCountry/AddAreaCountry/' + c
         });
     }
  function removeCountry(c) {
         $.ajax({
-            url: '/LogisticsAreaCountry/DelAreaCountry?id=' + c
+            url: '/LogisticsAreaCountry/DelAreaCountry/' + c
         });
     }
 

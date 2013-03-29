@@ -33,7 +33,7 @@
             required: true
         });
         $('#ll').combogrid("setValue", "NJGH");
-        $('#ww').combobox("setValue", "宁波仓库");
+        $('#ww').combobox("setValue", "1");
     })
 </script>
 
@@ -192,6 +192,7 @@
         if (!$("#ckQ").attr("checked")) {
             l = "";
         }
+
         jQuery.ajax({
             url: "/Order/OutStockBySend/",
             type: "post",

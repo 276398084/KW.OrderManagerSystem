@@ -45,7 +45,7 @@
                 onChange: changePlatform
             });
             $('#OrderStatus').combobox({
-                url: '/Home/OrderStatus',
+                url: '/Home/OrderStatus/1',
                 valueField: 'id',
                 textField: 'text',
                 required: true,
@@ -64,7 +64,7 @@
                 valueField: 0,
                 textField: 1,
                 panelHeight: 'auto',
-                data: checks,
+                data: checksall,
                 width: 100
             });
             $('#orderdateType').combobox({
@@ -74,7 +74,13 @@
                 data: orderDateType,
                 width: 100
             });
+            $('#OrderStatus').combobox("setValue", "ALL");
+            $('#IsPrint').combobox("setValue", "ALL");
             $('#orderdateType').combobox("setValue", "CreateOn");
+            $('#IsQue').combobox("setValue", "ALL");
+            $('#Platform').combobox("setValue", "ALL");
+            $('#CreateOn_st').datebox("setValue", getStartDate(60));
+            $('#CreateOn_et').datebox("setValue", getStartDate(-1));
         });
 
         //新建
@@ -199,7 +205,7 @@
             }
             var f = $('#CreateOn_et').combobox("getValue");
             if (f != "ALL" && f != "" && f != "0") {
-                search += t + "_et&" + e + "^";
+                search += t + "_et&" + f + "^";
             }
             var g = $('#IsQue').combobox("getValue");
             if (g != "ALL" && g != "" && g != "0") {
@@ -294,6 +300,7 @@
         }
 
         function exportZM() {
+            $('#dg').datagrid("loading");
             s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
@@ -310,11 +317,13 @@
                 data: "o=" + s_ids.join(','),
                 success: function (sss) {
                     location.href = postUrl;
+                    $('#dg').datagrid("reload");
                 }
             });
         }
 
         function exportOrder() {
+            $('#dg').datagrid("loading");
             s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
@@ -369,6 +378,7 @@
                 data: "o=" + s_ids.join(',') + search + "&dd=" + t,
                 success: function (sss) {
                     location.href = postUrl;
+                    $('#dg').datagrid("reload");
                 }
             });
         }
@@ -387,6 +397,55 @@
                 if (r) {
                     jQuery.ajax({
                         url: "/Order/ErrorOrder",
+                        type: "post",
+                        data: "o=" + s_ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+        }
+
+        function o_ReQue(parameters) {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/ReQue",
+                        type: "post",
+                        data: "o=" + s_ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function o_ReError(parameters) {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/ReError",
                         type: "post",
                         data: "o=" + s_ids.join(','),
                         success: function (sss) {
@@ -468,7 +527,9 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="reSend();">重新发货</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportZM();">中美导出</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportOrder();">订单导出</a><br />
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportOrder();">订单导出</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReError()">失效订单修正</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReQue()">缺货订单修正</a><br />
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
             状态<input type="text" id="OrderStatus" />

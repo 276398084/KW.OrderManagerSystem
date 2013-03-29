@@ -18,7 +18,7 @@
         var today = new Date();
         var today1 = new Date();
         var firstday=getOnlyDate(today.setDate(1).toString());
-        datetoday = getOnlyDate(today1.setMinutes(1).toString())
+        datetoday = getOnlyDate(today1.setMinutes(1).toString());
         $("#txtEndDate").datebox("setValue",datetoday);
         $("#txtStartDate").datebox("setValue",firstday);
     });
@@ -52,18 +52,20 @@
     }
 
     function toExcel() {
+        $('#dg').datagrid('loading');
         var postUrl = "/Order/ExportDown/1";
         $.ajax({
             url: '@Url.Action("ToExcel", "Attend")/',
                      success: function (result) {
-                         $('#dg').datagrid('reload');
+                         
                          $.messager.show({
                              title: '提示',
                              msg: result.Msg,
                              timeout: 0,
                              showType: 'slide',    
                          })
-                         location.href = postUrl
+                         location.href = postUrl;
+                         $('#dg').datagrid('reload');
                      }
                  })
     }

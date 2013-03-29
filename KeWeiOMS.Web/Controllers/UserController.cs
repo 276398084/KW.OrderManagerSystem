@@ -59,7 +59,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
 
@@ -134,7 +134,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(sc);
                 NSession.Flush();
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -186,7 +186,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -203,7 +203,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
@@ -235,13 +235,20 @@ namespace KeWeiOMS.Web.Controllers
             IList<UserType> objList = NSession.CreateQuery("from UserType where Realname like '%" + q + "%'")
                 .List<UserType>();
 
-            return Json(objList,JsonRequestBehavior.AllowGet);
+            return Json(objList, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult QList(string Id)
         {
 
             IList<UserType> objList = NSession.CreateQuery("from UserType where RoleId=" + Id)
+                .List<UserType>();
+            return Json(objList);
+        }
+
+        public JsonResult QList2()
+        {
+            IList<UserType> objList = NSession.CreateQuery("from UserType where DId=15")
                 .List<UserType>();
             return Json(objList);
         }

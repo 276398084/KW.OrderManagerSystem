@@ -7,6 +7,8 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -36,15 +38,44 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
+
+        [HttpPost]
+        public JsonResult CreateByScan(string o, string w2, int w, string m, string t, int s)
+        {
+            try
+            {
+                IList<SKUCodeType> list =
+                    NSession.CreateQuery("from SKUCodeType where Code=:p").SetInt32("p", s).List<SKUCodeType>();
+                if (list.Count > 0)
+                {
+                    if (list[0].IsOut == 1 || list[0].IsSend == 1)
+                    {
+
+                        return Json(new { IsSuccess = false, Result = "该条码已经出库！" });
+                    }
+                    Utilities.StockOut(w, list[0].SKU, 1, t, CurrentUser.Realname, m, o);
+                    NSession.CreateQuery("update SKUCodeType set IsOut=1,IsSend=1,PeiOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='扫描出库' where Code=" + s).ExecuteUpdate();
+                    return Json(new { IsSuccess = true, Result = "扫描完成！产品：" + list[0].SKU + "已经出库，出数量为1!!" });
+                }
+                return Json(new { IsSuccess = false, Result = "条码错误！无法找到这个产品" });
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, Result = "出错了" });
+            }
+
+        }
+
+
 
         /// <summary>
         /// 根据Id获取
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  StockOutType GetById(int Id)
+        public StockOutType GetById(int Id)
         {
             StockOutType obj = NSession.Get<StockOutType>(Id);
             if (obj == null)
@@ -69,7 +100,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(StockOutType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -79,14 +110,14 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
-           
+            return Json(new { IsSuccess = true });
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 StockOutType obj = GetById(id);
@@ -97,7 +128,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
@@ -110,26 +141,19 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                string key = search.Substring(search.IndexOf("$") + 1);
-                where = Utilities.Resolve(key);
-                if (where.Length > 0)
+                string date = search.Substring(0, search.IndexOf("$"));
+                string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1));
+                where = GetSearch(date);
+                if (!string.IsNullOrEmpty(where) && !string.IsNullOrEmpty(key))
+                    where += " and " + key;
+                else
                 {
-                    where = " where " + where;
+                    if (!string.IsNullOrEmpty(key))
+                        where = " where " + key;
                 }
-                string GetDate = search.Substring(0, search.IndexOf("$"));
-                string SearchDate = GetSearch(GetDate);
-                if (!string.IsNullOrEmpty(SearchDate))
-                {
-                    if (string.IsNullOrEmpty(where))
-                    {
-                        where = " where " + SearchDate;
-                    }
-                    else
-                    {
-                        where += " and " + SearchDate;
-                    }
-                }
+
             }
+            Session["ToExcel"] = where + orderby;
             IList<StockOutType> objList = NSession.CreateQuery("from StockOutType" + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -138,6 +162,25 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from StockOutType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+       public JsonResult ToExcel()
+        {
+            try
+            {
+                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
+                con.Open();
+                SqlDataAdapter da = new SqlDataAdapter("select * from StockOut " + Session["ToExcel"].ToString(), con);
+                DataSet ds = new DataSet();
+                da.Fill(ds, "content");
+                con.Close();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            }
+            catch (Exception ee)
+            {
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+        }
+
         public static string GetSearch(string search)
         {
             string where = "";
@@ -151,8 +194,9 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     if (where != "")
                         where += " and ";
-                    where += "CreateOn <\'" + Convert.ToDateTime(enddate).AddDays(1) + "\'";
+                    where += "CreateOn <=\'" + Convert.ToDateTime(enddate) + "\'";
                 }
+                where = " where " + where;
             }
             return where;
         }

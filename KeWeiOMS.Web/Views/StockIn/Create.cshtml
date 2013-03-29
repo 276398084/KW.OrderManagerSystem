@@ -1,5 +1,4 @@
 ﻿@model KeWeiOMS.Domain.StockInType
-
 @{
     Layout = null;
 }
@@ -22,7 +21,7 @@
             ]]
         });
         $('#c_WId').combogrid("setValue", 1);
-        
+
         $('#c_SKU').combogrid({
             required: true,
             panelWidth: 410,
@@ -37,16 +36,15 @@
                 { field: 'ProductName', title: 'Title', width: 200 },
                 { field: 'Standard', title: '规格', width: 100 }
             ]]
-
         })
 
         $('#c_InType').combobox({
-            url: '@Url.Action("GetIntType","Dictionary")',
-                    valueField: 'FullName',
-                    textField: 'FullName',
-                    panelHeight: 'auto',
-                    editable: true,
-                    required: true
+            url: '@Url.Action("GetIntType", "Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true,
+            required: true
         });
         $('#c_InType').combobox("setValue", "采购到货");
         $('#c_Price').numberbox({
@@ -62,11 +60,11 @@
                 Qtynozero();
             }
         });
-       
+
     });
     function nozero() {
         var num = $('#c_Price').attr("value");
-        if (num!="" & num <= 0) {
+        if (num != "" & num <= 0) {
             alert("金额输入有误");
             $('#c_Price').numberbox("setValue", "");
         }
@@ -84,9 +82,9 @@
 
 @using (Html.BeginForm("Create", "StockIn", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
-@*	<tr>
+    <fieldset>
+        <table class="editForm">
+            @*	<tr>
 		<td>
             @Html.LabelFor(model => model.Id,"主键:")
 		</td>
@@ -95,54 +93,54 @@
 		</td>
 	</tr>*@
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.WId,"入库仓库:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WId,new{@id="c_WId"})
-		</td>
-        <td style="display:none">
-            @Html.TextBoxFor(model => model.WName,new{@id="c_WName"})
-        </td>
-	</tr>
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.InType,"入库类型:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.InType,new{@id="c_InType"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WId, "入库仓库:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
+                </td>
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.WName, new { @id = "c_WName" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.InType, "入库类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.InType, new { @id = "c_InType" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SKU,"商品:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "商品:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Qty,"数量:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Qty, new { @id = "c_Qty" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Price,"金额:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Price,new{@id="c_Price"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Price, "金额:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Price, new { @id = "c_Price" })
+                </td>
+            </tr>
 
-@*	<tr>
+            @*	<tr>
 		<td>
             @Html.LabelFor(model => model.SourceQty,"原有库存:")
 		</td>
@@ -152,16 +150,16 @@
 	</tr>*@
 
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Memo,"备忘:")
-		</td>
-		<td>
-            @Html.TextAreaFor(model => model.Memo,new{@id="c_Memo",style="resize:none"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Memo, "备忘:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "c_Memo", style = "resize:none" })
+                </td>
+            </tr>
 
 
-</table>
-</fieldset>
+        </table>
+    </fieldset>
 }

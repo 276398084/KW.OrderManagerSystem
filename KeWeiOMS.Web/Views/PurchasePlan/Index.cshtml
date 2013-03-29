@@ -19,6 +19,10 @@
                              return '';
                          }
                      },
+                     {
+                         field: 'SendOn', width: 100, formatter: function (v, r, i) {
+                            return '<a href="javascript:void(0);" onclick="trouble('+r.Id+')">有问题</a>';             
+                     }},
                     { field: 'PlanNo', title: '计划编号', width: 100, sortable: true },
                     {
                         field: 'PicUrl', title: '图片', width: 200, sortable: true,
@@ -42,7 +46,7 @@
                     {
                         field: 'CreateOn', title: '时间', width: 100, sortable: true,
                         formatter: function (v, r, i) {
-                            return '创建时间:' + getDate(v) + "<br>" + '采购时间:' + getDate(r.BuyOn) + "<br>" + '发货时间:' + getDate(r.SendOn) + "<br>" + '收到时间:' + getDate(r.ReceiveOn) + "<br>";
+                            return '创建时间:' + datecheck(v) + "<br>" + '采购时间:' + datecheck(r.BuyOn) + "<br>" + '发货时间:' + datecheck(r.SendOn) + "<br>" + '收到时间:' + datecheck(r.ReceiveOn) + "<br>";
                         }
                     }
 
@@ -59,24 +63,47 @@
                 editable: false,
                 data: [{ id: "所有", text: "所有" }, { id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分收到", text: "部分收到" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
             });
-            $('#SearchStatus').combobox("setValue","所有");
+            $('#SearchStatus').combobox("setValue", "所有");
         });
 
         function shooDao(id) {
             var url_str = '@Url.Action("Create", "PlanDao")/' + id;
             showdlg(url_str, 'c_dlg', ajaxAddDao);
         }
+        function trouble(id) {
+            $.getJSON('@Url.Action("GetTroubleing","PurchaseTrouble")/' + id, function (json) {
+                if (json != "否") {
+                    alert("该条记录已经在问题列表中了！")
+                }
+                else {
+                    var url_str = '@Url.Action("Create", "PurchaseTrouble")/' + id;
+                                showdlg(url_str, 't_dlg', ajaxTrouble);
+                }
+
+            })
+            
+        }
+        function ajaxTrouble() {
+                formPost('t_form','@Url.Action("Create", "PurchaseTrouble")','t_dlg','dg');
+        }
+@*        function troubleing(id)
+        {
+            $.getJSON('@Url.Action("GetTroubleing","PurchaseTrouble")/' + id, function (json) {
+                return json;
+            })
+        }*@
+
 
         //异步新建提交
         function ajaxAddDao() {
-            $.messager.confirm('确认', '确定到货吗?', function () {
+            $.messager.confirm('确认', '确定到货吗?', function() {
                 $('#c_form').form('submit', {
                     url: '@Url.Action("Create", "PlanDao")',
-                    onSubmit: function () {
+                    onSubmit: function() {
                         return $(this).form('validate');
                     },
-                    success: function (result) {
-                     
+                    success: function(result) {
+
                         if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',
@@ -97,7 +124,7 @@
                         }
                     }
                 });
-            })
+            });
 
         }
 
@@ -159,8 +186,8 @@
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
-                success: function (result) {
-                 
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
                     if (!result.IsSuccess) {
                         $.messager.show({
                             title: '提示',
@@ -188,8 +215,8 @@
                     onSubmit: function () {
                         return $(this).form('validate');
                     },
-                    success: function (result) {
-                     
+                    success: function (msg) {
+                        var result = $.parseJSON(msg);
                         if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',
@@ -222,7 +249,7 @@
                             $.post(url, function () {
                             }).success(function (data) {
                                 var msgstr = "删除成功";
-                              if (!data.IsSuccess){
+                                if (!data.IsSuccess) {
                                     msgstr = "删除失败" + data;
                                     $.messager.show({
                                         title: '提示',
@@ -238,12 +265,10 @@
                                         showType: 'slide'
                                     });
                                 }
-
                                 $('#dg').datagrid('reload');
                             }).error(function () {
                                 $.messager.alert('错误', '删除发生错误');
                             });
-
                         }
                     });
                 }
@@ -267,17 +292,40 @@
                 return (undefined);
             }
             function doSearch() {
-                search=$('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search = $('#StartDate').datebox("getValue") + "&" + $('#EndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 var a = $('#SearchStatus').combobox("getText");
                 if (a != "所有") {
                     search += "Status&" + a + "^";
                 }
                 $("#dg").datagrid("load", {
                     search: search
-
                 });
             }
 
+            function exportPlan(parameters) {
+                search = "st=" + $('#StartDate').datebox("getValue") + "&" + "et=" + $('#EndDate').datebox("getValue");
+                var a = $('#SearchStatus').combobox("getText");
+                if (a != "所有") {
+                    search += "s&" + a + "^";
+                }
+                var postUrl = "/Order/ExportDown/1";
+                jQuery.ajax({
+                    url: "/PurchasePlan/ExportPlan/",
+                    type: "post",
+                    data: search,
+                    success: function (sss) {
+                        location.href = postUrl;
+                    }
+                });
+            }
+
+            function datecheck(value) {
+                var day = new Date("2000-01-02");
+                var date = new Date(getOnlyDate(value));
+                if (date < day)
+                    return "";
+                return getDate(value);
+            }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -287,9 +335,10 @@
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="exportPlan()">导出</a>
             开始时间:<input id="StartDate" />
-            结束时间:<input id="EndDate"/>&nbsp&nbsp
-            状态：<input id="SearchStatus"/>
+            结束时间:<input id="EndDate" />&nbsp&nbsp
+            状态：<input id="SearchStatus" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
@@ -304,6 +353,6 @@
         </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
-
+        <div id="t_dlg"></div>
     </div>
 </body>

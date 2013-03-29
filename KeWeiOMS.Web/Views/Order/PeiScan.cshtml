@@ -27,20 +27,20 @@
 <script type="text/javascript">
     $(function () {
         $('#cc').combobox({
-            url: '/User/QList/' + Pei,
+            url: '/User/QList2/',
             valueField: 'Realname',
             textField: 'Realname',
             required: true,
-            width: 200,
-            panelHeight: 'auto'
+            width: 200
+         
         });
         $('#ee').combobox({
-            url: '/User/QList/' + Pei,
+            url: '/User/QList2/',
             valueField: 'Realname',
             textField: 'Realname',
             required: true,
-            width: 200,
-            panelHeight: 'auto'
+            width: 200
+          
         });
         $('#cc').combobox("setValue", "邵大姐");
         $('#ee').combobox("setValue", "邵大姐");
@@ -126,7 +126,6 @@
     }
 
     function getOrder(str) {
-
         jQuery.ajax({
             url: "/Order/GetOrderByPei/",
             type: "post",
@@ -151,8 +150,6 @@
                 }
             }
         });
-
-
     }
 
     function OutStock(str) {
@@ -286,5 +283,4 @@
             }
         });
     }
-
 </script>

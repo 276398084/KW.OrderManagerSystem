@@ -12,10 +12,8 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
-        $("#txtEndDate").datebox("setValue", getStartDate(-1));
-        $("#txtStartDate").datebox("setValue", getStartDate(7));
+
     });
-<<<<<<< HEAD:KeWeiOMS.Web/Views/OrderAddress/Index.cshtml
 
     //新建
     function c_dlg() {
@@ -184,67 +182,12 @@
         return (undefined);
     }
    
-=======
-
-    function toExcel() {
-        $('#dg').datagrid('loading');
-        var postUrl = "/Order/ExportDown/1";
-        $.ajax({
-            url: '@Url.Action("ToExcel", "EbayMessage")/',
-            success: function (result) {
-
-                $.messager.show({
-                    title: '提示',
-                    msg: result.Msg,
-                    timeout: 0,
-                    showType: 'slide',
-                })
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        })
-    }
-
-    function doSearch() {
-        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        $("#dg").datagrid("load", {
-            search: search
-        });
-    }
-
-    function syn() {
-        $('#dg').datagrid("loading");
-        $.ajax({
-            url: '@Url.Action("Syn", "EbayMessage")',
-             success: function (result) {
-                 if (result.IsSuccess) {
-                     $.messager.show({
-                         title: '提示',
-                         msg: result.Msg,
-                         timeout: 0,
-                         showType: 'slide',
-                     })
-                 }
-                 else {
-                     $.messager.show({
-                         title: '提示',
-                         msg: result.Msg,
-                         timeout: 0,
-                         showType: 'slide'
-                     })
-                 }
-                 $('#dg').datagrid('reload');
-             }
-         })
-     }
->>>>>>> ebay 信息:KeWeiOMS.Web/Views/EbayMessage/Index.cshtml
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
            toolbar="#toolbar"  
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
-<<<<<<< HEAD:KeWeiOMS.Web/Views/OrderAddress/Index.cshtml
         <tr>
             <th field="Id" width="100">
                 主键
@@ -290,73 +233,16 @@
                 国家代码
             </th>
 
-=======
-        <tr>
-
-            <th field="MessageId" width="100">
-                消息Id
-            </th>
-
-            <th field="MessageType" width="100">
-                消息类型
-            </th>
-
-            <th field="QuestionType" width="100">
-                问题类型
-            </th>
-
-            <th field="SenderEmail" width="100">
-                买家邮箱
-            </th>
-
-            <th field="SenderID" width="100">
-                买家账号
-            </th>
-
-            <th field="Subject" width="100">
-                消息主题
-            </th>
-
-            <th field="Body" width="100">
-                消息内容
-            </th>
-
-            <th field="MessageStatus" width="100">
-                消息状态
-            </th>
-
-            <th field="ItemId" width="100">
-                商品编号
-            </th>
-
-            <th field="CreationDate" width="100">
-                问题创建时间
-            </th>
-
-            <th field="CreateOn" width="100">
-                同步时间
-            </th>
-
->>>>>>> ebay 信息:KeWeiOMS.Web/Views/EbayMessage/Index.cshtml
 
     	</tr>
 		</thead>
 		</table>
         <div id="toolbar">
-       <a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="syn();">同步</a>  
-                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
-                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
-		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-          <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a> 
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
         </div> 
-        		<div id="mm" style="width: 120px">
-            <div data-options="name:'SenderEmail'">买家邮箱</div>
-            <div data-options="name:'SenderID'">买家账号</div>
-            <div data-options="name:'Body'">消息主题</div>
-            <div data-options="name:'SenderID'">消息内容</div>
-            <div data-options="name:'ItemId'">商品编号</div>
-
-        </div>
+        
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
 

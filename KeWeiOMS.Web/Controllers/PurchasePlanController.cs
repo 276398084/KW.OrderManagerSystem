@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -15,6 +18,22 @@ namespace KeWeiOMS.Web.Controllers
         public ViewResult Index()
         {
             return View();
+        }
+
+        public ActionResult CreateByW(string Id)
+        {
+            ViewData["No"] = Utilities.GetPlanNo();
+            IList<PurchasePlanType> obj =
+                  NSession.CreateQuery("from PurchasePlanType where SKU=:sku order by Id desc").SetString("sku", Id)
+                      .SetFirstResult(0)
+                      .SetMaxResults(1).List<PurchasePlanType>();
+            if (obj.Count > 0)
+            {
+                return View(obj[0]);
+            }
+            PurchasePlanType p = new PurchasePlanType();
+            p.SKU = Id;
+            return View(p);
         }
 
         public ActionResult Create()
@@ -47,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -90,7 +109,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -108,7 +127,34 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
+        }
+
+        public JsonResult ExportPlan(string st, string et, string s)
+        {
+            string sql = @"select * from  PurchasePlan";
+
+            if (!string.IsNullOrEmpty(s))
+            {
+                sql += " where Status='" + s + "' and CreateOn  between '" + st + "' and '" + et + "'";
+            }
+            else
+            {
+                sql += " where CreateOn  between '" + st + "' and '" + et + "'";
+            }
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql + " order by CreateOn asc";
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+
+            DataTable dt = ds.Tables[0];
+
+            List<string> list = new List<string>();
+            string str = "";
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
@@ -121,26 +167,27 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                string key = search.Substring(search.IndexOf("$") + 1); 
+                string key = search.Substring(search.IndexOf("$") + 1);
                 where = Utilities.Resolve(key);
-                 if (where.Length > 0)
+                if (where.Length > 0)
                 {
                     where = " where " + where;
                 }
-                 string GetDate=  search.Substring(0,search.IndexOf("$"));
-                 string SearchDate = GetSearch(GetDate);
-                 if (!string.IsNullOrEmpty(SearchDate))
-                 {
-                     if (string.IsNullOrEmpty(where))
-                     {
-                         where =" where "+ SearchDate;
-                     }
-                     else {
-                         where += " and " + SearchDate; 
-                     }
-                 }
+                string GetDate = search.Substring(0, search.IndexOf("$"));
+                string SearchDate = GetSearch(GetDate);
+                if (!string.IsNullOrEmpty(SearchDate))
+                {
+                    if (string.IsNullOrEmpty(where))
+                    {
+                        where = " where " + SearchDate;
+                    }
+                    else
+                    {
+                        where += " and " + SearchDate;
+                    }
+                }
             }
-            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType "+ where + orderby)
+            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<PurchasePlanType>();
@@ -165,16 +212,16 @@ namespace KeWeiOMS.Web.Controllers
         {
             string where = "";
             string startdate = search.Substring(0, search.IndexOf("&"));
-            string enddate = search.Substring(search.IndexOf("&")+1);
-            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate) )
+            string enddate = search.Substring(search.IndexOf("&") + 1);
+            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
             {
                 if (!string.IsNullOrEmpty(startdate))
-                    where += "BuyOn >=\'" + Convert.ToDateTime(startdate)+ "\'";
+                    where += "BuyOn >=\'" + Convert.ToDateTime(startdate) + "\'";
                 if (!string.IsNullOrEmpty(enddate))
                 {
                     if (where != "")
                         where += " and ";
-                    where += "BuyOn <\'" + Convert.ToDateTime(enddate).AddDays(1)+ "\'";
+                    where += "BuyOn <\'" + Convert.ToDateTime(enddate).AddDays(1) + "\'";
                 }
             }
             return where;

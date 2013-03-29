@@ -31,6 +31,11 @@ namespace KeWeiOMS.Domain
         public virtual int Id { get; set; }
 
         /// <summary>
+        /// 审核
+        /// </summary>
+        public virtual int IsAudit { get; set; }
+
+        /// <summary>
         /// 采购计划编号
         /// </summary>
         public virtual String PlanNo { get; set; }

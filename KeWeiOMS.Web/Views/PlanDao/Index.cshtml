@@ -11,6 +11,10 @@
                 pageSize: 20,
                 pageList: [20, 40, 60, 80, 100]
             });
+            $('#StartDate').datebox();
+            $('#EndDate').datebox();
+            $('#StartDate').datebox("setValue", getStartDate(1));
+            $('#EndDate').datebox("setValue", getStartDate(-1));
 
         });
 
@@ -42,11 +46,9 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "PlanDao")/' + id;
                 alert(1);
                 delData(url, 'dg');
-
             }
         }
 
@@ -76,7 +78,7 @@
 
 
         function printSKU(id) {
-            alert('');
+
             jQuery.ajax({
                 url: "/PlanDao/PrintSKU/" + id,
                 type: "post",
@@ -84,11 +86,50 @@
                     window.open('/Home/PrintDetail/33');
                 }
             });
-           
         }
 
-        function showPrint(v) {
-            return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a>';
+        function AuditDao(id) {
+
+            $.messager.confirm("提示", "确定要审核吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/PlanDao/AuditDao/" + id,
+                        type: "post",
+                        success: function (msg) {
+
+
+                            if (msg.IsSuccess) {
+                                alert("审核成功!");
+                            } else {
+                                alert(msg.ErrorMsg);
+                            }
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+
+        }
+
+        function showPrint(v, r) {
+            if (r.IsAudit == 1)
+                return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a>';
+            else {
+                return '<a href="javascript:void(0)" onclick="AuditDao(' + v + ')">审核</a>';
+            }
+        }
+        function exportPlan(parameters) {
+            search = "st=" + $('#StartDate').datebox("getValue") + "&" + "et=" + $('#EndDate').datebox("getValue");
+
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/PlanDao/ExportDao/",
+                type: "post",
+                data: search,
+                success: function (sss) {
+                    location.href = postUrl;
+                }
+            });
         }
 
     </script>
@@ -142,8 +183,10 @@
             </thead>
         </table>
         <div id="toolbar">
-            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="exportPlan()">导出</a>
+            开始:<input id="StartDate" />
+            结束:<input id="EndDate" />&nbsp&nbsp
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>PS:无法导出未审核的订单
         </div>
         <div id="mm" style="width: 120px">
 

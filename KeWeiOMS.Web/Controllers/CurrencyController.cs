@@ -164,7 +164,6 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(new { total = objList.Count, rows = objList });
         }
-
     }
 }
 

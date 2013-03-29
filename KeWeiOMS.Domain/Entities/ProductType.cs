@@ -190,19 +190,21 @@ namespace KeWeiOMS.Domain
         public virtual String Manager { get; set; }
 
         /// <summary>
-        /// 产品管理人
+        /// 7
         /// </summary>
-        public virtual double SevenDay { get; set; }
+        public virtual int SevenDay { get; set; }
 
         /// <summary>
-        /// 产品管理人
+        /// 30
         /// </summary>
-        public virtual double ThirtyDay { get; set; }
+        public virtual int ThirtyDay { get; set; }
 
         /// <summary>
-        /// 产品管理人
+        ///15
         /// </summary>
-        public virtual double SixtyDay { get; set; }
+        public virtual int Fifteen { get; set; }
+
+
 
         /// <summary>
         /// 是否组合产品

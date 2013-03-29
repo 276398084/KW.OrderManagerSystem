@@ -1,20 +1,19 @@
 ﻿@model KeWeiOMS.Domain.StockOutType
-
 @{
-    Layout = null;
+                //Layout = null;
 }
 
 <script type="text/javascript">
 
     $(function () {
-        $('#c_OrderNo').validatebox({required:true});
+        // $('#c_OrderNo').validatebox({required:true});
         $('#c_WId').combogrid({
             required: true,
             panelWidth: 410,
             mode: 'remote',
             idField: 'Id',
             textField: 'WName',
-            required: true,
+
             url: '/Warehouse/QList',
             fit: true,
             columns: [[
@@ -22,154 +21,144 @@
                 { field: 'WCode', title: '仓库代码', width: 100 },
                 { field: 'WName', title: '仓库名称', width: 100 },
                 { field: 'Address', title: '仓位地址', width: 100 }
-
             ]]
-
-        })
+        });
         $('#c_WId').combogrid("setValue", 1);
         $('#c_OutType').combobox({
-            url: '@Url.Action("GetOutType","Dictionary")',
-                    valueField: 'FullName',
-                    textField: 'FullName',
-                    panelHeight: 'auto',
-                    editable: true,
-                    required: true
-                });
-        $('#c_OutType').combobox("setValue", "扫描出库");
+            url: '@Url.Action("GetOutType", "Dictionary")',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            editable: true
 
-        $('#c_SKU').combogrid({
-            required: true,
-            panelWidth: 410,
-            mode: 'remote',
-            idField: 'SKU',
-            textField: 'SKU',
-            required: true,
-            url: '/Product/ListQ',
-            fit: true,
-            columns: [[
-                { field: 'SKU', title: 'SKU', width: 100 },
-                { field: 'ProductName', title: 'Title', width: 200 },
-                { field: 'Standard', title: '规格', width: 100 }
-
-            ]]
-
-        })
-        $('#c_Qty').numberbox({
-            required: true,
-            onChange: function (){
-                Qtynozero();
-            }
         });
+        $('#c_OutType').combobox("setValue", "扫描出库");
     });
-    
-    function Qtynozero() {
-        var num = $('#c_Qty').attr("value");
-        if (num != "" & num <= 0) {
-            alert("数量输入有误");
-            $('#c_Qty').numberbox("setValue", "");
-        }
-    }
+
 </script>
 
 @using (Html.BeginForm("Create", "StockOut", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
-@*	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>
-    *@
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.OrderNo,"订单编号:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
-		</td>
-	</tr>
-
-    	<tr>
-		<td>
-            @Html.LabelFor(model => model.WId,"仓库:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WId,new{@id="c_WId"})
-		</td>
-        <td style="display:none">
-            @Html.TextBoxFor(model => model.WName,new{@id="c_WName"})
-        </td>
-	</tr>
-    	<tr>
-		<td>
-            @Html.LabelFor(model => model.OutType,"出库类型:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OutType,new{@id="c_OutType"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SKU,"SKU:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Qty,"数量:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
-		</td>
-	</tr>
-    	<tr>
-		<td>
-            @Html.LabelFor(model => model.Memo,"备忘:")
-		</td>
-		<td>
-            @Html.TextAreaFor(model => model.Memo,new{@id="c_Memo"})
-		</td>
-	</tr>
-@*	
-    <tr>
-		<td>
-            @Html.LabelFor(model => model.SourceQty,"原有库存:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SourceQty,new{@id="c_SourceQty"})
-		</td>
-	</tr>
-
-
-    <tr>
-		<td>
-            @Html.LabelFor(model => model.CreateBy,"出库人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateOn,"出库时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
-		</td>
-	</tr>
-    *@
-
-
-</table>
-</fieldset>
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.OrderNo, "订单编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OrderNo, new { @id = "c_OrderNo" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.WId, "仓库:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.OutType, "出库类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OutType, new { @id = "c_OutType" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Memo, "备忘:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "c_Memo" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "SKU:")
+                </td>
+                <td colspan="3">
+                    <input id="c_SKU" name="SKU" onkeydown="return txt_keydown(event);" style="font-size: 50px; background-image: none; width: 511px" />
+                </td>
+            </tr>
+            <tr>
+                <td width="" colspan="4">
+                    <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描</span></font>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <span id="spanInfo"></span>
+                </td>
+            </tr>
+            <tr>
+        </table>
+    </fieldset>
 }
+<script>
+    var txt = document.getElementById("c_SKU");
+    var spanStatus = document.getElementById("spanStatus");
+    var spanInfo = document.getElementById("spanInfo");
+    var progress = 0;
+    var oldstr = "";
+    function txt_keydown(e) {
+        var keynum;
+        if (window.event) //IE
+        {
+            keynum = e.keyCode;
+        }
+        else if (e.which) //Netscape/Firefox/Opera
+        {
+            keynum = e.which;
+        }
+        if (keynum == 13) {
+
+            if (txt.value == "") { Reset(); }
+            getOrder(txt.value);
+            txt.value = "";
+            return false;
+        }
+        return true;
+    }
+
+    function getOrder(str) {
+        var o = $("#c_OrderNo").val();
+        var w = $('#c_WId').combogrid("getValue");
+        var w2 = $('#c_WId').combogrid("getText");
+        var t = $("#c_OutType").combobox("getValue");
+        var m = $("#c_Memo").val();
+        jQuery.ajax({
+            url: "/StockOut/CreateByScan/",
+            type: "post",
+            data: "o=" + o + "&s=" + str + "&w=" + w + "&w2=" + w2 + "&t=" + t + "&m=" + m,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    ShowMessage(msg.Result, "扫描成功！", true);
+                } else {
+                    progress = 0;
+                    ShowMessage(msg.Result, "扫描错误！", false);
+                }
+            }
+        });
+    }
+
+
+    //重置
+    function Reset() {
+
+        progress = 0;
+        txt.value = "";
+    }
+
+    function ShowMessage(msgInfo, msgStatus, isOk) {
+        if (msgInfo != null) {
+            spanInfo.innerHTML = msgInfo;
+        }
+        if (msgStatus != null) {
+            spanStatus.innerHTML = msgStatus;
+        }
+        if (isOk) {
+            spanInfo.style.color = "Blue";
+        }
+        else {
+            spanInfo.style.color = "Red";
+        }
+    }
+
+</script>

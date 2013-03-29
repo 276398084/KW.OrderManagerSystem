@@ -11,6 +11,7 @@
     <AssemblyName>KeWeiOMS.Domain</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -57,10 +58,12 @@
     <Compile Include="Entities\DictionaryClassType.cs" />
     <Compile Include="Entities\DictionaryType.cs" />
     <Compile Include="Entities\DisputeType.cs" />
+    <Compile Include="Entities\EbayMessageType.cs" />
     <Compile Include="Entities\EbayType.cs" />
     <Compile Include="Entities\EmailReturnType.cs" />
     <Compile Include="Entities\EmailTemplateType.cs" />
     <Compile Include="Entities\EmailType.cs" />
+    <Compile Include="Entities\GMarketType.cs" />
     <Compile Include="Entities\LogisticsAreaCountryType.cs" />
     <Compile Include="Entities\LogisticsAreaType.cs" />
     <Compile Include="Entities\LogisticsFreightType.cs" />
@@ -90,6 +93,7 @@
     <Compile Include="Entities\ProductType.cs" />
     <Compile Include="Entities\ProjectType.cs" />
     <Compile Include="Entities\PurchasePlanType.cs" />
+    <Compile Include="Entities\PurchaseTroubleType.cs" />
     <Compile Include="Entities\ReturnAddresType.cs" />
     <Compile Include="Entities\RoleType.cs" />
     <Compile Include="Entities\SerialNumberType.cs" />
@@ -112,10 +116,12 @@
     <Compile Include="Mappings\DictionaryClasTypeMap.cs" />
     <Compile Include="Mappings\DictionaryTypeMap.cs" />
     <Compile Include="Mappings\DisputeTypeMap.cs" />
+    <Compile Include="Mappings\EbayMessageTypeMap.cs" />
     <Compile Include="Mappings\EbayTypeMap.cs" />
     <Compile Include="Mappings\EmailReturnTypeMap.cs" />
     <Compile Include="Mappings\EmailTemplateTypeMap.cs" />
     <Compile Include="Mappings\EmailTypeMap.cs" />
+    <Compile Include="Mappings\GMarketTypeMap.cs" />
     <Compile Include="Mappings\LogisticsAreaCountryTypeMap.cs" />
     <Compile Include="Mappings\LogisticsAreaTypeMap.cs" />
     <Compile Include="Mappings\LogisticsFreightTypeMap.cs" />
@@ -145,6 +151,7 @@
     <Compile Include="Mappings\ProductTypeMap.cs" />
     <Compile Include="Mappings\ProjectTypeMap.cs" />
     <Compile Include="Mappings\PurchasePlanTypeMap.cs" />
+    <Compile Include="Mappings\PurchaseTroubleTypeMap.cs" />
     <Compile Include="Mappings\ReturnAddresTypeMap.cs" />
     <Compile Include="Mappings\RoleTypeMap.cs" />
     <Compile Include="Mappings\SerialNumberTypeMap.cs" />

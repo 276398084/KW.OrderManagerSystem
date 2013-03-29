@@ -1,0 +1,176 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.PurchaseTroubleType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","PurchaseTrouble")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+        $("#txtEndDate").datebox("setValue",getStartDate(-1));
+        $("#txtStartDate").datebox("setValue", getStartDate(7));
+
+    });
+
+        //编辑框
+        function e_dlg(id) {
+            var url = '@Url.Action("Edit","PurchaseTrouble")/' + id;
+            if (id != undefined) {
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "PurchaseTrouble")', 'e_dlg', 'dg');
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+     function doSearch() {
+         search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$"+ $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+      }
+     function deal(v, r, i) {
+         if (r.Status!="已解决")
+             return '<a href="javascript:void(0);" onclick="e_dlg(' + v + ')">处理</a>';
+         return "";
+     }
+     function datecheck(value) {
+         var day = new Date("2000-01-02");
+         var date =new Date(getOnlyDate(value));
+         if (date < day)
+             return "";
+         return getOnlyDate(value);
+     }
+     function toExcel() {
+         $('#dg').datagrid('loading');
+         var postUrl = "/Order/ExportDown/1";
+         $.ajax({
+             url: '@Url.Action("ToExcel", "PurchaseTrouble")/',
+            success: function (result) {
+                
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        })
+     }
+    function sku(v,r,i) {
+        return "SKU:" + v + "<br>数量：" + r.Qty + "<br>单价：" + r.Price + "<br>运费：" + r.Freight;
+    }
+    function supplier(v,r,i) {
+        return "供应商：" + v + "<br>物流方式：" + r.LogisticsMode + "<br>快递单：" + r.LogisticsCode;
+    }
+    function buyon(v, r, i) {
+        return "购买：<br>" + datecheck(v) + "<br>到货：<br>"+datecheck(r.ReceiveOn);
+    }
+    function createby(v, r, i) {
+        return "创建人：<br>" + v + "<br>时间：<br>" + datecheck(r.CreateOn);
+    }
+    function dealby(v, r, i) {
+        return "处理人：<br>" + v + "<br>时间：<br>" + datecheck(r.DealOn);
+    }
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="100" formatter="deal">
+                操作
+            </th>
+            <th field="Status" width="100" sortable="true">
+                问题状态
+            </th>
+
+            <th field="PurchaseCode" width="100" sortable="true">
+                采购计划编号
+            </th>
+
+            <th field="SKU" width="100" sortable="true" formatter="sku">
+                商品信息
+            </th>
+
+            <th field="Supplier" width="100" sortable="true" formatter="supplier">
+                供应商
+            </th>
+            <th field="BuyOn" width="100" formatter="buyon" sortable="true">
+               时间信息
+            </th>
+
+            <th field="TroubleType" width="100" sortable="true">
+                问题类型
+            </th>
+
+            <th field="TroubleDetail" width="100" sortable="true">
+                问题描述
+            </th>
+
+            <th field="CreateBy" width="100" sortable="true" formatter="createby">
+                创建信息
+            </th>
+
+            <th field="DealBy" width="100" sortable="true" formatter="dealby">
+                处理
+            </th>
+
+            <th field="SolutionType" width="100" sortable="true">
+                解决方式
+            </th>
+
+            <th field="SolutionDetail" width="100" sortable="true">
+                解决描述
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar"> 
+                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+        </div> 
+		<div id="mm" style="width: 120px">
+            <div data-options="name:'PurchaseCode'">采购计划编号</div>
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'LogisticsCode'">快递单</div>
+            <div data-options="name:'TroubleDetail'">问题描述</div>
+            <div data-options="name:'SolutionDetail'">解决描述</div>
+
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

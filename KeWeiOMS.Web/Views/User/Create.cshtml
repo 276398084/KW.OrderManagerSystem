@@ -30,13 +30,17 @@
             url: '/Organize/RootList',
             valueField: 'Id',
             textField: 'FullName',
-            required: true,
-            onChange: showBuMen
+            required: true
+           
         });
         $('#c_DId').combotree();
         $('#c_RoleId').combobox("setValue", "销售职员");
-        $('#c_CId').combobox("setValue", "运营部");
-        $('#c_DId').combotree("setValue", "销售部");
+        $('#c_CId').combobox("setValue", "飞度贸易商行");
+        $('#c_DId').combotree({
+            url: '/Organize/BuMenList/1',
+            required: true,
+            width:200
+        });
     });
 
     function showBuMen(id) {

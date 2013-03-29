@@ -113,9 +113,9 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                where = GetSearch(search);
-                Session["ToExcel"] = where + orderby;
-            }
+                where = GetSearch(search);    
+            } 
+            Session["ToExcel"] = where + orderby;
             IList<AttendType> objList = NSession.CreateQuery("from AttendType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -293,7 +293,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         //IList转DataSet
-        public static DataSet ConvertToDataSet<AttendType>(IList<AttendType> list)
+        public static DataSet ConvertToDataSet<T>(IList<T> list)
         {
             if (list == null || list.Count <= 0)
             {
@@ -301,13 +301,13 @@ namespace KeWeiOMS.Web.Controllers
             }
 
             DataSet ds = new DataSet();
-            DataTable dt = new DataTable(typeof(AttendType).Name);
+            DataTable dt = new DataTable(typeof(T).Name);
             DataColumn column;
             DataRow row;
 
-            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(AttendType).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 
-            foreach (AttendType t in list)
+            foreach (T t in list)
             {
                 if (t == null)
                 {
