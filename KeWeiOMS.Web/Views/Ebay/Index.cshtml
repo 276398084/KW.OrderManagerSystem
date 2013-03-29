@@ -15,59 +15,7 @@
 
     });
 
-
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","Ebay")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
-        }
-
-        //编辑框
-        function e_dlg() {
-            var url = '@Url.Action("Edit","Ebay")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
-            }
-        }
-
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "Ebay")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "Ebay")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-
-                var url = '@Url.Action("Delete", "Ebay")/' + id;
                 alert(1);
-                delData(url, 'dg');
-
-            }
-        }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
-            }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
      function doSearch() {
                 search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 $("#dg").datagrid("load", {

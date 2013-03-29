@@ -127,6 +127,7 @@
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
     <Compile Include="Common\EbayHelper.cs" />
+    <Compile Include="Common\EbayMessageUtil.cs" />
     <Compile Include="Common\EBayUtil.cs" />
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\ExcelHelper.cs" />

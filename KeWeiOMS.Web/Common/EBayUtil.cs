@@ -58,68 +58,6 @@ namespace KeWeiOMS.Web
         }
 
 
-      
-
-//        public static void SetShip()
-//        {
-//            DataTable dt = db.RunTable<OrderInfo>(@"select b.id,OrderExNo,b.TrackCode ,a.UserNameForm from SP_Orders a 
-// left join SP_Package b on a.Id=b.OrderNo
-//  where b.[Enabled]=0 and b.TrackCode is not null and b.TrackCode <>'LK'");
-//            Dictionary<string, int> sendNum = new Dictionary<string, int>();
-//            ApiContext context = GetGenericApiContext("US");
-
-//            foreach (DataRow dr in dt.Rows)
-//            {
-//                try
-//                {
-//                    SaleAccount sa = SaleAccount.find("UserName='" + dr["UserNameForm"] + "'").list(1)[0];
-//                    if (sendNum.ContainsKey(dr["UserNameForm"].ToString()))
-//                    {
-//                        sendNum[dr["UserNameForm"].ToString()]++;
-//                    }
-//                    else
-//                    {
-//                        sendNum.Add(dr["UserNameForm"].ToString(), 1);
-//                    }
-//                    context.ApiCredential.eBayToken = sa.ApiToken; ;
-//                    eBay.Service.Call.CompleteSaleCall call = null;
-
-//                    call = new eBay.Service.Call.CompleteSaleCall(context);
-
-//                    string orderid = dr["OrderExNo"].ToString();
-
-//                    if (orderid.IndexOf("-") == -1) continue;
-//                    call.Shipment = new ShipmentType();
-//                    call.Shipment.DeliveryStatus = eBay.Service.Core.Soap.ShipmentDeliveryStatusCodeType.Delivered;
-//                    call.Shipment.ShipmentTrackingDetails = new ShipmentTrackingDetailsTypeCollection();
-//                    call.Shipment.ShipmentTrackingNumber = dr["TrackCode"].ToString();
-//                    call.Shipment.ShippingCarrierUsed = "China post air mail";
-
-//                    call.Shipment.DeliveryDate = DateTime.Now;
-//                    call.Shipment.DeliveryDateSpecified = true;
-//                    call.Shipment.DeliveryStatus = ShipmentDeliveryStatusCodeType.Delivered;
-//                    if (!(dr["Id"] is DBNull))
-//                    {
-//                        PackageInfo.updateBatch("[Enabled]=1", "Id=" + dr["Id"]);
-//                        call.CompleteSale(orderid.Substring(0, orderid.IndexOf("-")), orderid.Substring(orderid.IndexOf("-") + 1), true, true);
-//                    }
-//                }
-//                catch (Exception)
-//                {
-
-//                    throw;
-//                }
-//            }
-//            string str = "本次跟踪号上传信息如下：";
-//            foreach (string item in sendNum.Keys)
-//            {
-//                str += "账户：" + item + "    数量：" + sendNum[item] + ".";
-//            }
-//            str += "                  时间:" + DateTime.Now.ToShortDateString();
-//            // SMSUtil.SendSmsAPI("15957489764,15968967876,15958200472", str);
-//        }
-
-
         public void GetOrderByFile()
         {
         }
