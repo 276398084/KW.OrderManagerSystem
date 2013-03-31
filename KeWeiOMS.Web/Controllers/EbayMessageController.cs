@@ -173,6 +173,16 @@ namespace KeWeiOMS.Web.Controllers
             return where;
         }
 
+        public JsonResult IsRead(int id) 
+        {
+            EbayMessageType obj =GetById(id);
+            if (obj.MessageStatus != "Unanswered")
+            { 
+                return Json(new { Msg =1}, JsonRequestBehavior.AllowGet);
+            }
+                 return Json(new { Msg =0}, JsonRequestBehavior.AllowGet);
+        }
+
 
         public JsonResult Syn()
         {
@@ -186,6 +196,8 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
+
+
 
 
     }

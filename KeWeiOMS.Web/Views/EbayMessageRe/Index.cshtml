@@ -12,7 +12,8 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
-
+        $("#txtEndDate").datebox("setValue", getStartDate(-1));
+        $("#txtStartDate").datebox("setValue", getStartDate(7));
     });
 
 
@@ -98,6 +99,9 @@
          return "回复时间：<br>" + getDate(v) + "<br>回复人：<br>" + r.ReplayBy;
      }
 
+     function upload() {
+         alert("upload");
+     }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -126,6 +130,7 @@
 		</thead>
 		</table>
         <div id="toolbar">
+                   <a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="upload();">上传邮件</a>  
                 开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
                 结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>

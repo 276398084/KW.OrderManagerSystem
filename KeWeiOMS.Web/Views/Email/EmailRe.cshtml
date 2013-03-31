@@ -44,18 +44,6 @@
 
 </script>
 <body class="easyui-layout">
-    <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
-        <table id="dg" class="easyui-datagrid" style="width: 410px; height: 520px"
-            data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
-            <thead>
-                <tr>
-                    <th data-options="field:'Id'" style="display: none"></th>
-                    <th data-options="field:'Title',width:150">情况名称</th>
-                    <th data-options="field:'Content',width:280">回复内容</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
     <div data-options="region:'center',title:'邮件内容'" style="height: 200px;">
         <div class="easyui-layout" style="width: 100%; height: 520px;">
             <div data-options="region:'north',border:false" style="height: 180px;">
@@ -64,7 +52,7 @@
                         <td>&nbsp;&nbsp;<label>邮件标题:</label>
                         </td>
                         <td>
-                            <textbox id="ESubject" style="width: 700px; font-size: larger">@ViewData["sub"]</textbox>
+                            <textbox id="ESubject" style="width: 1200px; font-size: larger">@ViewData["sub"]</textbox>
                         </td>
                     </tr>
 
@@ -72,7 +60,7 @@
                         <td>&nbsp;&nbsp;<label>邮件内容:</label>
                         </td>
                         <td>
-                            <textarea id="EContent" style="width: 700px; height: 120px; resize: none;" readonly="readOnly">@ViewData["con"]</textarea>
+                            <textarea id="EContent" style="width: 1200px; height: 80px; resize: none;" readonly="readOnly">@ViewData["con"]</textarea>
                         </td>
                     </tr>
                 </table>
@@ -122,6 +110,18 @@
                     </fieldset>
                 }
             </div>
+                <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
+        <table id="dg" class="easyui-datagrid" style="width: 410px; height: 300px"
+            data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
+            <thead>
+                <tr>
+                    <th data-options="field:'Id'" style="display: none"></th>
+                    <th data-options="field:'Title',width:150">情况名称</th>
+                    <th data-options="field:'Content',width:280">回复内容</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
         </div>
     </div>
 </body>

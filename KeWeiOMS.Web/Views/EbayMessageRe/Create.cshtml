@@ -1,85 +1,122 @@
 ﻿@model KeWeiOMS.Domain.EbayMessageReType
-
 @{
-    Layout = null;
+    //Layout = null;
 }
-
 <script type="text/javascript">
 
     $(function () {
-
-		
-        $('#c_ReplayOn').datebox();
-
-        $('#c_ReplayBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
-
+        $('#c_MessageId').attr("value", '@ViewData["mid"]');
+        $('#c_SubjectRe').validatebox({ required: true });
+        $('#c_BodyRe').validatebox({ required: true });
     });
-    
+    function send() {
+        if ($('#c_SubjectRe').attr("value") == "" || $('#c_BodyRe').attr("value") == "")
+        {
+            alert("回复顶不能为空！");
+        }
+    else
+        {
+            $('#c_form').form('submit', {
+                url: '@Url.Action("Create", "EbayMessageRe")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
+                    if (result.IsSuccess) {
+                            $.ajax({
+                                url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
+                                success: function (result) {
+                                    if (result)
+                                    {
+                                        if (result.Msg != '0') {
+                                            $.messager.show({
+                                                title: '提示',
+                                                msg: '已进入下一封未读！',
+                                                timeout:2000,
+                                                showType: 'slide'
+                                            })
+                                            window.location="/EbayMessageRe/Create/"+result.Msg;
+                                        }
+                                        else {
+                                            alert("已经到最后一封未读，点击“确定”关闭！");
+                                            window.close();
+                                        }
+                                    }
+
+                                }
+                            })
+                    } else {
+                        alert("保存失败!");
+                    }
+                }
+            });
+
+    }
+    }
 </script>
 
-@using (Html.BeginForm("Create", "EbayMessageRe", FormMethod.Post, new { id = "c_form" }))
-{
-<fieldset>
-<table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>
+<body class="easyui-layout">
+    <div data-options="region:'center',title:'邮件内容'" style="height: 200px;">
+        <div class="easyui-layout" style="width: 100%; height: 520px;">
+            <div data-options="region:'north',border:false" style="height: 200px;">
+                <table class="editForm" id="etable">
+                    <tr>
+                        <td>&nbsp;&nbsp;<label>邮件标题:</label>
+                        </td>
+                        <td colspan="10">
+                            <textbox id="ESubject" style="width: 1200px; font-size: larger">@ViewData["sub"]</textbox>
+                        </td>
+                    </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.MessageId,"回复消息Id:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.MessageId,new{@id="c_MessageId"})
-		</td>
-	</tr>
+                    <tr>
+                        <td>&nbsp;&nbsp;<label>邮件内容:</label>
+                        </td>
+                        <td colspan="10">
+                            <textarea id="EContent" style="width: 1200px; height: 80px; resize: none;" readonly="readOnly">@ViewData["bod"]</textarea>
+                        </td>
+                    </tr>
+                </table>
+                <p>&nbsp;&nbsp;<label style="font-size:medium">买家信息:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>账号:&nbsp;@ViewData["buyer"]</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>邮箱:&nbsp;@ViewData["email"]</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>提问时间:&nbsp;@ViewData["creation"]</label></p>
+            </div>
+            <div data-options="region:'center',title:'回复内容'">
+                @using (Html.BeginForm("Create", "EbayMessageRe", FormMethod.Post, new { id = "c_form" }))
+                {
+                <fieldset style="border: 0">
+                <table class="editForm">
+                    <tr>
+	                    <td style="display:none">
+                            @Html.TextBoxFor(model => model.MessageId, new { @id = "c_MessageId", @readOnly = "readOnly", style = "width:700px;" })
+	                    </td>
+                    </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SubjectRe,"回复主题:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SubjectRe,new{@id="c_SubjectRe"})
-		</td>
-	</tr>
+                    <tr>
+	                    <td>
+                            @Html.LabelFor(model => model.SubjectRe, "回复主题:")
+	                    </td>
+	                    <td>
+                            @Html.TextAreaFor(model => model.SubjectRe, new { @id = "c_SubjectRe", style = "width:700px;height:100px;resize:none"})
+	                    </td>
+                    </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.BodyRe,"回复内容:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.BodyRe,new{@id="c_BodyRe"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ReplayOn,"回复时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ReplayOn,new{@id="c_ReplayOn"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ReplayBy,"回复人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ReplayBy,new{@id="c_ReplayBy"})
-		</td>
-	</tr>
-
-
-</table>
-</fieldset>
-}
+                    <tr>
+	                    <td>
+                            @Html.LabelFor(model => model.BodyRe, "回复内容:")
+	                    </td>
+	                    <td>
+                            @Html.TextAreaFor(model => model.BodyRe, new { @id = "c_BodyRe" , style = "width:700px;height:100px;resize:none" })
+	                    </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td align="center">
+                            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">确定</a>
+                        </td>
+                    </tr>
+                </table>
+                </fieldset>
+                }
+            </div>
+        </div>
+    </div>
+    </body>

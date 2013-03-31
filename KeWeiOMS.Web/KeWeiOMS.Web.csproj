@@ -1311,7 +1311,6 @@
     <Content Include="Views\GMarket\Index.cshtml" />
     <Content Include="Views\EbayMessage\Create.cshtml" />
     <Content Include="Views\EbayMessage\Delete.cshtml" />
-    <Content Include="Views\EbayMessage\Details.cshtml" />
     <Content Include="Views\EbayMessage\Edit.cshtml" />
     <Content Include="Views\EbayMessage\Index.cshtml" />
     <Content Include="Views\EbayMessageRe\Create.cshtml" />

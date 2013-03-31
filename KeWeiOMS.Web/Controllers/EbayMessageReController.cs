@@ -13,14 +13,22 @@ using System.Data;
 namespace KeWeiOMS.Web.Controllers
 {
     public class EbayMessageReController : BaseController
-    {
+    {           
+        EbayMessageController ebay = new EbayMessageController();
         public ViewResult Index()
         {
             return View();
         }
 
-        public ActionResult Create()
+        public ActionResult Create(int id)
         {
+            ViewData["mid"] = id;
+            EbayMessageType obj = ebay.GetById(id);
+            ViewData["sub"] = obj.Subject;
+            ViewData["bod"]=obj.Body;
+            ViewData["buyer"] = obj.SenderID;
+            ViewData["creation"] = obj.CreationDate;
+            ViewData["email"] = obj.SenderEmail;
             return View();
         }
 
@@ -29,7 +37,15 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                NSession.SaveOrUpdate(obj);
+                obj.ReplayBy = CurrentUser.Realname;
+                obj.ReplayOn = DateTime.Now;
+                NSession.Save(obj);
+                NSession.Flush();
+                EbayMessageType ebaymessage = ebay.GetById(obj.MessageId);
+                ebaymessage.ReplayBy = obj.ReplayBy;
+                ebaymessage.ReplayOn = obj.ReplayOn;
+                ebaymessage.MessageStatus = "Answered";
+                NSession.Update(ebaymessage);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -159,18 +175,38 @@ namespace KeWeiOMS.Web.Controllers
             if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
             {
                 if (!string.IsNullOrEmpty(startdate))
-                    where += "CreateOn >=\'" + Convert.ToDateTime(startdate) + "\'";
+                    where += "ReplayOn >=\'" + Convert.ToDateTime(startdate) + "\'";
                 if (!string.IsNullOrEmpty(enddate))
                 {
                     if (where != "")
                         where += " and ";
-                    where += "CreateOn<=\'" + Convert.ToDateTime(enddate) + "\'";
+                    where += "ReplayOn<=\'" + Convert.ToDateTime(enddate) + "\'";
                 }
                 where = " where " + where;
             }
             return where;
         }
+        public JsonResult GetNext(int id)
+        {
+            int check = 0;
+            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType order by Id ").List<EbayMessageType>();
+            foreach(var item in list)
+            {
+                if (check == 1 && item.MessageStatus== "Unanswered")
+                {
+                    return Json(new { Msg =item.Id }, JsonRequestBehavior.AllowGet);
+                }
+                if (item.Id==id)
+                {
+                    check = 1;
+                }
+
+            }
+            return Json(new { Msg =0}, JsonRequestBehavior.AllowGet);
+        }
+    
 
     }
+
 }
 

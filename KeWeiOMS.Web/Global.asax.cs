@@ -48,9 +48,17 @@ namespace KeWeiOMS.Web
         {
             NHibernateHelper.CreateDatabase();
             OnStart();
-
+            //每次执行时间间隔
+            System.Timers.Timer myTimer = new System.Timers.Timer(60000);
+            myTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEvent);
+            myTimer.Interval = 900000;
+            myTimer.Enabled = true;
         }
 
+        private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            EbayMessageUtil.syn();
+        }
 
     }
 }

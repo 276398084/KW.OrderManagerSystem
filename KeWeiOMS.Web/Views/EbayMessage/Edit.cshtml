@@ -5,79 +5,45 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-	
-        $('#e_CreationDate').datebox();
-
-
-        $('#e_CreateOn').datebox();
-
 
     });
 </script>
 @using (Html.BeginForm("Edit", "EbayMessage", FormMethod.Post, new { id = "e_form" }))
 {
-<fieldset>
+<fieldset style="border:0">
 <table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.MessageId,"消息Id:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.MessageId,new{@id="e_MessageId"})
-		</td>
-	</tr>
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.MessageType,"消息类型:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.MessageType,new{@id="e_MessageType"})
+            @Html.TextBoxFor(model => model.MessageType,new{@id="e_MessageType",@readonly="readonly"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
-            @Html.LabelFor(model => model.QuestionType,"问题类型:")
+        <td>
+            @Html.LabelFor(model => model.SenderID,"买家Id:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.QuestionType,new{@id="e_QuestionType"})
+            @Html.TextBoxFor(model => model.SenderID,new{@id="e_SenderID",@readonly="readonly"})
 		</td>
-	</tr>
-
-	<tr>
 		<td>
             @Html.LabelFor(model => model.SenderEmail,"买家邮箱:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SenderEmail,new{@id="e_SenderEmail"})
+            @Html.TextBoxFor(model => model.SenderEmail,new{@id="e_SenderEmail",@style="width:300px",@readonly="readonly"})
 		</td>
 	</tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SenderID,"买家Id:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SenderID,new{@id="e_SenderID"})
-		</td>
-	</tr>
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.Subject,"消息主题:")
 		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Subject,new{@id="e_Subject"})
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.Subject,new{@id="e_Subject",@style="width:600px;height:80px;resize:none",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -85,8 +51,8 @@
 		<td>
             @Html.LabelFor(model => model.Body,"消息内容:")
 		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Body,new{@id="e_Body"})
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.Body,new{@id="e_Body",@style="width:600px;height:80px;resize:none",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -95,34 +61,44 @@
             @Html.LabelFor(model => model.MessageStatus,"消息状态:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.MessageStatus,new{@id="e_MessageStatus"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
+            @Html.TextBoxFor(model => model.MessageStatus,new{@id="e_MessageStatus",@readonly="readonly"})
+		</td>	
+       	<td>
             @Html.LabelFor(model => model.ItemId,"商品编号:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.ItemId,new{@id="e_ItemId"})
+            @Html.TextBoxFor(model => model.ItemId,new{@id="e_ItemId",@readonly="readonly"})
 		</td>
 	</tr>
+
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.CreationDate,"问题创建时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.CreationDate,new{@id="e_CreationDate"})
+            @Html.TextBoxFor(model => model.CreationDate,new{@id="e_CreationDate",@readonly="readonly"})
+		</td>
+        <td>
+            @Html.LabelFor(model => model.CreateOn,"同步时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn",@readonly="readonly"})
 		</td>
 	</tr>
 
 	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateOn,"同步时间:")
+        <td>
+            @Html.LabelFor(model => model.ReplayBy,"回复人:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+            @Html.TextBoxFor(model => model.ReplayBy,new{@id="e_ReplayBy",@readonly="readonly"})
+		</td>
+        <td>
+            @Html.LabelFor(model => model.ReplayOn,"回复时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayOn,new{@id="e_ReplayOn",@readonly="readonly"})
 		</td>
 	</tr>
 

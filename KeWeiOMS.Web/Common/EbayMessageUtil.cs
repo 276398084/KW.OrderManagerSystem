@@ -20,7 +20,7 @@ namespace KeWeiOMS.Web
     {
         //
         // GET: /EbayMessageUtil/
-        public static ISession NSession = SessionBuilder.CreateSession();
+        public static ISession NSession = NHibernateHelper.CreateSession();
 
         public ActionResult Index()
         {
@@ -32,8 +32,8 @@ namespace KeWeiOMS.Web
             IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>'' and ApiToken<>''").List<AccountType>();
             foreach (var item in list)
             {
-                DateTime beginDate=DateTime.Now.AddHours(-24);
-                DateTime endDate=DateTime.Now.AddHours(1);
+                DateTime beginDate=DateTime.Now.AddMinutes(-30);
+                DateTime endDate=DateTime.Now.AddMinutes(1);
                 GetEmailByAPI(item, beginDate,endDate);
             }
         }
@@ -71,12 +71,10 @@ namespace KeWeiOMS.Web
                     email.Subject = mmet.Question.Subject;
                     email.ItemId = mmet.Item.ItemID;
                     email.CreateOn = DateTime.Now;
+                    email.ReplayOn = Convert.ToDateTime("2000-01-01");
                     int id = NoExist(email.MessageId);
                     if (id != 0)
                     {
-                        email.Id = id;
-                        NSession.Update(email);
-                        NSession.Flush();
                     }
                     else
                     {
