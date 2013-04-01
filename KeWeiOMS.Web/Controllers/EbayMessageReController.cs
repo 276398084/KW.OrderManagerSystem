@@ -37,11 +37,18 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                EbayMessageType ebaymessage = ebay.GetById(obj.MessageId);
+
+                obj.ItemId = ebaymessage.ItemId;
+                obj.EbayId = ebaymessage.MessageId;
                 obj.ReplayBy = CurrentUser.Realname;
+                obj.SenderEmail = ebaymessage.SenderEmail;
+                obj.SenderID = ebaymessage.SenderID;
                 obj.ReplayOn = DateTime.Now;
+                obj.UploadTime = Convert.ToDateTime("2000-01-01");
                 NSession.Save(obj);
                 NSession.Flush();
-                EbayMessageType ebaymessage = ebay.GetById(obj.MessageId);
+
                 ebaymessage.ReplayBy = obj.ReplayBy;
                 ebaymessage.ReplayOn = obj.ReplayOn;
                 ebaymessage.MessageStatus = "Answered";
@@ -203,6 +210,19 @@ namespace KeWeiOMS.Web.Controllers
 
             }
             return Json(new { Msg =0}, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Syn()
+        {
+            try
+            {
+                EbayMessageUtil.uploadsyn();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { ErrorMsg = "出错了", IsSuccess = false });
+            }
+            return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
     
 

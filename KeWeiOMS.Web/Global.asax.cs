@@ -58,6 +58,7 @@ namespace KeWeiOMS.Web
         private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
         {
             EbayMessageUtil.syn();
+            //EbayMessageUtil.uploadsyn();
         }
 
     }

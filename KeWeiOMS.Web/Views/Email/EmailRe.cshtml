@@ -15,29 +15,51 @@
             }
         })
         $('#r_EId').val('@ViewData["EId"]');
-        if ('@ViewData["eid"]' == '0') {
-            alert("已经到最后一封，点击“确定”关闭！")
-            setTimeout(window.close(), 1000);
-        }
-        if ('@ViewData["Reply"]' == '1') {
-            $.messager.confirm('确认', '该邮件已经回复过，是否进入下一封?', function (r) {
-                if (r) {
-                    var i = parseInt(@ViewData["EId"]) + parseInt(1);
-                    window.location = '@Url.Action("EmailRe", "Email")/' + i;
-                }
-            })
-        }
-
     });
-    function cancel() {
-        window.close();
-    }
     //发送提交
 
     function send() {
-        formPost('r_form', '@Url.Action("EmailRe", "Email")');
-        var i = parseInt(@ViewData["EId"]) + parseInt(1);
-        window.location = '@Url.Action("EmailRe", "Email")/' + i;
+        if ($('#c_SubjectRe').attr("value") == "" || $('#c_BodyRe').attr("value") == "") {
+            alert("回复顶不能为空！");
+        }
+        else {
+            $('#r_form').form('submit', {
+                url: '@Url.Action("EmailRe", "Email")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
+                    if (result.IsSuccess) {
+                        $.ajax({
+                            url: '@Url.Action("GetNext", "Email")/@ViewData["EId"]',
+                                success: function (result) {
+                                    if (result) {
+                                        if (result.Msg != '0') {
+                                            $.messager.show({
+                                                title: '提示',
+                                                msg: '已进入下一封未读！',
+                                                timeout: 2000,
+                                                showType: 'slide'
+                                            })
+                                            window.location = "/Email/EmailRe/" + result.Msg;
+                                        }
+                                        else {
+                                            alert("已经到最后一封未读，点击“确定”关闭！");
+                                            window.close();
+                                        }
+                                    }
+
+                                }
+                            })
+                        } else {
+                            alert("保存失败!");
+                        }
+                }
+            });
+
+            }
+
 
     }
 

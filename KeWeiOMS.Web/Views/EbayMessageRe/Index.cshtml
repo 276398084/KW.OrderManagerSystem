@@ -100,8 +100,30 @@
      }
 
      function upload() {
-         alert("upload");
-     }
+         $('#dg').datagrid("loading");
+         $.ajax({
+             url: '@Url.Action("Syn", "EbayMessageRe")',
+            success: function (result) {
+                if (result.IsSuccess) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.Msg,
+                        timeout: 0,
+                        showType: 'slide',
+                    })
+                }
+                else {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.Msg,
+                        timeout: 0,
+                        showType: 'slide'
+                    })
+                }
+                $('#dg').datagrid('reload');
+            }
+        })
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -109,7 +131,7 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="MessageId" width="100">
+            <th field="EbayId" width="100">
                 回复消息Id
             </th>
 
@@ -125,6 +147,9 @@
                 回复时间
             </th>
 
+            <th field="UploadTime" width="100"  formatter="getDate">
+                同步时间
+            </th>
 
     	</tr>
 		</thead>

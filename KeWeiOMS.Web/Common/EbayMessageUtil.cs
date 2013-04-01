@@ -29,7 +29,7 @@ namespace KeWeiOMS.Web
 
         public static void syn()
         {
-            IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>'' and ApiToken<>''").List<AccountType>();
+            IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName='jinbostore' and ApiToken<>''").List<AccountType>();
             foreach (var item in list)
             {
                 DateTime beginDate=DateTime.Now.AddMinutes(-30);
@@ -104,6 +104,42 @@ namespace KeWeiOMS.Web
             }
             return id;
 
+        }
+
+        public static void Upload(AccountType account)
+        {
+            ApiContext context = AppSettingHelper.GetGenericApiContext("US");
+            context.ApiCredential.eBayToken = account.ApiToken;
+            AddMemberMessageRTQCall addMsgApicall = new AddMemberMessageRTQCall(context);
+            ReviseMyMessagesCall revMsgApicall = new ReviseMyMessagesCall(context);
+            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where IsUpload<>'1'").List<EbayMessageReType>();
+            if (list.Count != 0)
+            {
+                foreach (var item in list)
+                {
+                    MemberMessageType mm = new MemberMessageType();
+                    mm.SenderID = item.SenderID;
+                    mm.SenderEmail = item.SenderEmail;
+                    mm.MessageID = item.EbayId;
+                    mm.Subject = item.SubjectRe;
+                    mm.Body = item.BodyRe;
+                    mm.ParentMessageID = item.EbayId;
+
+                    addMsgApicall.AddMemberMessageRTQ(item.ItemId, mm);
+                    revMsgApicall.ReviseMyMessages(true, false, new StringCollection(new string[] { mm.MessageID }));
+
+                    item.IsUpload = 1;
+                }
+            }
+        }
+
+        public static void uploadsyn()
+        {
+            IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName='jinbostore' and ApiToken<>''").List<AccountType>();
+            foreach (var item in list)
+            {
+                Upload(item);
+            }
         }
 
     }

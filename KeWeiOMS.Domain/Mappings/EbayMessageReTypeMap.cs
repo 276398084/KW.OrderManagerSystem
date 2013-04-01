@@ -35,6 +35,12 @@ namespace KeWeiOMS.Domain
             Map(x => x.BodyRe).Length(1000);
             Map(x => x.ReplayOn);
             Map(x => x.ReplayBy).Length(255);
+            Map(x=>x.IsUpload);
+            Map(x => x.EbayId).Length(255);
+            Map(x => x.ItemId).Length(255);
+            Map(x => x.SenderEmail);
+            Map(x => x.SenderID);
+            Map(x => x.UploadTime);
         }
     }
 }

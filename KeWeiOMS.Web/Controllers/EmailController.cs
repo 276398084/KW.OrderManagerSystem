@@ -135,9 +135,8 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(EmaiTemp, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult getEmailTempDetail()
+        public JsonResult getEmailTempDetail(int id)
         {
-            int id = int.Parse(Request["id"].ToString());
             IList<EmailTemplateType> EmailTemp = NSession.CreateQuery("from EmailTemplateType c where c.Id=:id").SetInt32("id", id).List<EmailTemplateType>();
             return Json(EmailTemp, JsonRequestBehavior.AllowGet);
         }
@@ -207,6 +206,34 @@ namespace KeWeiOMS.Web.Controllers
             smtp.Send(mm); //发送邮件
         }
 
+        public JsonResult GetNext(int id)
+        {
+            int check = 0;
+            IList<EmailType> list = NSession.CreateQuery("from EmailType order by Id ").List<EmailType>();
+            foreach (var item in list)
+            {
+                if (check == 1 && item.IsReply!=1)
+                {
+                    return Json(new { Msg = item.Id }, JsonRequestBehavior.AllowGet);
+                }
+                if (item.Id == id)
+                {
+                    check = 1;
+                }
+
+            }
+            return Json(new { Msg = 0 }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult IsRead(int id)
+        {
+            EmailType obj = GetById(id);
+            if (obj.IsReply !=0)
+            {
+                return Json(new { Msg = 1 }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { Msg = 0 }, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }
