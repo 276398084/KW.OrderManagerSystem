@@ -83,7 +83,16 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            EbayMessageReType obj = GetById(id);
+            EbayMessageController ebay = new EbayMessageController();
+            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where MessageId='"+id.ToString()+"'").List<EbayMessageReType>();
+            if(list.Count>0)
+            {
+                foreach (var item in list)
+                {
+                    ViewData["body"] = item.BodyRe;
+                }
+            }
+            EbayMessageType obj = ebay.GetById(id);  
             return View(obj);
         }
 
@@ -224,7 +233,21 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
-    
+
+        public JsonResult GetOrder(string id)
+        {
+            IList<OrderType> list = NSession.CreateQuery("from OrderType where BuyerName='" + id + "'").List<OrderType>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public JsonResult GetOldMail(string id)
+        {
+            string name = id.Substring(0,id.IndexOf("$"));
+            string item = id.Substring(id.IndexOf("$")+1);
+            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where SenderID='" + name+ "' and Id<>'"+item+"'").List<EbayMessageType>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
 
     }
 

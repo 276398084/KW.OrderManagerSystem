@@ -121,7 +121,6 @@ namespace KeWeiOMS.Web
                     mm.SenderID = item.SenderID;
                     mm.SenderEmail = item.SenderEmail;
                     mm.MessageID = item.EbayId;
-                    mm.Subject = item.SubjectRe;
                     mm.Body = item.BodyRe;
                     mm.ParentMessageID = item.EbayId;
 

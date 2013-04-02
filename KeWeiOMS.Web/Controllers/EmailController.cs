@@ -209,7 +209,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult GetNext(int id)
         {
             int check = 0;
-            IList<EmailType> list = NSession.CreateQuery("from EmailType order by Id ").List<EmailType>();
+            IList<EmailType> list = NSession.CreateQuery("from EmailType order by Id order by desc").List<EmailType>();
             foreach (var item in list)
             {
                 if (check == 1 && item.IsReply!=1)

@@ -19,7 +19,7 @@
     //发送提交
 
     function send() {
-        if ($('#c_SubjectRe').attr("value") == "" || $('#c_BodyRe').attr("value") == "") {
+        if ($('#r_Content').attr("value") == "") {
             alert("回复顶不能为空！");
         }
         else {
@@ -123,7 +123,7 @@
                                 <td></td>
                                 <td align="center">
 
-                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">确定</a>
+                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">回复并进入下一封未回复</a>
 
 
                                 </td>
@@ -132,7 +132,7 @@
                     </fieldset>
                 }
             </div>
-                <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
+       <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
         <table id="dg" class="easyui-datagrid" style="width: 410px; height: 300px"
             data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
             <thead>
