@@ -98,10 +98,6 @@
     }
     function opeart(v, r, i) {
         var reb = "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'re("+ v + ")\'>回复</a>";
-        if (r.MessageStatus != "Unanswered")
-        {
-            reb = "";
-        }
         return reb + '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(' + v + ')\'>详细</a>';
     }
     function re(value) {
@@ -110,11 +106,15 @@
             success: function (result) {
                 if (result) {
                     if (result.Msg != '0') {
-                        alert("该封邮件已回复");
+                        $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                            if (r) {
+                                window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                            }
+                        })
                     }
                     else {
                         window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
-                    }
+                     }
                 }
 
             }

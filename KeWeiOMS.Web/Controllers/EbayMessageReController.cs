@@ -84,15 +84,8 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             EbayMessageController ebay = new EbayMessageController();
-            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where MessageId='"+id.ToString()+"'").List<EbayMessageReType>();
-            if(list.Count>0)
-            {
-                foreach (var item in list)
-                {
-                    ViewData["body"] = item.BodyRe;
-                }
-            }
-            EbayMessageType obj = ebay.GetById(id);  
+            EbayMessageType obj = ebay.GetById(id);
+            ViewData["messageid"] = obj.MessageId;
             return View(obj);
         }
 
@@ -249,6 +242,11 @@ namespace KeWeiOMS.Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetOld(string id)
+        {
+            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where EbayId='"+id+"'").List<EbayMessageReType>();
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
     }
 
 }
