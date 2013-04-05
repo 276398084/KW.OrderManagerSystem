@@ -12,7 +12,23 @@
         return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'de(" + v + ")\'>详细</a>"
     }
     function de(value) {
-        alert("de");
+        $.getJSON('@Url.Action("GetDetail", "EbayMessageRe")/' + value, function (json) {
+            $("#r_dlg").dialog({
+                title: '详情',
+                width: 500,
+                height: 300,
+                content: function () {
+                    return json;
+                },
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '关闭',
+                    handler: function () {
+                        $("#r_dlg").dialog('close');
+                    }
+                }]
+            });
+        })
     }
 </script>
 @using (Html.BeginForm("Edit", "EbayMessageRe", FormMethod.Post, new { id = "e_form" }))

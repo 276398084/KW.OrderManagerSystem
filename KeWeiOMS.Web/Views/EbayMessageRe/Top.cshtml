@@ -1,0 +1,38 @@
+﻿@model KeWeiOMS.Domain.EbayMessageReType
+@{
+    Layout = null;
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("GetTop", "EbayMessageRe")'
+
+            })
+            $("#txtEndDate").datebox("setValue", getStartDate(-1));
+            $("#txtStartDate").datebox("setValue", getStartDate(7));
+    });
+
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="Subject" width="100" sortable="true">姓名
+                    </th>
+
+                    <th field="Content" width="100" sortable="true">回邮数量
+                    </th>
+                </tr>
+            </thead>
+        </table>
+@*        <div id="toolbar">
+                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
+        </div>*@
+
+
+    </div>
+</body>

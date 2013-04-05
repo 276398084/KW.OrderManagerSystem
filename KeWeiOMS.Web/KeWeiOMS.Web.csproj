@@ -1318,6 +1318,7 @@
     <Content Include="Views\EbayMessageRe\Details.cshtml" />
     <Content Include="Views\EbayMessageRe\Edit.cshtml" />
     <Content Include="Views\EbayMessageRe\Index.cshtml" />
+    <Content Include="Views\EbayMessageRe\Top.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

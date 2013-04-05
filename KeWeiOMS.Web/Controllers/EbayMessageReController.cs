@@ -20,6 +20,10 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ViewResult Top()
+        {
+            return View();
+        }
         public ActionResult Create(int id)
         {
             ViewData["mid"] = id;
@@ -229,23 +233,62 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult GetOrder(string id)
         {
-            IList<OrderType> list = NSession.CreateQuery("from OrderType where BuyerName='" + id + "'").List<OrderType>();
+            IList<OrderType> list = NSession.CreateQuery("from OrderType where BuyerName='" + id + "' order by Id desc").List<OrderType>();
             return Json(list, JsonRequestBehavior.AllowGet);
 
         }
 
         public JsonResult GetOldMail(string id)
         {
-            string name = id.Substring(0,id.IndexOf("$"));
-            string item = id.Substring(id.IndexOf("$")+1);
-            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where SenderID='" + name+ "' and Id<>'"+item+"'").List<EbayMessageType>();
+            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where SenderID='" + id + "' order by Id desc").List<EbayMessageType>();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetOld(string id)
         {
-            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where EbayId='"+id+"'").List<EbayMessageReType>();
+            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where EbayId='" + id + "' order by Id desc").List<EbayMessageReType>();
             return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetDetail(int id)
+        {
+            EbayMessageReType de = GetById(id);
+            return Json(de.BodyRe,JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetTop()
+        {
+            DateTime time = DateTime.Now;
+            return TopToday(time);
+        }
+
+        private JsonResult TopToday(DateTime time)
+        {
+            string []str=null;
+            int it = 0;
+            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where ReplayOn>'" + time.Date + "' and ReplayOn<" + time.Date.AddDays(1) + "'").List<EbayMessageReType>();
+            foreach (var item in list)
+            {
+                int c = 0;
+                for (int i = 0; i < str.Length; i++)
+                {
+                    if (item.ReplayBy==str[i])
+                    {
+                        c++;
+                    }
+                }
+                if (c == 0)
+                {
+                    str[it] = item.ReplayBy;
+                }
+            }
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='"++"' and ReplayOn>'" + time.Date + "' and ReplayOn<" + time.Date.AddDays(1) + "'");
+
+            }
+
+            return Json("");
         }
     }
 
