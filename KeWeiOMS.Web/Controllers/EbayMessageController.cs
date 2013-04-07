@@ -176,7 +176,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult IsRead(int id) 
         {
             EbayMessageType obj =GetById(id);
-            if (obj.MessageStatus != "Unanswered")
+            if (obj.MessageStatus != "未回复")
             { 
                 return Json(new { Msg =1}, JsonRequestBehavior.AllowGet);
             }

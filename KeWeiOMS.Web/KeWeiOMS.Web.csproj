@@ -154,6 +154,7 @@
     <Compile Include="Controllers\EbayController.cs" />
     <Compile Include="Controllers\EbayMessageController.cs" />
     <Compile Include="Controllers\EbayMessageReController.cs" />
+    <Compile Include="Controllers\EbayReplayController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
@@ -1319,6 +1320,11 @@
     <Content Include="Views\EbayMessageRe\Edit.cshtml" />
     <Content Include="Views\EbayMessageRe\Index.cshtml" />
     <Content Include="Views\EbayMessageRe\Top.cshtml" />
+    <Content Include="Views\EbayReplay\Create.cshtml" />
+    <Content Include="Views\EbayReplay\Delete.cshtml" />
+    <Content Include="Views\EbayReplay\Details.cshtml" />
+    <Content Include="Views\EbayReplay\Edit.cshtml" />
+    <Content Include="Views\EbayReplay\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

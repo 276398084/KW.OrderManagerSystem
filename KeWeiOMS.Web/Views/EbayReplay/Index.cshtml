@@ -1,0 +1,124 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.EbayReplayType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","EbayReplay")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","EbayReplay")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+    function e_dlg() {
+        var id = getselectedRow();
+            var url = '@Url.Action("Edit","EbayReplay")/' + id;
+            if (id != undefined) {
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "EbayReplay")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "EbayReplay")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "EbayReplay")/' + id;
+                delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+     function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+      }
+    function ShowAdvanced() {
+    showSrarch('@Url.Action("Search", "EbayReplay")', 's_dlg', 'dg');
+      }		
+
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="ReplayBy" width="100">
+                回复人员
+            </th>
+
+            <th field="ReplayAccount" width="100">
+                回复账号
+            </th>
+
+            <th field="CreateBy" width="100">
+                创建人
+            </th>
+
+            <th field="CreateOn" width="100" formatter="getDate">
+                创建时间
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div> 
+		<div id="mm" style="width: 120px">
+                        <div data-options="name:'Id'">主键</div>
+            <div data-options="name:'ReplayBy'">回复人员</div>
+            <div data-options="name:'ReplayAccount'">回复账号</div>
+            <div data-options="name:'CreateBy'">创建人</div>
+            <div data-options="name:'CreateOn'">创建时间</div>
+
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

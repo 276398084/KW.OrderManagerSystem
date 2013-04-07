@@ -60,6 +60,7 @@
     <Compile Include="Entities\DisputeType.cs" />
     <Compile Include="Entities\EbayMessageReType.cs" />
     <Compile Include="Entities\EbayMessageType.cs" />
+    <Compile Include="Entities\EbayReplayType.cs" />
     <Compile Include="Entities\EbayType.cs" />
     <Compile Include="Entities\EmailReturnType.cs" />
     <Compile Include="Entities\EmailTemplateType.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Mappings\DisputeTypeMap.cs" />
     <Compile Include="Mappings\EbayMessageReTypeMap.cs" />
     <Compile Include="Mappings\EbayMessageTypeMap.cs" />
+    <Compile Include="Mappings\EbayReplayTypeMap.cs" />
     <Compile Include="Mappings\EbayTypeMap.cs" />
     <Compile Include="Mappings\EmailReturnTypeMap.cs" />
     <Compile Include="Mappings\EmailTemplateTypeMap.cs" />

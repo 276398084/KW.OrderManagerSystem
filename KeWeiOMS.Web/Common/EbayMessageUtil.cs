@@ -32,7 +32,7 @@ namespace KeWeiOMS.Web
             IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName='jinbostore' and ApiToken<>''").List<AccountType>();
             foreach (var item in list)
             {
-                DateTime beginDate=DateTime.Now.AddMinutes(-30);
+                DateTime beginDate=DateTime.Now.AddDays(-30);
                 DateTime endDate=DateTime.Now.AddMinutes(1);
                 GetEmailByAPI(item, beginDate,endDate);
             }
@@ -64,7 +64,7 @@ namespace KeWeiOMS.Web
                     email.Body = mmet.Question.Body;
                     email.CreationDate = mmet.CreationDate;
                     email.MessageId = mmet.Question.MessageID;
-                    email.MessageStatus = mmet.MessageStatus.ToString();
+                    email.MessageStatus = "未回复";
                     email.MessageType = mmet.Question.MessageType.ToString();
                     email.SenderEmail = mmet.Question.SenderEmail;
                     email.SenderID = mmet.Question.SenderID;
@@ -141,5 +141,17 @@ namespace KeWeiOMS.Web
             }
         }
 
-    }
+        public static string MessageType(string type)
+        {
+            string mt = ""; 
+            switch(type)
+            {
+                case "AskSellerQuestion": mt = "向卖家提问"; break;
+                case "ResponseToASQQuestion": mt = "回复已回复的问题"; break;
+                case "ContactTransactionPartner": mt = "联系交易伙伴"; break;
+            }
+            return mt;
+        }
+    }   
+
 }

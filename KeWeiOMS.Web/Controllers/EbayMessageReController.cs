@@ -9,6 +9,7 @@ using KeWeiOMS.NhibernateHelper;
 using NHibernate;
 using System.Data.SqlClient;
 using System.Data;
+using System.Collections;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -55,7 +56,7 @@ namespace KeWeiOMS.Web.Controllers
 
                 ebaymessage.ReplayBy = obj.ReplayBy;
                 ebaymessage.ReplayOn = obj.ReplayOn;
-                ebaymessage.MessageStatus = "Answered";
+                ebaymessage.MessageStatus = "已回复";
                 NSession.Update(ebaymessage);
                 NSession.Flush();
             }
@@ -201,19 +202,10 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult GetNext(int id)
         {
-            int check = 0;
-            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType order by Id ").List<EbayMessageType>();
+            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where MessageStatus='未回复'  order by Id ").List<EbayMessageType>();
             foreach(var item in list)
             {
-                if (check == 1 && item.MessageStatus== "Unanswered")
-                {
                     return Json(new { Msg =item.Id }, JsonRequestBehavior.AllowGet);
-                }
-                if (item.Id==id)
-                {
-                    check = 1;
-                }
-
             }
             return Json(new { Msg =0}, JsonRequestBehavior.AllowGet);
         }
@@ -255,42 +247,130 @@ namespace KeWeiOMS.Web.Controllers
             EbayMessageReType de = GetById(id);
             return Json(de.BodyRe,JsonRequestBehavior.AllowGet);
         }
-        public JsonResult GetTop()
+        public JsonResult GetTop(string search)
         {
-            DateTime time = DateTime.Now;
-            return TopToday(time);
+            if(!string.IsNullOrEmpty(search))
+            {
+               string str1= search.Substring(0,search.IndexOf("$"));
+               string str2= search.Substring(search.IndexOf("$")+1);
+                return TopTime(str1,str2);
+            }
+            else
+            {
+               DateTime time = DateTime.Now;
+                 return TopToday(time);
+            }
         }
 
         private JsonResult TopToday(DateTime time)
         {
-            string []str=null;
-            int it = 0;
-            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where ReplayOn>'" + time.Date + "' and ReplayOn<" + time.Date.AddDays(1) + "'").List<EbayMessageReType>();
+            ArrayList obj =new ArrayList();
+            ArrayList arry=new ArrayList();
+            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where ReplayOn>'" + time.Date.ToString()+ "'").List<EbayMessageReType>();
             foreach (var item in list)
             {
                 int c = 0;
-                for (int i = 0; i < str.Length; i++)
+                if(arry.Count!=0)
                 {
-                    if (item.ReplayBy==str[i])
+                    foreach (var name in arry)
                     {
-                        c++;
+                        if (item.ReplayBy==Convert.ToString(name))
+                        {
+                            c=1;
+                        }
                     }
                 }
                 if (c == 0)
                 {
-                    str[it] = item.ReplayBy;
+                    arry.Add(item.ReplayBy);
                 }
             }
-
-            for (int i = 0; i < str.Length; i++)
+            myCompare compare = new myCompare();
+            if (arry.Count != 0)
             {
-                object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='"++"' and ReplayOn>'" + time.Date + "' and ReplayOn<" + time.Date.AddDays(1) + "'");
-
+                foreach (var name in arry)
+                {
+                    object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='" + name + "' and ReplayOn>'" + time.Date.ToString() + "'").UniqueResult();
+                    obj.Add(new eployee{ Count = Convert.ToInt32(count), Name = Convert.ToString(name) });
+                }
             }
+            if(obj.Count!=0)
+            {
+                obj.Sort(compare);
+            }
+            return Json(obj);
+        }  
+ 
+       private JsonResult TopTime(string time,string time0)
+        {
+            string where="";
+           if(!string.IsNullOrEmpty(time))
+           {
+            where =" where ReplayOn>'"+time+"' ";
+           }
+           if(!string.IsNullOrEmpty(time0))
+           {
+               if(!string.IsNullOrEmpty(where))
+               {
+                where =where + " and ReplayOn<'"+time0+"' ";
+               }
+               else
+               {
+                   where =" where ReplayOn<'"+time0+"' ";
+               }
+           }
+            ArrayList obj =new ArrayList();
+            ArrayList arry=new ArrayList();
+            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where ReplayOn>'" + time.ToString()+ "' and ReplayOn<='"+time0.ToString()+"'").List<EbayMessageReType>();
+            foreach (var item in list)
+            {
+                int c = 0;
+                if(arry.Count!=0)
+                {
+                    foreach (var name in arry)
+                    {
+                        if (item.ReplayBy==Convert.ToString(name))
+                        {
+                            c=1;
+                        }
+                    }
+                }
+                if (c == 0)
+                {
+                    arry.Add(item.ReplayBy);
+                }
+            }
+            myCompare compare = new myCompare();
+            if (arry.Count != 0)
+            {
+                foreach (var name in arry)
+                {
+                    object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='" + name + "' and ReplayOn>'" + time.ToString() + "' and ReplayOn<='"+time0.ToString()+"'").UniqueResult();
+                    obj.Add(new eployee{ Count = Convert.ToInt32(count), Name = Convert.ToString(name) });
+                }
+            }
+            if(obj.Count!=0)
+            {
+                obj.Sort(compare);
+            }
+            return Json(obj);
+        }   
 
-            return Json("");
-        }
     }
 
+
+   public struct eployee
+    {
+        public string Name;
+        public int Count;
+    }
+
+    public class myCompare : IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            return ((eployee)y).Count - ((eployee)x).Count;
+        }
+    }
 }
 
