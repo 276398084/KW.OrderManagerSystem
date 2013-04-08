@@ -5,14 +5,17 @@
 }
 
 <script type="text/javascript">
-
     $(function () {
-
-		  $('#c_ReplayBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
-
+        $('#c_ReplayBy').combobox({
+            url: '@Url.Action("GetUsers", "EbayReplay")',
+            valueField: "Realname",
+            textField: "Realname",
+        });
+        $('#c_ReplayAccount').combobox({
+            url: '@Url.Action("GetAccount", "EbayReplay")',
+            valueField: "AccountName",
+            textField: "AccountName",
+        });
     });
     
 </script>

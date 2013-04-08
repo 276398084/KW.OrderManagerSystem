@@ -41,11 +41,6 @@ namespace KeWeiOMS.Domain
         public virtual String MessageType { get; set; }
 
         /// <summary>
-        /// 问题类型
-        /// </summary>
-        public virtual String QuestionType { get; set; }
-
-        /// <summary>
         /// 买家邮箱
         /// </summary>
         public virtual String SenderEmail { get; set; }
@@ -81,6 +76,11 @@ namespace KeWeiOMS.Domain
         public virtual DateTime CreationDate { get; set; }
 
         /// <summary>
+        /// 网店名称
+        /// </summary>
+        public virtual string Shop { get; set; }
+
+        /// <summary>
         /// 同步时间
         /// </summary>
         public virtual DateTime CreateOn { get; set; }
@@ -94,5 +94,11 @@ namespace KeWeiOMS.Domain
         /// 同步时间
         /// </summary>
         public virtual DateTime ReplayOn { get; set; }
+
+        /// <summary>
+        /// 同步时间
+        /// </summary>
+        public virtual string ReplayOnlyBy { get; set; }
+        
     }
 }

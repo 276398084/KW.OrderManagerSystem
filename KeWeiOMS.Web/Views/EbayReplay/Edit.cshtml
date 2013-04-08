@@ -5,10 +5,16 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-	        $('#e_ReplayBy').combobox({
-          url: 'User/UserSrc',
-          editable: true
-      });
+        $('#e_ReplayBy').combobox({
+            url: '@Url.Action("GetUsers", "EbayReplay")',
+            valueField: "Realname",
+            textField: "Realname",
+        });
+        $('#e_ReplayAccount').combobox({
+            url: '@Url.Action("GetAccount", "EbayReplay")',
+            valueField: "AccountName",
+            textField: "AccountName",
+        });
 
     });
 </script>

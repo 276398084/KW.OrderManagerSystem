@@ -32,17 +32,18 @@ namespace KeWeiOMS.Domain
             Id(x => x.Id);
             Map(x => x.MessageId);
             Map(x => x.MessageType);
-            Map(x => x.QuestionType);
             Map(x => x.SenderEmail);
             Map(x => x.SenderID);
             Map(x => x.Subject);
             Map(x => x.Body);
             Map(x => x.MessageStatus);
             Map(x => x.ItemId);
+            Map(x=>x.Shop);
             Map(x => x.CreationDate);
             Map(x => x.CreateOn);
             Map(x => x.ReplayBy);
             Map(x => x.ReplayOn);
+            Map(x=>x.ReplayOnlyBy);
         }
     }
 }

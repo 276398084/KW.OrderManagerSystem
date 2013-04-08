@@ -125,6 +125,19 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
+        public JsonResult GetUsers()
+        {
+            IList<UserType> list = NSession.CreateQuery("from UserType where DepartmentName='客服部'").List<UserType>();
+
+            return Json(list,JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult GetAccount()
+        {
+            IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay'").List<AccountType>();
+
+            return Json(list,JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
 

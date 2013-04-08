@@ -121,10 +121,31 @@ namespace KeWeiOMS.Web.Controllers
                 else
                 {
                     if (!string.IsNullOrEmpty(key))
-                        where = " where " + key;
+                        where = " where (" + key;
                 }
 
             }
+            string account = FindAccount();
+            if (account != "")
+            {
+                if (!string.IsNullOrEmpty(where))
+                {
+                    where += " and " + account;
+                }
+                else
+                {
+                    where = " where (" + account;
+                }
+            }
+            if (!string.IsNullOrEmpty(where))
+            {
+                where += " and ReplayOnlyBy is null) ";
+            }
+            else
+            {
+                where = " where ReplayOnlyBy is null ";
+            }
+            where += " or ReplayOnlyBy ='"+CurrentUser.Realname+"'";
             Session["ToExcel"] = where + orderby;
             IList<EbayMessageType> objList = NSession.CreateQuery("from EbayMessageType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -133,6 +154,25 @@ namespace KeWeiOMS.Web.Controllers
 
             object count = NSession.CreateQuery("select count(Id) from EbayMessageType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        private string FindAccount()
+        {
+            string where = "";
+            string name = CurrentUser.Realname;
+            IList<EbayReplayType> ac = NSession.CreateQuery("from EbayReplayType where ReplayBy='"+name+"'").List<EbayReplayType>();
+            foreach(var item in ac)
+            { 
+                if(where=="")
+                {
+                    where += " Shop='" + item.ReplayAccount + "' ";
+                }
+                else
+                {
+                    where += " or Shop='" + item.ReplayAccount + "' ";
+                }
+            }
+            return where;
         }
         public JsonResult ToExcel()
         {
@@ -168,7 +208,7 @@ namespace KeWeiOMS.Web.Controllers
                         where += " and ";
                     where += "CreationDate <=\'" + Convert.ToDateTime(enddate) + "\'";
                 }
-                where = " where " + where;
+                where = " where (" + where;
             }
             return where;
         }
@@ -197,6 +237,24 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult Forward(string id) 
+        {
+            try
+            {
+                int mid = int.Parse(id.Substring(0, id.IndexOf("$")));
+                string name = id.Substring(id.IndexOf("$") + 1);
+                EbayMessageType obj = GetById(mid);
+                obj.ReplayOnlyBy = name;
+                NSession.Update(obj);
+                NSession.Flush();
+                return Json(new { Msg =0}, JsonRequestBehavior.AllowGet); ;
+            }
+            catch (Exception e)
+            { 
+            
+            }
+            return Json(new { Msg =1}, JsonRequestBehavior.AllowGet);
+        }
 
 
 

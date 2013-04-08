@@ -83,19 +83,19 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="ReplayBy" width="100">
+            <th field="ReplayBy" width="100" sortable="true">
                 回复人员
             </th>
 
-            <th field="ReplayAccount" width="100">
+            <th field="ReplayAccount" width="100" sortable="true">
                 回复账号
             </th>
 
-            <th field="CreateBy" width="100">
+            <th field="CreateBy" width="100" sortable="true">
                 创建人
             </th>
 
-            <th field="CreateOn" width="100" formatter="getDate">
+            <th field="CreateOn" width="100" formatter="getDate" sortable="true">
                 创建时间
             </th>
 
@@ -110,12 +110,9 @@
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div> 
 		<div id="mm" style="width: 120px">
-                        <div data-options="name:'Id'">主键</div>
             <div data-options="name:'ReplayBy'">回复人员</div>
             <div data-options="name:'ReplayAccount'">回复账号</div>
             <div data-options="name:'CreateBy'">创建人</div>
-            <div data-options="name:'CreateOn'">创建时间</div>
-
         </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
