@@ -91,6 +91,11 @@ namespace KeWeiOMS.Domain
         public virtual string ReplayBy { get; set; }
 
         /// <summary>
+        /// 转发原因
+        /// </summary>
+        public virtual string ForwardWhy { get; set; }
+
+        /// <summary>
         /// 同步时间
         /// </summary>
         public virtual DateTime ReplayOn { get; set; }

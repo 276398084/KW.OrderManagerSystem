@@ -5,7 +5,9 @@
 }
 <body class="easyui-layout">
 <script language="javascript" type="text/javascript">
+    var chec =null;
     $(function () {
+        chec =null;
         $('#dg').datagrid({
             url: '@Url.Action("List","EbayMessage")',
             pageNumber: 1,
@@ -15,7 +17,34 @@
         });
         $("#txtEndDate").datebox("setValue", getStartDate(-1));
         $("#txtStartDate").datebox("setValue", getStartDate(7));
+        $('#tt1').tree({
+            onClick: function (node) {
+                treeOnclick(node.text);
+            }
+        });
     });
+
+    function treeOnclick(text) {
+        if (text != "所有消息") {
+            if (text == "未分配消息") {
+                chec = "1";
+            }
+            else {
+                chec = null;
+            }
+            
+            $('#dg').datagrid({
+                url: '@Url.Action("GetTree", "EbayMessage")/' + text
+            })
+        }
+        else {
+            chec = null;
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "EbayMessage")'
+            })
+        }
+
+    }
 
     //新建
     function c_dlg() {
@@ -97,9 +126,60 @@
         return "回复时间：<br>" + datecheck(v) + "<br>回复人：<br>" +rby;
     }
     function opeart(v, r, i) {
-        var reb = "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'re("+ v + ")\'>回复</a>";
-        return reb + '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(' + v + ')\'>详细</a>';
+        var reb = "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'re(" + v + ")\'>回复</a>";
+        if (chec != null) {
+            return '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'toby(' + v + ')\'>分配</a>';
+        }
+        else {
+            return reb + '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(' + v + ')\'>详细</a>';
+
+        }
     }
+    function toby(v) {
+        $('#dd').dialog({
+            buttons: [{
+                text: '确定',
+                iconCls: 'icon-ok',
+                handler: function () {
+                    forwarding(v);
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#dd').dialog('close');
+                }
+            }]
+        });
+        function forwarding() {
+            $.ajax({
+                url: "@Url.Action("Forward", "EbayMessage")/" + v + "$" + $('#forname').combobox("getValue") + "~" + " ",
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '分配出错',
+                                timeout: 2000,
+                                showType: 'slide'
+                            })
+                        }
+                        else {
+                            alert("分配成功！");
+                            $('#dg').datagrid('reload');
+                            $('#dd').dialog('close');
+                        }
+                    }
+                }
+            })
+        }
+
+        $('#forname').combobox({
+            url: '@Url.Action("GetUsers", "EbayReplay")',
+            valueField: "Realname",
+            textField: "Realname",
+        });
+    }
+
     function re(value) {
         $.ajax({
             url: '@Url.Action("IsRead", "EbayMessage")/' + value,
@@ -146,8 +226,45 @@
         return getDate(value);
     }
 </script>
+<div data-options="region:'west',split:true,title:'分类'" style="width:150px;padding:10px;">
+        <ul id="tt1" class="easyui-tree" data-options="animate:true,dnd:true">
+            <li>
+                <span>未分配消息</span>
+                <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
+
+
+            </li> 
+            <li>             
+                <span>待处理消息</span>
+                <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
+            </li>  
+             <li>             
+                <span>所有消息</span>
+            </li>  
+        </ul>
+</div>
 <div region="center">
-<table id="dg" class="easyui-datagrid" 
+<table id="dg" class="easyui-datagrid"
            toolbar="#toolbar"  
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
@@ -202,4 +319,16 @@
     <div id="e_dlg"></div>
 
 </div>
+    <div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
+            <table>
+                <tr>
+                    <td>
+                        <label>分配给回复人：</label>
+                    </td>
+                    <td>
+                        <input id="forname" required="true"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
 </body>

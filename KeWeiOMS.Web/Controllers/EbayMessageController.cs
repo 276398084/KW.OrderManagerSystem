@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using KeWeiOMS.Domain;
-using KeWeiOMS.NhibernateHelper;
-using NHibernate;
-using eBay.Service.Core.Sdk;
-using eBay.Service.Call;
-using eBay.Service.Core.Soap;
 using System.Data.SqlClient;
 using System.Data;
 
@@ -113,7 +106,7 @@ namespace KeWeiOMS.Web.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                string date = search.Substring(0, search.IndexOf("$"));
+                string date = search.Substring(0,search.IndexOf("$"));
                 string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1));
                 where = GetSearch(date);
                 if (!string.IsNullOrEmpty(where) && !string.IsNullOrEmpty(key))
@@ -241,10 +234,12 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                int mid = int.Parse(id.Substring(0, id.IndexOf("$")));
-                string name = id.Substring(id.IndexOf("$") + 1);
+                int mid = int.Parse(id.Substring(0,id.IndexOf("$")).ToString());
+                string name = id.Substring(id.IndexOf("$") + 1, id.IndexOf("~")-id.IndexOf("$")-1);
+                string remark = id.Substring(id.IndexOf("~")+1);
                 EbayMessageType obj = GetById(mid);
                 obj.ReplayOnlyBy = name;
+                obj.ForwardWhy = remark;
                 NSession.Update(obj);
                 NSession.Flush();
                 return Json(new { Msg =0}, JsonRequestBehavior.AllowGet); ;
@@ -254,6 +249,50 @@ namespace KeWeiOMS.Web.Controllers
             
             }
             return Json(new { Msg =1}, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetTree(string id)
+        {           
+            IList<EbayReplayType> replay = NSession.CreateQuery("from EbayReplayType").List<EbayReplayType>();
+            if (id == "未分配消息")
+            {
+                if (CurrentUser.Realname == "管理员")
+                {
+                    string where = "where ReplayOnlyBy is null";
+
+                     foreach(var item in replay)
+                     {
+                         where +=" and Shop<>'"+ item.ReplayAccount+"'";
+                     }
+                     IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType " + where + " order by Id desc").List<EbayMessageType>();
+                     return Json(list,JsonRequestBehavior.AllowGet);
+                }
+                
+            }
+            if(id=="待处理消息")
+            {
+                string where = "where ReplayOnlyBy is null";
+
+                foreach (var item in replay)
+                {
+                    where += " and Shop<>'" + item.ReplayAccount + "'";
+                }
+                IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType " + where).List<EbayMessageType>();
+                IList<EbayMessageType> obj = NSession.CreateQuery("from EbayMessageType where MessageStatus='未回复' order by Id desc").List<EbayMessageType>();
+                foreach (var item in obj)
+                {
+                    foreach (var it in replay)
+                    { 
+                        if(item.Id==it.Id)
+                        {
+                            obj.Remove(item);
+                        }
+                    }
+                }
+                return Json(obj,JsonRequestBehavior.AllowGet);
+            }
+
+            return Json("");
         }
 
 

@@ -44,6 +44,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.ReplayBy);
             Map(x => x.ReplayOn);
             Map(x=>x.ReplayOnlyBy);
+            Map(x => x.ForwardWhy);
         }
     }
 }

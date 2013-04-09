@@ -196,7 +196,7 @@
     }
     function forwarding() {
         $.ajax({
-            url: '@Url.Action("Forward", "EbayMessage")/@ViewData["mid"]' + "$" + $('#forname').combobox("getValue"),
+            url: '@Url.Action("Forward", "EbayMessage")/@ViewData["mid"]' + "$" + $('#forname').combobox("getValue") + "~" + $('#forqu').attr("value"),
             success: function (result) {
                 if (result) {
                     if (result.Msg != '0') {
@@ -244,16 +244,19 @@
 </script>
 
 <body class="easyui-layout">
-    <div data-options="region:'center',title:'邮件内容'" style="height: 200px;">
-        <div class="easyui-layout" style="width: 100%; height: 520px;">
-            <div data-options="region:'north',border:false" style="height: 210px;">
+    <div data-options="region:'center',title:'邮件内容'" style="height:300px;">
+        <div class="easyui-layout" style="width: 100%; height:660px;">
+            <div data-options="region:'north',border:false" style="height: 350px;">
+                <div style="background-color:lightgray">
+                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>账号:&nbsp;@ViewData["buyer"]</label>label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>提问时间:&nbsp;@ViewData["creation"]</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>邮箱:&nbsp;@ViewData["email"]</p></label>
+                </div>
                 <div style="float: left">
                     <table class="editForm" id="etable" style="width: 800px;">
                         <tr>
-                            <td valign="top">&nbsp;&nbsp;<label>邮件标题:</label>
+                            <td valign="top">&nbsp;&nbsp;<label style="font-size:small">邮件标题:</label>
                             </td>
                             <td colspan="10" valign="top">
-                                <textarea id="ESubject" style="border: 0; width: 1200px; font-size: initial; resize: none;">@ViewData["sub"]</textarea>
+                                <textarea id="ESubject" style="border: 0; width: 1000px; font-size:small; resize: none;">@ViewData["sub"]</textarea>
                             </td>
                         </tr>
 
@@ -261,11 +264,10 @@
                             <td valign="top">&nbsp;&nbsp;<label>邮件内容:</label>
                             </td>
                             <td colspan="10">
-                                <textarea id="EContent" style="border: 0; width: 1200px; font-size: larger; font-weight: 600; resize: none;" readonly="readOnly">@ViewData["bod"]</textarea>
+                                <textarea id="EContent" style="height:200px;border: 0; width: 1000px; font-size:large; font-weight:400; resize: none;" readonly="readOnly">@ViewData["bod"]</textarea>
                             </td>
                         </tr>
                     </table>
-                    <p>&nbsp;&nbsp;<label style="font-size: medium">买家信息:</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>账号:&nbsp;@ViewData["buyer"]</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>邮箱:&nbsp;@ViewData["email"]</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>提问时间:&nbsp;@ViewData["creation"]</label></p>
                 </div>
             </div>
 
@@ -363,7 +365,23 @@ singleselect="true",fitColumns:true,nowrap:false">
         <div id="d_dlg"></div>
     </div>
         <div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
-            <label>转发给回复人：</label><input id="forname" />
+            <table>
+                <tr>
+                    <td>
+                        <label>转发给回复人：</label>
+                    </td>
+                    <td>
+                        <input id="forname" required="true"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>转发原因：</label></td>
+                    <td>
+                        <textarea id="forqu" style="resize:none" required="true"></textarea>
+                    </td>
+                </tr>
+            </table>
         </div>
      <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="resend();">重新发货</a>  
