@@ -195,52 +195,34 @@
         });
     }
     function forwarding() {
-        $.ajax({
-            url: '@Url.Action("Forward", "EbayMessage")/@ViewData["mid"]' + "$" + $('#forname').combobox("getValue") + "~" + $('#forqu').attr("value"),
-            success: function (result) {
-                if (result) {
-                    if (result.Msg != '0') {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '转发出错',
-                            timeout: 2000,
-                            showType: 'slide'
-                        })
+        if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
+
+            $.ajax({
+                url: '@Url.Action("Forward", "EbayMessage")/@ViewData["mid"]' + "$" + $('#forname').combobox("getValue") + "~" + $('#forqu').attr("value"),
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '转发出错',
+                                timeout: 2000,
+                                showType: 'slide'
+                            })
+                        }
+                        else {
+                            alert("转发成功！");
+                            window.close();
+                        }
                     }
-                    else {
-                        alert("转发成功！");
-                        window.close();
-                    }
+
                 }
-
-            }
-        })
+            })
+        }
+        else {
+            alert("回复人员、转发原因不能为空！！");
+        }
     }
 
-    function resend(v) {
-        alert("重新发货");
-        s_ids = [];
-        var rows = $('#order').datagrid('getSelections');
-        for (var i = 0; i < rows.length; i++) {
-            s_ids.push(rows[i]["Id"]);
-        }
-        if (s_ids.length == 0) {
-            $.messager.alert("请选择一条数据");
-            return;
-        }
-        $.messager.confirm("提示", "确定要重新发货吗？一共是" + s_ids.length + "条订单", function (r) {
-            if (r) {
-                jQuery.ajax({
-                    url: "/Order/ReSend",
-                    type: "post",
-                    data: "o=" + s_ids.join(','),
-                    success: function (sss) {
-                        $('#order').datagrid("reload");
-                    }
-                });
-            }
-        });
-    }
 </script>
 
 <body class="easyui-layout">
@@ -334,7 +316,7 @@ singleselect="true",fitColumns:true,nowrap:false">
             </div>
         </div>
         <div style="float: left; margin-left: 0px">
-            <table id="order" class="datagrid-cell" toolbar="#toolbar" style="width: 1320px; height: 300px"
+            <table id="order" class="datagrid-cell" style="width: 1320px; height: 300px"
                 singleselect="true">
                 <thead>
                     <tr>
@@ -371,7 +353,7 @@ singleselect="true",fitColumns:true,nowrap:false">
                         <label>转发给回复人：</label>
                     </td>
                     <td>
-                        <input id="forname" required="true"/>
+                        <input id="forname" required="true" style="width:150px"/>
                     </td>
                 </tr>
                 <tr>
@@ -383,7 +365,4 @@ singleselect="true",fitColumns:true,nowrap:false">
                 </tr>
             </table>
         </div>
-     <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="resend();">重新发货</a>  
-         </div>
     </body>

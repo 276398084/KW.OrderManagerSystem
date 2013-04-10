@@ -5,6 +5,7 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using System.Data.SqlClient;
 using System.Data;
+using System.Text.RegularExpressions;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -97,6 +98,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
+            string type = "";
             string where = "";
             string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
@@ -107,14 +109,15 @@ namespace KeWeiOMS.Web.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 string date = search.Substring(0,search.IndexOf("$"));
-                string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1));
+                string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1, search.LastIndexOf("$") - search.IndexOf("$")- 1));
+                type = search.Substring(search.LastIndexOf("$")+1);
                 where = GetSearch(date);
                 if (!string.IsNullOrEmpty(where) && !string.IsNullOrEmpty(key))
                     where += " and " + key;
                 else
                 {
                     if (!string.IsNullOrEmpty(key))
-                        where = " where (" + key;
+                        where = " where ((" + key;
                 }
 
             }
@@ -127,7 +130,7 @@ namespace KeWeiOMS.Web.Controllers
                 }
                 else
                 {
-                    where = " where (" + account;
+                    where = " where ((" + account;
                 }
             }
             if (!string.IsNullOrEmpty(where))
@@ -138,7 +141,68 @@ namespace KeWeiOMS.Web.Controllers
             {
                 where = " where ReplayOnlyBy is null ";
             }
-            where += " or ReplayOnlyBy ='"+CurrentUser.Realname+"'";
+            where += " or ReplayOnlyBy ='"+CurrentUser.Realname+"')";
+            if (!string.IsNullOrEmpty(type))
+            {
+                string pid = type.Substring(0, type.IndexOf("~"));
+                string cid = type.Substring(type.IndexOf("~") + 1);
+                if (pid == "待处理消息")
+                {
+                    where += " and MessageStatus ='未回复'";
+                    if (cid == "询问物品")
+                    {
+                        where += " and Subject like '%sent a question%'";
+
+                    }
+                    if (cid == "质量问题")
+                    {
+                        where += " and MessageStatus =''";
+                    }
+                    if (cid == "退货")
+                    {
+                        where += " and MessageStatus =''";
+                    }
+                }
+                if (pid == "已处理消息")
+                {
+                    where += " and MessageStatus ='已回复'";
+                    if (cid == "询问物品")
+                    {
+                        where += " and Subject like '%sent a question%'";
+
+                    }
+                    if (cid == "质量问题")
+                    {
+                        where += " and MessageStatus =''";
+                    }
+                    if (cid == "退货")
+                    {
+                        where += " and MessageStatus =''";
+                    }
+                }
+                if (pid == "所有消息")
+                {
+                    if (cid == "询问物品")
+                    {
+                        where += " and Subject like '%sent a question%'";
+
+                    }
+                    if (cid == "质量问题")
+                    {
+                        where += " and MessageStatus =''";
+                    }
+                    if (cid == "退货")
+                    {
+                        where += " and MessageStatus =''";
+                    }
+                }
+                if (pid == "未分配消息")
+                {
+                    where += " and MessageStatus =''";
+                }
+            }
+
+
             Session["ToExcel"] = where + orderby;
             IList<EbayMessageType> objList = NSession.CreateQuery("from EbayMessageType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -147,6 +211,98 @@ namespace KeWeiOMS.Web.Controllers
 
             object count = NSession.CreateQuery("select count(Id) from EbayMessageType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
+
+            //IList<EbayMessageType> listtype = new List<EbayMessageType>();
+            //IList<EbayMessageType> listleve = new List<EbayMessageType>();
+            //if(!string.IsNullOrEmpty(type))
+            //{
+            //    string pid = type.Substring(0,type.IndexOf("~"));
+            //    string cid = type.Substring(type.IndexOf("~") + 1);
+            //    if (pid != "所有消息")
+            //    {
+            //        if (pid == "待处理消息")
+            //        {
+            //            foreach(var item in objList)
+            //            {
+            //                if (item.MessageStatus == "未回复")
+            //                {
+            //                    listtype.Add(item);
+            //                }
+            //            }
+            //          if (cid == "询问物品")
+            //            {
+            //                    foreach (var item in listtype)
+            //                    {
+            //                        if (init("sent a question", item.Subject)!="")
+            //                        {
+            //                            listleve.Add(item);
+            //                        }
+            //                    }
+            //                    return Json(new { total = listleve.Count, rows = listleve });
+            //            }
+            //          if (cid == "质量问题")
+            //          {
+            //              return Json(new { total = 0, rows = "" });
+            //          }
+            //          if (cid == "退货")
+            //          {
+            //              return Json(new { total = 0, rows = "" });
+            //          }
+
+            //            return Json(new { total = listtype.Count, rows = listtype });
+            //        }
+            //        if (pid == "已处理消息")
+            //        {
+            //            foreach (var item in objList)
+            //            {
+            //                if (item.MessageStatus == "已回复")
+            //                {
+            //                    listtype.Add(item);
+            //                }
+            //            }
+            //            if (cid == "询问物品")
+            //            {
+            //                foreach (var item in listtype)
+            //                {
+            //                    if (init("sent a question", item.Subject) != "")
+            //                    {
+            //                        listleve.Add(item);
+            //                    }
+            //                }
+            //                return Json(new { total = listleve.Count, rows = listleve });
+            //            }
+            //            if (cid == "质量问题")
+            //            {
+            //                return Json(new { total = 0, rows = "" });
+            //            }
+            //            if (cid == "退货")
+            //            {
+            //                return Json(new { total = 0, rows = "" });
+            //            }
+
+            //            return Json(new { total = listtype.Count, rows = listtype });
+            //        }
+            //        if (pid == "未分配消息")
+            //        {
+            //            return Json(new { total = 0, rows = "" });
+            //        }
+                
+            //    }
+            
+            //}
+
+
+        }
+
+        public string init(string key,string all)
+        {
+            string qty = "";
+            Regex regex = new Regex(key, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
+            if (regex.IsMatch(all))
+            {
+                    qty ="0";
+            }
+            return qty;
         }
 
         private string FindAccount()
@@ -201,7 +357,7 @@ namespace KeWeiOMS.Web.Controllers
                         where += " and ";
                     where += "CreationDate <=\'" + Convert.ToDateTime(enddate) + "\'";
                 }
-                where = " where (" + where;
+                where = " where ((" + where;
             }
             return where;
         }
@@ -249,50 +405,6 @@ namespace KeWeiOMS.Web.Controllers
             
             }
             return Json(new { Msg =1}, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetTree(string id)
-        {           
-            IList<EbayReplayType> replay = NSession.CreateQuery("from EbayReplayType").List<EbayReplayType>();
-            if (id == "未分配消息")
-            {
-                if (CurrentUser.Realname == "管理员")
-                {
-                    string where = "where ReplayOnlyBy is null";
-
-                     foreach(var item in replay)
-                     {
-                         where +=" and Shop<>'"+ item.ReplayAccount+"'";
-                     }
-                     IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType " + where + " order by Id desc").List<EbayMessageType>();
-                     return Json(list,JsonRequestBehavior.AllowGet);
-                }
-                
-            }
-            if(id=="待处理消息")
-            {
-                string where = "where ReplayOnlyBy is null";
-
-                foreach (var item in replay)
-                {
-                    where += " and Shop<>'" + item.ReplayAccount + "'";
-                }
-                IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType " + where).List<EbayMessageType>();
-                IList<EbayMessageType> obj = NSession.CreateQuery("from EbayMessageType where MessageStatus='未回复' order by Id desc").List<EbayMessageType>();
-                foreach (var item in obj)
-                {
-                    foreach (var it in replay)
-                    { 
-                        if(item.Id==it.Id)
-                        {
-                            obj.Remove(item);
-                        }
-                    }
-                }
-                return Json(obj,JsonRequestBehavior.AllowGet);
-            }
-
-            return Json("");
         }
 
 

@@ -12,30 +12,67 @@
             url: '@Url.Action("List","EbayMessage")',
             pageNumber: 1,
             nowrap: false,
+            onDblClickRow: function (index, row) {
+                var value = row.Id;
+                $.ajax({
+                    url: '@Url.Action("IsRead", "EbayMessage")/' + value,
+                    success: function (result) {
+                        if (result) {
+                            if (result.Msg != '0') {
+                                $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                                    if (r) {
+                                        window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                            }
+                        })
+                    }
+                    else {
+                        window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                    }
+                }
+
+            }
+                })
+
+            },
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
         $("#txtEndDate").datebox("setValue", getStartDate(-1));
         $("#txtStartDate").datebox("setValue", getStartDate(7));
         $('#tt1').tree({
+            state:closed,
             onClick: function (node) {
-                treeOnclick(node.text);
+                treeOnclick(node.text, node.target);
             }
         });
     });
 
-    function treeOnclick(text) {
+    function treeOnclick(text, target) {
+        var te=null;
+        var st = $('#tt1').tree("getRoots");
+        for (i = 0; i < st.length;i++)
+        {
+            if (text == st[i].text)
+            {
+                te="0";
+                search = "&$&$"+text+"~";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+        }
+        if(te==null)
+        {
+            search = "&$&$"+$('#tt1').tree("getParent",target).text+"~"+text;
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        chec = null;
         if (text != "所有消息") {
-            if (text == "未分配消息") {
+            if (text == "未分配消息" || $('#tt1').tree("getParent", target).text == "未分配消息") {
                 chec = "1";
             }
-            else {
-                chec = null;
-            }
-            
-            $('#dg').datagrid({
-                url: '@Url.Action("GetTree", "EbayMessage")/' + text
-            })
         }
         else {
             chec = null;
@@ -77,7 +114,7 @@
     }
 
     function doSearch() {
-        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue")+"$";
         $("#dg").datagrid("load", {
             search: search
         });
@@ -228,8 +265,8 @@
 </script>
 <div data-options="region:'west',split:true,title:'分类'" style="width:150px;padding:10px;">
         <ul id="tt1" class="easyui-tree" data-options="animate:true,dnd:true">
-            <li>
-                <span>未分配消息</span>
+            <li data-options="state:'closed'">
+                <span>待处理消息</span>
                 <ul>
                     <li>
                         <span>询问物品</span>
@@ -244,8 +281,8 @@
 
 
             </li> 
-            <li>             
-                <span>待处理消息</span>
+            <li data-options="state:'closed'">             
+                <span>已处理消息</span>
                 <ul>
                     <li>
                         <span>询问物品</span>
@@ -258,8 +295,33 @@
                     </li>
                 </ul>
             </li>  
-             <li>             
-                <span>所有消息</span>
+             <li data-options="state:'closed'">             
+                <span >所有消息</span>
+                 <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
+            </li>  
+            <li data-options="state:'closed'">             
+                <span>未分配消息</span>
+                <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
             </li>  
         </ul>
 </div>
@@ -326,7 +388,7 @@
                         <label>分配给回复人：</label>
                     </td>
                     <td>
-                        <input id="forname" required="true"/>
+                        <input id="forname" required="true" style="width:150px"/>
                     </td>
                 </tr>
             </table>

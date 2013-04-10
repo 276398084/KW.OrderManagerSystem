@@ -2,6 +2,7 @@
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -65,6 +66,78 @@ namespace KeWeiOMS.Web
                 } 
             }
             return 0;
+        }
+
+        [WebMethod]
+        public string EbayMessageDown(string Body, DateTime CreationDate, string MessageID, string Status, string MessageType,string SenderEmail,string SenderID,string Subject,string ItemID,string Shop)
+        {
+            try
+            {
+                EbayMessageType email = new EbayMessageType();
+                email.Body = Body;
+                email.CreationDate = CreationDate;
+                email.MessageId = MessageID;
+                email.MessageStatus = Status;
+                email.MessageType = MessageType;
+                email.SenderEmail = SenderEmail;
+                email.SenderID = SenderID;
+                email.Subject = Subject;
+                email.ItemId = ItemID;
+                email.Shop = Shop;
+                email.CreateOn = DateTime.Now;
+                email.ReplayOn = Convert.ToDateTime("2000-01-01");
+                int id = NoExist(email.MessageId);
+                if (id != 0)
+                {
+                    return "该条邮件已同步！";
+                }
+                else
+                {
+                    NSession.Save(email);
+                    NSession.Flush();
+                    return "同步一条邮件！";
+                }
+            }
+            catch (Exception ex)
+            {
+                return "保存失败";
+            }
+        }
+
+        private int NoExist(string MessageId)
+        {
+             
+            int id = 0;
+            object obj = NSession.CreateQuery("select count(Id) from EbayMessageType where MessageId='" + MessageId + "'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+
+                IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where MessageId='" + MessageId + "'").List<EbayMessageType>();
+                NSession.Clear();
+                foreach (var item in list)
+                {
+                    id = item.Id;
+                }
+
+            }
+            return id;
+
+        }
+        
+        [WebMethod]
+        public ArrayList ApiToken(string psw)
+        {   
+            ArrayList arry = new ArrayList();
+            if(psw=="feidujinbostore")
+            { 
+
+            IList<AccountType> account = NSession.CreateQuery("from AccountType where Platfrom ='Ebay' and ApiToken <>''").List<AccountType>();
+            foreach (var item in account)
+            {
+                arry.Add(item.ApiToken);
+            }
+            }
+            return arry;
         }
     }
 }

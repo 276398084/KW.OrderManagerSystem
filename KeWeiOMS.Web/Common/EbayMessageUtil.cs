@@ -69,7 +69,10 @@ namespace KeWeiOMS.Web
                     email.SenderEmail = mmet.Question.SenderEmail;
                     email.SenderID = mmet.Question.SenderID;
                     email.Subject = mmet.Question.Subject;
-                    email.ItemId = mmet.Item.ItemID.ToString();
+                    if (mmet.Item!=null)
+                    { 
+                        email.ItemId = mmet.Item.ItemID;
+                    }
                     email.Shop = mmet.Question.RecipientID[0];
                     email.CreateOn = DateTime.Now;
                     email.ReplayOn = Convert.ToDateTime("2000-01-01");
