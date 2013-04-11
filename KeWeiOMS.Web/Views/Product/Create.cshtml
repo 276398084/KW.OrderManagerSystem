@@ -207,36 +207,48 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU", @class = "easyui-validatebox", @required = "true" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.ProductName, "商品名称:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.ProductName, new { @id = "c_ProductName", @class = "easyui-validatebox", @required = "true" })
-                </td>
-
-                <td rowspan="3">
-                    @Html.LabelFor(model => model.PicUrl, "大图片网址:")
-                </td>
-                <td rowspan="3">
-                    <input id="up_file" type="file" name="up_file" />
-                    @Html.HiddenFor(model => model.PicUrl, new { @id = "c_PicUrl" })
-                </td>
-            </tr>
-            <tr>
-                <td>
+                </td>                <td>
                     @Html.LabelFor(model => model.Category, "类别:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.Category, new { @id = "c_Category" })
                 </td>
                 <td>
+                  
+                    @Html.LabelFor(model => model.SKU, "主编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OldSKU, new { @id = "c_OldSKU", @class = "easyui-validatebox", @required = "true" })
+                </td>
+
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ProductName, "商品名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ProductName, new { @id = "c_ProductName", @class = "easyui-validatebox", @required = "true" })
+                </td>
+                <td>
                     @Html.LabelFor(model => model.Status, "状态:")
                 </td>
                 <td>@Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
-
+                <td rowspan="2">
+                    @Html.LabelFor(model => model.PicUrl, "大图片网址:")
                 </td>
-            </tr>
+                <td rowspan="2">
+                    <input id="up_file" type="file" name="up_file" />
+                    @Html.HiddenFor(model => model.PicUrl, new { @id = "c_PicUrl" })
+                </td>
+
+            </tr> 
+
+        </table>
+            </fieldset>
+          <div id="tt" class="easyui-tabs" style="width:1180px;height:300px;"> 
+        <div title="仓库信息" style="padding:20px;">  
+        <table>
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Price, "商品价格:")
@@ -277,13 +289,14 @@
                 </td>
             </tr>
 
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.IsInfraction, "是否侵权:")
+            <tr>               
+                 <td>
+                    @Html.LabelFor(model => model.Brand, "品牌:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.IsInfraction, new { @id = "c_IsInfraction" })
+                    @Html.TextBoxFor(model => model.Brand, new { @id = "c_Brand" })
                 </td>
+
                 <td>
                     @Html.LabelFor(model => model.Model, "型号:")
                 </td>
@@ -291,31 +304,11 @@
                     @Html.TextBoxFor(model => model.Model, new { @id = "c_Model" })
                 </td>
                 <td>
-                    @Html.LabelFor(model => model.Brand, "品牌:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Brand, new { @id = "c_Brand" })
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Purchaser, "采购人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Purchaser, new { @id = "c_Purchaser" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.Examiner, "验货人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Examiner, new { @id = "c_Examiner" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.Packer, "包装人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Packer, new { @id = "c_Packer" })
-                </td>
+                    @Html.LabelFor(model => model.Location, "库位:")
+                </td >
+                <td> 
+                    @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
+                 </td>
             </tr>
             <tr>
                 <td>
@@ -337,28 +330,42 @@
                     @Html.TextBoxFor(model => model.HasBattery, new { @id = "c_HasBattery" })
                 </td>
             </tr>
-
-            <tr>
+                        <tr>
                 <td>
-                    @Html.LabelFor(model => model.Location, "库位:")
-                </td >
-                <td colspan="3"> 
-                    @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
-                </td>
-                  <td>
-                  
-                    @Html.LabelFor(model => model.SKU, "主编号:")
+                    @Html.LabelFor(model => model.Purchaser, "采购人:")
                 </td>
                 <td>
-                    @Html.TextBoxFor(model => model.OldSKU, new { @id = "c_OldSKU", @class = "easyui-validatebox", @required = "true" })
+                    @Html.TextBoxFor(model => model.Purchaser, new { @id = "c_Purchaser" })
                 </td>
-                
-
+                <td>
+                    @Html.LabelFor(model => model.Examiner, "验货人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Examiner, new { @id = "c_Examiner" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.Packer, "包装人:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Packer, new { @id = "c_Packer" })
+                </td>
             </tr>
-            <tr>
-                <td>组合产品设置</td>
-                <td colspan="5" style="height: 150px">
 
+        </table>
+            </div>
+         <div title="是否侵权" style="overflow:auto;padding:20px;">  
+            <table>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.IsInfraction, "是否侵权:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.IsInfraction, new { @id = "c_IsInfraction" })
+                </td>
+            </tr>
+               </table>
+             </div>
+          <div title="组合产品" style="overflow:auto;padding:20px;">  
                     <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
                         <thead>
                             <tr>
@@ -368,16 +375,16 @@
                     </th>
                         </thead>
                     </table>
+              </div>
 
-                </td>
-            </tr>
-
+              <div title="备注信息" style="overflow:auto;padding:20px;">  
+              <table>
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Summary, "简单描述:")
                 </td>
                 <td colspan="5">
-                    @Html.TextAreaFor(model => model.Summary, new { @id = "c_Summary", @style = "width:700px;height:200px;" })
+                    @Html.TextAreaFor(model => model.Summary, new { @id = "c_Summary", @style = "width:700px;height:100px;resize:none" })
                 </td>
             </tr>
             <tr>
@@ -385,10 +392,11 @@
                     @Html.LabelFor(model => model.PackMemo, "包装注意事项:")
                 </td>
                 <td colspan="5">
-                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:200px;" })
+                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:100px;resize:none" })
                 </td>
             </tr>
         </table>
-    </fieldset>
+            </div>
+     </div>
    
 }
