@@ -27,7 +27,8 @@
     $(function () {
         $('#dg_product').datagrid({
             url: '@Url.Action("List", "OrderProduct")/@ViewData["id"]',
-            width: 700,
+            width: 750,
+            height:200,
             toolbar: [{
                 id: 'btnadd',
                 text: '添加',
@@ -88,6 +89,8 @@
                 { field: 'LogisticsCode', title: '代码', width: 100 }
             ]]
         });
+        $('#dg_p').datagrid({closed: true });
+
     });
 
     function changeCountry(v) {
@@ -237,6 +240,7 @@
     }
 
     function reOrder() {
+        $('#dg_p').datagrid({ closed: false });
         showProduct("重发", function () {
             if (endEditing1()) {
                 var effectRow = new Object();
@@ -302,7 +306,7 @@
     
     <fieldset>
         <legend>订单信息</legend>
-        <table class="editForm">
+        <table class="editForm" style="height:150px">
             <tr>
                 <td>
                     @Html.LabelFor(model => model.OrderNo, "订单编号:")
@@ -364,37 +368,11 @@
                     @Html.HiddenFor(model => model.BuyerId, new { @id = "e_BuyerId" })
                 </td>
             </tr>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
-                </td>
-                <td colspan="3">
-                    @Html.TextBoxFor(model => model.BuyerMemo, new { @id = "e_BuyerMemo" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.SellerMemo, "商家留言:")
-                </td>
-                <td colspan="3">
-                    @Html.TextBoxFor(model => model.SellerMemo, new { @id = "e_SellerMemo" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.CutOffMemo, new { @id = "e_CutOffMemo" })
-                </td>
-            </tr>
         </table>
     </fieldset>
-    <fieldset>
-        <legend>产品信息</legend>
-        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true">
+    <div id="tt" class="easyui-tabs" style="width:1350px;height:300px;"> 
+        <div title="产品信息" style="padding:20px;">  
+        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true" >
             <thead>
                 <tr>
                     <th field="ExSKU" width="80" data-options="editor:'text'">ExSKU
@@ -405,7 +383,7 @@
                         editor:{
 							type:'combogrid',
 							options:{
-								panelWidth: 410,
+								panelWidth:410,
                                 mode: 'remote',
                                 idField: 'SKU',
                                 textField: 'SKU',
@@ -437,9 +415,8 @@
                 </tr>
             </thead>
         </table>
-    </fieldset>
-    <fieldset>
-        <legend>地址信息</legend>
+</div>
+<div title="地址信息" style="overflow:auto;padding:20px;">  
         <table class="editForm">
             <tr>
                 <td>
@@ -525,14 +502,47 @@
                 </td>
             </tr>
         </table>
-    </fieldset>
+    </div>  
+    <div title="留言信息" style="padding:20px;">  
+       <table class="editForm">
+              <tr>
+                <td>
+                    @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "e_BuyerMemo",@style="width:400px;resize:none"})
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SellerMemo, "商家留言:")
+                </td>
+                <td >
+                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "e_SellerMemo",@style="width:400px;resize:none" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "e_CutOffMemo" ,@style="width:400px;resize:none"})
+                </td>
+            </tr>
+       </table>
+    </div>  
+
+
+    </div>
 }
 
 <div id="dlg">
-    <table id="dg_p" class="easyui-datagrid" rownumbers="true">
+    <table id="dg_p" class="easyui-datagrid"  rownumbers="true">
         <thead>
             <tr>
-                <th data-options="field:'Id',checkbox:true"></th>
+                <th data-options="field:'Id',checkbox:true,hidden:true"></th>
                 <th field="ExSKU" width="80">ExSKU
                 </th>
                 <th field="Title" width="100">名称
@@ -543,7 +553,6 @@
                 </th>
                 <th field="Remark" width="100">描述
                 </th>
-
             </tr>
         </thead>
     </table>

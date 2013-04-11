@@ -28,6 +28,7 @@
         $('#dg_zu').datagrid({
             // url: '@Url.Action("List", "OrderProduct")',
             width: 700,
+            height:160,
             toolbar: [{
                 id: 'btnadd',
                 text: '添加',
@@ -251,36 +252,10 @@
                     @Html.HiddenFor(model => model.BuyerId, new { @id = "c_BuyerId" })
                 </td>
             </tr>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
-                </td>
-                <td colspan="3">
-                    @Html.TextBoxFor(model => model.BuyerMemo, new { @id = "c_BuyerMemo" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.SellerMemo, "商家留言:")
-                </td>
-                <td colspan="3">
-                    @Html.TextBoxFor(model => model.SellerMemo, new { @id = "c_SellerMemo" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.CutOffMemo, new { @id = "c_CutOffMemo" })
-                </td>
-            </tr>
         </table>
     </fieldset>
-    <fieldset>
-        <legend>产品信息</legend>
+      <div id="tt" class="easyui-tabs" style="width:1180px;height:230px;"> 
+        <div title="产品信息" style="padding:20px;">  
         <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true">
             <thead>
                 <tr>
@@ -322,9 +297,8 @@
                 </tr>
             </thead>
         </table>
-    </fieldset>
-    <fieldset>
-        <legend>地址信息</legend>
+    </div>
+       <div title="地址信息" style="overflow:auto;padding:20px;">  
         <table class="editForm">
             <tr>
                 <td>
@@ -408,11 +382,38 @@
                     @Html.HiddenFor(model => model.AddressInfo.CountryCode, new { @id = "c_CountryCode" })
                 </td>
             </tr>
+            </table>
+           </div>
+              <div title="留言信息" style="padding:20px;">  
+       <table class="editForm">
+                       <tr>
+                <td>
+                    @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
+                </td>
+                <td colspan="3">
+                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "c_BuyerMemo",@style="width:400px;height:40px;resize:none" })
+                </td>
+            </tr>
 
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SellerMemo, "商家留言:")
+                </td>
+                <td colspan="3">
+                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "c_SellerMemo" ,@style="width:400px;height:40px;resize:none"})
+                </td>
+            </tr>
 
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "c_CutOffMemo" ,@style="width:400px;height:40px;resize:none"})
+                </td>
+            </tr>
+       </table>
+    </div>  
 
-
-        </table>
-    </fieldset>
-   
+        </div>
 }
