@@ -43,13 +43,15 @@
             formPost('e_form', '@Url.Action("Edit", "PlanDao")', 'e_dlg', 'dg');
         }
         //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-                var url = '@Url.Action("Delete", "PlanDao")/' + id;
-                alert(1);
-                delData(url, 'dg');
-            }
+        function del(v) {
+            var id = v;
+            $.messager.confirm("提示", "确定要删除吗？删除后数据无法恢复！", function (r) {
+                if (r) {
+                    var url = '@Url.Action("Delete", "PlanDao")/' + id;
+                    delData(url, 'dg');
+                }
+            });
+           
         }
 
         //获取选中行
@@ -113,7 +115,7 @@
 
         function showPrint(v, r) {
             if (r.IsAudit == 1)
-                return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a>';
+                return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a> &nbsp; <a href="javascript:void(0)" onclick="delete(' + v + ')">删除</a>';
             else {
                 return '<a href="javascript:void(0)" onclick="AuditDao(' + v + ')">审核</a>';
             }
@@ -139,7 +141,7 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-                    <th field="Id" width="100" formatter="showPrint">主键
+                    <th field="Id" width="100" formatter="showPrint">操作
                     </th>
 
                     <th field="PlanNo" width="100">采购计划编号

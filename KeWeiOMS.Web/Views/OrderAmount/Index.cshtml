@@ -1,186 +1,139 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.OrderAmountType>
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderAmountType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","OrderAmount")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "OrderAmount")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
         });
 
-    });
 
-
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","OrderAmount")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
-        }
-
-        //编辑框
-        function e_dlg() {
-            var url = '@Url.Action("Edit","OrderAmount")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
+        //新建
+        function c_dlg(i, id) {
+            //0订单 1产品 2运费
+            var url_str = "";
+            if (i == 0) {
+                url_str = '@Url.Action("GetOrders", "OrderAmount")/' + id;
+            } else if (i == 1) {
+                url_str = '@Url.Action("GetProducts", "OrderAmount")/' + id;
+            } else if (i == 2) {
+                url_str = '@Url.Action("GetFreights", "OrderAmount")/' + id;
             }
-        }
 
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "OrderAmount")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "OrderAmount")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
+    showdlg(url_str, 'c_dlg', function () {
+        $('#c_dlg').dialog('close');
+    });
+}
 
-                var url = '@Url.Action("Delete", "OrderAmount")/' + id;
+//删除
+function del() {
+    var id = getselectedRow();
+    if (id != undefined) {
+
+        var url = '@Url.Action("Delete", "OrderAmount")/' + id;
                 alert(1);
                 delData(url, 'dg');
 
             }
         }
 
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
             }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
         }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-     function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                $("#dg").datagrid("load", {
-                    search: search
-                });
-      }
-    function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "OrderAmount")', 's_dlg', 'dg');
-      }		
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
 
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-            <th field="Id" width="100">
-                主键
-            </th>
+        function getAmount(v, r, i) {
+            return r.CurrencyCode + ":" + v;
+        }
 
-            <th field="OId" width="100">
-                订单ID
-            </th>
+        function getFreights(v, r, i) {
+            return '<a href="javascript:void(0)" onclick="c_dlg(2,' + r.OId + ')">' + v + '</a>';
+        }
 
-            <th field="OrderNo" width="100">
-                订单编号
-            </th>
+        function getOrders(v, r, i) {
+            return '<a href="javascript:void(0)" onclick="c_dlg(0,' + r.OId + ')">' + v + '</a>';
+        }
 
-            <th field="OrderExNo" width="100">
-                订单平台ID
-            </th>
-
-            <th field="AgainCount" width="100">
-                重发次数
-            </th>
-
-            <th field="SplitCount" width="100">
-                拆分次数
-            </th>
-
-            <th field="TotalFreight" width="100">
-                总运费
-            </th>
-
-            <th field="TotalCosts" width="100">
-                总产品陈本
-            </th>
-
-            <th field="Fee" width="100">
-                订单手续费
-            </th>
-
-            <th field="TransactionFees" width="100">
-                订单交易费
-            </th>
-
-            <th field="OtherFees" width="100">
-                订单其他费
-            </th>
-
-            <th field="OrderAmount" width="100">
-                订单金额
-            </th>
-
-            <th field="CurrencyCode" width="100">
-                货币
-            </th>
-
-            <th field="ExchangeRate" width="100">
-                汇率
-            </th>
-
-            <th field="RMB" width="100">
-                RMB
-            </th>
-
-            <th field="Status" width="100">
-                状态
-            </th>
-
-
-    	</tr>
-		</thead>
-		</table>
+        function getProducts(v, r, i) {
+            return '<a href="javascript:void(0)" onclick="c_dlg(1,' + r.OId + ')">' + v + '</a>';
+        }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" singleselect="true" pagination="true">
+            <thead>
+                <tr>
+                    <th field="OrderNo" width="100">编号
+                    </th>
+                    <th field="OrderExNo" width="100">订单号
+                    </th>
+                    <th field="AgainCount" width="30" formatter="getOrders">重
+                    </th>
+                    <th field="SplitCount" width="30" formatter="getOrders">拆
+                    </th>
+                    <th field="OrderAmount" width="100" formatter="getAmount">金额
+                    </th>
+                    <th field="ExchangeRate" width="100">汇率
+                    </th>
+                    <th field="RMB" width="100">RMB
+                    </th>
+                    <th field="TotalFreight" width="100" formatter="getFreights">运费
+                    </th>
+                    <th field="TotalCosts" width="100" formatter="getProducts">成本
+                    </th>
+                    <th field="Fee" width="100">手续费
+                    </th>
+                    <th field="TransactionFees" width="100">交易费
+                    </th>
+                    <th field="OtherFees" width="100">OtherFee
+                    </th>
+                    <th field="Status" width="100">状态
+                    </th>
+                    <th field="Profit" width="100">利润
+                    </th>
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
-        </div> 
-		<div id="mm" style="width: 120px">
-                        <div data-options="name:'Id'">主键</div>
-            <div data-options="name:'OId'">订单ID</div>
+        </div>
+        <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>
-            <div data-options="name:'OrderExNo'">订单平台ID</div>
-            <div data-options="name:'AgainCount'">重发次数</div>
-            <div data-options="name:'SplitCount'">拆分次数</div>
-            <div data-options="name:'TotalFreight'">总运费</div>
-            <div data-options="name:'TotalCosts'">总产品陈本</div>
-            <div data-options="name:'Fee'">订单手续费</div>
-            <div data-options="name:'TransactionFees'">订单交易费</div>
-            <div data-options="name:'OtherFees'">订单其他费</div>
-            <div data-options="name:'OrderAmount'">订单金额</div>
+            <div data-options="name:'OrderExNo'">订单号</div>
             <div data-options="name:'CurrencyCode'">货币</div>
             <div data-options="name:'ExchangeRate'">汇率</div>
-            <div data-options="name:'RMB'">RMB</div>
-            <div data-options="name:'Status'">状态</div>
-
         </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+        <div id="c_dlg"></div>
 
-</div>
+
+    </div>
 </body>

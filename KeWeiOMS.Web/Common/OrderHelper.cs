@@ -39,7 +39,8 @@ namespace KeWeiOMS.Web
             List<ResultInfo> results = new List<ResultInfo>();
             foreach (DataRow dr in GetDataTable(fileName).Rows)
             {
-                NSession.CreateQuery("update OrderType set Amount=:p1 where OrderExNo=:p2").SetDouble("p1", Utilities.ToDouble(dr[1].ToString())).SetString("p2", dr[0].ToString()).ExecuteUpdate();
+                if (dr.Table.Columns.Count == 3)
+                    NSession.CreateQuery("update OrderType set Amount=:p1,OrderFees=:p3 where OrderExNo=:p2").SetDouble("p1", Utilities.ToDouble(dr[1].ToString())).SetDouble("p3", Utilities.ToDouble(dr[2].ToString())).SetString("p2", dr[0].ToString()).ExecuteUpdate();
             }
             return results;
 
@@ -153,10 +154,18 @@ namespace KeWeiOMS.Web
                 {
                     OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo();
-                    // order.CurrencyCode = "USD";
+                    try
+                    {
+                        order.CurrencyCode = item["currency"].ToUpper().Trim();
+                    }
+                    catch (Exception)
+                    {
+                        order.CurrencyCode = "USD";
+                    }
+
                     order.OrderExNo = item["order-id"];
                     //order.Amount =Utilities.ToDouble(dr["订单金额"]);
-                    // order.BuyerMemo = dr["订单备注"].ToString();
+                    //order.BuyerMemo = dr["订单备注"].ToString();
                     order.Country = item["ship-country"];
                     order.BuyerName = item["buyer-name"];
                     order.BuyerEmail = item["buyer-email"];
@@ -362,6 +371,54 @@ namespace KeWeiOMS.Web
             return results;
         }
 
+        public static void APIByEbayFee(AccountType account, DateTime st, DateTime et)
+        {
+            ISession NSession = SessionBuilder.CreateSession();
+            List<ResultInfo> results = new List<ResultInfo>();
+            ApiContext context = AppSettingHelper.GetGenericApiContext("US");
+            context.ApiCredential.eBayToken = account.ApiToken;
+            eBay.Service.Call.GetOrdersCall apicall = new eBay.Service.Call.GetOrdersCall(context);
+            apicall.IncludeFinalValueFee = true;
+            apicall.DetailLevelList.Add(eBay.Service.Core.Soap.DetailLevelCodeType.ReturnAll);
+            eBay.Service.Core.Soap.OrderTypeCollection m = null;
+            int i = 1;
+            do
+            {
+                apicall.Pagination = new eBay.Service.Core.Soap.PaginationType();
+                apicall.Pagination.PageNumber = i;
+                apicall.Pagination.EntriesPerPage = 50;
+                apicall.OrderRole = eBay.Service.Core.Soap.TradingRoleCodeType.Seller;
+                apicall.OrderStatus = eBay.Service.Core.Soap.OrderStatusCodeType.Completed;
+                apicall.ModTimeFrom = st;
+                apicall.ModTimeTo = et;
+                apicall.Execute();
+                m = apicall.OrderList;
+                for (int k = 0; k < m.Count; k++)
+                {
+                    eBay.Service.Core.Soap.OrderType ot = m[k];
+
+                    IList<OrderType> orders = NSession.CreateQuery("from OrderType where OrderExNo='" + m[k].OrderID + "'").List<OrderType>();
+                    if (orders.Count > 0)
+                    {
+                        OrderType order = orders[0];
+                        order.OrderFees = ot.ExternalTransaction[0].FeeOrCreditAmount.Value;
+                        foreach (TransactionType item in ot.TransactionArray)
+                        {
+
+                            order.OrderFees += item.FinalValueFee.Value;
+
+                        }
+
+                        NSession.Update(order);
+                        NSession.Flush();
+                    }
+                }
+
+                i++;
+            } while (apicall.HasMoreOrders);
+
+        }
+
         public static List<ResultInfo> APIByEbay(AccountType account, DateTime st, DateTime et)
         {
             ISession NSession = SessionBuilder.CreateSession();
@@ -419,13 +476,14 @@ namespace KeWeiOMS.Web
                         order.CurrencyCode = ot.AmountPaid.currencyID.ToString();
                         order.OrderExNo = ot.OrderID;
                         order.Amount = ot.AmountPaid.Value;
-                        // order.BuyerMemo = dr["订单备注"].ToString();
+
                         order.Country = ot.ShippingAddress.CountryName;
                         order.BuyerName = ot.BuyerUserID;
                         order.BuyerEmail = ot.TransactionArray[0].Buyer.Email;
                         order.BuyerMemo = ot.BuyerCheckoutMessage;
 
                         order.TId = ot.ExternalTransaction[0].ExternalTransactionID;
+                        order.OrderFees = ot.ExternalTransaction[0].FeeOrCreditAmount.Value;
                         order.Account = account.AccountName;
                         order.GenerateOn = ot.PaidTime;
                         order.Platform = PlatformEnum.Ebay.ToString();
@@ -458,6 +516,7 @@ namespace KeWeiOMS.Web
                             {
                                 sku = item.Item.SKU;
                             }
+                            order.OrderFees += item.FinalValueFee.Value;
 
                             CreateOrderPruduct(item.Item.ItemID, sku, item.QuantityPurchased, item.Item.Title,
                                                "", 0,
@@ -465,7 +524,9 @@ namespace KeWeiOMS.Web
                                                order.Id,
                                                order.OrderNo);
                         }
-
+                        NSession.Clear();
+                        NSession.Update(order);
+                        NSession.Flush();
                     }
                 }
                 i++;
@@ -695,8 +756,6 @@ namespace KeWeiOMS.Web
         #endregion
 
         #region 订单验证
-
-
         public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics)
         {
             ISession NSession = SessionBuilder.CreateSession();
@@ -726,21 +785,23 @@ namespace KeWeiOMS.Web
                     resultValue = false;
                     order.ErrorInfo += "货币不符 ";
                 }
-
-
             }
             else
             {
                 resultValue = false;
                 order.ErrorInfo += "货币不符 ";
             }
-
             if (logistics.FindIndex(p => p.LogisticsCode == order.LogisticMode) == -1)
             {
                 resultValue = false;
                 order.ErrorInfo += "货运不符 ";
             }
-            order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>();
+            if (order.Amount == 0)
+            {
+                resultValue = false;
+                order.ErrorInfo += "金额不能为0 ";
+            }
+            order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>().ToList();
             foreach (var item in order.Products)
             {
                 if (item.SKU == null)
@@ -762,22 +823,7 @@ namespace KeWeiOMS.Web
 
             if (resultValue)
             {
-                CurrencyType currency = currencys.Find(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper());
-                order.Status = OrderStatusEnum.已处理.ToString();
-                order.RMB = currency.CurrencyValue * order.Amount;
-                OrderAmountType orderAmount = new OrderAmountType();
-                orderAmount.Account = order.Account;
-                orderAmount.OrderNo = order.OrderNo;
-                orderAmount.OrderExNo = order.OrderExNo;
-                orderAmount.OrderAmount = order.Amount;
-                orderAmount.OId = order.Id;
-                orderAmount.ExchangeRate = currency.CurrencyValue;
-                orderAmount.CurrencyCode = order.CurrencyCode;
-                orderAmount.Platform = order.Platform;
-                orderAmount.Country = order.Country;
-                orderAmount.RMB = order.RMB;
-                NSession.Save(orderAmount);
-                NSession.Flush();
+                SaveAmount(order, currencys, NSession);
             }
 
 
@@ -785,8 +831,104 @@ namespace KeWeiOMS.Web
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             return resultValue;
+        }
+        public static void UpdateAmount(OrderType order)
+        {
+            ISession NSession = SessionBuilder.CreateSession();
+            OrderAmountType orderAmount = NSession.CreateQuery("from OrderAmountType where OId=" + order.Id).SetMaxResults(1).List<OrderAmountType>()[0];
+            if (order.Status != "已发货")
+            {
+                orderAmount.TotalFreight += order.Freight;
+                if (order.IsSplit == 0 && order.IsRepeat == 0)
+                {
+                    orderAmount.Status = order.Status;
+                }
+                else
+                {
+                    object obj =
+                        NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" +
+                                             order.MId + " or MId=" + order.Id + " or Id=" + order.MId + ")").
+                            UniqueResult();
+                    if (Convert.ToInt32(obj) > 0)
+                    {
+                        orderAmount.Status = "部分发货";
+                    }
+                }
+            }
+            else
+            {
+                orderAmount.Status = order.Status;
+            }
 
+            NSession.Update(orderAmount);
+            NSession.Flush();
+        }
 
+        public static void SaveAmount(OrderType order, ISession NSession)
+        {
+            List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
+            SaveAmount(order, currencys, NSession);
+        }
+
+        public static void SaveAmount(OrderType order, List<CurrencyType> currencys, ISession NSession)
+        {
+            CurrencyType currency = currencys.Find(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper());
+            order.Status = OrderStatusEnum.已处理.ToString();
+            order.RMB = Convert.ToDouble(currency.CurrencyValue) * order.Amount;
+            OrderAmountType orderAmount = new OrderAmountType();
+            orderAmount.Account = order.Account;
+            orderAmount.OrderNo = order.OrderNo;
+            orderAmount.OrderExNo = order.OrderExNo;
+            orderAmount.OrderAmount = order.Amount;
+            orderAmount.OId = order.Id;
+            order.MId = order.MId;
+            orderAmount.IsRepeat = order.IsRepeat;
+            orderAmount.IsSplit = order.IsSplit;
+            orderAmount.ExchangeRate = Convert.ToDouble(currency.CurrencyValue);
+            //总成本确认
+            object obj = NSession.CreateSQLQuery(
+                "select SUM(OP.Qty*p.Price) from OrderProducts OP left join Products  P On OP.SKU=p.SKU where OId=" + order.Id).
+                UniqueResult();
+            orderAmount.TotalCosts = Convert.ToDouble(obj);
+
+            IList<AccountFeeType> list = NSession.CreateQuery(string.Format("from AccountFeeType where AccountId in (select Id from AccountType where AccountName='{0}' ) and AmountBegin>={1} and AmountEnd<{1} ", order.Account, order.Amount)).List<AccountFeeType>();
+
+            foreach (var feeType in list)
+            {
+                object d = new DataTable().Compute(feeType.FeeFormula.Replace("T", order.Amount.ToString()), "");
+                if (feeType.FeeName == "交易费")
+                {
+                    orderAmount.TransactionFees = Convert.ToDouble(d);
+                }
+                if (feeType.FeeName == "手续费")
+                {
+                    orderAmount.Fee = Convert.ToDouble(d);
+                }
+                if (feeType.FeeName == "其他费")
+                {
+                    orderAmount.OtherFees = Convert.ToDouble(d);
+                }
+            }
+
+            orderAmount.CurrencyCode = order.CurrencyCode;
+            orderAmount.Platform = order.Platform;
+            orderAmount.Country = order.Country;
+            orderAmount.RMB = order.RMB;
+            orderAmount.Profit = order.RMB - orderAmount.TotalCosts - orderAmount.OtherFees - orderAmount.Fee -
+                                 orderAmount.TransactionFees;
+            NSession.Save(orderAmount);
+            NSession.Flush();
+            if (orderAmount.IsRepeat == 1 && orderAmount.MId != 0)
+            {
+                NSession.CreateQuery("update OrderAmountType set SplitCount=SplitCount+1 where OId=" + orderAmount.MId).ExecuteUpdate();
+                NSession.Flush();
+            }
+            if (orderAmount.IsSplit == 1 && orderAmount.MId != 0)
+            {
+                NSession.CreateQuery("update OrderAmountType set AgainCount=AgainCount+1 where OId=" + orderAmount.MId).ExecuteUpdate();
+                NSession.Flush();
+            }
+            UpdateAmount(order);
         }
         #endregion
 
@@ -875,7 +1017,6 @@ namespace KeWeiOMS.Web
                 NSession.Clear();
                 NSession.Save(orderProduct);
                 NSession.Flush();
-
             }
             NSession.Clear();
             NSession.Delete(" from OrderProductType where Id=" + id);
@@ -909,6 +1050,78 @@ namespace KeWeiOMS.Web
             {
                 return string.Empty;
             }
+        }
+        public static decimal GetFreight(double weight, string logisticMode, String countryCode)
+        {
+            ISession NSession = SessionBuilder.CreateSession();
+            IList<CountryType> c = NSession.CreateQuery("from CountryType").List<CountryType>();
+            if (c.Count > 0)
+                return GetFreight(weight, logisticMode, c[0].Id);
+            else
+            {
+                return -1;//-1为国家错误
+            }
+
+        }
+
+
+        public static decimal GetFreight(double weight, string logisticMode, int country)
+        {
+            ISession NSession = SessionBuilder.CreateSession();
+            decimal discount = 0;
+            decimal ReturnFreight = 0;
+            IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='" + logisticMode + "'").List<LogisticsModeType>();
+            foreach (var item in logmode)
+            {
+                discount = decimal.Parse(item.Discount.ToString());
+                IList<LogisticsAreaType> areas = NSession.CreateQuery("from LogisticsAreaType where LId='" + item.ParentID + "'").List<LogisticsAreaType>();
+                List<LogisticsAreaCountryType> AreaCountrys = NSession.CreateQuery("from LogisticsAreaCountryType where CountryCode='" + country + "' ").List<LogisticsAreaCountryType>().ToList();
+                foreach (var foo in areas)
+                {
+                    LogisticsAreaCountryType tt = AreaCountrys.Find(x => x.AreaCode == foo.Id);
+                    if (tt != null)
+                    {
+                        List<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType where AreaCode=" + tt.AreaCode).List<LogisticsFreightType>().ToList();
+                        LogisticsFreightType logisticsFreight =
+                            list.Find(x => x.FristFreight <= weight && x.EndWeight > weight);
+                        if (logisticsFreight != null)
+                        {
+                            if (logisticsFreight.EveryFee != 0)
+                            {
+                                if (logisticsFreight.IsDiscountALL == 1)
+                                {
+                                    ReturnFreight = (Convert.ToDecimal(weight) * decimal.Parse(logisticsFreight.EveryFee.ToString()) + decimal.Parse(logisticsFreight.ProcessingFee.ToString())) * decimal.Parse(discount.ToString());
+                                }
+                                else
+                                {
+                                    ReturnFreight = Convert.ToDecimal(weight) * decimal.Parse(logisticsFreight.EveryFee.ToString()) * decimal.Parse(discount.ToString()) + decimal.Parse(logisticsFreight.ProcessingFee.ToString());
+                                }
+
+                            }
+                            else
+                            {
+                                if (logisticsFreight.IsDiscountALL == 1)
+                                {
+                                    ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) + decimal.Parse(logisticsFreight.ProcessingFee.ToString()) + (Convert.ToDecimal(weight) - decimal.Parse(logisticsFreight.FristWeight.ToString())) / decimal.Parse(logisticsFreight.IncrementWeight.ToString()) * decimal.Parse(logisticsFreight.IncrementFreight.ToString())) * decimal.Parse(discount.ToString());
+                                }
+                                else
+                                {
+                                    ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) +
+                                                     (Convert.ToDecimal(weight) -
+                                                      decimal.Parse(logisticsFreight.FristWeight.ToString())) /
+                                                     decimal.Parse(logisticsFreight.IncrementWeight.ToString()) *
+                                                     decimal.Parse(logisticsFreight.IncrementFreight.ToString())) *
+                                                    decimal.Parse(discount.ToString()) +
+                                                    decimal.Parse(logisticsFreight.ProcessingFee.ToString());
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            return ReturnFreight;
         }
 
     }

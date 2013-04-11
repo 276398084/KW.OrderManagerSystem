@@ -1,88 +1,86 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.AccountType>
+﻿@model IEnumerable<KeWeiOMS.Domain.AccountType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","Account")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Account")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
         });
 
-    });
-
-    //新建
-    function c_dlg() {
-        var url_str = '@Url.Action("Create","Account")';
-		
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-				modal:true,
-				loadingMessage:'正在加载...',
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        ajaxAdd();
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-        }).dialog('open');;
-    }
-
-    //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit","Account")/' + id;
-            $('#e_dlg').load(url, function () {
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Account")';
+            $('#c_dlg').load(url_str, function () {
                 $(this).dialog({
-                    title: '编辑',
-					modal:true,
-					loadingMessage:'正在加载...',
+                    title: '新建',
+                    modal: true,
+                    loadingMessage: '正在加载...',
                     buttons: [{
                         text: '提交',
                         iconCls: 'icon-ok',
                         handler: function () {
-							ajaxEdit();
+                            ajaxAdd();
                         }
                     }, {
                         text: '取消',
                         handler: function () {
-                            $('#e_dlg').dialog('close');
+                            $('#c_dlg').dialog('close');
                         }
                     }]
                 });
-            }).dialog('open');
+            }).dialog('open');;
         }
-    }
 
-	//异步新建提交
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Account")/' + id;
+                $('#e_dlg').load(url, function () {
+                    $(this).dialog({
+                        title: '编辑',
+                        modal: true,
+                        loadingMessage: '正在加载...',
+                        buttons: [{
+                            text: '提交',
+                            iconCls: 'icon-ok',
+                            handler: function () {
+                                ajaxEdit();
+                            }
+                        }, {
+                            text: '取消',
+                            handler: function () {
+                                $('#e_dlg').dialog('close');
+                            }
+                        }]
+                    });
+                }).dialog('open');
+            }
+        }
+
+        //异步新建提交
         function ajaxAdd() {
             $('#c_form').form('submit', {
-                url: '@Url.Action("Create","Account")',
+                url: '@Url.Action("Create", "Account")',
                 onSubmit: function () {
                     return $(this).form('validate');
                 },
                 success: function (result) {
-                 
+
                     if (!result.IsSuccess) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.ErrorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
                     } else {
                         $('#c_dlg').dialog('close');
                         $('#dg').datagrid('reload');
@@ -95,172 +93,266 @@
                     }
                 }
             });
-        }
-		//异步修改提交
-        function ajaxEdit() {
-            $('#e_form').form('submit', {
-                url: '@Url.Action("Edit","Account")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                 
-                    if (!result.IsSuccess) {
-                       $.messager.show({
-							title: '提示',
-							msg: '保存失败:' + result.ErrorMsg,
-							timeout: 0,
-							showType: 'slide'
-						});
-                    } else {
-                        $('#e_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
+            }
+            //异步修改提交
+            function ajaxEdit() {
+                $('#e_form').form('submit', {
+                    url: '@Url.Action("Edit", "Account")',
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+
+                        if (!result.IsSuccess) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.ErrorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#e_dlg').dialog('close');
+                            $('#dg').datagrid('reload');
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
+                    }
+                });
+            }
+
+            //删除
+            function del() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    $.messager.confirm('确认', '确定删除?', function (r) {
+                        if (r) {
+                            var url = '@Url.Action("Delete", "Account")/' + id;
+                            $.post(url, function () {
+                            }).success(function (data) {
+                                var msgstr = "删除成功";
+                                if (!data.IsSuccess) {
+                                    msgstr = "删除失败" + data;
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 0,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 3000,
+                                        showType: 'slide'
+                                    });
+                                }
+                                $('#dg').datagrid('reload');
+                            }).error(function () {
+                                $.messager.alert('错误', '删除发生错误');
+                            });
+
+                        }
+                    });
+                }
+            }
+
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
                     }
                 }
-            });
-        }
-   
-
-    //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","Account")/' + id;
-                    $.post(url, function () {
-                    }).success(function (data) {
-                        var msgstr = "删除成功";
-                      if (!data.IsSuccess){
-                            msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
-
-                        $('#dg').datagrid('reload');
-                    }) .error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
-                }
-            });
-        }
-    }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
             }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-   
-    function doSearch() {
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        $("#dg").datagrid("load", {
-            search: search
 
-        });
-    }
-</script>
-<div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-@*            <th field="Id" width="100">
-                主键
-            </th>*@
+            function ShowOp(v, r, i) {
+                return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showData("' + v + '")\'>查看明细</a>';
+            }
+            var code;
 
-            <th field="AccountName" width="100" sortable="true">
-                账户名称
-            </th>
+            function showData(v) {
+                $('#s_dlg').show();
+                code = v;
+                $('#s_dlg').dialog({
+                    title: '字典明细',
+                    height: 400,
+                    width: 600,
+                    loadingMessage: '正在加载...'
+                }).dialog('open');
+                $('#dg2').datagrid({
+                    url: '@Url.Action("List", "AccountFee")/',
+                    queryParams: { code: v },
+                    onClickRow: onClickRow
+                });
+                $('#s_dlg').dialog('open');
+            }
 
-            <th field="AccountUrl" width="100" sortable="true">
-                平台网址
-            </th>
+            var editIndex = undefined;
+            function endEditing() {
+                if (editIndex == undefined) {
+                    return true;
+                }
+                var iscon = true;
+                if ($('#dg2').datagrid('validateRow', editIndex)) {
+                    $('#dg2').datagrid('endEdit', editIndex);
+                    $.post("/AccountFee/Save/", $('#dg2').datagrid("getRows")[editIndex], function (rsp) {
+                        if (rsp.IsSuccess) {
+                            alert('');
+                            $.messager.alert("提示", "提交成功！");
+                        } else {
+                            $.messager.alert("提示", rsp.Result);
+                            iscon = false;
+                        }
+                    }, "JSON").error(function () {
+                        $.messager.alert("提示", "提交错误了！");
+                    });
+                    if (iscon) {
+                        editIndex = undefined;
+                        $('#dg2').datagrid("reload");
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
 
-            <th field="ApiKey" width="100" sortable="true">
-                APIKey
-            </th>
-             
-            <th field="ApiSecret" width="100" sortable="true">
-                API密钥
-            </th>
+            function onClickRow(index) {
+                if (editIndex != index) {
+                    if (endEditing()) {
+                        $('#dg2').datagrid('selectRow', index)
+                                .datagrid('beginEdit', index);
+                        editIndex = index;
+                    } else {
+                        $('#dg2').datagrid('selectRow', editIndex);
+                    }
+                }
+            }
 
-            <th field="ApiToken" width="100" sortable="true">
-                API会话
-            </th>
+            function s_add() {
+                if (endEditing()) {
+                    $('#dg2').datagrid('appendRow', { AccountId: code });
+                    editIndex = $('#dg2').datagrid('getRows').length - 1;
+                    $('#dg2').datagrid('selectRow', editIndex)
+                            .datagrid('beginEdit', editIndex);
+                }
+            }
 
-            <th field="Platform" width="100" sortable="true">
-                平台
-            </th>
+            function s_del() {
+                var ids = [];
+                var rows = $('#dg2').datagrid('getSelections');
+                for (var i = 0; i < rows.length; i++) {
+                    $.ajax({
+                        url: '/AccountFee/Delete/' + rows[i].Id,
+                    });
+                }
+                $('#dg2').datagrid("reload");
+            }
 
-            <th field="Status" width="100" sortable="true">
-                状态
-            </th>
+            function accept() {
+                if (endEditing()) {
+                    $('#dg2').datagrid('acceptChanges');
+                }
+            }
+            function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" singleselect="true" pagination="true">
+            <thead>
+                <tr>
+                    <th field="Id" width="100" sortable="true" formatter="ShowOp">操作
+                    </th>
+                    <th field="AccountName" width="200" sortable="true">账户名称
+                    </th>
 
-            <th field="Description" width="100" sortable="true">
-                描述
-            </th>
+                    <th field="AccountUrl" width="100" sortable="true">平台网址
+                    </th>
 
-            <th field="Manager" width="100" sortable="true">
-                负责人
-            </th>
+                    <th field="Platform" width="100" sortable="true">平台
+                    </th>
 
-            <th field="Phone" width="100" sortable="true">
-                负责人电话
-            </th>
+                    <th field="Status" width="100" sortable="true">状态
+                    </th>
 
-            <th field="Email" width="100" sortable="true">
-                负责人邮箱
-            </th>
+                    <th field="Description" width="100" sortable="true">描述
+                    </th>
 
+                    <th field="Manager" width="100" sortable="true">负责人
+                    </th>
 
-    	</tr>
-		</thead>
-		</table>
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'AccountName'">帐户名称</div>
             <div data-options="name:'Description'">描述</div>
             <div data-options="name:'Manager'">负责人</div>
         </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="s_dlg">
+            <table id="dg2" class="easyui-datagrid"
+                toolbar="#toolbar2"
+                rownumbers="true" fitcolumns="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="Id" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field="AccountId" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field="AmountBegin" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额开始
+                        </th>
 
-</div>
+                        <th field="AmountEnd" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额结束
+                        </th>
+
+                        <th field="FeeFormula" width="100" data-options="editor:'text'">公式
+                        </th>
+
+                        <th field="FeeName" width="100" data-options="editor:{  
+                            type:'combobox',  
+                            options:{  
+                                valueField: 'id',
+                                textField: 'text',
+                                panelHeight: 'auto',
+                                required: true,
+                                data: [{ id: '手续费', text: '手续费' }, { id: '交易费', text: '交易费' }, { id: '其他费', text: '其他费' }]
+                            }  
+                        }">费用名称
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <div id="toolbar2">
+                <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="s_add();">新建</a>
+                <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="s_del();">删除</a>
+                <a href="#" class="easyui-linkbutton" iconcls="icon-save" plain="true" onclick="accept();">保存</a>
+            </div>
+        </div>
+    </div>
 </body>

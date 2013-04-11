@@ -49,7 +49,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 值
         /// </summary>
-        public virtual double CurrencyValue { get; set; }
+        public virtual decimal CurrencyValue { get; set; }
 
         /// <summary>
         /// CreateOn

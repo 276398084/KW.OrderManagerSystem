@@ -22,10 +22,13 @@ namespace KeWeiOMS.Web
         public static List<MenuItem> GetFunctionMenus()
         {
             List<MenuItem> items = new List<MenuItem>();
-            //UserType account = (UserType)System.Web.HttpContext.Current.Session["account"];
-            //IList<ModuleType> customerList = account.Modules;
-            ISession Session = NHibernateHelper.CreateSession();
-            IList<ModuleType> customerList = Session.CreateQuery("from ModuleType").List<ModuleType>();
+            UserType account = (UserType)System.Web.HttpContext.Current.Session["account"];
+            IList<ModuleType> customerList = account.Modules;
+            if (customerList.Count == 0)
+            {
+                ISession Session = NHibernateHelper.CreateSession();
+                customerList = Session.CreateQuery("from ModuleType").List<ModuleType>();
+            }
 
             //加载第一层
             List<ModuleType> list = customerList.Where(p => p.ParentId == 0 && p.DeletionStateCode == 0).OrderByDescending(f => f.SortCode).ToList<ModuleType>();

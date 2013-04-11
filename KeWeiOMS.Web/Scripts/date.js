@@ -129,6 +129,7 @@ function delData(url, dg, t) {
 }
 
 function showdlg(url, dlg, handle) {
+    $('#' + dlg).html();
     $('#' + dlg).load(url, function () {
         $(this).dialog({
             title: '新建',
@@ -178,6 +179,10 @@ function showSrarch(url, dlg, dg) {
     $('#' + dlg).dialog("open");
 };
 
+function GetPic(v) {
+    return '<img  src=' + v + '  height="64px" width="64px" />';
+}
+
 $.fn.panel.defaults.onBeforeDestroy = function () {
     var frame = $('iframe', this);
     try {
@@ -194,3 +199,4 @@ $.fn.panel.defaults.onBeforeDestroy = function () {
     } catch (e) {
     }
 };
+

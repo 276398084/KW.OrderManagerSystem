@@ -123,13 +123,33 @@ namespace KeWeiOMS.Web.Controllers
                     if (!string.IsNullOrEmpty(key))
                         where = " where " + key;
                 }
-                
+
             }
             Session["ToExcel"] = where + orderby;
-            IList<EbayType> objList = NSession.CreateQuery("from EbayType " + where + orderby)
+            List<EbayType> objList = NSession.CreateQuery("from EbayType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
-                .List<EbayType>();
+                .List<EbayType>().ToList();
+
+            string ids = "";
+            foreach (var warehouseStockType in objList)
+            {
+                ids += warehouseStockType.SKU + ",";
+            }
+            if (ids.Length > 0)
+            {
+                ids = ids.Trim(',');
+            }
+            IList<object[]> objs =
+                NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
+            foreach (var objectse in objs)
+            {
+
+                EbayType warehouse =
+                objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().Trim());
+                if (warehouse != null)
+                    warehouse.UnPeiQty = Convert.ToInt32(objectse[1]);
+            }
 
             object count = NSession.CreateQuery("select count(Id) from EbayType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
@@ -140,7 +160,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
                 con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from Ebay "+Session["ToExcel"].ToString(),con);
+                SqlDataAdapter da = new SqlDataAdapter("select * from Ebay " + Session["ToExcel"].ToString(), con);
                 DataSet ds = new DataSet();
                 da.Fill(ds, "content");
                 con.Close();

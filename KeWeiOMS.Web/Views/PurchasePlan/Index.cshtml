@@ -125,7 +125,7 @@
                         return $(this).form('validate');
                     },
                     success: function (result) {
-
+                        result = $.parseJSON(result);
                         if (!result.IsSuccess) {
                             $.messager.show({
                                 title: '提示',

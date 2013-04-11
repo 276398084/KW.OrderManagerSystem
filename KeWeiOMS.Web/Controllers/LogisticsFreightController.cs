@@ -34,7 +34,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  LogisticsFreightType GetById(int Id)
+        public LogisticsFreightType GetById(int Id)
         {
             LogisticsFreightType obj = NSession.Get<LogisticsFreightType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(LogisticsFreightType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -76,14 +76,14 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
-           
+            return Json(new { IsSuccess = true });
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 LogisticsFreightType obj = GetById(id);
@@ -94,7 +94,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows)
@@ -103,7 +103,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<LogisticsFreightType>();
-			
+
             object count = NSession.CreateQuery("select count(Id) from LogisticsFreightType ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }
@@ -113,22 +113,25 @@ namespace KeWeiOMS.Web.Controllers
             Session["fid"] = id;
             return View();
         }
+
         public JsonResult GetFreight()
-        { 
-            IList<LogisticsFreightType> list=NSession.CreateQuery("from LogisticsFreightType c where c.AreaCode=:ad")
-                .SetInt32("ad",int.Parse(Session["fid"].ToString()))
+        {
+            IList<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType c where c.AreaCode=:ad")
+                .SetInt32("ad", int.Parse(Session["fid"].ToString()))
                 .List<LogisticsFreightType>();
             return Json(list, JsonRequestBehavior.AllowGet);
         }
         public void SaveFeight(LogisticsFreightType log)
         {
-            log.AreaCode =int.Parse(Session["fid"].ToString());
+            log.AreaCode = int.Parse(Session["fid"].ToString());
             NSession.SaveOrUpdate(log);
             NSession.Flush();
         }
+
         public void DelFreight(int id)
         {
             LogisticsFreightType log = GetById(id);
+
             NSession.Delete(log);
             NSession.Flush();
         }

@@ -105,6 +105,8 @@ namespace KeWeiOMS.Web.Controllers
                                   ResourceCategoryEnum.User.ToString() + "' and ResourceId=" + uid).ExecuteUpdate();
             foreach (var item in ms)
             {
+                if (string.IsNullOrEmpty(item))
+                    continue; ;
                 sc = new PermissionScopeType();
                 sc.ResourceCategory = ResourceCategoryEnum.User.ToString();
                 sc.ResourceId = uid;
@@ -114,8 +116,10 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Flush();
             }
 
-            foreach (var item in ms)
+            foreach (var item in ps)
             {
+                if (string.IsNullOrEmpty(item))
+                    continue; ;
                 sc = new PermissionScopeType();
                 sc.ResourceCategory = ResourceCategoryEnum.User.ToString();
                 sc.ResourceId = uid;
@@ -126,6 +130,8 @@ namespace KeWeiOMS.Web.Controllers
             }
             foreach (var item in fos)
             {
+                if (string.IsNullOrEmpty(item))
+                    continue; ;
                 sc = new PermissionScopeType();
                 sc.ResourceCategory = ResourceCategoryEnum.User.ToString();
                 sc.ResourceId = uid;
@@ -248,7 +254,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult QList2()
         {
-            IList<UserType> objList = NSession.CreateQuery("from UserType where DId=15")
+            IList<UserType> objList = NSession.CreateQuery("from UserType where DId in (19,24,25,15)")
                 .List<UserType>();
             return Json(objList);
         }

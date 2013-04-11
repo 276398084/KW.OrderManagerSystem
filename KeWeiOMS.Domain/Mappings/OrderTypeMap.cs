@@ -35,6 +35,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.OrderExNo).Length(800);
             Map(x => x.Status).Length(10);
             Map(x => x.IsPrint);
+
             Map(x => x.IsLiu);
             Map(x => x.IsError);
             Map(x => x.IsMerger);
@@ -44,6 +45,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.IsRepeat);
             Map(x => x.CurrencyCode).Length(10);
             Map(x => x.Amount);
+            Map(x => x.OrderFees);
             Map(x => x.RMB);
             Map(x => x.TId).Length(800);
             Map(x => x.BuyerName).Length(200);

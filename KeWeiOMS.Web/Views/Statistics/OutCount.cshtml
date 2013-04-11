@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "OutCount";
+}
+
+<script>
+
+    $(function () {
+        var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
+        $('#dg').datagrid({
+            url: '@Url.Action("OutCount", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            showFooter: true,
+            height: 430,
+            width: 1000,
+            striped: true
+        });
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(0));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+
+    });
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+    }
+    function changePlatform(n, o) {
+
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+
+    }
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function ExportOut() {
+        $('#dg').datagrid("loading");
+        var postUrl = "/Order/ExportDown/1";
+        jQuery.ajax({
+            url: "/Statistics/ExportOut",
+            type: "post",
+            data: "a=" + $('#aa').combobox("getText") + "&p=" + $('#pp').combobox("getText") + "&st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue"),
+            success: function (sss) {
+                location.href = postUrl;
+                $('#dg').datagrid("reload");
+            }
+        });
+    }
+</script>
+开始<input id="cc" type="text">
+结束<input id="cc2" type="text">
+平台<input id="pp" type="text">
+账户<input id="aa" type="text">
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ExportOut();">导出</a>
+<table>
+    <tr>
+        <td>
+            <table id="dg" class="easyui-datagrid" title="订单数量统计"
+                rownumbers="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="Title" width="80">标题
+                        </th>
+                        <th field="SKU" width="190">SKU
+                        </th>
+                        <th field="PicUrl" width="100" formatter="GetPic">图片
+                        </th>
+                        <th field="Qty" width="100">数量
+                        </th>
+                        <th field="Price" width="100">价格
+                        </th>
+                        <th field="TotalPrice" width="100">总价
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+
+    </tr>
+</table>
+

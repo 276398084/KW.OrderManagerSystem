@@ -36,6 +36,11 @@ namespace KeWeiOMS.Domain
         public virtual String ItemId { get; set; }
 
         /// <summary>
+        /// SKU
+        /// </summary>
+        public virtual String SKU { get; set; }
+
+        /// <summary>
         /// 标题
         /// </summary>
         public virtual String ItemTitle { get; set; }
@@ -66,6 +71,13 @@ namespace KeWeiOMS.Domain
         public virtual int NowNum { get; set; }
 
         /// <summary>
+        /// 未配货数量
+        /// </summary>
+        public virtual int UnPeiQty { get; set; }
+
+
+
+        /// <summary>
         /// 产品链接
         /// </summary>
         public virtual String ProductUrl { get; set; }
@@ -84,6 +96,11 @@ namespace KeWeiOMS.Domain
         /// 账号
         /// </summary>
         public virtual String Account { get; set; }
+
+        /// <summary>
+        /// 状态
+        /// </summary>
+        public virtual String Status { get; set; }
 
     }
 }

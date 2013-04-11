@@ -39,6 +39,8 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String OldSKU { get; set; }
 
+      
+
         /// <summary>
         /// 类别
         /// </summary>

@@ -119,7 +119,6 @@ namespace KeWeiOMS.Web.Controllers
             }
             else
             {
-
                 return Json(new { Success = false, Message = "请选择要上传的文件！" }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -170,7 +169,6 @@ namespace KeWeiOMS.Web.Controllers
         {
             ViewData["ids"] = Session["ids"];
             return View();
-
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
@@ -187,7 +185,7 @@ namespace KeWeiOMS.Web.Controllers
             string sql = "";
             sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,
 O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
-OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,
+OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,P.OldSKU,
 R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn,
 R.Country as 'RCountry',R.PostCode as 'RPostCode',R.Province as 'RProvince' from Orders O 
 left join OrderProducts OP on o.Id=op.OId
@@ -200,17 +198,37 @@ left join ReturnAddress R On r.Id=" + r;
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
 
-
-
             da.Fill(ds);
-            ds.Tables[0].DefaultView.Sort = "OrderNo Asc";
+            ds.Tables[0].DefaultView.Sort = " OrderNo Asc";
             if (t == "多物品订单")
                 ds.Tables[0].DefaultView.RowFilter = " GCount >1";
+            else
+            {
+                List<string> list = new List<string>();
+                DataTable dt1 = ds.Tables[0];
+
+                foreach (DataRow dr in dt1.Rows)
+                {
+                    if (list.Contains(dr["OrderNo"].ToString()))
+                    {
+                        dr.Delete();
+                    }
+                    else
+                    {
+                        list.Add(dr["OrderNo"].ToString());
+                    }
+                }
+                ds.Tables[0].DefaultView.Sort = " OldSKU Asc";
+
+            }
             DataTable dt = ds.Tables[0].DefaultView.ToTable();
             dt.Columns.Add("PrintName");
+            dt.Columns.Add("TrackCode");
             foreach (DataRow dr in dt.Rows)
             {
                 dr["PrintName"] = CurrentUser.Realname;
+                dr["TrackCode"] = "1372100" + dr["OrderNo"].ToString();
+
             }
             //标记打印
             NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where OrderNo in ('" + d.Replace(",", "','") + "')").ExecuteUpdate();

@@ -65,12 +65,12 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         private bool IsCreateOk(string name, string platform)
         {
-            object obj = NSession.CreateQuery("select count(Id) from  AccountType where AccountName='" + name + "' and Platform='"+platform+"'").UniqueResult();
+            object obj = NSession.CreateQuery("select count(Id) from  AccountType where AccountName='" + name + "' and Platform='" + platform + "'").UniqueResult();
             if (Convert.ToInt32(obj) > 0)
             {
                 return true;
@@ -110,24 +110,24 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
-                 EBayUtil.GetMyeBaySelling(obj);
-                //if (IsOk(obj.Id, obj.AccountName, obj.Platform))
-                //    return Json(new {errorMsg="此账号已存在！" });
-                //NSession.Update(obj);
-                //NSession.Flush();
+                //EBayUtil.GetMyeBaySelling(obj);
+                if (IsOk(obj.Id, obj.AccountName, obj.Platform))
+                    return Json(new { errorMsg = "此账号已存在！" });
+                NSession.Update(obj);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
         private bool IsOk(int id, string name, string platform)
         {
-            object obj = NSession.CreateQuery("select count(Id) from  AccountType where AccountName='" + name + "' and Platform='" + platform + "' and Id<>'"+id+"'").UniqueResult();
-            if (Convert.ToInt32(obj) > 0)
+            object obj = NSession.CreateQuery("select count(Id) from  AccountType where AccountName='" + name + "' and Platform='" + platform + "' and Id<>'" + id + "'").UniqueResult();
+            if (Convert.ToInt32(obj) == 0)
             {
                 return true;
             }
@@ -148,7 +148,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)

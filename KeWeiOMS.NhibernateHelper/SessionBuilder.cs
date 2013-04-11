@@ -9,20 +9,27 @@ using NHibernate;
 
 namespace KeWeiOMS.NhibernateHelper
 {
+    public class SqlStatementInterceptor : EmptyInterceptor
+    {
+        public override NHibernate.SqlCommand.SqlString OnPrepareStatement(NHibernate.SqlCommand.SqlString sql)
+        {
+            System.Diagnostics.Trace.WriteLine(sql.ToString());
+            return sql;
+        }
+    }
+
     public class SessionBuilder
     {
         private static object locker = new object();
         private static FluentConfiguration configuration = null;
         private static ISessionFactory sessionFactory = null;
         public static ISessionStorage sessionStorage { set; get; }
-
         private static void CreateConfiguration()
         {
-            //HibernatingRhinos.NHibernate.Profiler.Appender.NHibernateProfiler.Initialize();//查看HQL生成的SQL
-            //configuration = new Configuration().Configure(System.Web.HttpContext.Current.Request.PhysicalApplicationPath + "Configuration\\hibernate.cfg.xml");
+
             configuration = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2008.ConnectionString(c => c.FromConnectionStringWithKey("db")))
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<OrderType>());
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<OrderType>()).ExposeConfiguration(f => f.SetInterceptor(new SqlStatementInterceptor()));
         }
 
         public static FluentConfiguration Configuration
@@ -63,13 +70,6 @@ namespace KeWeiOMS.NhibernateHelper
         public static ISession CreateSession()
         {
             return SessionFactory.OpenSession();
-            ISession s = sessionStorage.Get();
-            if (s == null)
-            {
-                s = SessionFactory.OpenSession();
-                //sessionStorage.Set(s);
-            }
-            return s;
         }
 
     }

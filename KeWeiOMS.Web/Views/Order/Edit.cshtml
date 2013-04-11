@@ -41,7 +41,7 @@
                 text: '删除',
                 iconCls: 'icon-add',
                 handler: function () {
-                    $.messager.confirm("提示","您确定要删除吗？", function (r) {
+                    $.messager.confirm("提示", "您确定要删除吗？", function (r) {
                         if (r) {
                             if (editIndex == undefined) {
                                 return;
@@ -114,6 +114,7 @@
             return true;
         }
         if ($('#dg_product').datagrid('validateRow', editIndex)) {
+
             $('#dg_product').datagrid('endEdit', editIndex);
             editIndex = undefined;
             return true;
@@ -188,24 +189,53 @@
 
         formPost('e_form', '@Url.Action("Edit", "Order")');
     }
-    function splitOrder() {
-        showProduct("拆分", function () {
-            if (endEditing1()) {
-                var effectRow = new Object();
-                effectRow["o"] = '@ViewData["id"]';
-                effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
-                $.post("/Order/SplitOrder/", effectRow, function (rsp) {
-                    $('#dlg').dialog('close');
-                    if (rsp.IsSuccess) {
-                        alert("提交成功！");
-                    }
-                }, "JSON").error(function () {
-                    alert("提交错误！");
+    function splitOrder(x) {
 
+        if (x == 0) {
+            if ("@Model.Status" == "已处理") {
+                showProduct("缺货拆分--选择产品", function () {
+                    if (endEditing1()) {
+                        var effectRow = new Object();
+                        effectRow["o"] = '@ViewData["id"]';
+                        effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
+                        $.post("/Order/SplitOrder/", effectRow, function (rsp) {
+                            $('#dlg').dialog('close');
+                            if (rsp.IsSuccess) {
+                                alert("提交成功！");
+                            }
+                        }, "JSON").error(function () {
+                            alert("提交错误！");
+
+                        });
+                    }
                 });
+            } else {
+                alert("只有未配货的的订单才能缺货拆包");
             }
-        });
+        } else {
+            if ("@Model.Status" == "待包装") {
+                $.messager.prompt('发货拆分--输入分包数量', '请输入还需要发货的包裹的数值', function (r) {
+                    if (r) {
+                        var effectRow = new Object();
+                        effectRow["o"] = '@ViewData["id"]';
+                        effectRow["c"] = r;
+                        $.post("/Order/SplitSendOrder/", effectRow, function (rsp) {
+
+                            if (rsp.IsSuccess) {
+                                alert("提交成功！");
+                            }
+                        }, "JSON").error(function () {
+                            alert("提交错误！");
+
+                        });
+                    }
+                });
+            } else {
+                alert("只有待包装的订单才能发货拆包");
+            }
+        }
     }
+
     function reOrder() {
         showProduct("重发", function () {
             if (endEditing1()) {
@@ -247,13 +277,27 @@
             }]
         }).dialog('open');
     }
+
+    function skuSelect(r) {
+
+        var ed = $('#dg_product').datagrid('getEditor', { index: editIndex, field: 'SKU' });
+
+        var p = $(ed.target).combogrid('grid').datagrid("getRows")[r].Standard;
+
+        if (editIndex != undefined)
+            ed = $('#dg_product').datagrid('getEditor', { index: editIndex, field: 'Standard' });
+
+        $(ed.target).val(p);
+    }
+
 </script>
 
 
 @using (Html.BeginForm("Create", "Order", FormMethod.Post, new { id = "e_form" }))
 {
     <a href="#" class="easyui-linkbutton" onclick="addOrder();">保存</a>  
-    <a href="#" class="easyui-linkbutton" onclick="splitOrder();">拆分</a>  
+    <a href="#" class="easyui-linkbutton" onclick="splitOrder(0);">缺货拆分</a>  
+    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">发货拆分</a>  
     <a href="#" class="easyui-linkbutton" onclick="reOrder();">重发</a>  
     
     <fieldset>
@@ -264,7 +308,6 @@
                     @Html.LabelFor(model => model.OrderNo, "订单编号:")
                     <input type="hidden" id="rows" name="rows" />
                 </td>
-
                 <td>
                     @Html.TextBoxFor(model => model.OrderNo, new { @id = "e_OrderNo" })
                     @Html.HiddenFor(model => model.Id, new { @id = "e_Id" })
@@ -366,9 +409,10 @@
                                 mode: 'remote',
                                 idField: 'SKU',
                                 textField: 'SKU',
-                          required:true,
+                                required:true,
                                 url: '/Product/ListQ',
                                 fit: true,
+                                onSelect:skuSelect,
                                 columns: [[
                                     { field: 'SKU', title: 'SKU', width: 100 },
                                     { field: 'ProductName', title: 'Title', width: 200 },

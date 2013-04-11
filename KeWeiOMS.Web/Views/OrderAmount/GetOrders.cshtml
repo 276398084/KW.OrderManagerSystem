@@ -1,0 +1,42 @@
+﻿@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#dg0').datagrid({
+            url: '@Url.Action("GetOrderList", "OrderAmount")/@ViewData["Id"]',
+            showFooter: true,
+            width: 1000
+        });
+    });
+</script>
+<table id="dg0" class="easyui-datagrid"
+    rownumbers="true" singleselect="true">
+    <thead>
+        <tr>
+
+            <th field="OrderNo" width="100">编号
+            </th>
+            <th field="Status" width="100">状态
+            </th>
+            <th field="OrderType" width="100">类型
+            </th>
+            <th field="OrderAmount" width="100">金额
+            </th>
+            <th field="RMB" width="100">RMB
+            </th>
+            <th field="TotalCost" width="100">成本
+            </th>
+            <th field="Freight" width="100">运费
+            </th>
+            <th field="LogisticMode" width="100">物流方式
+            </th>
+            <th field="TrackCode" width="100">挂号
+            </th>
+            <th field="Country" width="100">国家
+            </th>
+            <th field="SendOn" width="100">发货时间
+            </th>
+        </tr>
+    </thead>
+</table>

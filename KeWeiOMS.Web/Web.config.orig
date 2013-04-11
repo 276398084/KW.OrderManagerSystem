@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<!--
+  有关如何配置 ASP.NET 应用程序的详细信息，请访�
+  http://go.microsoft.com/fwlink/?LinkId=152368
+  -->
+<configuration>
+  <configSections>
+    <sectionGroup name="applicationSettings" type="System.Configuration.ApplicationSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <section name="KeWeiOMS.Web.Properties.Settings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false"/>
+    </sectionGroup>
+  </configSections>
+  <connectionStrings>
+    <!--<add name="db" connectionString="server=.;database=DuDu;uid=sa;pwd=`1q2w3e4r"
+      providerName="System.Data.SqlClient" KeweiBackUp KeWeiOMS />-->
+    <add name="db" connectionString="server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r" providerName="System.Data.SqlClient"/>
+       
+  </connectionStrings>
+  <appSettings>
+    <add key="webpages:Version" value="1.0.0.0"/>
+    <add key="ClientValidationEnabled" value="true"/>
+    <add key="UnobtrusiveJavaScriptEnabled" value="true"/>
+    <!-- your Developer Id with eBay -->
+    <!--<add key="Environment.DevId" value="678bc87a-7a84-4445-8249-2d65d56f0b32" />-->
+    <add key="Environment.DevId" value="678bc87a-7a84-4445-8249-2d65d56f0b32"/>
+    <!-- your Application Id with eBay -->
+    <!--<add key="Environment.AppId" value="mmmmm69ac-ca7a-4165-9331-e0c7f27557e" />-->
+    <add key="Environment.AppId" value="mmmmm69ac-ca7a-4165-9331-e0c7f27557e"/>
+    <!-- your Application Certificate with eBay -->
+    <!--<add key="Environment.CertId" value="d56ae126-2192-4942-bff1-9fabeccfc918" />-->
+    <add key="Environment.CertId" value="d56ae126-2192-4942-bff1-9fabeccfc918"/>
+    <!-- Rule Name-->
+    <add key="RuName" value="mmmmm-mmmmm69ac-ca7a--fkaiu"/>
+    <add key="Version" value="705"/>
+    <add key="TimeOut" value="180000"/>
+    <add key="LogFileName" value="Log.txt"/>
+    <!-- API Server URL -->
+    <!-- For production site use: https://api.ebay.com/wsapi -->
+    <!-- For Sandbox use: https://api.sandbox.ebay.com/wsapi -->
+    <add key="Environment.ApiServerUrl" value="https://api.ebay.com/wsapi"/>
+    <!-- EPS Server URL -->
+    <!-- For production site use: https://api.ebay.com/ws/api.dll"/-->
+    <add key="Environment.EpsServerUrl" value="https://api.ebay.com/ws/api.dll"/>
+    <!-- eBay Signin URL -->
+    <!-- For production site use: https://signin.ebay.com/ws/eBayISAPI.dll?SignIn -->
+    <!-- https://signin.sandbox.ebay.com/ws/eBayISAPI.dll?SignIn -->
+    <!--<add key="Environment.SignInUrl" value="https://signin.ebay.com/ws/eBayISAPI.dll?SignIn" />-->
+    <add key="Environment.SignInUrl" value="https://signin.ebay.com.hk/ws/eBayISAPI.dll?SignIn"/>
+    <!-- ViewItem URL -->
+    <!-- For production site use: http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&amp;item={0} -->
+    <add key="Environment.ViewItemUrl" value="http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&amp;item={0}"/>
+    <!-- eBay site ID -->
+    <add key="UserAccount.eBayUserSiteId" value="0"/>
+    <add key="logexception" value="true"/>
+    <add key="logmessages" value="true"/>
+    <add key="logsdkmessages" value="true"/>
+    <add key="logsdk" value="true"/>
+    <add key="logfile" value="Log.txt"/>
+    <!-- Set this if you access eBay API server behind a proxy server-->
+    <add key="Proxy.Host" value=""/>
+    <add key="Proxy.Port" value=""/>
+    <!-- set proxy server username/password if necessary-->
+    <!--<add key="Proxy.Username" value="gamesalor"/>
+    <add key="Proxy.Password" value="Dong1979"/>-->
+    <add key="ClientSettingsProvider.ServiceUri" value=""/>
+  </appSettings>
+  <system.web>
+    <compilation debug="true" targetFramework="4.0"/>
+    <authentication mode="Forms">
+      <forms loginUrl="~/Account/LogOn" timeout="2880"/>
+    </authentication>
+    <pages controlRenderingCompatibilityVersion="3.5" clientIDMode="AutoID">
+      <namespaces>
+        <add namespace="System.Web.Helpers"/>
+        <add namespace="System.Web.Mvc"/>
+        <add namespace="System.Web.Mvc.Ajax"/>
+        <add namespace="System.Web.Mvc.Html"/>
+        <add namespace="System.Web.Routing"/>
+        <add namespace="System.Web.WebPages"/>
+      </namespaces>
+    </pages>
+    <profile defaultProvider="DefaultProfileProvider">
+      <providers>
+        <add name="DefaultProfileProvider" type="System.Web.Providers.DefaultProfileProvider, System.Web.Providers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" connectionStringName="DefaultConnection" applicationName="/"/>
+      </providers>
+    </profile>
+    <membership defaultProvider="DefaultMembershipProvider">
+      <providers>
+        <add name="DefaultMembershipProvider" type="System.Web.Providers.DefaultMembershipProvider, System.Web.Providers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" connectionStringName="DefaultConnection" enablePasswordRetrieval="false" enablePasswordReset="true" requiresQuestionAndAnswer="false" requiresUniqueEmail="false" maxInvalidPasswordAttempts="5" minRequiredPasswordLength="6" minRequiredNonalphanumericCharacters="0" passwordAttemptWindow="10" applicationName="/"/>
+      </providers>
+    </membership>
+    <roleManager defaultProvider="DefaultRoleProvider">
+      <providers>
+        <add name="DefaultRoleProvider" type="System.Web.Providers.DefaultRoleProvider, System.Web.Providers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" connectionStringName="DefaultConnection" applicationName="/"/>
+      </providers>
+    </roleManager>
+    <sessionState mode="InProc" customProvider="DefaultSessionProvider">
+      <providers>
+        <add name="DefaultSessionProvider" type="System.Web.Providers.DefaultSessionStateProvider, System.Web.Providers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" connectionStringName="DefaultConnection"/>
+      </providers>
+    </sessionState>
+  </system.web>
+  <system.webServer>
+    <modules runAllManagedModulesForAllRequests="true"/>
+    <validation validateIntegratedModeConfiguration="false" />
+    <modules runAllManagedModulesForAllRequests="true" />
+  </system.webServer>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35"/>
+        <bindingRedirect oldVersion="1.0.0.0-2.0.0.0" newVersion="3.0.0.0"/>
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+  <system.serviceModel>
+    <bindings/>
+    <client/>
+  </system.serviceModel>
+  <applicationSettings>
+    <KeWeiOMS.Web.Properties.Settings>
+      <setting name="KeWeiOMS_Web_cn_com_webxml_webservice_ForexRmbRateWebService" serializeAs="String">
+        <value>http://webservice.webxml.com.cn/WebServices/ForexRmbRateWebService.asmx</value>
+      </setting>
+    </KeWeiOMS.Web.Properties.Settings>
+  </applicationSettings>
+</configuration>

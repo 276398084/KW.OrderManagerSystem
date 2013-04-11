@@ -1,0 +1,33 @@
+﻿@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#dg1').datagrid({
+            url: '@Url.Action("GetProductList", "OrderAmount")/@ViewData["Id"]',
+            showFooter: true,
+            width: 700
+        });
+    });
+</script>
+<table id="dg1" class="easyui-datagrid"
+    rownumbers="true" singleselect="true">
+    <thead>
+        <tr>
+
+            <th field="SKU" width="100">SKU
+            </th>
+            <th field="Standard" width="100">规格
+            </th>
+            <th field="Title" width="100">名称
+            </th>
+
+            <th field="Qty" width="100">数量
+            </th>
+            <th field="Price" width="100">单价
+            </th>
+            <th field="TotalPrice" width="100">总
+            </th>
+        </tr>
+    </thead>
+</table>

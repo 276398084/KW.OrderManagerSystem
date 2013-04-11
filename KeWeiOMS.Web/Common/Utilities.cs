@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web;
@@ -428,6 +430,48 @@ namespace KeWeiOMS.Web
             System.Web.HttpContext.Current.Session["account"] = currentUser;
         }
 
+        /// <summary>
+        /// 实体类转换成DataTable
+        /// </summary>
+        /// <param name="modelList">实体类列表</param>
+        /// <returns></returns>
+        public static DataTable FillDataTable<T>(List<T> modelList)
+        {
+            if (modelList == null || modelList.Count == 0)
+            {
+                return null;
+            }
+            DataTable dt = CreateData<T>(modelList[0]);
+
+            foreach (T model in modelList)
+            {
+                DataRow dataRow = dt.NewRow();
+                foreach (PropertyInfo propertyInfo in typeof(T).GetProperties())
+                {
+                    dataRow[propertyInfo.Name] = propertyInfo.GetValue(model, null);
+                }
+                dt.Rows.Add(dataRow);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// 根据实体类得到表结构
+        /// </summary>
+        /// <param name="model">实体类</param>
+        /// <returns></returns>
+        private static DataTable CreateData<T>(T model)
+        {
+            DataTable dataTable = new DataTable(typeof(T).Name);
+            foreach (PropertyInfo propertyInfo in typeof(T).GetProperties())
+            {
+                dataTable.Columns.Add(new DataColumn(propertyInfo.Name, propertyInfo.PropertyType));
+            }
+            return dataTable;
+        }
+
+        #endregion
+
         private static void GetValue(PermissionScopeType item, List<PermissionScopeType> listByModules, List<PermissionScopeType> listByPermissions, List<PermissionScopeType> listByAccount)
         {
             if (item.TargetCategory == TargetCategoryEnum.Module.ToString())
@@ -461,7 +505,7 @@ namespace KeWeiOMS.Web
             List<PermissionScopeType> list = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2").SetString("p1", ResourceCategoryEnum.User.ToString()).SetInt32("p2", id).List<PermissionScopeType>().ToList<PermissionScopeType>();
             return list;
         }
-        #endregion
+
 
 
 
@@ -494,7 +538,7 @@ namespace KeWeiOMS.Web
             return false;
         }
 
-        public static bool StockIn(int wid, string sku, int num, double price, string InType, string user, string memo)
+        public static bool StockIn(int wid, string sku, int num, double price, string InType, string user, string memo, bool isAudit = false)
         {
             ISession NSession = NHibernateHelper.CreateSession();
             IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).SetString("p2", sku).List<WarehouseStockType>();
@@ -507,7 +551,7 @@ namespace KeWeiOMS.Web
                 if (price != 0)
                 {
                     IList<ProductType> foo =
-                        NSession.CreateQuery(" from ProductType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).
+                        NSession.CreateQuery(" from ProductType where  SKU=:p2").
                             SetString("p2", sku).List<ProductType>();
                     if (foo.Count > 0)
                     {
@@ -519,7 +563,10 @@ namespace KeWeiOMS.Web
                     }
                 }
                 StockInType stockInType = new StockInType();
+
                 stockInType.IsAudit = 0;
+                if (isAudit)
+                    stockInType.IsAudit = 1;
                 stockInType.Price = price;
                 stockInType.Qty = num;
                 stockInType.SKU = sku;

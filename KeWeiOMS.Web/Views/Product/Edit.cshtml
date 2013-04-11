@@ -169,7 +169,7 @@
 
 
 
-                }
+    }
 
 </script>
 
@@ -188,7 +188,7 @@
                     <input type="hidden" id="rows" name="rows" />
                     @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.CreateOn)
-                    @Html.HiddenFor(model => model.OldSKU)
+
                     @Html.HiddenFor(model => model.CreateBy)
                     @Html.HiddenFor(model => model.SPicUrl)
                     @Html.HiddenFor(model => model.PicUrl)
@@ -323,8 +323,15 @@
                 <td>
                     @Html.LabelFor(model => model.Location, "库位:")
                 </td>
-                <td colspan="5">
+                <td colspan="3">
                     @Html.HiddenFor(model => model.Location, new { @id = "e_Location" })
+                </td>
+                <td>
+
+                    @Html.LabelFor(model => model.SKU, "主编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OldSKU, new { @id = "e_OldSKU", @class = "easyui-validatebox", @required = "true" })
                 </td>
             </tr>
             <tr>
@@ -335,9 +342,9 @@
                         <thead>
                             <tr>
                                 <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
-                    </th>
+                                </th>
                                 <th field="SrcQty" width="100" data-options="editor:'text'">Qty
-                    </th>
+                                </th>
                         </thead>
                     </table>
 

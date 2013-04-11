@@ -25,6 +25,9 @@
         $("#cc2").datebox({
             parser: myparser
         });
+        $('#cc').datebox("setValue", getStartDate(0));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        
         $('#pp').combobox({
             url: '/Account/Platform/1',
             valueField: 'id',
@@ -58,7 +61,6 @@
             valueField: 'id',
             textField: 'text',
             width: 150
-
         });
         $('#aa').combotree("setValue", "ALL");
 

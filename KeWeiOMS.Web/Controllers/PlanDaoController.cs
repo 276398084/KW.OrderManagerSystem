@@ -78,7 +78,7 @@ namespace KeWeiOMS.Web.Controllers
 
                     NSession.SaveOrUpdate(obj);
                     NSession.Flush();
-                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo);
+                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo, true);
                     return Json(new { IsSuccess = true });
                 }
                 return Json(new { ErrorMsg = "已经审核了", IsSuccess = false });
@@ -97,9 +97,7 @@ namespace KeWeiOMS.Web.Controllers
             command.CommandText = sql + " order by DaoOn asc";
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
             da.Fill(ds);
-
             DataTable dt = ds.Tables[0];
-
             List<string> list = new List<string>();
             string str = "";
 
@@ -200,6 +198,10 @@ namespace KeWeiOMS.Web.Controllers
             {
                 PlanDaoType obj = GetById(id);
                 NSession.Delete(obj);
+                NSession.Flush();
+                NSession.Delete("from SKUCodeType where PlanNo='" + obj.PlanNo + "'");
+                NSession.Flush();
+                NSession.CreateQuery("update PurchasePlanType set Status='已发货' where Id=" + obj.PlanId);
                 NSession.Flush();
             }
             catch (Exception ee)

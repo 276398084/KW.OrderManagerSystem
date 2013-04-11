@@ -71,13 +71,7 @@ namespace CodeGenerator.Business
         /// </summary>
         public void GetSetting()
         {
-            this.Company = Properties.Settings.Default.Company;
-            this.Project = Properties.Settings.Default.Project;
-            this.Author = Properties.Settings.Default.Author;
-            this.Design = Properties.Settings.Default.Design;
-            this.Output = Properties.Settings.Default.Output;
-            this.CurrentDb = Properties.Settings.Default.CurrentDb;
-            this.Overwrite = Properties.Settings.Default.Overwrite;
+          
         }
         #endregion
 
@@ -100,13 +94,13 @@ namespace CodeGenerator.Business
         /// </summary>
         public void SaveSetting()
         {
-            Properties.Settings.Default.Company = this.Company;
-            Properties.Settings.Default.Project = this.Project;
-            Properties.Settings.Default.Author = this.Author;
-            Properties.Settings.Default.Output = this.Output;
-            Properties.Settings.Default.Design = this.Design;
-            Properties.Settings.Default.CurrentDb = this.CurrentDb;
-            Properties.Settings.Default.Overwrite = this.Overwrite;
+            //Properties.Settings.Default.Company = this.Company;
+            //Properties.Settings.Default.Project = this.Project;
+            //Properties.Settings.Default.Author = this.Author;
+            //Properties.Settings.Default.Output = this.Output;
+            //Properties.Settings.Default.Design = this.Design;
+            //Properties.Settings.Default.CurrentDb = this.CurrentDb;
+            //Properties.Settings.Default.Overwrite = this.Overwrite;
             Properties.Settings.Default.Save();
         }
         #endregion

@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class EbayTypeMap : ClassMap<EbayType> 
+    public class EbayTypeMap : ClassMap<EbayType>
     {
         public EbayTypeMap()
         {
@@ -37,10 +37,12 @@ namespace KeWeiOMS.Domain
             Map(x => x.PicUrl).Length(250);
             Map(x => x.StartNum);
             Map(x => x.NowNum);
+            Map(x => x.SKU);
             Map(x => x.ProductUrl).Length(250);
             Map(x => x.StartTime);
             Map(x => x.CreateOn);
             Map(x => x.Account).Length(250);
+            Map(x => x.Status).Length(250);
         }
     }
 }

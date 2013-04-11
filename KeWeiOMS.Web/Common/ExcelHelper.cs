@@ -56,10 +56,7 @@ namespace KeWeiOMS.Web
         {
             var data = (cellData is DBNull) ? "" : cellData;
             if (type.Name.Contains("Int") || type.Name.Contains("Double") || type.Name.Contains("Decimal")) return string.Format("<Cell><Data ss:Type=\"Number\">{0}</Data></Cell>", data);
-            //if (type.Name.Contains("Date") && data.ToString() != string.Empty)
-            //{
-            //    return string.Format("<Cell ss:StyleID=\"s63\"><Data ss:Type=\"DateTime\">{0}</Data></Cell>",data);
-            //}
+           
             return string.Format("<Cell><Data ss:Type=\"String\">{0}</Data></Cell>", replaceXmlChar(data.ToString()));
         }
         private static string getWorksheets(DataSet source)

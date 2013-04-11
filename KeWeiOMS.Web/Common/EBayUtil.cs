@@ -58,66 +58,47 @@ namespace KeWeiOMS.Web
         }
 
 
-      
 
-//        public static void SetShip()
-//        {
-//            DataTable dt = db.RunTable<OrderInfo>(@"select b.id,OrderExNo,b.TrackCode ,a.UserNameForm from SP_Orders a 
-// left join SP_Package b on a.Id=b.OrderNo
-//  where b.[Enabled]=0 and b.TrackCode is not null and b.TrackCode <>'LK'");
-//            Dictionary<string, int> sendNum = new Dictionary<string, int>();
-//            ApiContext context = GetGenericApiContext("US");
 
-//            foreach (DataRow dr in dt.Rows)
-//            {
-//                try
-//                {
-//                    SaleAccount sa = SaleAccount.find("UserName='" + dr["UserNameForm"] + "'").list(1)[0];
-//                    if (sendNum.ContainsKey(dr["UserNameForm"].ToString()))
-//                    {
-//                        sendNum[dr["UserNameForm"].ToString()]++;
-//                    }
-//                    else
-//                    {
-//                        sendNum.Add(dr["UserNameForm"].ToString(), 1);
-//                    }
-//                    context.ApiCredential.eBayToken = sa.ApiToken; ;
-//                    eBay.Service.Call.CompleteSaleCall call = null;
+        public static void EbayUploadTrackCode(string account, KeWeiOMS.Domain.OrderType orderType)
+        {
+            Dictionary<string, int> sendNum = new Dictionary<string, int>();
+            ApiContext context = GetGenericApiContext("US");
+            IList<AccountType> accounts =
+                NSession.CreateQuery("from AccountType where AccountName='" + account + "'").SetMaxResults(1).
+                    List<AccountType>();
+            if (accounts.Count > 0)
+            {
+                context.ApiCredential.eBayToken = accounts[0].ApiToken;
+                eBay.Service.Call.CompleteSaleCall call = null;
 
-//                    call = new eBay.Service.Call.CompleteSaleCall(context);
+                call = new eBay.Service.Call.CompleteSaleCall(context);
 
-//                    string orderid = dr["OrderExNo"].ToString();
+                string orderid = orderType.OrderExNo;
 
-//                    if (orderid.IndexOf("-") == -1) continue;
-//                    call.Shipment = new ShipmentType();
-//                    call.Shipment.DeliveryStatus = eBay.Service.Core.Soap.ShipmentDeliveryStatusCodeType.Delivered;
-//                    call.Shipment.ShipmentTrackingDetails = new ShipmentTrackingDetailsTypeCollection();
-//                    call.Shipment.ShipmentTrackingNumber = dr["TrackCode"].ToString();
-//                    call.Shipment.ShippingCarrierUsed = "China post air mail";
+                if (orderid.IndexOf("-") == -1 || orderType.IsMerger == 1) return;
+                ;
+                call.Shipment = new ShipmentType();
+                call.Shipment.DeliveryStatus = eBay.Service.Core.Soap.ShipmentDeliveryStatusCodeType.Delivered;
+                call.Shipment.ShipmentTrackingDetails = new ShipmentTrackingDetailsTypeCollection();
+                call.Shipment.ShipmentTrackingNumber = orderType.TrackCode.ToString();
+                call.Shipment.ShippingCarrierUsed = "China post air mail";
 
-//                    call.Shipment.DeliveryDate = DateTime.Now;
-//                    call.Shipment.DeliveryDateSpecified = true;
-//                    call.Shipment.DeliveryStatus = ShipmentDeliveryStatusCodeType.Delivered;
-//                    if (!(dr["Id"] is DBNull))
-//                    {
-//                        PackageInfo.updateBatch("[Enabled]=1", "Id=" + dr["Id"]);
-//                        call.CompleteSale(orderid.Substring(0, orderid.IndexOf("-")), orderid.Substring(orderid.IndexOf("-") + 1), true, true);
-//                    }
-//                }
-//                catch (Exception)
-//                {
-
-//                    throw;
-//                }
-//            }
-//            string str = "本次跟踪号上传信息如下：";
-//            foreach (string item in sendNum.Keys)
-//            {
-//                str += "账户：" + item + "    数量：" + sendNum[item] + ".";
-//            }
-//            str += "                  时间:" + DateTime.Now.ToShortDateString();
-//            // SMSUtil.SendSmsAPI("15957489764,15968967876,15958200472", str);
-//        }
+                call.Shipment.DeliveryDate = DateTime.Now;
+                call.Shipment.DeliveryDateSpecified = true;
+                call.Shipment.DeliveryStatus = ShipmentDeliveryStatusCodeType.Delivered;
+                try
+                {
+                    call.CompleteSale(orderid.Substring(0, orderid.IndexOf("-")),
+                                      orderid.Substring(orderid.IndexOf("-") + 1), true, true);
+                }
+                catch (Exception)
+                {
+                    return;
+                    ;
+                }
+            }
+        }
 
 
         public void GetOrderByFile()
@@ -149,8 +130,12 @@ namespace KeWeiOMS.Web
                         {
                             EbayType ei = new EbayType();
                             ei.ItemId = actitem.ItemID;
+                            DeleteItem(ei.ItemId);
+                            
                             ei.ItemTitle = actitem.Title;
                             ei.Price = actitem.SellingStatus.CurrentPrice.Value.ToString();
+
+
                             ei.Currency = actitem.SellingStatus.CurrentPrice.currencyID.ToString();
                             ei.StartNum = actitem.Quantity;
                             ei.NowNum = actitem.QuantityAvailable;
@@ -161,12 +146,43 @@ namespace KeWeiOMS.Web
                             }
                             ei.StartTime = actitem.ListingDetails.StartTime;
                             ei.Account = sa.AccountName;
-                            if (NoExist(ei.ItemId,ei.Price,ei.NowNum))
+                            ei.Status = "销售中";
+                            ei.SKU = "";
+                            if (actitem.SKU != null)
                             {
+                                ei.SKU = actitem.SKU;
+                                if (ei.NowNum==0)
+                                {
+                                    ei.Status = "卖完";
+                                }
+                                NSession.Clear();
                                 ei.CreateOn = DateTime.Now;
                                 NSession.Save(ei);
                                 NSession.Flush();
                             }
+                            else
+                            {
+                                foreach (VariationType v in actitem.Variations.Variation)
+                                {
+                                    NSession.Clear();
+                                    ei.SKU = v.SKU;
+                                    ei.StartNum = v.Quantity;
+                                    ei.NowNum = v.Quantity - v.SellingStatus.QuantitySold;
+                                    if (ei.NowNum == 0)
+                                    {
+                                        ei.Status = "卖完";
+                                    }
+                                    ei.ItemTitle = v.VariationTitle;
+
+                                    ei.CreateOn = DateTime.Now;
+                                    NSession.Save(ei);
+                                    NSession.Flush();
+                                }
+
+
+                            }
+
+
                         }
 
                     }
@@ -182,33 +198,18 @@ namespace KeWeiOMS.Web
 
         }
 
-        private static bool NoExist(string id,string price,int num)
+        private static void DeleteItem(string id)
         {
-            object obj = NSession.CreateQuery("select count(Id) from EbayType where ItemId='" + id + "'").UniqueResult();
-            if (Convert.ToInt32(obj) > 0)
-            { 
-                IList<EbayType> ebay = NSession.CreateQuery("from EbayType where ItemId='" + id + "'").List<EbayType>();
-                foreach (EbayType item in ebay)
-                {
-                    item.Price = price;
-                    item.NowNum = num;
-                    item.CreateOn = DateTime.Now;
-                    NSession.Update(item);
-                    NSession.Flush();
-                }
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-            
+            object obj = NSession.Delete(" from EbayType where ItemId='" + id + "'");
+            NSession.Flush();
+
+
         }
 
         public static void syn()
         {
             IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>'' and ApiToken<>''").List<AccountType>();
-            foreach(var item in list)
+            foreach (var item in list)
             {
                 GetMyeBaySelling(item);
             }

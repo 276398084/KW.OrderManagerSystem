@@ -31,6 +31,9 @@ namespace KeWeiOMS.Domain
             Table("OrderAmount");
             Id(x => x.Id);
             Map(x => x.OId);
+            Map(x => x.MId);
+            Map(x => x.IsSplit);
+            Map(x => x.IsRepeat);
             Map(x => x.OrderNo).Length(20);
             Map(x => x.OrderExNo).Length(50);
             Map(x => x.AgainCount);
@@ -44,6 +47,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.CurrencyCode).Length(20);
             Map(x => x.ExchangeRate);
             Map(x => x.RMB);
+            Map(x => x.Profit);
+
             Map(x => x.Status).Length(20);
             Map(x => x.Account).Length(50);
             Map(x => x.Platform).Length(20);

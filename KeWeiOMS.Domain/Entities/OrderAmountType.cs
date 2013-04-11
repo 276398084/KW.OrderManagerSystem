@@ -31,9 +31,25 @@ namespace KeWeiOMS.Domain
         public virtual int Id { get; set; }
 
         /// <summary>
+        /// 拆分
+        /// </summary>
+        public virtual int IsSplit { get; set; }
+
+        /// <summary>
+        /// 重发
+        /// </summary>
+        public virtual int IsRepeat { get; set; }
+
+
+        /// <summary>
         /// 订单ID
         /// </summary>
         public virtual int OId { get; set; }
+
+        /// <summary>
+        /// 主ID
+        /// </summary>
+        public virtual int MId { get; set; }
 
         /// <summary>
         /// 订单编号
@@ -99,6 +115,11 @@ namespace KeWeiOMS.Domain
         /// RMB
         /// </summary>
         public virtual double RMB { get; set; }
+
+        /// <summary>
+        /// RMB
+        /// </summary>
+        public virtual double Profit { get; set; }
 
         /// <summary>
         /// 状态

@@ -23,18 +23,23 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Create(AccountFeeType obj)
+        public JsonResult Save(AccountFeeType obj)
         {
             try
             {
+                if (obj.AmountBegin >= obj.AmountEnd)
+                {
+                    return Json(new { IsSuccess = false, ErrorMsg = "开始金额不能大于结束金额" });
+                }
+                new System.Data.DataTable().Compute(obj.FeeFormula.Replace("T", "10"), "");
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
             {
-                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "公式错误" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -42,7 +47,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  AccountFeeType GetById(int Id)
+        public AccountFeeType GetById(int Id)
         {
             AccountFeeType obj = NSession.Get<AccountFeeType>(Id);
             if (obj == null)
@@ -66,7 +71,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(AccountFeeType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -76,14 +81,14 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
-           
+            return Json(new { IsSuccess = true });
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 AccountFeeType obj = GetById(id);
@@ -94,18 +99,15 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
-        public JsonResult List(int page, int rows)
+        public JsonResult List(string code)
         {
-            IList<AccountFeeType> objList = NSession.CreateQuery("from AccountFeeType")
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
+            IList<AccountFeeType> objList = NSession.CreateQuery("from AccountFeeType where AccountId=" + code)
+
                 .List<AccountFeeType>();
-			
-            object count = NSession.CreateQuery("select count(Id) from AccountFeeType ").UniqueResult();
-            return Json(new { total = count, rows = objList });
+            return Json(new { total = objList.Count, rows = objList });
         }
 
     }

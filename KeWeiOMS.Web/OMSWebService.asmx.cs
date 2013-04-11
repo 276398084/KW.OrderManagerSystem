@@ -20,6 +20,62 @@ namespace KeWeiOMS.Web
     public class OMSWebService : System.Web.Services.WebService
     {
         public ISession NSession = SessionBuilder.CreateSession();
+
+
+        [WebMethod]
+        public bool HasExisitOrderExNo(string OrderExNo)
+        {
+            return OrderHelper.IsExist(OrderExNo);
+        }
+
+        [WebMethod]
+        public string GetOrderNo()
+        {
+            return Utilities.GetOrderNo();
+        }
+        [WebMethod]
+        public OrderType GetOrder(string OrderExNo)
+        {
+            IList<OrderType> orderTypes =
+                NSession.CreateQuery("from OrderType where OrderExNo='" + OrderExNo + "'").List<OrderType>();
+            if (orderTypes.Count > 0)
+            {
+                return orderTypes[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+        [WebMethod]
+        public bool UpdateOrder(OrderType order)
+        {
+            NSession.Update(order);
+            NSession.Flush();
+            return false;
+
+        }
+
+        [WebMethod]
+        public bool CreateOrder(OrderType order)
+        {
+            NSession.Save(order.AddressInfo);
+            NSession.Flush();
+            order.AddressId = order.AddressInfo.Id;
+            NSession.Save(order);
+            NSession.Flush();
+            foreach (var p in order.Products)
+            {
+                p.OId = order.Id;
+                p.OrderNo = order.OrderNo;
+                OrderHelper.CreateOrderPruduct(p);
+
+            }
+            return true;
+        }
+
+
+
         [WebMethod]
         public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, string Nownum, string ProductUrl, string Account)
         {
@@ -54,14 +110,14 @@ namespace KeWeiOMS.Web
 
         public int GetId(string ItemId)
         {
-            IList<GMarketType> list = NSession.CreateQuery("from GMarketType where ItemId='"+ItemId+"'").List<GMarketType>();
+            IList<GMarketType> list = NSession.CreateQuery("from GMarketType where ItemId='" + ItemId + "'").List<GMarketType>();
             NSession.Clear();
             if (list.Count > 0)
             {
                 foreach (var item in list)
                 {
                     return item.Id;
-                } 
+                }
             }
             return 0;
         }

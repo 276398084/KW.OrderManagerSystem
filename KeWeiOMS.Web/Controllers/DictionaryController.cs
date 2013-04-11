@@ -35,7 +35,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { errorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -95,7 +95,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(string code)
@@ -108,10 +108,10 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult PruchasePlanList()
         {
             IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode","Stock.Plan")
+                .SetString("DicCode", "Stock.Plan")
                 .List<DictionaryType>();
 
-            return Json(objList,JsonRequestBehavior.AllowGet);
+            return Json(objList, JsonRequestBehavior.AllowGet);
         }
         public void DelDictionary(int id)
         {
@@ -167,30 +167,38 @@ namespace KeWeiOMS.Web.Controllers
 
             return Json(objList, JsonRequestBehavior.AllowGet);
         }
-       public JsonResult GetOutType()
+        public JsonResult GetOutType()
         {
             IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
                 .SetString("DicCode", "Stock.OutType")
                 .List<DictionaryType>();
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetDataByCode(string Id)
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", Id)
+                .List<DictionaryType>();
 
             return Json(objList, JsonRequestBehavior.AllowGet);
         }
-       public JsonResult PruchaseTrouble()
-       {
-           IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-               .SetString("DicCode", "Purchase.Trouble")
-               .List<DictionaryType>();
+        public JsonResult PruchaseTrouble()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Purchase.Trouble")
+                .List<DictionaryType>();
 
-           return Json(objList, JsonRequestBehavior.AllowGet);
-       }
-       public JsonResult PruchaseTroubleDeal()
-       {
-           IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-               .SetString("DicCode", "Purchase.TroubleDeal")
-               .List<DictionaryType>();
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult PruchaseTroubleDeal()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
+                .SetString("DicCode", "Purchase.TroubleDeal")
+                .List<DictionaryType>();
 
-           return Json(objList, JsonRequestBehavior.AllowGet);
-       }
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
     }
 }
 

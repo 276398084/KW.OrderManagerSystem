@@ -35,7 +35,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]
@@ -46,20 +46,21 @@ namespace KeWeiOMS.Web.Controllers
                 cn.com.webxml.webservice.ForexRmbRateWebService server = new cn.com.webxml.webservice.ForexRmbRateWebService();
                 DataSet ds = server.getForexRmbRate();
 
-                NSession.Delete(" from CurrencyType");
-                NSession.Flush();
+
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     CurrencyType c = new CurrencyType();
                     c.CurrencyCode = dr["Symbol"].ToString();
                     c.CurrencyName = dr["Name"].ToString();
+                    NSession.Delete(" from CurrencyType where CurrencyCode='" + c.CurrencyCode + "'");
+                    NSession.Flush();
                     c.CurrencySign = "";
                     string str = dr["fBuyPrice"].ToString();
                     if (string.IsNullOrEmpty(str))
                     {
                         str = "0";
                     }
-                    c.CurrencyValue = Math.Round(Convert.ToDouble(str) / 100, 5);
+                    c.CurrencyValue = Math.Round(Convert.ToDecimal(str) / 100, 5);
                     c.CreateOn = DateTime.Now; ;
                     NSession.Save(c);
                 }
@@ -68,7 +69,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -110,7 +111,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -128,7 +129,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)

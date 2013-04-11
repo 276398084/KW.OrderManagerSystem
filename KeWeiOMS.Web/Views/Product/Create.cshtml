@@ -342,8 +342,15 @@
                 <td>
                     @Html.LabelFor(model => model.Location, "库位:")
                 </td >
-                <td colspan="5"> 
+                <td colspan="3"> 
                     @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
+                </td>
+                  <td>
+                  
+                    @Html.LabelFor(model => model.SKU, "主编号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OldSKU, new { @id = "c_OldSKU", @class = "easyui-validatebox", @required = "true" })
                 </td>
                 
 

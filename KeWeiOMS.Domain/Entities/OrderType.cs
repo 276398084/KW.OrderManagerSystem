@@ -108,6 +108,11 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 总金额
         /// </summary>
+        public virtual double OrderFees { get; set; }
+
+        /// <summary>
+        /// 总金额
+        /// </summary>
         public virtual double RMB { get; set; }
 
         /// <summary>
@@ -208,7 +213,7 @@ namespace KeWeiOMS.Domain
         /// 订单的产品
         /// </summary>
 
-        public virtual IList<OrderProductType> Products { get; set; }
+        public virtual List<OrderProductType> Products { get; set; }
 
         /// <summary>
         /// 订单的地址
