@@ -48,40 +48,93 @@
             alert("回复顶不能为空！");
         }
         else {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create", "EbayMessageRe")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (msg) {
-                    var result = $.parseJSON(msg);
-                    if (result.IsSuccess) {
-                        $.ajax({
-                            url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
-                            success: function (result) {
-                                if (result) {
-                                    if (result.Msg != '0') {
-                                        $.messager.show({
-                                            title: '提示',
-                                            msg: '已进入下一封未读！',
-                                            timeout: 2000,
-                                            showType: 'slide'
+
+            $.ajax({
+                url: '@Url.Action("IsRead", "EbayMessage")/@ViewData["mid"]',
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                                if (r) {
+                                    $('#c_form').form('submit', {
+                                        url: '@Url.Action("Create", "EbayMessageRe")',
+                                        onSubmit: function () {
+                                            return $(this).form('validate');
+                                        },
+                                        success: function (msg) {
+                                            var result = $.parseJSON(msg);
+                                            if (result.IsSuccess) {
+                                                $.ajax({
+                                                    url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
+                                                    success: function (result) {
+                                                        if (result) {
+                                                            if (result.Msg != '0') {
+                                                                $.messager.show({
+                                                                    title: '提示',
+                                                                    msg: '已进入下一封未读！',
+                                                                    timeout: 2000,
+                                                                    showType: 'slide'
+                                                                })
+                                                                window.location = "/EbayMessageRe/Create/" + result.Msg;
+                                                            }
+                                                            else {
+                                                                alert("已经到最后一封未读，点击“确定”关闭！");
+                                                                window.close();
+                                                            }
+                                                        }
+                                                    }
+                                                })
+                                            } else {
+                                                alert("保存失败!");
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                        }
+                        else {
+
+                            $('#c_form').form('submit', {
+                                url: '@Url.Action("Create", "EbayMessageRe")',
+                                onSubmit: function () {
+                                    return $(this).form('validate');
+                                },
+                                success: function (msg) {
+                                    var result = $.parseJSON(msg);
+                                    if (result.IsSuccess) {
+                                        $.ajax({
+                                            url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
+                                            success: function (result) {
+                                                if (result) {
+                                                    if (result.Msg != '0') {
+                                                        $.messager.show({
+                                                            title: '提示',
+                                                            msg: '已进入下一封未读！',
+                                                            timeout: 2000,
+                                                            showType: 'slide'
+                                                        })
+                                                        window.location = "/EbayMessageRe/Create/" + result.Msg;
+                                                    }
+                                                    else {
+                                                        alert("已经到最后一封未读，点击“确定”关闭！");
+                                                        window.close();
+                                                    }
+                                                }
+
+                                            }
                                         })
-                                        window.location = "/EbayMessageRe/Create/" + result.Msg;
-                                    }
-                                    else {
-                                        alert("已经到最后一封未读，点击“确定”关闭！");
-                                        window.close();
+                                    } else {
+                                        alert("保存失败!");
                                     }
                                 }
+                            });
 
-                            }
-                        })
-                    } else {
-                        alert("保存失败!");
+
+                        }
                     }
+
                 }
-            });
+            })
 
         }
     }
@@ -90,22 +143,57 @@
             alert("回复顶不能为空！");
         }
         else {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create", "EbayMessageRe")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (msg) {
-                    var result = $.parseJSON(msg);
-                    if (result.IsSuccess) {
-                        alert("回复成功！");
-                        $('#c_BodyRe').attr("value", "")
+
+            $.ajax({
+                url: '@Url.Action("IsRead", "EbayMessage")/@ViewData["mid"]',
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                                if (r) {
+                                    $('#c_form').form('submit', {
+                                        url: '@Url.Action("Create", "EbayMessageRe")',
+                                        onSubmit: function () {
+                                            return $(this).form('validate');
+                                        },
+                                        success: function (msg) {
+                                            var result = $.parseJSON(msg);
+                                            if (result.IsSuccess) {
+                                                alert("回复成功！");
+                                                $('#c_BodyRe').attr("value", "")
+                                            }
+                                            else {
+                                                alert("保存失败!");
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                        }
+                        else {
+                            $('#c_form').form('submit', {
+                                url: '@Url.Action("Create", "EbayMessageRe")',
+                                onSubmit: function () {
+                                    return $(this).form('validate');
+                                },
+                                success: function (msg) {
+                                    var result = $.parseJSON(msg);
+                                    if (result.IsSuccess) {
+                                        alert("回复成功！");
+                                        $('#c_BodyRe').attr("value", "")
+                                    }
+                                    else {
+                                        alert("保存失败!");
+                                    }
+                                }
+                            });
+
+
+                        }
                     }
-                    else {
-                        alert("保存失败!");
-                    }
+
                 }
-            });
+            })
         }
     }
 

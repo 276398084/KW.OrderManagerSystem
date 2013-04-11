@@ -41,6 +41,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.SenderEmail);
             Map(x => x.SenderID);
             Map(x => x.UploadTime);
+            Map(x=>x.Account);
         }
     }
 }

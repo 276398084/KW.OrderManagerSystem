@@ -68,6 +68,8 @@ namespace KeWeiOMS.Web
             return 0;
         }
 
+
+
         [WebMethod]
         public string EbayMessageDown(string Body, DateTime CreationDate, string MessageID, string Status, string MessageType,string SenderEmail,string SenderID,string Subject,string ItemID,string Shop)
         {
@@ -104,6 +106,7 @@ namespace KeWeiOMS.Web
             }
         }
 
+
         private int NoExist(string MessageId)
         {
              
@@ -126,18 +129,77 @@ namespace KeWeiOMS.Web
         
         [WebMethod]
         public ArrayList ApiToken(string psw)
-        {   
-            ArrayList arry = new ArrayList();
-            if(psw=="feidujinbostore")
-            { 
+        {
 
-            IList<AccountType> account = NSession.CreateQuery("from AccountType where Platfrom ='Ebay' and ApiToken <>''").List<AccountType>();
-            foreach (var item in account)
+            ArrayList arry = new ArrayList();
+            if (psw == "feidujingbostore")
             {
-                arry.Add(item.ApiToken);
-            }
+                try
+                {
+                    IList<AccountType> account = NSession.CreateQuery("from AccountType where Platform ='Ebay' and ApiToken <>''").List<AccountType>();
+                    foreach (var item in account)
+                    {
+                        arry.Add(item.ApiToken);
+                    }
+                }
+                catch (Exception ex)
+                {
+                   
+                }
             }
             return arry;
         }
+
+        [WebMethod]
+        public string GetTokenByAccount(string account)
+        {
+            string apitoken = "";
+            IList<AccountType> ac = NSession.CreateQuery("from AccountType where AccountName ='account' and ApiToken <>''").List<AccountType>();
+            foreach (var item in ac)
+            {
+                apitoken= item.ApiToken;
+            }
+
+            return apitoken;
+        }
+
+
+        [WebMethod]
+        public EbayMessageReType GetUnUplod()
+        {
+            EbayMessageReType e = new EbayMessageReType();
+            IList<EbayMessageReType> account = NSession.CreateQuery("from EbayMessageReType where IsUpload <>'1'").List<EbayMessageReType>();
+            foreach (var item in account)
+            { 
+                return item;
+            }
+            return e;
+        }
+
+        [WebMethod]
+        public int GetCount()
+        {
+            object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where IsUpload <>'1'").UniqueResult();
+            return Convert.ToInt32(count);
+        }
+
+        [WebMethod]
+        public string ChangeStatus(EbayMessageReType obj)
+        {
+            try
+            {
+
+            NSession.Update(obj);
+            NSession.Flush();
+            return "状态修改成功";
+
+            }
+            catch (Exception e)
+            {
+                return "状态修改出错";
+            }
+        
+        }
+        
     }
 }

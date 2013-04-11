@@ -84,5 +84,10 @@ namespace KeWeiOMS.Domain
         /// 上传时间
         /// </summary>
         public virtual DateTime UploadTime { get; set; }
+
+        /// <summary>
+        /// 收邮账号
+        /// </summary>
+        public virtual string Account{ get; set; }
     }
 }

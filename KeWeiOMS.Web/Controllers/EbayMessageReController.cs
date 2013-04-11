@@ -49,6 +49,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.ReplayBy = CurrentUser.Realname;
                 obj.SenderEmail = ebaymessage.SenderEmail;
                 obj.SenderID = ebaymessage.SenderID;
+                obj.Account = ebaymessage.Shop;
                 obj.ReplayOn = DateTime.Now;
                 obj.UploadTime = Convert.ToDateTime("2000-01-01");
                 NSession.Save(obj);
