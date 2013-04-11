@@ -115,6 +115,7 @@ namespace KeWeiOMS.Web
             GetMyeBaySellingCall apicall = new GetMyeBaySellingCall(context);
             apicall.ActiveList = new ItemListCustomizationType();
             int i = 1;
+            DeleteALL(sa.AccountName);
             //EbayItem.deleteBatch("AccountFrom='" + sa.UserName + "' and CompanyId='" + sa.CompanyId + "'");
             do
             {
@@ -122,6 +123,7 @@ namespace KeWeiOMS.Web
                 apicall.ActiveList.Pagination.EntriesPerPage = 200;
                 apicall.ActiveList.Pagination.PageNumber = i;
                 apicall.GetMyeBaySelling();
+
                 if (apicall.ActiveListReturn != null && apicall.ActiveListReturn.ItemArray != null && apicall.ActiveListReturn.ItemArray.Count > 0)
                 {
                     foreach (ItemType actitem in apicall.ActiveListReturn.ItemArray)
@@ -130,8 +132,8 @@ namespace KeWeiOMS.Web
                         {
                             EbayType ei = new EbayType();
                             ei.ItemId = actitem.ItemID;
-                            DeleteItem(ei.ItemId);
-                            
+
+
                             ei.ItemTitle = actitem.Title;
                             ei.Price = actitem.SellingStatus.CurrentPrice.Value.ToString();
 
@@ -151,7 +153,7 @@ namespace KeWeiOMS.Web
                             if (actitem.SKU != null)
                             {
                                 ei.SKU = actitem.SKU;
-                                if (ei.NowNum==0)
+                                if (ei.NowNum == 0)
                                 {
                                     ei.Status = "卖完";
                                 }
@@ -168,6 +170,7 @@ namespace KeWeiOMS.Web
                                     ei.SKU = v.SKU;
                                     ei.StartNum = v.Quantity;
                                     ei.NowNum = v.Quantity - v.SellingStatus.QuantitySold;
+                                    ei.Status = "销售中";
                                     if (ei.NowNum == 0)
                                     {
                                         ei.Status = "卖完";
@@ -198,12 +201,11 @@ namespace KeWeiOMS.Web
 
         }
 
-        private static void DeleteItem(string id)
+        private static void DeleteALL(string accountName)
         {
-            object obj = NSession.Delete(" from EbayType where ItemId='" + id + "'");
+
+            object obj = NSession.Delete(" from EbayType where Account='" + accountName + "'");
             NSession.Flush();
-
-
         }
 
         public static void syn()

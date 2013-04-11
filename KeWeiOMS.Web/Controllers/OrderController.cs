@@ -646,6 +646,30 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
         }
+        [HttpPost]
+        public ActionResult ReHoldUp(string o, bool s)
+        {
+            IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
+            foreach (OrderType orderType in list)
+            {
+                if (orderType.Status != OrderStatusEnum.已发货.ToString())
+                {
+                    NSession.Clear();
+                    orderType.IsError = 0;
+                    orderType.CutOffMemo = "";
+                    NSession.Update(orderType);
+                    NSession.Flush();
+                    if (s)
+                    {
+                        NSession.CreateQuery("update SKUCodeType set IsOut=0 where OrderNo='" + orderType.OrderNo + "'")
+                            .ExecuteUpdate();
+                    }
+                    GetOrderRecord(orderType, "取消拦截订单！", CurrentUser.Realname + "将订单取消拦截" + ((s) ? "重置产品" : ""));
+                }
+
+            }
+            return Json(new { IsSuccess = true });
+        }
 
 
         [HttpPost]
@@ -880,11 +904,10 @@ left join Products P On OP.SKU=P.SKU ";
                     }
                     else
                     {
-                        string html = "订单:" + order.OrderNo + ", 当前状态：待发货，可以发货。<br>发货方式：" +
-                               "<s id='logisticsMode'>" + order.LogisticMode + "</s>";
+                        string html = "订单:" + order.OrderNo + ", 无法扫描，请拦截此包裹，原因：" + order.CutOffMemo;
                         return Json(new { IsSuccess = false, Result = html });
                     }
-                   
+
                 }
                 return Json(new { IsSuccess = false, Result = " 无法出库！ 当前状态为：" + order.Status + "，需要订单状态为“待发货”方可扫描！" });
             }
@@ -1021,6 +1044,11 @@ left join Products P On OP.SKU=P.SKU ";
                 {
                     if (order.IsOutOfStock != 1)
                     {
+                        if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
+                        {
+                            string tttt = "订单:" + order.OrderNo + ", 无法扫描，请拦截此包裹，原因：" + order.CutOffMemo;
+                            return Json(new { IsSuccess = false, Result = tttt });
+                        }
                         string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td  width='120px'><b>库存</b></td><td><b>Desc</b></td></tr>";
                         foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                         {
@@ -1090,6 +1118,12 @@ left join Products P On OP.SKU=P.SKU ";
                 OrderType order = orders[0];
                 if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
                 {
+                    if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
+                    {
+                        string tttt = "订单:" + order.OrderNo + ", 无法扫描，请拦截此包裹，原因：" + order.CutOffMemo;
+                        return Json(new { IsSuccess = false, Result = tttt });
+                    }
+
                     string html = @"  <table width='100%' class='dataTable'>
                                                         <tr class='dataTableHead'>
                                                             <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td><td>扫描次数</td>
