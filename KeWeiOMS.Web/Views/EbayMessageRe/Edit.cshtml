@@ -1,0 +1,136 @@
+﻿@model KeWeiOMS.Domain.EbayMessageType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#old').datagrid({
+            url: '@Url.Action("GetOld", "EbayMessageRe")/@ViewData["messageid"]'
+        })
+    });
+    function operate(v, r, i) {
+        return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'de(" + v + ")\'>详细</a>"
+    }
+    function de(value) {
+        $.getJSON('@Url.Action("GetDetail", "EbayMessageRe")/' + value, function (json) {
+            $("#r_dlg").dialog({
+                title: '详情',
+                width: 500,
+                height: 300,
+                content: function () {
+                    return json;
+                },
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '关闭',
+                    handler: function () {
+                        $("#r_dlg").dialog('close');
+                    }
+                }]
+            });
+        })
+    }
+</script>
+@using (Html.BeginForm("Edit", "EbayMessageRe", FormMethod.Post, new { id = "e_form" }))
+{
+    <fieldset style="border:0">
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageType, "消息类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageType, new { @id = "e_MessageType", @readonly = "readonly" })
+		</td>
+	</tr>
+
+	<tr>
+        <td>
+            @Html.LabelFor(model => model.SenderID, "买家Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SenderID, new { @id = "e_SenderID", @readonly = "readonly" })
+		</td>
+		<td>
+            @Html.LabelFor(model => model.SenderEmail, "买家邮箱:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SenderEmail, new { @id = "e_SenderEmail", @style = "width:300px", @readonly = "readonly" })
+		</td>
+	</tr>
+
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Subject, "消息主题:")
+		</td>
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.Subject, new { @id = "e_Subject", @style = "width:600px;height:80px;resize:none", @readonly = "readonly" })
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Body, "消息内容:")
+		</td>
+		<td colspan="3">
+            @Html.TextAreaFor(model => model.Body, new { @id = "e_Body", @style = "width:600px;height:80px;resize:none", @readonly = "readonly" })
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageStatus, "消息状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageStatus, new { @id = "e_MessageStatus", @readonly = "readonly" })
+		</td>	
+       	<td>
+            @Html.LabelFor(model => model.ItemId, "商品编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ItemId, new { @id = "e_ItemId", @readonly = "readonly" })
+		</td>
+	</tr>
+
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreationDate, "问题创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreationDate, new { @id = "e_CreationDate", @readonly = "readonly" })
+		</td>
+        <td>
+            @Html.LabelFor(model => model.CreateOn, "同步时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn, new { @id = "e_CreateOn", @readonly = "readonly" })
+		</td>
+	</tr>
+</table>
+</fieldset>
+    
+<fieldset>
+        <legend>回复信息</legend>
+        <table id="old" class="easyui-datagrid" style="width:700px;height:100px"
+           singleSelect="true">
+            <thead>
+            <tr>
+                <th field="Id" width="60" formatter="operate">操作
+                </th>
+
+                <th field="BodyRe" width="370">内容
+                </th>
+
+                <th field="ReplayBy" width="100">回复人
+                </th>
+
+                <th field="ReplayOn" width="160" formatter="getDate">回复时间
+                </th>
+            </tr>
+                </thead>
+        </table>
+</fieldset>
+}
+<div id="r_dlg"></div>

@@ -11,7 +11,21 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100],
             onDblClickRow: function (index, row) {
-                window.open('@Url.Action("EmailRe", "Email")/' + row.Id);
+                $.ajax({
+                    url: '@Url.Action("IsRead", "Email")/' +row.Id,
+                    success: function (result) {
+                        if (result) {
+                            if (result.Msg != '0') {
+                                alert("该封邮件已回复");
+                            }
+                            else {
+                                window.open('@Url.Action("EmailRe", "Email")/' + row.Id);
+                                    }
+                                }
+
+                            }
+                })
+
             }
         });
 

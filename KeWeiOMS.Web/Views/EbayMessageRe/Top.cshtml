@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Index";
+}   
+ <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg1').datagrid({
+                url: '@Url.Action("GetTop", "EbayMessageRe")'
+            })
+            $("#txtEndDate").datebox("setValue", getStartDate(-1));
+            $("#txtStartDate").datebox("setValue", getStartDate(7));
+        });
+
+     function doSearch() {
+         search = $('#txtStartDate').datebox("getValue") + "$" + $('#txtEndDate').datebox("getValue");
+         $("#dg1").datagrid("load", {
+             search: search
+         });
+     }
+    </script>
+<body class="easyui-layout">
+
+<div region="center">
+        <table id="dg1" toolbar="#toolbar"   class="easyui-datagrid" rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="Name" width="100">姓名
+                    </th>
+
+                    <th field="Count" width="100">回邮数量
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
+        <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="doSearch();">查询</a>
+        </div>
+
+
+    </div>
+</body>

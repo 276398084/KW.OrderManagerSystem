@@ -1,0 +1,65 @@
+﻿@model KeWeiOMS.Domain.EbayReplayType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+        $('#e_ReplayBy').combobox({
+            url: '@Url.Action("GetUsers", "EbayReplay")',
+            valueField: "Realname",
+            textField: "Realname",
+        });
+        $('#e_ReplayAccount').combobox({
+            url: '@Url.Action("GetAccount", "EbayReplay")',
+            valueField: "AccountName",
+            textField: "AccountName",
+        });
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "EbayReplay", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplayBy,"回复人员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayBy,new{@id="e_ReplayBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplayAccount,"回复账号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayAccount,new{@id="e_ReplayAccount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

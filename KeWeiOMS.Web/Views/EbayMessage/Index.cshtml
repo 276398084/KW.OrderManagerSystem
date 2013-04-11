@@ -1,0 +1,396 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.EbayMessageType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    var chec =null;
+    $(function () {
+        chec =null;
+        $('#dg').datagrid({
+            url: '@Url.Action("List","EbayMessage")',
+            pageNumber: 1,
+            nowrap: false,
+            onDblClickRow: function (index, row) {
+                var value = row.Id;
+                $.ajax({
+                    url: '@Url.Action("IsRead", "EbayMessage")/' + value,
+                    success: function (result) {
+                        if (result) {
+                            if (result.Msg != '0') {
+                                $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                                    if (r) {
+                                        window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                            }
+                        })
+                    }
+                    else {
+                        window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                    }
+                }
+
+            }
+                })
+
+            },
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+        $("#txtEndDate").datebox("setValue", getStartDate(-1));
+        $("#txtStartDate").datebox("setValue", getStartDate(7));
+        $('#tt1').tree({
+            state:closed,
+            onClick: function (node) {
+                treeOnclick(node.text, node.target);
+            }
+        });
+    });
+
+    function treeOnclick(text, target) {
+        var te=null;
+        var st = $('#tt1').tree("getRoots");
+        for (i = 0; i < st.length;i++)
+        {
+            if (text == st[i].text)
+            {
+                te="0";
+                search = "&$&$"+text+"~";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+        }
+        if(te==null)
+        {
+            search = "&$&$"+$('#tt1').tree("getParent",target).text+"~"+text;
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        chec = null;
+        if (text != "所有消息") {
+            if (text == "未分配消息" || $('#tt1').tree("getParent", target).text == "未分配消息") {
+                chec = "1";
+            }
+        }
+        else {
+            chec = null;
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "EbayMessage")'
+            })
+        }
+
+    }
+
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create","EbayMessageRe")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "EbayMessageRe")', 'c_dlg', 'dg');
+        }
+
+    function toExcel() {
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "EbayMessage")/',
+            success: function (result) {
+
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide',
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        })
+    }
+
+    function doSearch() {
+        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue")+"$";
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+
+    function syn() {
+        $('#dg').datagrid("loading");
+        $.ajax({
+            url: '@Url.Action("Syn", "EbayMessage")',
+             success: function (result) {
+                 if (result.IsSuccess) {
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide',
+                     })
+                 }
+                 else {
+                     $.messager.show({
+                         title: '提示',
+                         msg: result.Msg,
+                         timeout: 0,
+                         showType: 'slide'
+                     })
+                 }
+                 $('#dg').datagrid('reload');
+             }
+         })
+    }
+    function url(v, r, i) {
+         return "<a href='http://www.ebay.com/itm/ebay/"+r.ItemId + "' target=_blank >" + v + "</a>"
+    }
+    function buyer(v,r,i) {
+        return "<br>买家邮箱：<br>" + v + "<br>买家账号：<br>" + r.SenderID+"<br> ";
+    }
+    function time(v,r,i) {
+        return "创建时间：<br>" +getDate(v) + "<br>同步时间：<br>" + getDate(r.CreateOn);
+    }
+    function replay(v, r, i) {
+        var rby = r.ReplayBy;
+        if(rby==null)
+        {
+            rby = "";
+        }
+        return "回复时间：<br>" + datecheck(v) + "<br>回复人：<br>" +rby;
+    }
+    function opeart(v, r, i) {
+        var reb = "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'re(" + v + ")\'>回复</a>";
+        if (chec != null) {
+            return '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'toby(' + v + ')\'>分配</a>';
+        }
+        else {
+            return reb + '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(' + v + ')\'>详细</a>';
+
+        }
+    }
+    function toby(v) {
+        $('#dd').dialog({
+            buttons: [{
+                text: '确定',
+                iconCls: 'icon-ok',
+                handler: function () {
+                    forwarding(v);
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#dd').dialog('close');
+                }
+            }]
+        });
+        function forwarding() {
+            $.ajax({
+                url: "@Url.Action("Forward", "EbayMessage")/" + v + "$" + $('#forname').combobox("getValue") + "~" + " ",
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '分配出错',
+                                timeout: 2000,
+                                showType: 'slide'
+                            })
+                        }
+                        else {
+                            alert("分配成功！");
+                            $('#dg').datagrid('reload');
+                            $('#dd').dialog('close');
+                        }
+                    }
+                }
+            })
+        }
+
+        $('#forname').combobox({
+            url: '@Url.Action("GetUsers", "EbayReplay")',
+            valueField: "Realname",
+            textField: "Realname",
+        });
+    }
+
+    function re(value) {
+        $.ajax({
+            url: '@Url.Action("IsRead", "EbayMessage")/' + value,
+            success: function (result) {
+                if (result) {
+                    if (result.Msg != '0') {
+                        $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                            if (r) {
+                                window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                            }
+                        })
+                    }
+                    else {
+                        window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                     }
+                }
+
+            }
+        })
+   }
+    function detail(value) {
+        var url_str = '@Url.Action("Edit","EbayMessage")/'+value;
+        $('#c_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '详细信息',
+                width:'800',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '关闭',
+                    handler: function () {
+                        $('#c_dlg').dialog('close');
+                    }
+                }]
+            });
+        }).dialog('open');
+    }
+
+    function datecheck(value) {
+        var day = new Date("2000-01-02");
+        var date = new Date(getOnlyDate(value));
+        if (date < day)
+            return "";
+        return getDate(value);
+    }
+</script>
+<div data-options="region:'west',split:true,title:'分类'" style="width:150px;padding:10px;">
+        <ul id="tt1" class="easyui-tree" data-options="animate:true,dnd:true">
+            <li data-options="state:'closed'">
+                <span>待处理消息</span>
+                <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
+
+
+            </li> 
+            <li data-options="state:'closed'">             
+                <span>已处理消息</span>
+                <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
+            </li>  
+             <li data-options="state:'closed'">             
+                <span >所有消息</span>
+                 <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
+            </li>  
+            <li data-options="state:'closed'">             
+                <span>未分配消息</span>
+                <ul>
+                    <li>
+                        <span>询问物品</span>
+                    </li>
+                    <li>
+                        <span>质量问题</span>
+                    </li>
+                    <li>
+                        <span>退货</span>
+                    </li>
+                </ul>
+            </li>  
+        </ul>
+</div>
+<div region="center">
+<table id="dg" class="easyui-datagrid"
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+
+            <th field="Id" width="50" formatter="opeart" sortable="true">
+                操作
+            </th>
+
+            <th field="MessageType" width="100" sortable="true">
+                消息类型
+            </th>
+
+            <th field="SenderEmail" width="150" formatter="buyer" sortable="true">
+                买家信息
+            </th>
+
+            <th field="Subject" width="200" formatter="url" sortable="true">
+                消息主题
+            </th>
+
+            <th field="MessageStatus" width="50" sortable="true">
+                消息状态
+            </th>
+
+            <th field="CreationDate" width="100" formatter="time" sortable="true">
+                问题创建时间
+            </th>
+
+            <th field="ReplayOn" width="100" formatter="replay" sortable="true">
+                回复信息
+            </th>
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+       <a href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true" onclick="syn();">同步</a>  
+                开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
+                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+          <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+        </div> 
+		<div id="mm" style="width: 120px">
+            <div data-options="name:'MessageType'">消息类型</div>
+            <div data-options="name:'SenderEmail'">买家邮箱</div>
+            <div data-options="name:'SenderID'">买家Id</div>
+            <div data-options="name:'Subject'">消息主题</div>
+            <div data-options="name:'ItemId'">商品编号</div>
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+    <div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
+            <table>
+                <tr>
+                    <td>
+                        <label>分配给回复人：</label>
+                    </td>
+                    <td>
+                        <input id="forname" required="true" style="width:150px"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+</body>

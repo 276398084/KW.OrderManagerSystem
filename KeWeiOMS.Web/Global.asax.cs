@@ -48,9 +48,7 @@ namespace KeWeiOMS.Web
         {
             NHibernateHelper.CreateDatabase();
             OnStart();
-
         }
-
 
     }
 }

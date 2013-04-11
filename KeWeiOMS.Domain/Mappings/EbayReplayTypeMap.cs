@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// GMarketTypeMap
-    /// GMarket
+    /// EbayReplayTypeMap
+    /// ebay回复人员
     /// 
     /// 修改纪录
     /// 
@@ -24,21 +24,16 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class GMarketTypeMap : ClassMap<GMarketType> 
+    public class EbayReplayTypeMap : ClassMap<EbayReplayType> 
     {
-        public GMarketTypeMap()
+        public EbayReplayTypeMap()
         {
-            Table("GMarket");
+            Table("EbayReplay");
             Id(x => x.Id);
-            Map(x => x.ItemId).Length(250);
-            Map(x => x.ItemTitle).Length(250);
-            Map(x => x.Price).Length(250);
-            Map(x => x.PicUrl).Length(250);
-            Map(x => x.NowNum);
-            Map(x => x.Qty);
-            Map(x => x.ProductUrl).Length(250);
+            Map(x => x.ReplayBy).Length(255);
+            Map(x => x.ReplayAccount).Length(255);
+            Map(x => x.CreateBy).Length(255);
             Map(x => x.CreateOn);
-            Map(x => x.Account).Length(250);
         }
     }
 }

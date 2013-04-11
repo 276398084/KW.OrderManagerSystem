@@ -15,47 +15,57 @@
             }
         })
         $('#r_EId').val('@ViewData["EId"]');
-        if ('@ViewData["eid"]' == '0') {
-            alert("已经到最后一封，点击“确定”关闭！")
-            setTimeout(window.close(), 1000);
-        }
-        if ('@ViewData["Reply"]' == '1') {
-            $.messager.confirm('确认', '该邮件已经回复过，是否进入下一封?', function (r) {
-                if (r) {
-                    var i = parseInt(@ViewData["EId"]) + parseInt(1);
-                    window.location = '@Url.Action("EmailRe", "Email")/' + i;
-                }
-            })
-        }
-
     });
-    function cancel() {
-        window.close();
-    }
     //发送提交
 
     function send() {
-        formPost('r_form', '@Url.Action("EmailRe", "Email")');
-        var i = parseInt(@ViewData["EId"]) + parseInt(1);
-        window.location = '@Url.Action("EmailRe", "Email")/' + i;
+        if ($('#r_Content').attr("value") == "") {
+            alert("回复顶不能为空！");
+        }
+        else {
+            $('#r_form').form('submit', {
+                url: '@Url.Action("EmailRe", "Email")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
+                    if (result.IsSuccess) {
+                        $.ajax({
+                            url: '@Url.Action("GetNext", "Email")/@ViewData["EId"]',
+                                success: function (result) {
+                                    if (result) {
+                                        if (result.Msg != '0') {
+                                            $.messager.show({
+                                                title: '提示',
+                                                msg: '已进入下一封未读！',
+                                                timeout: 2000,
+                                                showType: 'slide'
+                                            })
+                                            window.location = "/Email/EmailRe/" + result.Msg;
+                                        }
+                                        else {
+                                            alert("已经到最后一封未读，点击“确定”关闭！");
+                                            window.close();
+                                        }
+                                    }
+
+                                }
+                            })
+                        } else {
+                            alert("保存失败!");
+                        }
+                }
+            });
+
+            }
+
 
     }
 
 
 </script>
 <body class="easyui-layout">
-    <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
-        <table id="dg" class="easyui-datagrid" style="width: 410px; height: 520px"
-            data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
-            <thead>
-                <tr>
-                    <th data-options="field:'Id'" style="display: none"></th>
-                    <th data-options="field:'Title',width:150">情况名称</th>
-                    <th data-options="field:'Content',width:280">回复内容</th>
-                </tr>
-            </thead>
-        </table>
-    </div>
     <div data-options="region:'center',title:'邮件内容'" style="height: 200px;">
         <div class="easyui-layout" style="width: 100%; height: 520px;">
             <div data-options="region:'north',border:false" style="height: 180px;">
@@ -64,7 +74,7 @@
                         <td>&nbsp;&nbsp;<label>邮件标题:</label>
                         </td>
                         <td>
-                            <textbox id="ESubject" style="width: 700px; font-size: larger">@ViewData["sub"]</textbox>
+                            <textbox id="ESubject" style="width: 1200px; font-size: larger">@ViewData["sub"]</textbox>
                         </td>
                     </tr>
 
@@ -72,7 +82,7 @@
                         <td>&nbsp;&nbsp;<label>邮件内容:</label>
                         </td>
                         <td>
-                            <textarea id="EContent" style="width: 700px; height: 120px; resize: none;" readonly="readOnly">@ViewData["con"]</textarea>
+                            <textarea id="EContent" style="width: 1200px; height: 80px; resize: none;" readonly="readOnly">@ViewData["con"]</textarea>
                         </td>
                     </tr>
                 </table>
@@ -113,7 +123,7 @@
                                 <td></td>
                                 <td align="center">
 
-                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">确定</a>
+                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">回复并进入下一封未回复</a>
 
 
                                 </td>
@@ -122,6 +132,18 @@
                     </fieldset>
                 }
             </div>
+       <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
+        <table id="dg" class="easyui-datagrid" style="width: 410px; height: 300px"
+            data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
+            <thead>
+                <tr>
+                    <th data-options="field:'Id'" style="display: none"></th>
+                    <th data-options="field:'Title',width:150">情况名称</th>
+                    <th data-options="field:'Content',width:280">回复内容</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
         </div>
     </div>
 </body>

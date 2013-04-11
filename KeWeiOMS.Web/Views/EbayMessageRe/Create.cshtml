@@ -1,0 +1,456 @@
+﻿@model KeWeiOMS.Domain.EbayMessageReType
+@{
+    //Layout = null;
+}
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_MessageId').attr("value", '@ViewData["mid"]');
+        $('#dg').datagrid({
+            singleSelect: true,
+            onClickRow: function (index, row) {
+                $.getJSON("/Email/getEmailTempDetail/" + row.Id, function (json) {
+                    $('#c_BodyRe').attr('value', json[0].Content);
+                })
+            }
+        });
+        $('#order').datagrid({
+            url: '@Url.Action("GetOrder", "EbayMessageRe")/@ViewData["buyer"]',
+            nowrap: false,
+            view: detailview,
+            detailFormatter: function (index, row) {
+                var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '</b></div>';
+                return html;
+            },
+            onExpandRow: function (index, row) {
+                $('#ddv-' + index).panel({
+                    border: false,
+                    cache: false,
+                    href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
+                    onLoad: function () {
+                        $('#order').datagrid('fixDetailRowHeight', index);
+                    }
+                });
+                $('#order').datagrid('fixDetailRowHeight', index);
+            }
+        });
+
+        $('#oldmail').datagrid({
+            url: '@Url.Action("GetOldMail", "EbayMessageRe")/@ViewData["buyer"]'
+
+        });
+
+    });
+    function send() {
+        if ($('#c_BodyRe').attr("value") == "") {
+            alert("回复顶不能为空！");
+        }
+        else {
+
+            $.ajax({
+                url: '@Url.Action("IsRead", "EbayMessage")/@ViewData["mid"]',
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                                if (r) {
+                                    $('#c_form').form('submit', {
+                                        url: '@Url.Action("Create", "EbayMessageRe")',
+                                        onSubmit: function () {
+                                            return $(this).form('validate');
+                                        },
+                                        success: function (msg) {
+                                            var result = $.parseJSON(msg);
+                                            if (result.IsSuccess) {
+                                                $.ajax({
+                                                    url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
+                                                    success: function (result) {
+                                                        if (result) {
+                                                            if (result.Msg != '0') {
+                                                                $.messager.show({
+                                                                    title: '提示',
+                                                                    msg: '已进入下一封未读！',
+                                                                    timeout: 2000,
+                                                                    showType: 'slide'
+                                                                })
+                                                                window.location = "/EbayMessageRe/Create/" + result.Msg;
+                                                            }
+                                                            else {
+                                                                alert("已经到最后一封未读，点击“确定”关闭！");
+                                                                window.close();
+                                                            }
+                                                        }
+                                                    }
+                                                })
+                                            } else {
+                                                alert("保存失败!");
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                        }
+                        else {
+
+                            $('#c_form').form('submit', {
+                                url: '@Url.Action("Create", "EbayMessageRe")',
+                                onSubmit: function () {
+                                    return $(this).form('validate');
+                                },
+                                success: function (msg) {
+                                    var result = $.parseJSON(msg);
+                                    if (result.IsSuccess) {
+                                        $.ajax({
+                                            url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
+                                            success: function (result) {
+                                                if (result) {
+                                                    if (result.Msg != '0') {
+                                                        $.messager.show({
+                                                            title: '提示',
+                                                            msg: '已进入下一封未读！',
+                                                            timeout: 2000,
+                                                            showType: 'slide'
+                                                        })
+                                                        window.location = "/EbayMessageRe/Create/" + result.Msg;
+                                                    }
+                                                    else {
+                                                        alert("已经到最后一封未读，点击“确定”关闭！");
+                                                        window.close();
+                                                    }
+                                                }
+
+                                            }
+                                        })
+                                    } else {
+                                        alert("保存失败!");
+                                    }
+                                }
+                            });
+
+
+                        }
+                    }
+
+                }
+            })
+
+        }
+    }
+    function onlySend() {
+        if ($('#c_BodyRe').attr("value") == "") {
+            alert("回复顶不能为空！");
+        }
+        else {
+
+            $.ajax({
+                url: '@Url.Action("IsRead", "EbayMessage")/@ViewData["mid"]',
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                                if (r) {
+                                    $('#c_form').form('submit', {
+                                        url: '@Url.Action("Create", "EbayMessageRe")',
+                                        onSubmit: function () {
+                                            return $(this).form('validate');
+                                        },
+                                        success: function (msg) {
+                                            var result = $.parseJSON(msg);
+                                            if (result.IsSuccess) {
+                                                alert("回复成功！");
+                                                $('#c_BodyRe').attr("value", "")
+                                            }
+                                            else {
+                                                alert("保存失败!");
+                                            }
+                                        }
+                                    });
+                                }
+                            })
+                        }
+                        else {
+                            $('#c_form').form('submit', {
+                                url: '@Url.Action("Create", "EbayMessageRe")',
+                                onSubmit: function () {
+                                    return $(this).form('validate');
+                                },
+                                success: function (msg) {
+                                    var result = $.parseJSON(msg);
+                                    if (result.IsSuccess) {
+                                        alert("回复成功！");
+                                        $('#c_BodyRe').attr("value", "")
+                                    }
+                                    else {
+                                        alert("保存失败!");
+                                    }
+                                }
+                            });
+
+
+                        }
+                    }
+
+                }
+            })
+        }
+    }
+
+    function olddetail(v, r, i) {
+        return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(" + v + ")\'>详细</a>"
+    }
+    function detail(value) {
+
+        var url_str = '@Url.Action("Edit", "EbayMessageRe")/' + value;
+        $('#d_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '详细信息',
+                width: '800',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '关闭',
+                    handler: function () {
+                        $('#d_dlg').dialog('close');
+                    }
+                }]
+            });
+        }).dialog('open');
+    }
+    function getOrderDate(v, r, i) {
+        var html = "";
+        html += "同:<b>" + getDate(r.CreateOn) + "</b>";
+        if (r.ScanningBy != "")
+            html += "<br/>扫:" + getDate(r.ScanningOn);
+        return html;
+    }
+
+    function GetAmount(v, r, i) {
+        var html = v + ":" + r.Amount;
+        return html;
+    }
+
+    function GetBuyer(v, r, i) {
+        var html = v + "<br />" + r.BuyerEmail;
+        return html;
+    }
+
+    function getAccount(v, r, i) {
+
+        var html = v + "<br />" + r.Platform;
+        return html;
+    }
+
+    function GetOrder(v, r, i) {
+        return v + "<br/>" + r.OrderExNo;
+    }
+
+    function GeStatus(v, r, i) {
+        var html = v + "<br/>";
+        if (r.IsPrint >= 1)
+            html += "<img src='/Content/imgs/Print.gif'> ";
+        if (r.IsMerger == 1)
+            html += "<img src='/Content/imgs/Merger.gif'> ";
+        if (r.IsSplit == 1)
+            html += "<img src='/Content/imgs/Split.gif'> ";
+        if (r.IsOutOfStock == 1)
+            html += "<img src='/Content/imgs/OutOfStock.gif'> ";
+        if (r.IsRepeat == 1)
+            html += "<img src='/Content/imgs/Repeat.gif'> ";
+        return html;
+    }
+    function forward() {
+        $('#dd').dialog({
+            buttons: [{
+                text: '确定',
+                iconCls: 'icon-ok',
+                handler: function () {
+                    forwarding();
+                }
+            }, {
+                text: '取消',
+                handler: function () {
+                    $('#dd').dialog('close');
+                }
+            }]
+        });
+
+        $('#forname').combobox({
+            url: '@Url.Action("GetUsers", "EbayReplay")',
+            valueField: "Realname",
+            textField: "Realname",
+        });
+    }
+    function forwarding() {
+        if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
+
+            $.ajax({
+                url: '@Url.Action("Forward", "EbayMessage")/@ViewData["mid"]' + "$" + $('#forname').combobox("getValue") + "~" + $('#forqu').attr("value"),
+                success: function (result) {
+                    if (result) {
+                        if (result.Msg != '0') {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '转发出错',
+                                timeout: 2000,
+                                showType: 'slide'
+                            })
+                        }
+                        else {
+                            alert("转发成功！");
+                            window.close();
+                        }
+                    }
+
+                }
+            })
+        }
+        else {
+            alert("回复人员、转发原因不能为空！！");
+        }
+    }
+
+</script>
+
+<body class="easyui-layout">
+    <div data-options="region:'center',title:'邮件内容'" style="height:300px;">
+        <div class="easyui-layout" style="width: 100%; height:660px;">
+            <div data-options="region:'north',border:false" style="height: 350px;">
+                <div style="background-color:lightgray">
+                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>账号:&nbsp;@ViewData["buyer"]</label>label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>提问时间:&nbsp;@ViewData["creation"]</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>邮箱:&nbsp;@ViewData["email"]</p></label>
+                </div>
+                <div style="float: left">
+                    <table class="editForm" id="etable" style="width: 800px;">
+                        <tr>
+                            <td valign="top">&nbsp;&nbsp;<label style="font-size:small">邮件标题:</label>
+                            </td>
+                            <td colspan="10" valign="top">
+                                <textarea id="ESubject" style="border: 0; width: 1000px; font-size:small; resize: none;">@ViewData["sub"]</textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td valign="top">&nbsp;&nbsp;<label>邮件内容:</label>
+                            </td>
+                            <td colspan="10">
+                                <textarea id="EContent" style="height:200px;border: 0; width: 1000px; font-size:large; font-weight:400; resize: none;" readonly="readOnly">@ViewData["bod"]</textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+            <div data-options="region:'center',title:'回复内容'">
+                @using (Html.BeginForm("Create", "EbayMessageRe", FormMethod.Post, new { id = "c_form" }))
+                {
+
+                    <fieldset style="border: 0">
+                        <table class="editForm">
+                            <tr>
+                                <td style="display: none">
+                                    @Html.TextBoxFor(model => model.MessageId, new { @id = "c_MessageId", @readOnly = "readOnly", style = "width:700px;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @Html.LabelFor(model => model.BodyRe, "回复内容:")
+                                </td>
+                                <td>
+                                    @Html.TextAreaFor(model => model.BodyRe, new { @id = "c_BodyRe", style = "width:700px;height:80px;resize:none" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td align="center">
+                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="onlySend()">回复</a>
+                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">回复并进入下一封未读</a>
+                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="forward()">转发</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                }
+             <form>
+               <fieldset>
+                <legend>往来邮件</legend>
+                <table id="oldmail" class="easyui-datagrid" style="width:850px; height: 80px"
+singleselect="true",fitColumns:true,nowrap:false">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'Id',width:40" style="display: none" formatter="olddetail"></th>
+                            <th data-options="field:'ItemId',width:100">商品编号</th>
+                            <th data-options="field:'Body',width:450">内容</th>
+                            <th data-options="field:'MessageStatus',width:100">状态</th>
+                            <th data-options="field:'CreationDate',width:130" formatter="getDate">时间</th>
+                        </tr>
+                    </thead>
+                </table>
+               </fieldset>
+             </form>
+            </div>
+            <div data-options="region:'east',split:true,title:'回复模板'" style="width: 450px; padding: 10px;">
+                <table id="dg" class="easyui-datagrid" style="width: 430px; height: 250px"
+                    singleselect="true" data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'Id'" style="display: none"></th>
+                            <th data-options="field:'Title',width:150">情况名称</th>
+                            <th data-options="field:'Content',width:280">回复内容</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div style="float: left; margin-left: 0px">
+            <table id="order" class="datagrid-cell" style="width: 1320px; height: 300px"
+                singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="OrderNo" width="100" formatter="GetOrder">订单编号
+                    </th>
+                        <th field="Status" width="150" formatter="GeStatus">订单状态
+                    </th>
+                        <th field="CurrencyCode" width="100" formatter="GetAmount">货币
+                    </th>
+                        <th field="BuyerName" width="130" formatter="GetBuyer">买家
+                    </th>
+                        <th field="Country" width="80">国家
+                    </th>
+                        <th field="LogisticMode" width="100">发货方式
+                    </th>
+                        <th field="TrackCode" width="100">Code
+                    </th>
+                        <th field="Weight" width="100">Weight
+                    </th>
+                        <th field="GenerateOn" width="200" formatter="getOrderDate">时间
+                    </th>
+                        <th field="Account" width="100" formatter="getAccount">
+                        账户      
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div id="d_dlg"></div>
+    </div>
+        <div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
+            <table>
+                <tr>
+                    <td>
+                        <label>转发给回复人：</label>
+                    </td>
+                    <td>
+                        <input id="forname" required="true" style="width:150px"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>转发原因：</label></td>
+                    <td>
+                        <textarea id="forqu" style="resize:none" required="true"></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
