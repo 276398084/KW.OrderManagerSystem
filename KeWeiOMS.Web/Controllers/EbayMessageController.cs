@@ -139,7 +139,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             else
             {
-                where = " where ReplayOnlyBy is null ";
+                where = " where (ReplayOnlyBy is null ";
             }
             where += " or ReplayOnlyBy ='"+CurrentUser.Realname+"')";
             if (!string.IsNullOrEmpty(type))
@@ -211,86 +211,6 @@ namespace KeWeiOMS.Web.Controllers
 
             object count = NSession.CreateQuery("select count(Id) from EbayMessageType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
-
-            //IList<EbayMessageType> listtype = new List<EbayMessageType>();
-            //IList<EbayMessageType> listleve = new List<EbayMessageType>();
-            //if(!string.IsNullOrEmpty(type))
-            //{
-            //    string pid = type.Substring(0,type.IndexOf("~"));
-            //    string cid = type.Substring(type.IndexOf("~") + 1);
-            //    if (pid != "所有消息")
-            //    {
-            //        if (pid == "待处理消息")
-            //        {
-            //            foreach(var item in objList)
-            //            {
-            //                if (item.MessageStatus == "未回复")
-            //                {
-            //                    listtype.Add(item);
-            //                }
-            //            }
-            //          if (cid == "询问物品")
-            //            {
-            //                    foreach (var item in listtype)
-            //                    {
-            //                        if (init("sent a question", item.Subject)!="")
-            //                        {
-            //                            listleve.Add(item);
-            //                        }
-            //                    }
-            //                    return Json(new { total = listleve.Count, rows = listleve });
-            //            }
-            //          if (cid == "质量问题")
-            //          {
-            //              return Json(new { total = 0, rows = "" });
-            //          }
-            //          if (cid == "退货")
-            //          {
-            //              return Json(new { total = 0, rows = "" });
-            //          }
-
-            //            return Json(new { total = listtype.Count, rows = listtype });
-            //        }
-            //        if (pid == "已处理消息")
-            //        {
-            //            foreach (var item in objList)
-            //            {
-            //                if (item.MessageStatus == "已回复")
-            //                {
-            //                    listtype.Add(item);
-            //                }
-            //            }
-            //            if (cid == "询问物品")
-            //            {
-            //                foreach (var item in listtype)
-            //                {
-            //                    if (init("sent a question", item.Subject) != "")
-            //                    {
-            //                        listleve.Add(item);
-            //                    }
-            //                }
-            //                return Json(new { total = listleve.Count, rows = listleve });
-            //            }
-            //            if (cid == "质量问题")
-            //            {
-            //                return Json(new { total = 0, rows = "" });
-            //            }
-            //            if (cid == "退货")
-            //            {
-            //                return Json(new { total = 0, rows = "" });
-            //            }
-
-            //            return Json(new { total = listtype.Count, rows = listtype });
-            //        }
-            //        if (pid == "未分配消息")
-            //        {
-            //            return Json(new { total = 0, rows = "" });
-            //        }
-                
-            //    }
-            
-            //}
-
 
         }
 
