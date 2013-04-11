@@ -701,7 +701,7 @@ namespace KeWeiOMS.Web.Controllers
             string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
 
-            sql += " where O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
+            sql += " where  O.Enabled=0 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
 
             DataSet ds = GetOrderExport(sql);
             // 设置编码和附件格式 
@@ -719,11 +719,11 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 if (!string.IsNullOrEmpty(s))
                 {
-                    sql += " where O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                    sql += " where O.Enabled=0 and O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
                 }
                 else
                 {
-                    sql += " where O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                    sql += " where O.Enabled=0 and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
                 }
             }
             else
