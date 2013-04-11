@@ -127,6 +127,7 @@
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
     <Compile Include="Common\EbayHelper.cs" />
+    <Compile Include="Common\EbayMessageUtil.cs" />
     <Compile Include="Common\EBayUtil.cs" />
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\ExcelHelper.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Common\Statistics\OrderCount.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
+    <Compile Include="Common\Statistics\OrderData.cs" />
     <Compile Include="Common\Statistics\ProductData.cs" />
     <Compile Include="Common\Statistics\ProportionData.cs" />
     <Compile Include="Common\Statistics\PurchaseData.cs" />
@@ -151,6 +153,9 @@
     <Compile Include="Controllers\DictionaryController.cs" />
     <Compile Include="Controllers\DisputeController.cs" />
     <Compile Include="Controllers\EbayController.cs" />
+    <Compile Include="Controllers\EbayMessageController.cs" />
+    <Compile Include="Controllers\EbayMessageReController.cs" />
+    <Compile Include="Controllers\EbayReplayController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
@@ -1319,8 +1324,29 @@
     <Content Include="Views\Order\OrderExport.cshtml" />
     <Content Include="Views\Statistics\PurchaseInfo.cshtml" />
     <Content Include="Views\Statistics\OrderSendInfo.cshtml" />
+    <Content Include="Views\OrderAmount\GetProducts.cshtml" />
+    <Content Include="Views\OrderAmount\GetFreights.cshtml" />
+    <Content Include="Views\OrderAmount\GetOrders.cshtml" />
+    <Content Include="Views\Statistics\SellCount.cshtml" />
+    <Content Include="Views\Statistics\OutCount.cshtml" />
+    <Content Include="Views\Statistics\ScanCount.cshtml" />
 =======
     <Content Include="Views\GMarket\Index.cshtml" />
+    <Content Include="Views\EbayMessage\Create.cshtml" />
+    <Content Include="Views\EbayMessage\Delete.cshtml" />
+    <Content Include="Views\EbayMessage\Edit.cshtml" />
+    <Content Include="Views\EbayMessage\Index.cshtml" />
+    <Content Include="Views\EbayMessageRe\Create.cshtml" />
+    <Content Include="Views\EbayMessageRe\Delete.cshtml" />
+    <Content Include="Views\EbayMessageRe\Details.cshtml" />
+    <Content Include="Views\EbayMessageRe\Edit.cshtml" />
+    <Content Include="Views\EbayMessageRe\Index.cshtml" />
+    <Content Include="Views\EbayMessageRe\Top.cshtml" />
+    <Content Include="Views\EbayReplay\Create.cshtml" />
+    <Content Include="Views\EbayReplay\Delete.cshtml" />
+    <Content Include="Views\EbayReplay\Details.cshtml" />
+    <Content Include="Views\EbayReplay\Edit.cshtml" />
+    <Content Include="Views\EbayReplay\Index.cshtml" />
 >>>>>>> kewei/ttt
   </ItemGroup>
   <ItemGroup>
