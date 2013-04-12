@@ -15,7 +15,7 @@
 
         function c_dlg() {
             var url_str = '@Url.Action("Create", "User")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
+            showdlg(url_str,'c_dlg', ajaxAdd)
         }
 
         //编辑框
@@ -46,11 +46,8 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "User")/' + id;
-
                 delData(url, 'dg');
-
             }
         }
 
