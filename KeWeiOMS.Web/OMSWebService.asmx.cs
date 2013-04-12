@@ -127,31 +127,20 @@ namespace KeWeiOMS.Web
 
 
         [WebMethod]
-        public string EbayMessageDown(string Body, DateTime CreationDate, string MessageID, string Status, string MessageType, string SenderEmail, string SenderID, string Subject, string ItemID, string Shop)
+        public string EbayMessageDown(EbayMessageType obj)
         {
             try
             {
-                EbayMessageType email = new EbayMessageType();
-                email.Body = Body;
-                email.CreationDate = CreationDate;
-                email.MessageId = MessageID;
-                email.MessageStatus = Status;
-                email.MessageType = MessageType;
-                email.SenderEmail = SenderEmail;
-                email.SenderID = SenderID;
-                email.Subject = Subject;
-                email.ItemId = ItemID;
-                email.Shop = Shop;
-                email.CreateOn = DateTime.Now;
-                email.ReplayOn = Convert.ToDateTime("2000-01-01");
-                int id = NoExist(email.MessageId);
+                obj.CreateOn = DateTime.Now;
+                obj.ReplayOn = Convert.ToDateTime("2000-01-01");
+                int id = NoExist(obj.MessageId);
                 if (id != 0)
                 {
                     return "该条邮件已同步！";
                 }
                 else
                 {
-                    NSession.Save(email);
+                    NSession.Save(obj);
                     NSession.Flush();
                     return "同步一条邮件！";
                 }
