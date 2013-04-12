@@ -25,14 +25,14 @@
         });
         $('#c_WId').combogrid("setValue", 1);
         $('#c_OutType').combobox({
-            url: '@Url.Action("GetDataByCode", "Dictionary")/',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/Stock.OutType',
             valueField: 'FullName',
             textField: 'FullName',
             panelHeight: 'auto',
             editable: true
 
         });
-        $('#c_OutType').combobox("setValue", "扫描出库");
+        $('#c_OutType').combobox("setValue", "包裹扫描");
     });
 
 </script>
