@@ -150,7 +150,7 @@
             keynum = e.which;
         }
         if (keynum == 13) {
-            if (txt.value == "") { Reset(); }
+            if (txt.value == "") { Reset(); return false; }
             if (progress == 0) {
                 getOrder(txt.value);
             }

@@ -75,10 +75,24 @@ namespace KeWeiOMS.Web
             return true;
         }
 
+        [WebMethod]
+        public List<ProductType> GetProducts()
+        {
+            List<ProductType> productTypes = NSession.CreateQuery(" from ProductType").List<ProductType>().ToList();
+            return productTypes;
+        }
+
+        [WebMethod]
+        public List<CurrencyType> GetCurrencys()
+        {
+            List<CurrencyType> productTypes = NSession.CreateQuery(" from CurrencyType").List<CurrencyType>().ToList();
+            return productTypes;
+        }
+
 
 
         [WebMethod]
-        public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, string Nownum,int Qty, string ProductUrl, string Account)
+        public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, string Nownum, int Qty, string ProductUrl, string Account)
         {
             try
             {
@@ -92,7 +106,7 @@ namespace KeWeiOMS.Web
                 obj.Account = Account;
                 obj.Qty = Qty;
                 obj.CreateOn = DateTime.Now;
-                int check = GetId(ItemId,Nownum);
+                int check = GetId(ItemId, Nownum);
                 if (check > 0)
                 {
                     obj.Id = check;
@@ -112,7 +126,7 @@ namespace KeWeiOMS.Web
 
         public int GetId(string ItemId, string Nownum)
         {
-            IList<GMarketType> list = NSession.CreateQuery("from GMarketType where ItemId='"+ItemId+"' and NowNum='"+Nownum+"'").List<GMarketType>();
+            IList<GMarketType> list = NSession.CreateQuery("from GMarketType where ItemId='" + ItemId + "' and NowNum='" + Nownum + "'").List<GMarketType>();
             NSession.Clear();
             if (list.Count > 0)
             {
@@ -127,7 +141,7 @@ namespace KeWeiOMS.Web
 
 
         [WebMethod]
-        public string EbayMessageDown(string Body, DateTime CreationDate, string MessageID, string Status, string MessageType,string SenderEmail,string SenderID,string Subject,string ItemID,string Shop)
+        public string EbayMessageDown(string Body, DateTime CreationDate, string MessageID, string Status, string MessageType, string SenderEmail, string SenderID, string Subject, string ItemID, string Shop)
         {
             try
             {
@@ -165,7 +179,7 @@ namespace KeWeiOMS.Web
 
         private int NoExist(string MessageId)
         {
-             
+
             int id = 0;
             object obj = NSession.CreateQuery("select count(Id) from EbayMessageType where MessageId='" + MessageId + "'").UniqueResult();
             if (Convert.ToInt32(obj) > 0)
@@ -182,7 +196,7 @@ namespace KeWeiOMS.Web
             return id;
 
         }
-        
+
         [WebMethod]
         public ArrayList ApiToken(string psw)
         {
@@ -200,7 +214,7 @@ namespace KeWeiOMS.Web
                 }
                 catch (Exception ex)
                 {
-                   
+
                 }
             }
             return arry;
@@ -213,7 +227,7 @@ namespace KeWeiOMS.Web
             IList<AccountType> ac = NSession.CreateQuery("from AccountType where AccountName ='account' and ApiToken <>''").List<AccountType>();
             foreach (var item in ac)
             {
-                apitoken= item.ApiToken;
+                apitoken = item.ApiToken;
             }
 
             return apitoken;
@@ -226,7 +240,7 @@ namespace KeWeiOMS.Web
             EbayMessageReType e = new EbayMessageReType();
             IList<EbayMessageReType> account = NSession.CreateQuery("from EbayMessageReType where IsUpload <>'1'").List<EbayMessageReType>();
             foreach (var item in account)
-            { 
+            {
                 return item;
             }
             return e;
@@ -245,17 +259,17 @@ namespace KeWeiOMS.Web
             try
             {
 
-            NSession.Update(obj);
-            NSession.Flush();
-            return "状态修改成功";
+                NSession.Update(obj);
+                NSession.Flush();
+                return "状态修改成功";
 
             }
             catch (Exception e)
             {
                 return "状态修改出错";
             }
-        
+
         }
-        
+
     }
 }

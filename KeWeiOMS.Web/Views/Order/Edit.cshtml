@@ -193,13 +193,17 @@
         formPost('e_form', '@Url.Action("Edit", "Order")');
     }
     function splitOrder(x) {
-
+        $('#dg_p').datagrid({ closed: false });
         if (x == 0) {
             if ("@Model.Status" == "已处理") {
                 showProduct("缺货拆分--选择产品", function () {
                     if (endEditing1()) {
                         var effectRow = new Object();
                         effectRow["o"] = '@ViewData["id"]';
+                       if($('#dg_p').datagrid("getSelections").length==0) {
+                           alert("请选择发货的产品");
+                           return;
+                       }
                         effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
                         $.post("/Order/SplitOrder/", effectRow, function (rsp) {
                             $('#dlg').dialog('close');
@@ -245,6 +249,10 @@
             if (endEditing1()) {
                 var effectRow = new Object();
                 effectRow["o"] = '@ViewData["id"]';
+                if ($('#dg_p').datagrid("getSelections").length == 0) {
+                    alert("请选择发货的产品");
+                    return;
+                }
                 effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
                 $.post("/Order/ReOrder/", effectRow, function (rsp) {
                     $('#dlg').dialog('close');
@@ -542,7 +550,7 @@
     <table id="dg_p" class="easyui-datagrid"  rownumbers="true">
         <thead>
             <tr>
-                <th data-options="field:'Id',checkbox:true,hidden:true"></th>
+                <th data-options="field:'Id',checkbox:true"></th>
                 <th field="ExSKU" width="80">ExSKU
                 </th>
                 <th field="Title" width="100">名称

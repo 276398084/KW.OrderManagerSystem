@@ -887,7 +887,6 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { IsSuccess = true });
         }
 
-
         public JsonResult GetOrderBySend(string o)
         {
             List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();

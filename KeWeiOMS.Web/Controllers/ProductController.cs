@@ -188,7 +188,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
                 obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
                 obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
-
+                obj.IsScan = 1;
                 Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
                 Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
                 List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
