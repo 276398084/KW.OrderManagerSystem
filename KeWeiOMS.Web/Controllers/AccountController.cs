@@ -111,7 +111,7 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 //EBayUtil.GetMyeBaySelling(obj);
-                if (IsOk(obj.Id, obj.AccountName, obj.Platform))
+                if (!IsOk(obj.Id, obj.AccountName, obj.Platform))
                     return Json(new { errorMsg = "此账号已存在！" });
                 NSession.Update(obj);
                 NSession.Flush();

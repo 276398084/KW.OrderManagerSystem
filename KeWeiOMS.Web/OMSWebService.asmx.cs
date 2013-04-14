@@ -141,31 +141,20 @@ namespace KeWeiOMS.Web
 
 
         [WebMethod]
-        public string EbayMessageDown(string Body, DateTime CreationDate, string MessageID, string Status, string MessageType, string SenderEmail, string SenderID, string Subject, string ItemID, string Shop)
+        public string EbayMessageDown(EbayMessageType obj)
         {
             try
             {
-                EbayMessageType email = new EbayMessageType();
-                email.Body = Body;
-                email.CreationDate = CreationDate;
-                email.MessageId = MessageID;
-                email.MessageStatus = Status;
-                email.MessageType = MessageType;
-                email.SenderEmail = SenderEmail;
-                email.SenderID = SenderID;
-                email.Subject = Subject;
-                email.ItemId = ItemID;
-                email.Shop = Shop;
-                email.CreateOn = DateTime.Now;
-                email.ReplayOn = Convert.ToDateTime("2000-01-01");
-                int id = NoExist(email.MessageId);
+                obj.CreateOn = DateTime.Now;
+                obj.ReplayOn = Convert.ToDateTime("2000-01-01");
+                int id = NoExist(obj.MessageId);
                 if (id != 0)
                 {
                     return "该条邮件已同步！";
                 }
                 else
                 {
-                    NSession.Save(email);
+                    NSession.Save(obj);
                     NSession.Flush();
                     return "同步一条邮件！";
                 }
@@ -198,59 +187,49 @@ namespace KeWeiOMS.Web
         }
 
         [WebMethod]
-        public ArrayList ApiToken(string psw)
+        public List<AccountType> ApiToken(string psw)
         {
-
+            List<AccountType> account = new List<AccountType>();
             ArrayList arry = new ArrayList();
             if (psw == "feidujingbostore")
             {
+               
                 try
                 {
-                    IList<AccountType> account = NSession.CreateQuery("from AccountType where Platform ='Ebay' and ApiToken <>''").List<AccountType>();
-                    foreach (var item in account)
-                    {
-                        arry.Add(item.ApiToken);
-                    }
+                    account = NSession.CreateQuery("from AccountType where Platform ='Ebay' and ApiToken <>''").List<AccountType>().ToList();
+
                 }
                 catch (Exception ex)
                 {
 
                 }
             }
-            return arry;
+            return account;
         }
 
         [WebMethod]
-        public string GetTokenByAccount(string account)
+        public AccountType GetTokenByAccount(string account)
         {
-            string apitoken = "";
-            IList<AccountType> ac = NSession.CreateQuery("from AccountType where AccountName ='account' and ApiToken <>''").List<AccountType>();
+            AccountType accountname = new AccountType();
+            IList<AccountType> ac = NSession.CreateQuery("from AccountType where AccountName ='"+account+"' and ApiToken <>''").List<AccountType>();
             foreach (var item in ac)
             {
-                apitoken = item.ApiToken;
+                accountname = item;
             }
 
-            return apitoken;
+            return accountname;
         }
 
-
         [WebMethod]
-        public EbayMessageReType GetUnUplod()
+        public List<EbayMessageReType> GetUnUplod()
         {
-            EbayMessageReType e = new EbayMessageReType();
-            IList<EbayMessageReType> account = NSession.CreateQuery("from EbayMessageReType where IsUpload <>'1'").List<EbayMessageReType>();
+            List<EbayMessageReType> ebay = new List<EbayMessageReType>();
+            List<EbayMessageReType> account = NSession.CreateQuery("from EbayMessageReType where IsUpload <>'1'").List<EbayMessageReType>().ToList() ;
             foreach (var item in account)
             {
-                return item;
+                ebay.Add(item);
             }
-            return e;
-        }
-
-        [WebMethod]
-        public int GetCount()
-        {
-            object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where IsUpload <>'1'").UniqueResult();
-            return Convert.ToInt32(count);
+            return ebay;
         }
 
         [WebMethod]
@@ -258,11 +237,9 @@ namespace KeWeiOMS.Web
         {
             try
             {
-
                 NSession.Update(obj);
                 NSession.Flush();
                 return "状态修改成功";
-
             }
             catch (Exception e)
             {

@@ -16,90 +16,38 @@
     });
 
 
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","Placard")';
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "Placard")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        var url = '@Url.Action("Edit","Placard")/' + id;
-        if (id != undefined) {
-            showdlg(url, 'e_dlg', ajaxEdit)
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Placard")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
         }
-    }
 
         //异步新建提交
-    function ajaxAdd() {
-        $('#c_form').form('submit', {
-            url: '@Url.Action("Create", "Placard")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result) {
-                 
-                    if (!result.IsSuccess) {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存失败:' + result.ErrorMsg,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                    } else {
-                        $('#c_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
-                }
-            });
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "Placard")', 'c_dlg', 'dg');
         }
         //异步修改提交
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "Placard")', 'e_dlg', 'dg');
         }
         //删除
-    function del() {
-        var id = getselectedRow();
-        if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete", "Placard")/' + id;
-                        $.post(url, function () {
-                        }).success(function (data) {
-                            var msgstr = "删除成功";
-                          if (!data.IsSuccess){
-                                msgstr = "删除失败" + data;
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 0,
-                                    showType: 'slide'
-                                });
-                            } else {
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 3000,
-                                    showType: 'slide'
-                                });
-                            }
-
-                            $('#dg').datagrid('reload');
-                        }).error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
-                    }
-                });
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "Placard")/' + id;
+                delData(url, 'dg');
             }
         }
+
     //获取选中行
     function getselectedRow() {
         var row = $('#dg').datagrid('getSelected');
