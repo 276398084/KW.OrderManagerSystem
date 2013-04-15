@@ -29,6 +29,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ViewResult Details(int id)
+        {
+            ProductType obj = GetById(id);
+            return View(obj);
+        }
+
         public ActionResult SKUCodeIndex()
         {
             return View();
@@ -386,6 +392,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         public JsonResult ZuList(String Id)
         {
             IList<ProductComposeType> objList = NSession.CreateQuery("from ProductComposeType where SKU='" + Id + "'").List<ProductComposeType>();
+            return Json(new { total = objList.Count, rows = objList });
+        }
+
+        public JsonResult PlList(String Id)
+        {
+            IList<ProductIsInfractionType> objList = NSession.CreateQuery("from ProductIsInfractionType where SKU='" + Id+ "'").List<ProductIsInfractionType>();
             return Json(new { total = objList.Count, rows = objList });
         }
 

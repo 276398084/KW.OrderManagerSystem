@@ -2,8 +2,27 @@
 <link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
 <script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
-
 <script type="text/javascript">
+    KindEditor.ready(function (K) {
+        window.editor = K.create('#e_Summary', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+        window.editor = K.create('#e_PackMemo', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+    });
     $(function () {
         $('#dg_zu').datagrid({
             url: '@Url.Action("ZuList", "Product")/@Model.SKU',
@@ -229,7 +248,7 @@
         </tr>
     </table>
                 </fieldset>
-      <div id="tt" class="easyui-tabs" style="width:1350px;height:300px;"> 
+      <div id="tt" class="easyui-tabs" style="width:1350px;height:350px;"> 
         <div title="仓库信息" style="padding:20px;">  
              <table>
             <tr>
@@ -363,7 +382,7 @@
                     @Html.LabelFor(model => model.Summary, "简单描述:")
                 </td>
                 <td colspan="5">
-                    @Html.TextAreaFor(model => model.Summary, new { @id = "e_Summary", @style = "width:700px;height:100px;resize:none" })
+                    @Html.TextAreaFor(model => model.Summary, new { @id = "e_Summary", @style = "width:700px;height:50px;resize:none" })
                 </td>
             </tr>
             <tr>
@@ -371,7 +390,7 @@
                     @Html.LabelFor(model => model.PackMemo, "包装注意事项:")
                 </td>
                 <td colspan="5">
-                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "e_PackMemo", @style = "width:700px;height:100px;resize:none" })
+                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "e_PackMemo", @style = "width:700px;height:50px;resize:none" })
                 </td>
             </tr>
         </table>

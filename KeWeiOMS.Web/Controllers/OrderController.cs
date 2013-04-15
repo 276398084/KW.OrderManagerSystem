@@ -75,6 +75,14 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult Details(int id)
+        {
+            OrderType obj = GetById(id);
+            obj.AddressInfo = NSession.Get<OrderAddressType>(obj.AddressId);
+            ViewData["id"] =id;
+            return View(obj);
+        }
+
         [HttpPost]
         public ActionResult OrderReplace(string ids, string oldField, string newField, string fieldName)
         {
