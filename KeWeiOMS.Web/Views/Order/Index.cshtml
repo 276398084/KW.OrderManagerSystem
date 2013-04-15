@@ -19,7 +19,7 @@
                 },
                 detailFormatter: function (index, row) {
                     var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
-                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '</b></div>';
+                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '<br/> 拦截留言：' + row.CutOffMemo + '</b></div>';
                     return html;
                 },
                 onExpandRow: function (index, row) {
@@ -98,7 +98,7 @@
             });
 
             $('#HoldUpType').combobox({
-                url: '@Url.Action("GetDataByCode", "Dictionary")/Order.HoldUpType',
+                url: '@Url.Action("GetDataByCode", "Dictionary")/HoldUpType',
                 valueField: 'FullName',
                 textField: 'FullName',
                 panelHeight: 'auto',
@@ -210,7 +210,11 @@
         }
 
         function GeStatus(v, r, i) {
-            var html = v + "<br/>";
+            var html = v;
+            if (r.IsError == 1) {
+                html += "(问题订单)";
+            }
+            html += "<br/>";
             if (r.IsPrint >= 1)
                 html += "<img src='/Content/imgs/Print.gif'> ";
             if (r.IsMerger == 1)
@@ -221,6 +225,7 @@
                 html += "<img src='/Content/imgs/OutOfStock.gif'> ";
             if (r.IsRepeat == 1)
                 html += "<img src='/Content/imgs/Repeat.gif'> ";
+
             return html;
         }
 
@@ -576,6 +581,38 @@
                 html += "<br/>扫:" + getDate(r.ScanningOn);
             return html;
         }
+
+
+        function ReHoldUp() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return;
+            }
+            var s = false;
+            if ($("#ReProduct").attr("checked") == "checked") {
+
+                s = true;
+            }
+
+            $.messager.confirm("提示", "你要取消拦截 " + s_ids.length + "条订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/ReHoldUp/",
+                        type: "post",
+                        data: "o=" + s_ids.join(',') + "&s=" + s,
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+        }
+
         function o_LanJie() {
 
             s_ids = [];
@@ -592,7 +629,7 @@
                     jQuery.ajax({
                         url: "/Order/OrderHoldUp/",
                         type: "post",
-                        data: "o=" + s_ids.join(','),
+                        data: "o=" + s_ids.join(',') + "&t=" + $("#HoldUpType").combobox("getValue") + "&d=" + $("#HoldUpDesc").val(),
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
@@ -643,7 +680,8 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReError()">失效订单修正</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReQue()">缺货订单修正</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_SplitZu()">分割组合产品</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#l_dlg').dialog('open');">拦截</a><br />
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#l_dlg').dialog('open');">拦截</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#r_dlg').dialog('open');">取消拦截</a><br />
 
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
@@ -694,6 +732,22 @@
                 </tr>
             </table>
         </div>
+        <div id="r_dlg" class="easyui-dialog" title="订单拦截设置" style="width: 400px; height: 200px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>选项:</td>
+                    <td>
+                        <input type="checkbox"  id="ReProduct" />重置产品</td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="ReHoldUp()" /></td>
+                </tr>
+            </table>
+        </div>
+
 
     </div>
 </body>

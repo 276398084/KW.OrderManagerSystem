@@ -796,7 +796,7 @@ namespace KeWeiOMS.Web
                 resultValue = false;
                 order.ErrorInfo += "货运不符 ";
             }
-            if (order.Amount == 0)
+            if (order.Amount == 0 && order.Platform != PlatformEnum.Amazon.ToString())
             {
                 resultValue = false;
                 order.ErrorInfo += "金额不能为0 ";

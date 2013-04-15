@@ -75,6 +75,20 @@ namespace KeWeiOMS.Web
             return true;
         }
 
+        [WebMethod]
+        public List<ProductType> GetProducts()
+        {
+            List<ProductType> productTypes = NSession.CreateQuery(" from ProductType").List<ProductType>().ToList();
+            return productTypes;
+        }
+
+        [WebMethod]
+        public List<CurrencyType> GetCurrencys()
+        {
+            List<CurrencyType> productTypes = NSession.CreateQuery(" from CurrencyType").List<CurrencyType>().ToList();
+            return productTypes;
+        }
+
 
 
         [WebMethod]

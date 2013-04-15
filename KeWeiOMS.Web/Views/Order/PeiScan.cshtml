@@ -32,7 +32,7 @@
             textField: 'Realname',
             required: true,
             width: 200
-         
+
         });
         $('#ee').combobox({
             url: '/User/QList2/',
@@ -40,7 +40,7 @@
             textField: 'Realname',
             required: true,
             width: 200
-          
+
         });
         $('#cc').combobox("setValue", "邵大姐");
         $('#ee').combobox("setValue", "邵大姐");
@@ -109,7 +109,8 @@
         }
         if (keynum == 13) {
 
-            if (txt.value == "") { Reset(); }
+            if (txt.value == "") { Reset();
+                return true;}
             if (progress == 0) {
                 getOrder(txt.value);
             }
@@ -165,7 +166,6 @@
                         skuCode = [];
                         progress = 0;
                         oldstr = "";
-
                         ShowMessage(msg.Result, "等待扫描", true);
                         Player2.controls.play();
                     } else {
@@ -186,6 +186,7 @@
         skuCode = [];
         progress = 0;
         txt.value = "";
+        ShowMessage("", "等待扫描", false);
     }
 
     function ShowMessage(msgInfo, msgStatus, isOk) {
@@ -218,7 +219,7 @@
                     setSKU(msg.Result);
                 } else {
                     progress = 1;
-                    
+
                     ShowMessage(null, "错误：" + msg.Result, false);
                     Player1.controls.play();
                 }

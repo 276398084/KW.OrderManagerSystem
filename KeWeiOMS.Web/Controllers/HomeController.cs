@@ -274,16 +274,12 @@ left join ReturnAddress R On r.Id=" + r;
             obj.Content = System.Text.Encoding.Default.GetString(FormData);
             NSession.Update(obj);
             NSession.Flush();
-
-
             return Json(new { IsSuccess = 1 });
         }
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult PrintDesign(string Id)
         {
             ViewData["id"] = Id;
-
-            //object obj = NSession.CreateQuery("select Content from PrintTemplateType where Id=" + Id).UniqueResult();
             return View();
         }
         [OutputCache(Location = OutputCacheLocation.None)]
