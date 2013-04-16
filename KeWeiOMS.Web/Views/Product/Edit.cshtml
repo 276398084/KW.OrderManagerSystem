@@ -56,6 +56,20 @@
             }],
             onClickRow: onClickRow
         });
+        $('#dg_pl').datagrid({
+            url: '@Url.Action("PlList", "Product")/@Model.SKU',
+            width: 300,
+            toolbar: [{
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    acceptl();
+                }
+            }],
+            onClickRow: onClickRowl
+        });
+
 
         $('#e_IsInfraction').combobox({
             valueField: 0,
@@ -132,7 +146,6 @@
             ]]
         });
 
-
     });
 
     var editIndex = undefined;
@@ -183,13 +196,63 @@
             $('#dg_zu').datagrid('acceptChanges');
         }
         $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
+
+        if (endEditingl()) {
+            $('#dg_pl').datagrid('acceptChanges');
+        }
+        $("#rows2").val(JSON.stringify($('#dg_pl').datagrid("getRows")));
         formPost('e_form', '@Url.Action("Edit", "Product")', 'e_dlg', 'dg', 'a');
-
-
-
 
     }
 
+
+    var editIndexl = undefined;
+    function endEditingl() {
+        if (editIndexl == undefined) {
+            return true;
+        }
+        if ($('#dg_pl').datagrid('validateRow', editIndexl)) {
+            $('#dg_pl').datagrid('endEdit', editIndexl);
+
+            editIndexl = undefined;
+
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+    function onClickRowl(index) {
+        if (editIndexl != index) {
+            if (endEditingl()) {
+                $('#dg_pl').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndexl = index;
+            } else {
+                $('#dg_pl').datagrid('selectRow', editIndexl);
+            }
+        }
+    }
+    function addpl() {
+        if (endEditingl()) {
+            $('#dg_pl').datagrid('appendRow', { Qty: 1, Price: 0 });
+            editIndexl = $('#dg_pl').datagrid('getRows').length - 1;
+            $('#dg_pl').datagrid('selectRow', editIndexl)
+                    .datagrid('beginEdit', editIndexl);
+        }
+    }
+    function acceptl() {
+        if (endEditingl()) {
+            $('#dg_pl').datagrid('acceptChanges');
+        }
+    }
+    function Ispl(value) {
+        if (value == "1") {
+            return "是"
+        }
+        else
+            return "否";
+    }
 </script>
 
 @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { id = "e_form" }))
@@ -205,6 +268,7 @@
             </td>
             <td>
                 <input type="hidden" id="rows" name="rows" />
+                <input type="hidden" id="rows2" name="rows2" />
                 @Html.HiddenFor(model => model.Id)
                 @Html.HiddenFor(model => model.CreateOn)
 
@@ -353,17 +417,26 @@
         </table>
             </div>
          <div title="是否侵权" style="overflow:auto;padding:20px;">  
-            <table>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.IsInfraction, "是否侵权:")
-                </td>
-                 <td>
-                    @Html.TextBoxFor(model => model.IsInfraction, new { @id = "e_IsInfraction" })
-                </td>
-            </tr>
-                 </table>
-            </div>
+           <table id="dg_pl" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
+                        <thead>
+                    <tr>
+                          <th field="Platform" width="80">平台
+                    </th>
+                          <th field="Isinfraction" width="100" data-options="formatter:Ispl,editor:{
+						          type:'combobox',	
+                                  options:{
+							      valueField: 0,
+                                   textField: 1,
+                                   panelHeight: 50,
+                                   data: checks,
+							      }    
+						}">是否侵权
+                    </th>
+                    <th field="Remark" width="400" data-options="editor:'text'">备注
+                    </th>
+                        </thead>
+                    </table>
+             </div>
          <div title="组合产品" style="overflow:auto;padding:20px;">  
                     <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
                         <thead>

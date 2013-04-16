@@ -209,6 +209,14 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     NSession.Save(productCompose);
                     NSession.Flush();
                 }
+                List<ProductIsInfractionType> list2 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductIsInfractionType>>(obj.rows2);
+                foreach (ProductIsInfractionType item in list2)
+                {
+                    item.OldSKU = obj.OldSKU;
+                    item.SKU = obj.SKU;
+                    NSession.Save(item);
+                    NSession.Flush();
+                }
 
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
 
@@ -278,6 +286,16 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     NSession.Save(productCompose);
                     NSession.Flush();
                     obj.IsZu = 1;
+                }
+                List<ProductIsInfractionType> list2 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductIsInfractionType>>(obj.rows2);
+                NSession.Delete("from ProductIsInfractionType where SKU='" + obj.SKU + "'");
+                NSession.Flush();
+                foreach (ProductIsInfractionType item in list2)
+                {
+                    item.OldSKU = obj.OldSKU;
+                    item.SKU = obj.SKU;
+                    NSession.Save(item);
+                    NSession.Flush();
                 }
                 NSession.Update(obj);
                 NSession.Flush();
@@ -397,8 +415,20 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
         public JsonResult PlList(String Id)
         {
-            IList<ProductIsInfractionType> objList = NSession.CreateQuery("from ProductIsInfractionType where SKU='" + Id+ "'").List<ProductIsInfractionType>();
-            return Json(new { total = objList.Count, rows = objList });
+            IList<ProductIsInfractionType> objList = NSession.CreateQuery("from ProductIsInfractionType where SKU='" + Id + "'").List<ProductIsInfractionType>();
+            if (objList.Count != 0)
+                return Json(new { total = objList.Count, rows = objList });
+            else
+            {
+                List<ProductIsInfractionType> list = new List<ProductIsInfractionType>();
+                foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
+                {
+                    ProductIsInfractionType obj = new ProductIsInfractionType();
+                    obj.Platform = item; obj.Isinfraction = 0;
+                    list.Add(obj);
+                }
+                return Json(list);
+            }
         }
 
         public JsonResult HasExist(string sku)
@@ -508,6 +538,19 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             return Json(new { IsSuccess = false, Result = "没有找到这个产品！" });
 
         }
+        public ActionResult Platform()
+        {
+            List<ProductIsInfractionType> list = new List<ProductIsInfractionType>();
+            foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
+            {
+                ProductIsInfractionType obj = new ProductIsInfractionType();
+                obj.Platform = item; obj.Isinfraction = 0;
+                list.Add(obj);
+            }
+            return Json(list);
+        }
+
+
 
         public JsonResult SearchSKU(string id)
         {

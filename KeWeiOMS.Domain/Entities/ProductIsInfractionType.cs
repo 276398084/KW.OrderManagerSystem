@@ -50,5 +50,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual int Isinfraction { get; set; }
 
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public virtual string Remark { get; set; }
+
     }
 }

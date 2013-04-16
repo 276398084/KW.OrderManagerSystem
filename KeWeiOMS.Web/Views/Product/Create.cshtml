@@ -57,28 +57,9 @@
             onClickRow: onClickRow
         });
         $('#dg_pl').datagrid({
-            url: '@Url.Action("PlList", "Product")',
+            url: '/Product/Platform',
             width: 300,
             toolbar: [{
-                id: 'btnaddp',
-                text: '添加',
-                iconCls: 'icon-add',
-                handler: function () {
-                    addpl();
-                }
-            }, {
-                id: 'btndelp',
-                text: '删除',
-                iconCls: 'icon-add',
-                handler: function () {
-                    if (editIndexl == undefined) {
-                        return;
-                    }
-                    $('#dg_pl').datagrid('cancelEdit', editIndexl)
-                            .datagrid('deleteRow', editIndexl);
-                    editIndexl = undefined;
-                }
-            }, {
                 id: 'btnsave',
                 text: '保存',
                 iconCls: 'icon-save',
@@ -174,10 +155,17 @@
             'onUploadSuccess': function (file, data, response) {
                 eval("data=" + data);
                 $('#c_PicUrl').val(data.SaveName);
+
                 if (endEditing()) {
                     $('#dg_zu').datagrid('acceptChanges');
                 }
                 $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
+
+                if (endEditingl()) {
+                    $('#dg_pl').datagrid('acceptChanges');
+                }
+                $("#rows2").val(JSON.stringify($('#dg_pl').datagrid("getRows")));
+
                 formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg', 'a');
             }
         });
@@ -284,6 +272,14 @@
             $('#dg_pl').datagrid('acceptChanges');
         }
     }
+    function Ispl(value) {
+        if (value == "1") {
+            return "是"
+        }
+        else
+            return "否";
+    }
+
 </script>
 
 
@@ -299,6 +295,7 @@
             <tr>
                 <td>
                     <input type="hidden" id="rows" name="rows" />
+                    <input type="hidden" id="rows2" name="rows2" />
                     @Html.LabelFor(model => model.SKU, "商品编号:")
                 </td>
                 <td>
@@ -453,11 +450,21 @@
            <table id="dg_pl" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
                         <thead>
                             <tr>
-                                <th field="SKU" width="80" data-options="editor:'text'">SKU
+                                <th field="Platform" width="80">平台
                     </th>
-                                <th field="Isinfraction" width="100" data-options="editor:'text'">是否侵权
+                                <th field="Isinfraction" width="100" data-options="formatter:Ispl,editor:{
+						          type:'combobox',	
+                                  options:{
+							      valueField: 0,
+                                   textField: 1,
+                                   panelHeight: 50,
+                                   data: checks,
+							      }    
+						}">是否侵权
                     </th>
-                        </thead>
+                                <th field="Remark" width="400" data-options="editor:'text'">备注
+                    </th>
+                    </thead>
                     </table>
              </div>
           <div title="组合产品" style="overflow:auto;padding:20px;">  
