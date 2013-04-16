@@ -130,17 +130,11 @@ namespace KeWeiOMS.Web.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                string date = search.Substring(0, search.IndexOf("$"));
-                string key = Utilities.Resolve(search.Substring(search.IndexOf("$")+1));
-                where = GetSearch(date);
-                if (!string.IsNullOrEmpty(where)&&!string.IsNullOrEmpty(key))
-                    where +=" and "+ key;
-                else
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
                 {
-                    if (!string.IsNullOrEmpty(key))
-                        where = " where " + key;
+                    where = " where " + where;
                 }
-                
             }
             Session["ToExcel"] = where + orderby;
             IList<PurchaseTroubleType> objList = NSession.CreateQuery("from PurchaseTroubleType " + where + orderby)
@@ -173,25 +167,6 @@ namespace KeWeiOMS.Web.Controllers
             if(Convert.ToInt32(obj)>0)
             return Json("是", JsonRequestBehavior.AllowGet);
             return Json("否", JsonRequestBehavior.AllowGet);
-        }
-        public static string GetSearch(string search)
-        {
-            string where = "";
-            string startdate = search.Substring(0, search.IndexOf("&"));
-            string enddate = search.Substring(search.IndexOf("&")+1);
-            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
-            {
-                if (!string.IsNullOrEmpty(startdate))
-                    where += "CreateOn >=\'" + Convert.ToDateTime(startdate) + "\'";
-                if (!string.IsNullOrEmpty(enddate))
-                {
-                    if (where != "")
-                        where += " and ";
-                    where += "CreateOn <=\'" + Convert.ToDateTime(enddate) + "\'";
-                }
-                where = " where " + where;
-            }
-            return where;
         }
         //IList转DataSet
         public static DataSet ConvertToDataSet<PurchaseTroubleType>(IList<PurchaseTroubleType> list)

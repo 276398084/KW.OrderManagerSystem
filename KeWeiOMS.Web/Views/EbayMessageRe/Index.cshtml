@@ -89,7 +89,7 @@
     }
 
     function doSearch() {
-        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        search = "ReplayOn_st&" + $('#txtStartDate').datebox("getValue") + "^ReplayOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
         $("#dg").datagrid("load", {
             search: search
         });
