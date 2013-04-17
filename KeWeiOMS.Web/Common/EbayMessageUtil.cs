@@ -20,7 +20,7 @@ namespace KeWeiOMS.Web
     {
         //
         // GET: /EbayMessageUtil/
-       
+
 
         public ActionResult Index()
         {
@@ -29,11 +29,12 @@ namespace KeWeiOMS.Web
 
         public static void syn(ISession NSession)
         {
+
             IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName='jinbostore' and ApiToken<>''").List<AccountType>();
             foreach (var item in list)
             {
-                DateTime beginDate=DateTime.Now.AddDays(-30);
-                DateTime endDate=DateTime.Now.AddMinutes(1);
+                DateTime beginDate = DateTime.Now.AddDays(-30);
+                DateTime endDate = DateTime.Now.AddMinutes(1);
                 GetEmailByAPI(item, beginDate, endDate, NSession);
             }
         }
@@ -69,8 +70,8 @@ namespace KeWeiOMS.Web
                     email.SenderEmail = mmet.Question.SenderEmail;
                     email.SenderID = mmet.Question.SenderID;
                     email.Subject = mmet.Question.Subject;
-                    if (mmet.Item!=null)
-                    { 
+                    if (mmet.Item != null)
+                    {
                         email.ItemId = mmet.Item.ItemID;
                     }
                     email.Shop = mmet.Question.RecipientID[0];
@@ -86,7 +87,7 @@ namespace KeWeiOMS.Web
                         NSession.Save(email);
                         NSession.Flush();
                     }
-                   
+
                 }
                 i++;
             } while (messages != null && messages.Count == 100);
@@ -148,8 +149,8 @@ namespace KeWeiOMS.Web
 
         public static string MessageType(string type)
         {
-            string mt = ""; 
-            switch(type)
+            string mt = "";
+            switch (type)
             {
                 case "AskSellerQuestion": mt = "向卖家提问"; break;
                 case "ResponseToASQQuestion": mt = "回复已回复的问题"; break;
@@ -157,6 +158,6 @@ namespace KeWeiOMS.Web
             }
             return mt;
         }
-    }   
+    }
 
 }
