@@ -362,6 +362,8 @@
                     @Html.HiddenFor(model => model.Weight)
                     @Html.HiddenFor(model => model.CreateOn)
                     @Html.HiddenFor(model => model.Status)
+                    @Html.HiddenFor(model => model.MId)
+                    @Html.HiddenFor(model => model.RMB)
                 </td>
                 <td>
                     @Html.LabelFor(model => model.OrderExNo, "外部编号:")
@@ -543,7 +545,7 @@
                     @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
                 </td>
                 <td>
-                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "e_BuyerMemo",@style="width:600px;resize:none"})
+                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "e_BuyerMemo", @style = "width:600px;resize:none" })
                 </td>
             </tr>
 
@@ -552,7 +554,7 @@
                     @Html.LabelFor(model => model.SellerMemo, "商家留言:")
                 </td>
                 <td >
-                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "e_SellerMemo",@style="width:600px;resize:none" })
+                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "e_SellerMemo", @style = "width:600px;resize:none" })
                 </td>
             </tr>
 
@@ -561,7 +563,7 @@
                     @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
                 </td>
                 <td>
-                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "e_CutOffMemo" ,@style="width:600px;resize:none"})
+                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "e_CutOffMemo", @style = "width:600px;resize:none" })
                 </td>
             </tr>
        </table>
