@@ -41,7 +41,6 @@ namespace KeWeiOMS.Web
             lock (obj1)
             {
                 string result = string.Empty;
-
                 NSession.Clear();
                 IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", OrderNo).List<SerialNumberType>();
                 if (list.Count > 0)

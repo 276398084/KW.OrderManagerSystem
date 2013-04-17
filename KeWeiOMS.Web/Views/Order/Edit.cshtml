@@ -2,6 +2,9 @@
 @{
   
 }
+<link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
 <script type="text/javascript">
     $.extend($.fn.datagrid.defaults.editors, {
         combogrid: {
@@ -24,6 +27,36 @@
             }
         }
     });
+    KindEditor.ready(function (K) {
+        window.editor = K.create('#e_BuyerMemo', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+        window.editor = K.create('#e_SellerMemo', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+        window.editor = K.create('#e_CutOffMemo', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+    });
+
     $(function () {
         $('#dg_product').datagrid({
             url: '@Url.Action("List", "OrderProduct")/@ViewData["id"]',
@@ -193,17 +226,13 @@
         formPost('e_form', '@Url.Action("Edit", "Order")');
     }
     function splitOrder(x) {
-        $('#dg_p').datagrid({ closed: false });
+
         if (x == 0) {
             if ("@Model.Status" == "已处理") {
                 showProduct("缺货拆分--选择产品", function () {
                     if (endEditing1()) {
                         var effectRow = new Object();
                         effectRow["o"] = '@ViewData["id"]';
-                        if ($('#dg_p').datagrid("getSelections").length == 0) {
-                            alert("请选择发货的产品");
-                            return;
-                        }
                         effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
                         $.post("/Order/SplitOrder/", effectRow, function (rsp) {
                             $('#dlg').dialog('close');
@@ -249,10 +278,6 @@
             if (endEditing1()) {
                 var effectRow = new Object();
                 effectRow["o"] = '@ViewData["id"]';
-                if ($('#dg_p').datagrid("getSelections").length == 0) {
-                    alert("请选择发货的产品");
-                    return;
-                }
                 effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
                 $.post("/Order/ReOrder/", effectRow, function (rsp) {
                     $('#dlg').dialog('close');
@@ -378,47 +403,16 @@
             </tr>
         </table>
     </fieldset>
-    <div id="tt" class="easyui-tabs" style="width:1350px;height:300px;">
-          <div title="留言信息" style="padding:20px;">  
-       <table class="editForm">
-              <tr>
-                <td>
-                    @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
-                </td>
-                <td>
-                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "e_BuyerMemo",@style="width:400px;resize:none"})
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.SellerMemo, "商家留言:")
-                </td>
-                <td >
-                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "e_SellerMemo",@style="width:400px;resize:none" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
-                </td>
-                <td>
-                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "e_CutOffMemo" ,@style="width:400px;resize:none"})
-                </td>
-            </tr>
-       </table>
-    </div>  
- 
+    <div id="tt" class="easyui-tabs" style="width:1350px;height:300px;"> 
         <div title="产品信息" style="padding:20px;">  
-            <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true" >
-                <thead>
-                    <tr>
-                        <th field="ExSKU" width="80" data-options="editor:'text'">ExSKU
-                        </th>
-                        <th field="Title" width="100" data-options="editor:'text'">名称
-                        </th>
-                        <th field="SKU" width="80" data-options="
+        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true" >
+            <thead>
+                <tr>
+                    <th field="ExSKU" width="80" data-options="editor:'text'">ExSKU
+                    </th>
+                    <th field="Title" width="100" data-options="editor:'text'">名称
+                    </th>
+                    <th field="SKU" width="80" data-options="
                         editor:{
 							type:'combogrid',
 							options:{
@@ -434,113 +428,145 @@
                                     { field: 'SKU', title: 'SKU', width: 100 },
                                     { field: 'ProductName', title: 'Title', width: 200 },
                                     { field: 'Standard', title: '规格', width: 100 }
+
                                 ]]
 							}
 						}
                         ">SKU
-                        </th>
-                        <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
-                        </th>
-                        <th field="Standard" width="80" data-options="editor:'text'">规格
-                        </th>
-                        <th field="Remark" width="100" data-options="editor:'text'">描述
-                        </th>
-                        <th field="Price" width="80" data-options="editor:{ type: 'numberbox', options: { precision: 5 }}">
-                        价格
+                    </th>
+                    <th field="Qty" width="80" data-options="editor:{ type: 'numberbox'}">数量
+                    </th>
+                    <th field="Standard" width="80" data-options="editor:'text'">规格
+                    </th>
+                    <th field="Remark" width="100" data-options="editor:'text'">描述
+                    </th>
+                    <th field="Price" width="80" data-options="editor:{ type: 'numberbox', options: { precision: 5 }}">
+                    价格
 
-                        <th field="Url" width="100" data-options="editor:'text'">网址
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-        </div>
-        <div title="地址信息" style="overflow:auto;padding:20px;">  
-            <table class="editForm">
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.LogisticMode, "发货方式:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.LogisticMode, new { @id = "e_LogisticMode" })
-                    </td>
-                    <td></td>
-                    <td>
+                    <th field="Url" width="100" data-options="editor:'text'">网址
+                    </th>
+                </tr>
+            </thead>
+        </table>
+</div>
+<div title="地址信息" style="overflow:auto;padding:20px;">  
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.LogisticMode, "发货方式:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.LogisticMode, new { @id = "e_LogisticMode" })
+                </td>
+                <td></td>
+                <td>
 
-                        @Html.HiddenFor(model => model.AddressId, new { @id = "e_AddressId" })
-                    </td>
-                </tr>
 
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.Addressee, "收件人:")
-                    </td>
-                    <td>
-                        @Html.HiddenFor(model => model.AddressInfo.Id)
-                        @Html.TextBoxFor(model => model.AddressInfo.Addressee, new { @id = "e_Addressee" })
-                    </td>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.PostCode, "邮编:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.AddressInfo.PostCode, new { @id = "e_PostCode" })
-                    </td>
-                </tr>
+                    @Html.HiddenFor(model => model.AddressId, new { @id = "e_AddressId" })
+                </td>
+            </tr>
 
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.Tel, "电话:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.AddressInfo.Tel, new { @id = "e_Tel" })
-                    </td>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.Phone, "手机:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.AddressInfo.Phone, new { @id = "e_Phone" })
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.Street, "街道:")
-                    </td>
-                    <td colspan="3">
-                        @Html.TextBoxFor(model => model.AddressInfo.Street, new { @id = "e_Street" })
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Addressee, "收件人:")
+                </td>
+                <td>
+                    @Html.HiddenFor(model => model.AddressInfo.Id)
+                    @Html.TextBoxFor(model => model.AddressInfo.Addressee, new { @id = "e_Addressee" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.PostCode, "邮编:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.PostCode, new { @id = "e_PostCode" })
+                </td>
+            </tr>
 
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.County, "区:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.AddressInfo.County, new { @id = "e_County" })
-                    </td>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.City, "市:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.AddressInfo.City, new { @id = "e_City" })
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.Province, "省:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.AddressInfo.Province, new { @id = "e_Province" })
-                    </td>
-                    <td>
-                        @Html.LabelFor(model => model.AddressInfo.Country, "国家:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.AddressInfo.Country, new { @id = "e_Country", @onfocus = "changeCountry(this.value);" })
-                        @Html.HiddenFor(model => model.AddressInfo.CountryCode, new { @id = "e_CountryCode" })
-                    </td>
-                </tr>
-            </table>
-        </div>  
-  
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Tel, "电话:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.Tel, new { @id = "e_Tel" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Phone, "手机:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.Phone, new { @id = "e_Phone" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Street, "街道:")
+                </td>
+                <td colspan="3">
+                    @Html.TextBoxFor(model => model.AddressInfo.Street, new { @id = "e_Street" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.County, "区:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.County, new { @id = "e_County" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.City, "市:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.City, new { @id = "e_City" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Province, "省:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.Province, new { @id = "e_Province" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Country, "国家:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AddressInfo.Country, new { @id = "e_Country", @onfocus = "changeCountry(this.value);" })
+                    @Html.HiddenFor(model => model.AddressInfo.CountryCode, new { @id = "e_CountryCode" })
+                </td>
+            </tr>
+        </table>
+    </div>  
+    <div title="留言信息" style="padding:20px;">  
+       <table class="editForm">
+              <tr>
+                <td>
+                    @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "e_BuyerMemo",@style="width:600px;resize:none"})
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SellerMemo, "商家留言:")
+                </td>
+                <td >
+                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "e_SellerMemo",@style="width:600px;resize:none" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "e_CutOffMemo" ,@style="width:600px;resize:none"})
+                </td>
+            </tr>
+       </table>
+    </div>  
+
 
     </div>
 }
@@ -549,7 +575,7 @@
     <table id="dg_p" class="easyui-datagrid"  rownumbers="true">
         <thead>
             <tr>
-                <th data-options="field:'Id',checkbox:true"></th>
+                <th data-options="field:'Id',checkbox:true,hidden:true"></th>
                 <th field="ExSKU" width="80">ExSKU
                 </th>
                 <th field="Title" width="100">名称

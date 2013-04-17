@@ -61,7 +61,7 @@
         $('#dg_zu').datagrid({
             // url: '@Url.Action("List", "OrderProduct")',
             width: 700,
-            height:160,
+            height: 160,
             toolbar: [{
                 id: 'btnadd',
                 text: '添加',
@@ -212,7 +212,7 @@
         effectRow["rows"] = JSON.stringify($('#dg_zu').datagrid("getRows"));
         $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
         formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg', 'a');
-        
+
     }
 
 </script>
