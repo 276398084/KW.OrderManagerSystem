@@ -52,9 +52,7 @@ namespace KeWeiOMS.Web
                 }
                 return "";
             }
-
         }
-
         public static string GetUserNo(ISession NSession)
         {
             lock (obj2)
@@ -74,8 +72,6 @@ namespace KeWeiOMS.Web
                 return "";
             }
         }
-
-
 
         public static string GetPlanNo(ISession NSession)
         {
@@ -300,6 +296,37 @@ namespace KeWeiOMS.Web
             }
             return where;
         }
+
+        public static string GetObjEditString(object o1, object o2)
+        {
+            StringBuilder sb = new StringBuilder();
+            System.Reflection.PropertyInfo[] properties = o1.GetType().GetProperties();
+
+            foreach (System.Reflection.PropertyInfo item in properties)
+            {
+                string name = item.Name;
+                if(name.StartsWith("rows"))
+                {
+                    continue;
+                }
+                object value = item.GetValue(o1, null);
+                object value2 = item.GetValue(o2, null);
+                if (item.PropertyType.IsValueType || item.PropertyType.Name.StartsWith("String"))
+                {
+                    if (value == null)
+                        value = "";
+                    if (value2 == null)
+                        value2 = "";
+                    if (value.ToString() != value2.ToString())
+                    {
+                        sb.Append(" " + name + "从“" + value + "” 修改为 “" + value2 + "”");
+                    }
+
+                }
+            }
+            return sb.ToString();
+        }
+
 
         #region 登陆和Cookie
 

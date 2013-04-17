@@ -79,7 +79,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             OrderType obj = GetById(id);
             obj.AddressInfo = NSession.Get<OrderAddressType>(obj.AddressId);
-            ViewData["id"] =id;
+            ViewData["id"] = id;
             return View(obj);
         }
 
@@ -467,8 +467,13 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                OrderType obj2 = GetById(obj.Id);
+
                 NSession.Update(obj.AddressInfo);
+                NSession.Flush();
+                NSession.Clear();
                 obj.Country = obj.AddressInfo.Country;
+                string str = Utilities.GetObjEditString(obj2, obj);
                 NSession.Update(obj);
                 NSession.Flush();
                 NSession.CreateQuery("delete from OrderProductType where OId=" + obj.Id).ExecuteUpdate();
