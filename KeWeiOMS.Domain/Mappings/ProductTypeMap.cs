@@ -66,6 +66,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.CreateOn);
             Map(x => x.CreateBy).Length(50);
             Map(x => x.Manager).Length(50);
+            Map(x => x.Enabled);
         }
     }
 }

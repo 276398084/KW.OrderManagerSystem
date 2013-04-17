@@ -93,6 +93,7 @@
     <Compile Include="Entities\ProductCategoryType.cs" />
     <Compile Include="Entities\ProductComposeType.cs" />
     <Compile Include="Entities\ProductIsInfractionType.cs" />
+    <Compile Include="Entities\ProductRecordType.cs" />
     <Compile Include="Entities\ProductSKUType.cs" />
     <Compile Include="Entities\ProductType.cs" />
     <Compile Include="Entities\ProjectType.cs" />
@@ -155,6 +156,7 @@
     <Compile Include="Mappings\ProductCategoryTypeMap.cs" />
     <Compile Include="Mappings\ProductComposeTypeMap.cs" />
     <Compile Include="Mappings\ProductIsInfractionTypeMap.cs" />
+    <Compile Include="Mappings\ProductRecordTypeMap.cs" />
     <Compile Include="Mappings\ProductSKUTypeMap.cs" />
     <Compile Include="Mappings\ProductTypeMap.cs" />
     <Compile Include="Mappings\ProjectTypeMap.cs" />

@@ -207,6 +207,10 @@ namespace KeWeiOMS.Domain
         public virtual int Fifteen { get; set; }
 
 
+        /// <summary>
+        /// Enabled
+        /// </summary>
+        public virtual int Enabled { get; set; }
 
         /// <summary>
         /// 是否组合产品

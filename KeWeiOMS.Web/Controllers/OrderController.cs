@@ -379,6 +379,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.Status = OrderStatusEnum.待处理.ToString();
                 obj.GenerateOn = obj.ScanningOn = obj.CreateOn = DateTime.Now;
                 List<OrderProductType> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(obj.rows);
+                obj.Enabled = 1;
                 NSession.Save(obj);
                 foreach (var item in list)
                 {
@@ -386,6 +387,15 @@ namespace KeWeiOMS.Web.Controllers
                     item.OrderNo = obj.OrderNo;
                     NSession.Save(item);
                 }
+                NSession.Flush();
+                OrderRecordType orderrecoud = new OrderRecordType();
+                orderrecoud.OId = obj.Id;
+                orderrecoud.OrderNo = obj.OrderNo;
+                orderrecoud.RecordType = "新建";
+                orderrecoud.Content = "创建订单";
+                orderrecoud.CreateBy = CurrentUser.Realname;
+                orderrecoud.CreateOn = DateTime.Now;
+                NSession.Save(orderrecoud);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -466,9 +476,9 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(OrderType obj)
         {
             try
-            {
+            {                
+                obj.Enabled = 1;
                 OrderType obj2 = GetById(obj.Id);
-
                 NSession.Update(obj.AddressInfo);
                 NSession.Flush();
                 NSession.Clear();
@@ -477,7 +487,6 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Update(obj);
                 NSession.Flush();
                 NSession.CreateQuery("delete from OrderProductType where OId=" + obj.Id).ExecuteUpdate();
-                //List<OrderProductType> list = Session["OrderProducts"] as List<OrderProductType>;
                 List<OrderProductType> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(obj.rows);
                 foreach (OrderProductType orderProductType in list)
                 {
@@ -486,6 +495,15 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Save(orderProductType);
                     NSession.Flush();
                 }
+                OrderRecordType orderrecoud = new OrderRecordType();
+                orderrecoud.OId = obj.Id;
+                orderrecoud.OrderNo = obj.OrderNo;
+                orderrecoud.RecordType = "修改订单";
+                orderrecoud.Content =str;
+                orderrecoud.CreateBy = CurrentUser.Realname;
+                orderrecoud.CreateOn = DateTime.Now;
+                NSession.Save(orderrecoud);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -892,7 +910,17 @@ left join Products P On OP.SKU=P.SKU ";
             try
             {
                 OrderType obj = GetById(id);
-                NSession.Delete(obj);
+                obj.Enabled = 0;
+                NSession.Update(obj);
+                NSession.Flush();
+                OrderRecordType orderrecoud = new OrderRecordType();
+                orderrecoud.OId = obj.Id;
+                orderrecoud.OrderNo = obj.OrderNo;
+                orderrecoud.RecordType = "删除";
+                orderrecoud.Content = "删除订单";
+                orderrecoud.CreateBy = CurrentUser.Realname;
+                orderrecoud.CreateOn = DateTime.Now;
+                NSession.Save(orderrecoud);
                 NSession.Flush();
             }
             catch (Exception ee)
