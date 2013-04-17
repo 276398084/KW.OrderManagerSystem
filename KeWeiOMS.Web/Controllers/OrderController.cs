@@ -1286,6 +1286,12 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { total = objList.Count, rows = objList });
         }
 
+        public JsonResult Record(int id)
+        {
+            IList<OrderRecordType> obj = NSession.CreateQuery("from OrderRecordType where Oid='"+id+"'").List<OrderRecordType>();
+            return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetNotQueList()
         {
             IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * from (
