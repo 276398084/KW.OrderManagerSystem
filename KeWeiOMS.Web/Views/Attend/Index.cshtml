@@ -29,14 +29,13 @@
              success: function(result) {
                  $('#dg').datagrid('reload');
                  $.messager.show({
-                     title: '提示',
+                     title: '提示', 
                      msg: result.Msg,
                      timeout: 0,
                      showType: 'slide'
                  });
              }
          });
-
      }
 
     function daate(value) {
@@ -45,7 +44,7 @@
     }
 
     function doSearch() {
-        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').attr("value");
+        search = "^CurrentDate_st&" + $('#txtStartDate').datebox("getValue") + "^CurrentDate_et&" +$('#txtEndDate').datebox("getValue") + "^RealName&" + $('#txtSearch').attr("value");
         $("#dg").datagrid("load", {
             search: search
         });

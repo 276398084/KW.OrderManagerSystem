@@ -205,7 +205,7 @@
     }
 
     function doSearch() {
-        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        search = "CreateOn_st&" + $('#txtStartDate').datebox("getValue") + "^CreateOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
         $("#dg").datagrid("load", {
             search: search
         });

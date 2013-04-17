@@ -218,5 +218,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String rows { get; set; }
 
+        /// <summary>
+        /// rows2
+        /// </summary>
+        public virtual String rows2 { get; set; }
+
     }
 }

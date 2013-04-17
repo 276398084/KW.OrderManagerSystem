@@ -7,12 +7,10 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
-using System.Data.SqlClient;
-using System.Data;
 
 namespace KeWeiOMS.Web.Controllers
 {
-    public class GMarketController : BaseController
+    public class ProductIsInfractionController : BaseController
     {
         public ViewResult Index()
         {
@@ -25,7 +23,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult Create(GMarketType obj)
+        public JsonResult Create(ProductIsInfractionType obj)
         {
             try
             {
@@ -44,9 +42,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  GMarketType GetById(int Id)
+        public  ProductIsInfractionType GetById(int Id)
         {
-            GMarketType obj = NSession.Get<GMarketType>(Id);
+            ProductIsInfractionType obj = NSession.Get<ProductIsInfractionType>(Id);
             if (obj == null)
             {
                 throw new Exception("返回实体为空");
@@ -60,13 +58,13 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
-            GMarketType obj = GetById(id);
+            ProductIsInfractionType obj = GetById(id);
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(GMarketType obj)
+        public ActionResult Edit(ProductIsInfractionType obj)
         {
            
             try
@@ -88,7 +86,7 @@ namespace KeWeiOMS.Web.Controllers
           
             try
             {
-                GMarketType obj = GetById(id);
+                ProductIsInfractionType obj = GetById(id);
                 NSession.Delete(obj);
                 NSession.Flush();
             }
@@ -115,34 +113,14 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     where = " where " + where;
                 }
-
             }
-            Session["ToExcel"] = where + orderby;
-            IList<GMarketType> objList = NSession.CreateQuery("from GMarketType " + where + orderby)
+            IList<ProductIsInfractionType> objList = NSession.CreateQuery("from ProductIsInfractionType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
-                .List<GMarketType>();
+                .List<ProductIsInfractionType>();
 
-            object count = NSession.CreateQuery("select count(Id) from GMarketType " + where ).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from ProductIsInfractionType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
-        }
-        public JsonResult ToExcel()
-        {
-            try
-            {
-                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from GMarket " + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
-            }
-            catch (Exception ee)
-            {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
-            }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
         }
 
     }

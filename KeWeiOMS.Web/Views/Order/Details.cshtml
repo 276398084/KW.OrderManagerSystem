@@ -1,153 +1,249 @@
 ﻿@model KeWeiOMS.Domain.OrderType
-
-@{
-   Layout = null;
-}
-
 <!DOCTYPE html>
-
-<html>
-<head>
-    <title>KeWeiOMS.Domain.OrderType</title>
-</head>
-<body>
+<title>订单信息</title>
+<link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function(){
+        $('#dg_product').datagrid({
+            url: '@Url.Action("List","OrderProduct")/@ViewData["id"]',
+                width: 750,
+                height: 200,
+           })
+    })
+</script>
 <fieldset>
-    <legend>KeWeiOMS.Domain.OrderType</legend>
-    <div class="display-label">主键</div>
+    <legend>订单信息</legend>
+@*    <div class="display-label">主键</div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Id)
-    </div>
+    </div>*@
 
-    <div class="display-label">订单编号</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.OrderNo)
-    </div>
+    <table>
+    <tr>
+        <td>
+            <div class="display-label">订单编号:</div>
+        </td>
+        <td style="width:200px">
+            <div class="display-field">
+                @Html.DisplayFor(model => model.OrderNo, new { @id = "d_ORderNo" })&nbsp&nbsp
+            </div>
+        </td>
+        <td>
+            <div class="display-label">外部编号:</div>
+        </td>
+        <td>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.OrderExNo)
+            </div>
+        </td>
+    </tr>
+    
+        <tr> 
+            <td>
+                <div class="display-label">总金额:</div>
+            </td>
+        <td>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.Amount)&nbsp @Html.DisplayFor(model => model.CurrencyCode)
+            </div>
+        </td>
+        <td>
+            <div class="display-label">订单状态:</div>
+        </td>
+        <td>
+            <div class="display-field">
+                @Html.DisplayFor(model => model.Status)
+            </div>
+        </td>
+    </tr>
+        <tr>
 
-    <div class="display-label">外部编号</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.OrderExNo)
-    </div>
+            <td>
+      <div class="display-label">买家:</div>  
+            </td>
+            <td>
 
-    <div class="display-label">订单状态</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Status)
-    </div>
-
-    <div class="display-label">合并订单</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.IsMerger)
-    </div>
-
-    <div class="display-label">拆分订单</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.IsSplit)
-    </div>
-
-    <div class="display-label">缺货订单</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.IsOutOfStock)
-    </div>
-
-    <div class="display-label">重发订单</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.IsRepeat)
-    </div>
-
-    <div class="display-label">货币</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.CurrencyCode)
-    </div>
-
-    <div class="display-label">总金额</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Amount)
-    </div>
-
-    <div class="display-label">流水交易号</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.TId)
-    </div>
-
-    <div class="display-label">买家</div>
     <div class="display-field">
         @Html.DisplayFor(model => model.BuyerName)
     </div>
 
-    <div class="display-label">买家邮箱</div>
+            </td>
+            <td>
+<div class="display-label">流水交易号:</div>
+            </td>
+            <td>
     <div class="display-field">
-        @Html.DisplayFor(model => model.BuyerEmail)
+        @Html.DisplayFor(model => model.TId)
     </div>
-
-    <div class="display-label">买家Id</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.BuyerId)
-    </div>
-
-    <div class="display-label">买家留言</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.BuyerMemo)
-    </div>
-
-    <div class="display-label">商家留言</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.SellerMemo)
-    </div>
-
-    <div class="display-label">包裹截留留言</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.CutOffMemo)
-    </div>
-
-    <div class="display-label">发货方式</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.LogisticMode)
-    </div>
-
-    <div class="display-label">国家</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Country)
-    </div>
-
-    <div class="display-label">地址Id</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.AddressId)
-    </div>
-
-    <div class="display-label">总量</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Weight)
-    </div>
-
-    <div class="display-label">运费</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Freight)
-    </div>
-
-    <div class="display-label">生成时间</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.GenerateOn)
-    </div>
-
-    <div class="display-label">同步时间</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.CreateOn)
-    </div>
-
-    <div class="display-label">扫描时间</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.ScanningOn)
-    </div>
-
-    <div class="display-label">扫描人</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.ScanningBy)
-    </div>
+            </td>
+        </tr>
+    <tr>
+        <td>
+            <div class="display-label">买家邮箱:</div>
+        </td>
+        <td colspan="3">
+            <div class="display-field">
+                @Html.DisplayFor(model => model.BuyerEmail)
+            </div>
+        </td>
+    </tr>
 
 
+
+
+
+</table>
 </fieldset>
-<p>
+    <div id="tt" class="easyui-tabs" style="width:1350px;height:300px;"> 
+        <div title="产品信息" style="padding:20px;">  
+        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true" >
+            <thead>
+                <tr>
+                    <th field="ExSKU" width="80" >ExSKU
+                    </th>
+                    <th field="Title" width="100">名称
+                    </th>
+                    <th field="SKU" width="80">SKU
+                    </th>
+                    <th field="Qty" width="80">数量
+                    </th>
+                    <th field="Standard" width="80">规格
+                    </th>
+                    <th field="Remark" width="100">描述
+                    </th>
+                    <th field="Price" width="80" >价格
+                    </th>
+                    <th field="Url" width="100" data-options="editor:'text'">网址
+                    </th>
+                </tr>
+            </thead>
+        </table>
+  
+</div>
+<div title="地址信息" style="overflow:auto;padding:20px;">  
+         <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.LogisticMode, "发货方式:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.LogisticMode, new { @id = "d_LogisticMode" })
+                </td>
+                <td></td>
+                <td>
+                    @Html.HiddenFor(model => model.AddressId, new { @id = "d_AddressId" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Addressee, "收件人:")
+                </td>
+                <td>
+                    @Html.HiddenFor(model => model.AddressInfo.Id)
+                    @Html.DisplayFor(model => model.AddressInfo.Addressee, new { @id = "d_Addressee" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.PostCode, "邮编:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.AddressInfo.PostCode, new { @id = "d_PostCode" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Tel, "电话:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.AddressInfo.Tel, new { @id = "d_Tel" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Phone, "手机:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.AddressInfo.Phone, new { @id = "d_Phone" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Street, "街道:")
+                </td>
+                <td colspan="3">
+                    @Html.DisplayFor(model => model.AddressInfo.Street, new { @id = "d_Street" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.County, "区:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.AddressInfo.County, new { @id = "d_County" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.City, "市:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.AddressInfo.City, new { @id = "d_City" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Province, "省:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.AddressInfo.Province, new { @id = "d_Province" })
+                </td>
+                <td>
+                    @Html.LabelFor(model => model.AddressInfo.Country, "国家:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.AddressInfo.Country, new { @id = "d_Country", @onfocus = "changeCountry(this.value);" })
+                    @Html.HiddenFor(model => model.AddressInfo.CountryCode, new { @id = "d_CountryCode" })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    </div>  
+    <div title="留言信息" style="padding:20px;"> 
+     <fieldset> 
+       <table class="editForm">
+              <tr>
+                <td>
+                    @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.BuyerMemo, new { @id = "d_BuyerMemo",@style="width:400px;resize:none"})
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SellerMemo, "商家留言:")
+                </td>
+                <td >
+                    @Html.DisplayFor(model => model.SellerMemo, new { @id = "d_SellerMemo",@style="width:400px;resize:none" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.CutOffMemo, new { @id = "d_CutOffMemo" ,@style="width:400px;resize:none"})
+                </td>
+            </tr>
+       </table>
+          </fieldset>
+    </div>  
+    </div>
+
+@*<p>
     @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
     @Html.ActionLink("返回列表", "Index")
 </p>
-</body>
-</html>
+*@

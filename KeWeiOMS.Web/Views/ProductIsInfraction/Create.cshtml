@@ -1,0 +1,68 @@
+﻿@model KeWeiOMS.Domain.ProductIsInfractionType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "ProductIsInfraction", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OldSKU,"主编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OldSKU,new{@id="c_OldSKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="c_Platform"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Isinfraction,"是否侵权:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Isinfraction,new{@id="c_Isinfraction"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

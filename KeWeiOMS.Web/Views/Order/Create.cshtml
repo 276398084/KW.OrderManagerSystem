@@ -2,6 +2,9 @@
 @{
   
 }
+<link href="@Url.Content("~/Scripts/uploadify/uploadify.css")" rel="stylesheet" type="text/css" />
+<script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
 <script type="text/javascript">
     $.extend($.fn.datagrid.defaults.editors, {
         combogrid: {
@@ -24,6 +27,36 @@
             }
         }
     });
+    KindEditor.ready(function (K) {
+        window.editor = K.create('#c_BuyerMemo', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+        window.editor = K.create('#c_SellerMemo', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+        window.editor = K.create('#c_CutOffMemo', {
+            resizeType: 1,
+            allowPreviewEmoticons: false,
+            allowImageUpload: false,
+            items: [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
+                'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        });
+    });
+
     $(function () {
         $('#dg_zu').datagrid({
             // url: '@Url.Action("List", "OrderProduct")',
@@ -262,7 +295,7 @@
                     @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
                 </td>
                 <td colspan="3">
-                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "c_BuyerMemo",@style="width:400px;height:40px;resize:none" })
+                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "c_BuyerMemo",@style="width:600px;height:40px;resize:none" })
                 </td>
             </tr>
 
@@ -271,7 +304,7 @@
                     @Html.LabelFor(model => model.SellerMemo, "商家留言:")
                 </td>
                 <td colspan="3">
-                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "c_SellerMemo" ,@style="width:400px;height:40px;resize:none"})
+                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "c_SellerMemo" ,@style="width:600px;height:40px;resize:none"})
                 </td>
             </tr>
 
@@ -280,7 +313,7 @@
                     @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
                 </td>
                 <td>
-                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "c_CutOffMemo" ,@style="width:400px;height:40px;resize:none"})
+                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "c_CutOffMemo" ,@style="width:600px;height:40px;resize:none"})
                 </td>
             </tr>
        </table>

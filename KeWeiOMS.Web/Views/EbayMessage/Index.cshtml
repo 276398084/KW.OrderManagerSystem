@@ -55,7 +55,7 @@
             if (text == st[i].text)
             {
                 te="0";
-                search = "&$&$"+text+"~";
+                search = "&^&^&^$"+text+"~";
                 $("#dg").datagrid("load", {
                     search: search
                 });
@@ -63,7 +63,7 @@
         }
         if(te==null)
         {
-            search = "&$&$"+$('#tt1').tree("getParent",target).text+"~"+text;
+            search = "&^&^&^$" + $('#tt1').tree("getParent", target).text + "~" + text;
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -114,7 +114,7 @@
     }
 
     function doSearch() {
-        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue")+"$";
+        search = "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
         $("#dg").datagrid("load", {
             search: search
         });

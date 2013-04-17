@@ -141,17 +141,11 @@ namespace KeWeiOMS.Web.Controllers
 
             if (!string.IsNullOrEmpty(search))
             {
-                string date = search.Substring(0, search.IndexOf("$"));
-                string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1));
-                where = GetSearch(date);
-                if (!string.IsNullOrEmpty(where) && !string.IsNullOrEmpty(key))
-                    where += " and " + key;
-                else
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
                 {
-                    if (!string.IsNullOrEmpty(key))
-                        where = " where " + key;
+                    where = " where " + where;
                 }
-
             }
             Session["ToExcel"] = where + orderby;
             IList<EbayMessageReType> objList = NSession.CreateQuery("from EbayMessageReType " + where + orderby)
@@ -180,26 +174,6 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
             }
             return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
-        }
-
-        public static string GetSearch(string search)
-        {
-            string where = "";
-            string startdate = search.Substring(0, search.IndexOf("&"));
-            string enddate = search.Substring(search.IndexOf("&") + 1);
-            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
-            {
-                if (!string.IsNullOrEmpty(startdate))
-                    where += "ReplayOn >=\'" + Convert.ToDateTime(startdate) + "\'";
-                if (!string.IsNullOrEmpty(enddate))
-                {
-                    if (where != "")
-                        where += " and ";
-                    where += "ReplayOn<=\'" + Convert.ToDateTime(enddate) + "\'";
-                }
-                where = " where " + where;
-            }
-            return where;
         }
         public JsonResult GetNext(int id)
         {
@@ -250,11 +224,15 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult GetTop(string search)
         {
+            string where = "";
             if(!string.IsNullOrEmpty(search))
             {
-               string str1= search.Substring(0,search.IndexOf("$"));
-               string str2= search.Substring(search.IndexOf("$")+1);
-                return TopTime(str1,str2);
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                  return TopTime(where);
+                }
+                return Json("");
             }
             else
             {
@@ -302,27 +280,12 @@ namespace KeWeiOMS.Web.Controllers
             return Json(obj);
         }  
  
-       private JsonResult TopTime(string time,string time0)
+       private JsonResult TopTime(string where)
         {
-            string where="";
-           if(!string.IsNullOrEmpty(time))
-           {
-            where =" where ReplayOn>'"+time+"' ";
-           }
-           if(!string.IsNullOrEmpty(time0))
-           {
-               if(!string.IsNullOrEmpty(where))
-               {
-                where =where + " and ReplayOn<'"+time0+"' ";
-               }
-               else
-               {
-                   where =" where ReplayOn<'"+time0+"' ";
-               }
-           }
+
             ArrayList obj =new ArrayList();
             ArrayList arry=new ArrayList();
-            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where ReplayOn>'" + time.ToString()+ "' and ReplayOn<='"+time0.ToString()+"'").List<EbayMessageReType>();
+            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where " + where ).List<EbayMessageReType>();
             foreach (var item in list)
             {
                 int c = 0;
@@ -346,7 +309,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 foreach (var name in arry)
                 {
-                    object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='" + name + "' and ReplayOn>'" + time.ToString() + "' and ReplayOn<='"+time0.ToString()+"'").UniqueResult();
+                    object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='" + name + "' and "+where).UniqueResult();
                     obj.Add(new eployee{ Count = Convert.ToInt32(count), Name = Convert.ToString(name) });
                 }
             }

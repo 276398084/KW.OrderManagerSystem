@@ -11,7 +11,7 @@
         });
 
      function doSearch() {
-         search = $('#txtStartDate').datebox("getValue") + "$" + $('#txtEndDate').datebox("getValue");
+         search = "ReplayOn_st&" + $('#txtStartDate').datebox("getValue") + "^ReplayOn_et&" + $('#txtEndDate').datebox("getValue");
          $("#dg1").datagrid("load", {
              search: search
          });

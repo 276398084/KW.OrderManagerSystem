@@ -15,7 +15,7 @@
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
                 onDblClickRow: function (i, r) {
-                    window.open('@Url.Action("Edit", "Order")/' + r.Id);
+                    window.open('@Url.Action("Details", "Order")/' + r.Id);
                 },
                 detailFormatter: function (index, row) {
                     var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';

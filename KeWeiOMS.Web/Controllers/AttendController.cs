@@ -113,8 +113,12 @@ namespace KeWeiOMS.Web.Controllers
             }
             if (!string.IsNullOrEmpty(search))
             {
-                where = GetSearch(search);    
-            } 
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
             Session["ToExcel"] = where + orderby;
             IList<AttendType> objList = NSession.CreateQuery("from AttendType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -262,34 +266,6 @@ namespace KeWeiOMS.Web.Controllers
                     return true;
             }
             return false;
-        }
-
-        //获取搜索条件
-        public static string GetSearch(string search)
-        {
-            string where="";
-            string startdate = search.Substring(0, search.IndexOf("&")).Replace("&", "").Replace("$", "");
-            string enddate = search.Substring(0, search.IndexOf("$")).Substring(search.IndexOf("&")).Replace("&", "").Replace("$", "");
-            string key = search.Substring(search.IndexOf("$") + 1).Replace("&", "").Replace("$", "");
-            if(!string.IsNullOrEmpty(startdate)||!string.IsNullOrEmpty(enddate)||!string.IsNullOrEmpty(key))
-            {
-                if (!string.IsNullOrEmpty(startdate))
-                    where += "CurrentDate >=\'" + Convert.ToDateTime(startdate) + "\'";
-                if (!string.IsNullOrEmpty(enddate))
-                {
-                    if (where != "")
-                        where += " and ";
-                    where += "CurrentDate <=\'" + Convert.ToDateTime(enddate) + "\'";
-                }
-                if (!string.IsNullOrEmpty(key))
-                {
-                    if (where != "")
-                        where += " and ";
-                    where += "RealName like\'%" + key + "%\'";
-                }
-                where = " where " + where;
-            }
-            return where;
         }
 
         //IList转DataSet

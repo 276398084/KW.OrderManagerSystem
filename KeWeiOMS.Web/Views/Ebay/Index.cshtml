@@ -87,12 +87,11 @@
     }
 
     function doSearch() {
-        search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        search = "StartTime_st&" + $('#txtStartDate').datebox("getValue") + "^StartTime_et&"+$('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
         $("#dg").datagrid("load", {
             search: search
         });
     }
-
     function url(v, r, i) {
         return '<a href="' + r.ProductUrl + '"  target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="100px" width="100px" /></a>'
     }

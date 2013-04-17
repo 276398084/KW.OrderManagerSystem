@@ -106,18 +106,14 @@ namespace KeWeiOMS.Web.Controllers
                 orderby = " order by " + sort + " " + order;
             }
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                string date = search.Substring(0,search.IndexOf("$"));
-                string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1, search.LastIndexOf("$") - search.IndexOf("$")- 1));
+            if (!string.IsNullOrEmpty(search)) 
+            { 
+                string key = search.Substring(0,search.IndexOf("$"));  
                 type = search.Substring(search.LastIndexOf("$")+1);
-                where = GetSearch(date);
-                if (!string.IsNullOrEmpty(where) && !string.IsNullOrEmpty(key))
-                    where += " and " + key;
-                else
+                where = Utilities.Resolve(key);
+                if (where.Length > 0)
                 {
-                    if (!string.IsNullOrEmpty(key))
-                        where = " where ((" + key;
+                    where = "where (( " + where;
                 }
 
             }
@@ -260,26 +256,6 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
             }
             return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
-        }
-
-        public static string GetSearch(string search)
-        {
-            string where = "";
-            string startdate = search.Substring(0, search.IndexOf("&"));
-            string enddate = search.Substring(search.IndexOf("&") + 1);
-            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
-            {
-                if (!string.IsNullOrEmpty(startdate))
-                    where += "CreationDate >=\'" + Convert.ToDateTime(startdate) + "\'";
-                if (!string.IsNullOrEmpty(enddate))
-                {
-                    if (where != "")
-                        where += " and ";
-                    where += "CreationDate <=\'" + Convert.ToDateTime(enddate) + "\'";
-                }
-                where = " where ((" + where;
-            }
-            return where;
         }
 
         public JsonResult IsRead(int id) 
