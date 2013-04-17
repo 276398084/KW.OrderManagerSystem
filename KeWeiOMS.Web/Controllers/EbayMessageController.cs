@@ -297,7 +297,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                EbayMessageUtil.syn();
+                EbayMessageUtil.syn(NSession);
             }
             catch (Exception ee)
             {

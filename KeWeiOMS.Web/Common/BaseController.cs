@@ -11,13 +11,17 @@ using KeWeiOMS.NhibernateHelper;
 using NHibernate;
 using KeWeiOMS.Domain;
 using System.Web.UI;
+using NHibernate.Context;
+using ITransaction = NHibernate.ITransaction;
 
 namespace KeWeiOMS.Web.Controllers
 {
     [SupportFilter]//此处如果去掉注释，则全部继承BaseController的Controller，都将执行SupportFilter过滤
     public class BaseController : Controller
     {
-        public ISession NSession = SessionBuilder.CreateSession();
+        protected ISession NSession = NhbHelper.GetCurrentSession();
+
+        // public ISession NSession = SessionBuilder.CreateSession();
 
         private UserType currentUser;
 
@@ -49,10 +53,7 @@ namespace KeWeiOMS.Web.Controllers
             //return new UserType { Id = 0, Realname = "邵锡栋" };
         }
 
-        public BaseController()
-        {
 
-        }
 
 
     }

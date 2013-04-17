@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Web;
+using NHibernate.Context;
 using eBay.Service.Core.Sdk;
 using eBay.Service.Core.Soap;
 using com.paypal.sdk.profiles;
@@ -23,7 +24,8 @@ namespace KeWeiOMS.Web
         public const string API_SERVER_URL = "Environment.ApiServerUrl";
         public const string EPS_SERVER_URL = "Environment.EpsServerUrl";
         public const string SIGNIN_URL = "Environment.SignInUrl";
-        public static ISession NSession = SessionBuilder.CreateSession();
+
+
 
         public static ApiContext GetGenericApiContext(string site)
         {
@@ -62,6 +64,7 @@ namespace KeWeiOMS.Web
 
         public static void EbayUploadTrackCode(string account, KeWeiOMS.Domain.OrderType orderType)
         {
+            ISession NSession = NhbHelper.OpenSession();
             Dictionary<string, int> sendNum = new Dictionary<string, int>();
             ApiContext context = GetGenericApiContext("US");
             IList<AccountType> accounts =
@@ -97,6 +100,11 @@ namespace KeWeiOMS.Web
                     return;
                     ;
                 }
+                finally
+                {
+                    NSession.Close();
+
+                }
             }
         }
 
@@ -107,7 +115,7 @@ namespace KeWeiOMS.Web
 
 
 
-        public static void GetMyeBaySelling(AccountType sa)
+        public static void GetMyeBaySelling(AccountType sa, ISession NSession)
         {
             if (sa == null) return;
             ApiContext context = EBayUtil.GetGenericApiContext("US");
@@ -115,7 +123,7 @@ namespace KeWeiOMS.Web
             GetMyeBaySellingCall apicall = new GetMyeBaySellingCall(context);
             apicall.ActiveList = new ItemListCustomizationType();
             int i = 1;
-            DeleteALL(sa.AccountName);
+            DeleteALL(sa.AccountName, NSession);
             //EbayItem.deleteBatch("AccountFrom='" + sa.UserName + "' and CompanyId='" + sa.CompanyId + "'");
             do
             {
@@ -201,19 +209,19 @@ namespace KeWeiOMS.Web
 
         }
 
-        private static void DeleteALL(string accountName)
+        private static void DeleteALL(string accountName, ISession NSession)
         {
 
             object obj = NSession.Delete(" from EbayType where Account='" + accountName + "'");
             NSession.Flush();
         }
 
-        public static void syn()
+        public static void syn(ISession NSession)
         {
             IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>'' and ApiToken<>''").List<AccountType>();
             foreach (var item in list)
             {
-                GetMyeBaySelling(item);
+                GetMyeBaySelling(item, NSession);
             }
         }
     }

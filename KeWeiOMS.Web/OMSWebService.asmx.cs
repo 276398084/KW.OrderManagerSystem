@@ -20,19 +20,19 @@ namespace KeWeiOMS.Web
     // [System.Web.Script.Services.ScriptService]
     public class OMSWebService : System.Web.Services.WebService
     {
-        public ISession NSession = SessionBuilder.CreateSession();
+        public ISession NSession = NhbHelper.GetCurrentSession();
 
 
         [WebMethod]
         public bool HasExisitOrderExNo(string OrderExNo)
         {
-            return OrderHelper.IsExist(OrderExNo);
+            return OrderHelper.IsExist(OrderExNo, NSession);
         }
 
         [WebMethod]
         public string GetOrderNo()
         {
-            return Utilities.GetOrderNo();
+            return Utilities.GetOrderNo(NSession);
         }
         [WebMethod]
         public OrderType GetOrder(string OrderExNo)
@@ -69,10 +69,22 @@ namespace KeWeiOMS.Web
             {
                 p.OId = order.Id;
                 p.OrderNo = order.OrderNo;
-                OrderHelper.CreateOrderPruduct(p);
+                OrderHelper.CreateOrderPruduct(p, NSession);
 
             }
             return true;
+        }
+
+        [WebMethod]
+        public List<OrderType> GetOrders(string s, DateTime st, DateTime et, string Account, string key)
+        {
+            if (key == "feidu")
+            {
+                return NSession.CreateQuery("from OrderType where ScanningOn between '" + st.ToString("yyyy-MM-dd") + "' and '" +
+                                       et.ToString("yyyy-MM-dd") + "' and Account='" + Account + "'").List<OrderType>().ToList<OrderType>();
+
+            }
+            return null;
         }
 
         [WebMethod]
@@ -193,7 +205,7 @@ namespace KeWeiOMS.Web
             ArrayList arry = new ArrayList();
             if (psw == "feidujingbostore")
             {
-               
+
                 try
                 {
                     account = NSession.CreateQuery("from AccountType where Platform ='Ebay' and ApiToken <>''").List<AccountType>().ToList();
@@ -211,12 +223,11 @@ namespace KeWeiOMS.Web
         public AccountType GetTokenByAccount(string account)
         {
             AccountType accountname = new AccountType();
-            IList<AccountType> ac = NSession.CreateQuery("from AccountType where AccountName ='"+account+"' and ApiToken <>''").List<AccountType>();
+            IList<AccountType> ac = NSession.CreateQuery("from AccountType where AccountName ='" + account + "' and ApiToken <>''").List<AccountType>();
             foreach (var item in ac)
             {
                 accountname = item;
             }
-
             return accountname;
         }
 
@@ -224,7 +235,7 @@ namespace KeWeiOMS.Web
         public List<EbayMessageReType> GetUnUplod()
         {
             List<EbayMessageReType> ebay = new List<EbayMessageReType>();
-            List<EbayMessageReType> account = NSession.CreateQuery("from EbayMessageReType where IsUpload <>'1'").List<EbayMessageReType>().ToList() ;
+            List<EbayMessageReType> account = NSession.CreateQuery("from EbayMessageReType where IsUpload <>'1'").List<EbayMessageReType>().ToList();
             foreach (var item in account)
             {
                 ebay.Add(item);

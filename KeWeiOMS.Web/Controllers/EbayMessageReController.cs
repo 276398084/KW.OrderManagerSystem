@@ -215,7 +215,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                EbayMessageUtil.uploadsyn();
+                EbayMessageUtil.uploadsyn(NSession);
             }
             catch (Exception ee)
             {

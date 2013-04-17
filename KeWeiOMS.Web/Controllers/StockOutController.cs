@@ -55,7 +55,7 @@ namespace KeWeiOMS.Web.Controllers
 
                         return Json(new { IsSuccess = false, Result = "该条码已经出库！" });
                     }
-                    Utilities.StockOut(w, list[0].SKU, 1, t, CurrentUser.Realname, m, o);
+                    Utilities.StockOut(w, list[0].SKU, 1, t, CurrentUser.Realname, m, o, NSession);
                     NSession.CreateQuery("update SKUCodeType set IsOut=1,IsSend=1,PeiOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='扫描出库' where Code=" + s).ExecuteUpdate();
                     return Json(new { IsSuccess = true, Result = "扫描完成！产品：" + list[0].SKU + "已经出库，出数量为1!!" });
                 }

@@ -383,6 +383,17 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             return Json(new { total = count, rows = objList });
         }
 
+
+        public JsonResult ReP(string p)
+        {
+            string ps = p.Replace("\r", "").Trim('\n').Replace("\n", "','");
+
+            NSession.CreateQuery("update  SKUCodeType set IsOut=1,IsSend=1 where SKU in('" + ps + "') ").ExecuteUpdate();
+
+            NSession.CreateSQLQuery("update WarehouseStock set Qty=(select COUNT(1) from skucode where SKU=WarehouseStock.SKU and IsSend=0) where SKU  in('" + ps + "')").ExecuteUpdate();
+            return Json(new { IsSuccess = true });
+        }
+
         public JsonResult ZuList(String Id)
         {
             IList<ProductComposeType> objList = NSession.CreateQuery("from ProductComposeType where SKU='" + Id + "'").List<ProductComposeType>();
@@ -431,7 +442,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     SKUCodeType skuCode = new SKUCodeType { Code = code, SKU = sku, IsNew = 0, IsOut = 0 };
                     NSession.Save(skuCode);
                     NSession.Flush();
-                    Utilities.StockIn(1, sku, 1, 0, "条码清点入库", CurrentUser.Realname, "");
+                    Utilities.StockIn(1, sku, 1, 0, "条码清点入库", CurrentUser.Realname, "", NSession);
                     return Json(new { IsSuccess = true, Result = "添加成功！" });
                 }
                 else
@@ -504,7 +515,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         }
         public JsonResult Freight(decimal price, double weight, int qty, decimal onlineprice, string Currency, string LogisticMode, int Country)
         {
-            decimal freight = decimal.Parse((OrderHelper.GetFreight(weight * qty, LogisticMode, Country)).ToString("f6"));
+            decimal freight = decimal.Parse((OrderHelper.GetFreight(weight * qty, LogisticMode, Country, NSession)).ToString("f6"));
             if (freight == -1)
                 return Json(new { IsSuccess = false, ErrorMsg = "cz" }, JsonRequestBehavior.AllowGet);
             decimal currency = decimal.Parse(Math.Round(GetCurrency(Currency), 2).ToString());
@@ -583,6 +594,8 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
             return ds;
         }
+
+
     }
 }
 

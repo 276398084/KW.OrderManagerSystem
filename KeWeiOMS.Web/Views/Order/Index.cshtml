@@ -81,6 +81,15 @@
                 data: checksall,
                 width: 100
             });
+            $('#IsError').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+
+
             $('#IsLiu').combobox({
                 valueField: 0,
                 textField: 1,
@@ -142,6 +151,7 @@
             $('#IsQue').combobox("setValue", "ALL");
             $('#IsChai').combobox("setValue", "ALL");
             $('#IsChong').combobox("setValue", "ALL");
+            $('#IsError').combobox("setValue", "ALL");
             $('#Platform').combobox("setValue", "ALL");
             $('#IsNo').combobox("setValue", "ALL");
             $('#CreateOn_st').datebox("setValue", getStartDate(60));
@@ -267,6 +277,14 @@
                     search += "IsPrint_si&1^";
                 }
             }
+            var u = $('#IsError').combobox("getValue");
+            if (u != "ALL" && u != "" && u != "0") {
+                if (u == "1") {
+                    search += "IsError_si&1^";
+                } else {
+                    search += "IsError_ei&0^";
+                }
+            }
             var t = $('#orderdateType').combobox("getValue");
             var e = $('#CreateOn_st').combobox("getValue");
             if (e != "ALL" && e != "" && e != "0") {
@@ -277,12 +295,15 @@
                 search += t + "_et&" + f + "^";
             }
             var g = $('#IsQue').combobox("getValue");
-            if (g != "ALL" && g != "" && g != "0") {
-
-                search += "IsOutOfStock_si&1^";
+            if (g != "ALL" && g != "") {
+                if (g == "1") {
+                    search += "IsOutOfStock_si&1^";
+                } else {
+                    search += "IsOutOfStock_si&0^";
+                }
             }
             var q = $('#IsChai').combobox("getValue");
-            if (q != "ALL" && q != "" && q != "0") {
+            if (q != "ALL" && q != "") {
                 if (q == "1") {
                     search += "IsSplit_ds&1^";
                 } else {
@@ -290,7 +311,7 @@
                 }
             }
             var w = $('#IsChong').combobox("getValue");
-            if (w != "ALL" && w != "" && w != "0") {
+            if (w != "ALL" && w != "") {
                 if (w == "1") {
                     search += "IsRepeat_ds&1^";
                 } else {
@@ -593,18 +614,13 @@
                 $.messager.alert("请选择一条数据");
                 return;
             }
-            var s = false;
-            if ($("#ReProduct").attr("checked") == "checked") {
-
-                s = true;
-            }
 
             $.messager.confirm("提示", "你要取消拦截 " + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
                         url: "/Order/ReHoldUp/",
                         type: "post",
-                        data: "o=" + s_ids.join(',') + "&s=" + s,
+                        data: "o=" + s_ids.join(',') + "&s=" + $("#CReHoldUp").val(),
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
@@ -624,6 +640,7 @@
                 $.messager.alert("请选择一条数据");
                 return;
             }
+
             $.messager.confirm("提示", "你要拦截 " + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
@@ -682,7 +699,6 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_SplitZu()">分割组合产品</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#l_dlg').dialog('open');">拦截</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#r_dlg').dialog('open');">取消拦截</a><br />
-
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
             状态<input type="text" id="OrderStatus" />
@@ -690,13 +706,13 @@
             缺货:<input type="text" id="IsQue" />
             拆包:<input type="text" id="IsChai" />
             重发:<input type="text" id="IsChong" />
+            拦截:<input type="text" id="IsError" />
             留言:<input type="text" id="IsLiu" />
             时间类型:<input type="text" id="orderdateType" />
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             异常订单选择:<input type="text" id="IsNo" />
-
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>
@@ -713,7 +729,7 @@
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
         <div id="o_dlg"></div>
-        <div id="l_dlg" class="easyui-dialog" title="订单拦截设置" style="width: 400px; height: 200px; padding: 10px" closed="true">
+        <div id="l_dlg" class="easyui-dialog" title="订单拦截设置" style="width: 400px; height: 250px; padding: 10px" closed="true">
             <table>
                 <tr>
                     <td>原因:</td>
@@ -725,6 +741,8 @@
                     <td>
                         <textarea id="HoldUpDesc" style="width: 300px;"></textarea></td>
                 </tr>
+
+
                 <tr>
                     <td></td>
                     <td>
@@ -737,7 +755,10 @@
                 <tr>
                     <td>选项:</td>
                     <td>
-                        <input type="checkbox"  id="ReProduct" />重置产品</td>
+                        <select id="CReHoldUp" style="width: 200px;">
+                            <option value="0">恢复</option>
+                            <option value="1">重置</option>
+                        </select></td>
                 </tr>
 
                 <tr>

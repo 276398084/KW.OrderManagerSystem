@@ -7,109 +7,64 @@ using NHibernate.Criterion;
 
 namespace KeWeiOMS.NhibernateHelper
 {
-    public class Repository<T> : IRepository<T> where T : Entity
+    public class RepositoryImpl
     {
-        protected virtual ISession Session
+        private ISession session
         {
-            get { return SessionBuilder.CreateSession(); }
+            get { return SessionProvider.Instance.CurrentSession; }
         }
 
-        #region IRepository<T> 成员
-        public virtual T Load(string id)
+        #region CRUD
+
+        public Item get_by_id<Item>(int id)
         {
-            try
-            {
-                T reslut = Session.Load<T>(id);
-                if (reslut == null)
-                    throw new Exception("返回实体为空");
-                else
-                    return reslut;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("获取实体失败", ex);
-            }
+            return session.Get<Item>(id);
         }
 
-        public virtual T Get(string id)
+        public void save<Item>(Item item)
         {
-            try
-            {
-                T reslut = Session.Get<T>(id);
-                if (reslut == null)
-                    throw new Exception("返回实体为空");
-                else
-                    return reslut;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("获取实体失败", ex);
-            }
+            session.SaveOrUpdate(item);
         }
 
-        public virtual IList<T> GetAll()
+        public void delete<Item>(Item item)
         {
-            return Session.CreateCriteria<T>()
-                .AddOrder(Order.Desc("Id"))
-                .List<T>();
-        }
-
-        public virtual void SaveOrUpdate(T entity)
-        {
-            try
-            {
-                Session.SaveOrUpdate(entity);
-                Session.Flush();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("插入实体失败", ex);
-            }
-        }
-
-        public virtual void Update(T entity)
-        {
-            try
-            {
-                Session.Update(entity);
-                Session.Flush();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("更新实体失败", ex);
-            }
-        }
-
-        public virtual void PhysicsDelete(string id)
-        {
-            try
-            {
-                var entity = Get(id);
-                Session.Delete(entity);
-                Session.Flush();
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception("物理删除实体失败", ex);
-            }
-        }
-
-        public virtual void Delete(string id)
-        {
-            try
-            {
-                var entity = Get(id);
-                //entity.IsDelete = true;
-                Update(entity);
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception("删除实体失败", ex);
-            }
+            session.Delete(item);
         }
 
         #endregion
 
+        #region Advanced Query
 
+        //public IEnumerable<Item> get_all_items_matching<Item>(Query<Item> query)
+        //{
+        //    if (query == null)
+        //        throw new ArgumentNullException();
+
+        //    if (query is QueryImplByQueryOver<Item>)
+        //    {
+        //        QueryOver<Item> my_query = (query as QueryImplByQueryOver<Item>).Query;
+        //        return my_query.GetExecutableQueryOver(session).List();
+        //    }
+        //    throw new ArgumentException(
+        //        string.Format("Query {0} is not type supported.", query.GetType()));
+        //}
+
+        //public Item get_single_item_matching<Item>(Query<Item> query)
+        //{
+        //    IEnumerable<Item> result = get_all_items_matching(query);
+        //    if (result.Count() > 1)
+        //        throw new TooManyRowsMatchingException();
+        //    if (result.Count() <= 0)
+        //        throw new NoRowsMatchingQueryException();
+        //    return result.Single();
+        //}
+
+        #endregion
+
+        //Shouldn't use every often
+        public IEnumerable<Item> get_all_items<Item>()
+        {
+            return session.CreateCriteria(typeof (Item)).List<Item>();
+        }
     }
 }

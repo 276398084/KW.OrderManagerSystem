@@ -198,7 +198,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                EBayUtil.syn();
+                EBayUtil.syn(NSession);
             }
             catch (Exception ee)
             {

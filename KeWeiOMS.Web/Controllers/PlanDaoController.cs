@@ -74,11 +74,11 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     //obj.DaoOn = DateTime.Now;
                     obj.IsAudit = 1;
-                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo);
+                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo,NSession);
 
                     NSession.SaveOrUpdate(obj);
                     NSession.Flush();
-                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo, true);
+                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo,NSession, true);
                     return Json(new { IsSuccess = true });
                 }
                 return Json(new { ErrorMsg = "已经审核了", IsSuccess = false });

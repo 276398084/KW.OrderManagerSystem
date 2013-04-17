@@ -35,13 +35,14 @@ namespace KeWeiOMS.Web
         public static object obj2 = new object();
         public static object obj3 = new object();
         public static object obj4 = new object();
-        public static ISession NSession = NHibernateHelper.CreateSession();
-        public static string GetOrderNo()
+
+        public static string GetOrderNo(ISession NSession)
         {
             lock (obj1)
             {
                 string result = string.Empty;
 
+                NSession.Clear();
                 IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", OrderNo).List<SerialNumberType>();
                 if (list.Count > 0)
                 {
@@ -55,12 +56,12 @@ namespace KeWeiOMS.Web
 
         }
 
-        public static string GetUserNo()
+        public static string GetUserNo(ISession NSession)
         {
             lock (obj2)
             {
                 string result = string.Empty;
-
+                NSession.Clear();
                 IList<SerialNumberType> list =
                     NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", UserNo).List
                         <SerialNumberType>();
@@ -77,13 +78,13 @@ namespace KeWeiOMS.Web
 
 
 
-        public static string GetPlanNo()
+        public static string GetPlanNo(ISession NSession)
         {
             lock (obj3)
             {
                 string result = string.Empty;
 
-
+                NSession.Clear();
                 IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", PlanNo).List<SerialNumberType>();
                 if (list.Count > 0)
                 {
@@ -95,12 +96,13 @@ namespace KeWeiOMS.Web
                 return "";
             }
         }
-        public static int GetSKUCode(int count)
+        public static int GetSKUCode(int count, ISession NSession)
         {
             lock (obj4)
             {
                 string result = string.Empty;
                 int no = 0;
+                NSession.Clear();
                 IList<SerialNumberType> list = NSession.CreateQuery(" from SerialNumberType where Code=:p").SetString("p", "SKUNo").List<SerialNumberType>();
                 if (list.Count > 0)
                 {
@@ -114,9 +116,9 @@ namespace KeWeiOMS.Web
             }
         }
 
-        public static int CreateSKUCode(string sku, int count, string planNo)
+        public static int CreateSKUCode(string sku, int count, string planNo, ISession NSession)
         {
-            int code = GetSKUCode(count);
+            int code = GetSKUCode(count, NSession);
             string create = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
             using (var tr = NSession.BeginTransaction())
             {
@@ -359,7 +361,7 @@ namespace KeWeiOMS.Web
             System.Web.HttpContext.Current.Session["account"] = null;
         }
 
-        public static bool LoginByUser(string p, string u)
+        public static bool LoginByUser(string p, string u, ISession NSession)
         {
 
             IList<UserType> list = NSession.CreateQuery(" from  UserType where Username=:p1 and Password=:p2").SetString("p1", p).SetString("p2", u).List<UserType>();
@@ -369,29 +371,29 @@ namespace KeWeiOMS.Web
                 user.LastVisit = DateTime.Now;
                 NSession.Update(user);
                 NSession.Flush();
-                GetPM(user);
+                GetPM(user, NSession);
                 System.Web.HttpContext.Current.Session["account"] = user;
                 return true;
             }
             return false;
         }
 
-        public static void GetPM(UserType currentUser)
+        public static void GetPM(UserType currentUser, ISession NSession)
         {
             List<PermissionScopeType> listByModules = new List<PermissionScopeType>();
             List<PermissionScopeType> listByPermissions = new List<PermissionScopeType>();
             List<PermissionScopeType> listByAccount = new List<PermissionScopeType>();
 
-            foreach (var item in GetUserScope(currentUser.Id))
+            foreach (var item in GetUserScope(currentUser.Id, NSession))
             {
                 GetValue(item, listByModules, listByPermissions, listByAccount);
 
             }
-            foreach (var item in GetRoleScope(currentUser.RoleId))
+            foreach (var item in GetRoleScope(currentUser.RoleId, NSession))
             {
                 GetValue(item, listByModules, listByPermissions, listByAccount);
             }
-            foreach (var item in GetDepartmentScope(currentUser.Id))
+            foreach (var item in GetDepartmentScope(currentUser.Id, NSession))
             {
                 GetValue(item, listByModules, listByPermissions, listByAccount);
             }
@@ -488,19 +490,19 @@ namespace KeWeiOMS.Web
             }
         }
 
-        public static List<PermissionScopeType> GetUserScope(int id)
+        public static List<PermissionScopeType> GetUserScope(int id, ISession NSession)
         {
             List<PermissionScopeType> list = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2").SetString("p1", ResourceCategoryEnum.User.ToString()).SetInt32("p2", id).List<PermissionScopeType>().ToList<PermissionScopeType>();
             return list;
         }
 
-        public static List<PermissionScopeType> GetRoleScope(int id)
+        public static List<PermissionScopeType> GetRoleScope(int id, ISession NSession)
         {
             List<PermissionScopeType> list = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2").SetString("p1", ResourceCategoryEnum.Role.ToString()).SetInt32("p2", id).List<PermissionScopeType>().ToList<PermissionScopeType>();
             return list;
         }
 
-        public static List<PermissionScopeType> GetDepartmentScope(int id)
+        public static List<PermissionScopeType> GetDepartmentScope(int id, ISession NSession)
         {
             List<PermissionScopeType> list = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2").SetString("p1", ResourceCategoryEnum.User.ToString()).SetInt32("p2", id).List<PermissionScopeType>().ToList<PermissionScopeType>();
             return list;
@@ -510,9 +512,9 @@ namespace KeWeiOMS.Web
 
 
 
-        public static bool StockOut(int wid, string sku, int num, string outType, string user, string memo, string orderNo)
+        public static bool StockOut(int wid, string sku, int num, string outType, string user, string memo, string orderNo, ISession NSession)
         {
-            ISession NSession = NHibernateHelper.CreateSession();
+
             IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).SetString("p2", sku).List<WarehouseStockType>();
             if (list.Count > 0)
             {
@@ -538,9 +540,9 @@ namespace KeWeiOMS.Web
             return false;
         }
 
-        public static bool StockIn(int wid, string sku, int num, double price, string InType, string user, string memo, bool isAudit = false)
+        public static bool StockIn(int wid, string sku, int num, double price, string InType, string user, string memo, ISession NSession, bool isAudit = false)
         {
-            ISession NSession = NHibernateHelper.CreateSession();
+
             IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).SetString("p2", sku).List<WarehouseStockType>();
             if (list.Count > 0)
             {

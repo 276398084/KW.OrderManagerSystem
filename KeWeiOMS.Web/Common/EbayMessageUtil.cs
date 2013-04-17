@@ -20,25 +20,25 @@ namespace KeWeiOMS.Web
     {
         //
         // GET: /EbayMessageUtil/
-        public static ISession NSession = NHibernateHelper.CreateSession();
+       
 
         public ActionResult Index()
         {
             return View();
         }
 
-        public static void syn()
+        public static void syn(ISession NSession)
         {
             IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName='jinbostore' and ApiToken<>''").List<AccountType>();
             foreach (var item in list)
             {
                 DateTime beginDate=DateTime.Now.AddDays(-30);
                 DateTime endDate=DateTime.Now.AddMinutes(1);
-                GetEmailByAPI(item, beginDate,endDate);
+                GetEmailByAPI(item, beginDate, endDate, NSession);
             }
         }
 
-        public static void GetEmailByAPI(AccountType account, DateTime beginDate, DateTime endDate)
+        public static void GetEmailByAPI(AccountType account, DateTime beginDate, DateTime endDate, ISession NSession)
         {
             ApiContext context = AppSettingHelper.GetGenericApiContext("US");
             context.ApiCredential.eBayToken = account.ApiToken;
@@ -76,7 +76,7 @@ namespace KeWeiOMS.Web
                     email.Shop = mmet.Question.RecipientID[0];
                     email.CreateOn = DateTime.Now;
                     email.ReplayOn = Convert.ToDateTime("2000-01-01");
-                    int id = NoExist(email.MessageId);
+                    int id = NoExist(email.MessageId, NSession);
                     if (id != 0)
                     {
 
@@ -92,7 +92,7 @@ namespace KeWeiOMS.Web
             } while (messages != null && messages.Count == 100);
         }
 
-        private static int NoExist(string MessageId)
+        private static int NoExist(string MessageId, ISession NSession)
         {
             int id = 0;
             object obj = NSession.CreateQuery("select count(Id) from EbayMessageType where MessageId='" + MessageId + "'").UniqueResult();
@@ -111,7 +111,7 @@ namespace KeWeiOMS.Web
 
         }
 
-        public static void Upload(AccountType account)
+        public static void Upload(AccountType account, ISession NSession)
         {
             ApiContext context = AppSettingHelper.GetGenericApiContext("US");
             context.ApiCredential.eBayToken = account.ApiToken;
@@ -137,12 +137,12 @@ namespace KeWeiOMS.Web
             }
         }
 
-        public static void uploadsyn()
+        public static void uploadsyn(ISession NSession)
         {
             IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName='jinbostore' and ApiToken<>''").List<AccountType>();
             foreach (var item in list)
             {
-                Upload(item);
+                Upload(item, NSession);
             }
         }
 

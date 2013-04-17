@@ -27,7 +27,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult Create()
         {
-            ViewData["OrderNO"] = Utilities.GetOrderNo();
+            ViewData["OrderNO"] = Utilities.GetOrderNo(NSession);
             return View();
         }
         public ActionResult UnHandle()
@@ -81,16 +81,16 @@ namespace KeWeiOMS.Web.Controllers
             switch (fieldName)
             {
                 case "Country":
-                    OrderHelper.ReplaceByCountry(ids, oldField, newField);
+                    OrderHelper.ReplaceByCountry(ids, oldField, newField, NSession);
                     break;
                 case "SKU":
-                    OrderHelper.ReplaceBySKU(ids, oldField, newField);
+                    OrderHelper.ReplaceBySKU(ids, oldField, newField, NSession);
                     break;
                 case "CurrencyCode":
-                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, oldField, newField, 1);
+                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, oldField, newField, 1, NSession);
                     break;
                 case "LogisticMode":
-                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, oldField, newField, 0);
+                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, oldField, newField, 0, NSession);
                     break;
                 default:
                     break;
@@ -117,7 +117,7 @@ namespace KeWeiOMS.Web.Controllers
             IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Status='待处理'").List<OrderType>();
             foreach (var order in orders)
             {
-                OrderHelper.ValiOrder(order, countrys, products, currencys, logistics);
+                OrderHelper.ValiOrder(order, countrys, products, currencys, logistics, NSession);
             }
             return Json(new { IsSuccess = true });
         }
@@ -154,7 +154,7 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Clear();
                     order = CloneObjectEx(o) as OrderType;
                     order.Id = 0;
-                    order.OrderNo = Utilities.GetOrderNo();
+                    order.OrderNo = Utilities.GetOrderNo(NSession);
                     order.Amount = 0;
                     order.IsMerger = 1;
                     NSession.SaveOrUpdate(order);
@@ -214,7 +214,7 @@ namespace KeWeiOMS.Web.Controllers
             string Account = form["Account"];
             AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             string file = form["hfile"];
-            OrderHelper.ImportByAmount(account, file);
+            OrderHelper.ImportByAmount(account, file, NSession);
             return Json(new { IsSuccess = true });
         }
 
@@ -231,18 +231,18 @@ namespace KeWeiOMS.Web.Controllers
                 switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
                 {
                     case PlatformEnum.SMT:
-                        results = OrderHelper.ImportBySMT(account, file);
+                        results = OrderHelper.ImportBySMT(account, file, NSession);
                         break;
                     case PlatformEnum.Ebay:
                         break;
                     case PlatformEnum.Amazon:
-                        results = OrderHelper.ImportByAmazon(account, file);
+                        results = OrderHelper.ImportByAmazon(account, file, NSession);
                         break;
                     case PlatformEnum.B2C:
-                        results = OrderHelper.ImportByB2C(account, file);
+                        results = OrderHelper.ImportByB2C(account, file, NSession);
                         break;
                     case PlatformEnum.Gmarket:
-                        results = OrderHelper.ImportByGmarket(account, file);
+                        results = OrderHelper.ImportByGmarket(account, file, NSession);
                         break;
                     case PlatformEnum.LT:
                         break;
@@ -339,12 +339,12 @@ namespace KeWeiOMS.Web.Controllers
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
             {
                 case PlatformEnum.Ebay:
-                    results = OrderHelper.APIByEbay(account, st, et);
+                    results = OrderHelper.APIByEbay(account, st, et, NSession);
                     break;
                 case PlatformEnum.Amazon:
                     break;
                 case PlatformEnum.B2C:
-                    results = OrderHelper.APIByB2C(account, st, et);
+                    results = OrderHelper.APIByB2C(account, st, et, NSession);
                     break;
                 case PlatformEnum.Gmarket:
                 case PlatformEnum.LT:
@@ -495,7 +495,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Clear();
                 obj.RMB = 0;
                 obj.Amount = 0;
-                obj.OrderNo = Utilities.GetOrderNo();
+                obj.OrderNo = Utilities.GetOrderNo(NSession);
                 obj.MId = Utilities.ToInt(o);
                 NSession.Save(obj);
                 NSession.Flush();
@@ -518,7 +518,7 @@ namespace KeWeiOMS.Web.Controllers
             obj.Amount = 0;
             obj.IsPrint = 0;
             obj.RMB = 0;
-            obj.OrderNo = Utilities.GetOrderNo();
+            obj.OrderNo = Utilities.GetOrderNo(NSession);
             obj.MId = Utilities.ToInt(o);
             NSession.Save(obj);
             NSession.Flush();
@@ -561,7 +561,7 @@ namespace KeWeiOMS.Web.Controllers
             obj.RMB = 0;
             obj.Status = OrderStatusEnum.已处理.ToString();
             obj.IsOutOfStock = 0;
-            obj.OrderNo = Utilities.GetOrderNo();
+            obj.OrderNo = Utilities.GetOrderNo(NSession);
             NSession.Save(obj);
             NSession.Flush();
             foreach (var orderProductType in ps)
@@ -589,7 +589,7 @@ namespace KeWeiOMS.Web.Controllers
                     foreach (OrderProductType orderProductType in ps)
                     {
                         Utilities.StockIn(1, orderProductType.SKU.Trim(), orderProductType.Qty, 0, "重新发货",
-                                          CurrentUser.Realname, "");
+                                          CurrentUser.Realname, "", NSession);
                     }
                     orderType.Status = OrderStatusEnum.待发货.ToString();
                     NSession.Save(orderType);
@@ -640,6 +640,7 @@ namespace KeWeiOMS.Web.Controllers
                     orderType.CutOffMemo = t + " " + d;
                     NSession.Update(orderType);
                     NSession.Flush();
+
                     GetOrderRecord(orderType, "拦截订单！", CurrentUser.Realname + "将订单拦截，原因：" + t + " " + d);
                 }
 
@@ -647,7 +648,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true });
         }
         [HttpPost]
-        public ActionResult ReHoldUp(string o, bool s)
+        public ActionResult ReHoldUp(string o, int s)
         {
             IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
             foreach (OrderType orderType in list)
@@ -657,14 +658,15 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Clear();
                     orderType.IsError = 0;
                     orderType.CutOffMemo = "";
+
+                    if (s == 1)
+                    {
+                        orderType.Status = "已处理";
+                        orderType.IsPrint = 0;
+                    }
                     NSession.Update(orderType);
                     NSession.Flush();
-                    if (s)
-                    {
-                        NSession.CreateQuery("update SKUCodeType set IsOut=0 where OrderNo='" + orderType.OrderNo + "'")
-                            .ExecuteUpdate();
-                    }
-                    GetOrderRecord(orderType, "取消拦截订单！", CurrentUser.Realname + "将订单取消拦截" + ((s) ? "重置产品" : ""));
+                    GetOrderRecord(orderType, "取消拦截订单！", CurrentUser.Realname + "将订单取消拦截" + ((s == 1) ? "重置产品" : ""));
                 }
 
             }
@@ -807,7 +809,7 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpPost]
         public ActionResult ErrorOrder(string o)
         {
-            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.作废订单.ToString() + "',IsError=1 where Id in(" + o + ")").ExecuteUpdate();
+            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.作废订单.ToString() + "' where Id in(" + o + ")").ExecuteUpdate();
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
@@ -829,7 +831,7 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 List<ProductComposeType> compose = products.Where(x => x.SKU.Trim().ToUpper() == orderProductType.SKU.Trim().ToUpper()).ToList();
                 if (compose.Count > 0)
-                    OrderHelper.SplitProduct(orderProductType, compose);
+                    OrderHelper.SplitProduct(orderProductType, compose, NSession);
             }
             return Json(new { IsSuccess = true });
         }
@@ -936,7 +938,7 @@ left join Products P On OP.SKU=P.SKU ";
                         NSession.CreateQuery("from OrderProductType where OId=" + order.Id).List<OrderProductType>();
                     foreach (var orderProductType in ps)
                     {
-                        Utilities.StockOut(s, orderProductType.SKU, orderProductType.Qty, "扫描出库", CurrentUser.Realname, "", order.OrderNo);
+                        Utilities.StockOut(s, orderProductType.SKU, orderProductType.Qty, "扫描出库", CurrentUser.Realname, "", order.OrderNo, NSession);
                     }
                     NSession.CreateQuery("update SKUCodeType set IsSend=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "' where OrderNo ='" + order.OrderNo + "'").ExecuteUpdate();
                     GetOrderRecord(order, "订单扫描发货！", CurrentUser.Realname + "将订单扫描发货了！");
@@ -959,20 +961,20 @@ left join Products P On OP.SKU=P.SKU ";
         {
             AccountType account = NSession.CreateQuery("from AccountType where Id=7").List<AccountType>()[0];
 
-            OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1));
+            OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
 
             return Json(new { IsS = 1 });
-            IList<OrderType> orders = NSession.CreateQuery("from OrderType where CreateOn>'2013-03-20'").List<OrderType>();
-            List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
-            NSession.Clear();
-            foreach (var orderType in orders)
-            {
-                orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country));
-                NSession.SaveOrUpdate(orderType);
+            //IList<OrderType> orders = NSession.CreateQuery("from OrderType where CreateOn>'2013-03-20'").List<OrderType>();
+            //List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
+            //NSession.Clear();
+            //foreach (var orderType in orders)
+            //{
+            //    orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
+            //    NSession.SaveOrUpdate(orderType);
 
-                OrderHelper.SaveAmount(orderType, currencys, NSession);
-            }
-            return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
+            //    OrderHelper.SaveAmount(orderType, currencys, NSession);
+            //}
+            //return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
 
             //IList<OrderType> orders =
             //    NSession.CreateQuery("from OrderType where Account='jinbostore' and Status='已发货' and ScanningOn>'2013-03-25'").List
@@ -987,11 +989,12 @@ left join Products P On OP.SKU=P.SKU ";
 
         void TrackCodeUpLoad(object order)
         {
+            ISession session = NhbHelper.OpenSession();
             OrderType o = order as OrderType;
             if (o != null)
             {
-                ISession session = SessionBuilder.CreateSession();
-                o.Freight = Convert.ToDouble(OrderHelper.GetFreight(o.Weight, o.LogisticMode, o.Country));
+
+                o.Freight = Convert.ToDouble(OrderHelper.GetFreight(o.Weight, o.LogisticMode, o.Country, session));
                 session.SaveOrUpdate(o);
                 session.Flush();
 
@@ -999,9 +1002,10 @@ left join Products P On OP.SKU=P.SKU ";
                 //上传挂号条码
                 UploadTrackCode(o);
             }
+            session.Close();
         }
 
-        private static void UploadTrackCode(OrderType o)
+        private void UploadTrackCode(OrderType o)
         {
             if (o.Platform == PlatformEnum.B2C.ToString())
             {

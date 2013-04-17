@@ -70,7 +70,7 @@ namespace KeWeiOMS.Web.Controllers
                     ws.Qty = ws.Qty + obj.Qty;
                     NSession.SaveOrUpdate(ws);
                     NSession.Flush();
-                    Utilities.CreateSKUCode(obj.SKU, obj.Qty, obj.Id.ToString());
+                    Utilities.CreateSKUCode(obj.SKU, obj.Qty, obj.Id.ToString(), NSession);
                 }
 
             }

@@ -19,14 +19,14 @@ namespace KeWeiOMS.Web
         /// 支持两层
         /// </summary>
         /// <returns></returns>
-        public static List<MenuItem> GetFunctionMenus()
+        public static List<MenuItem> GetFunctionMenus(ISession Session)
         {
             List<MenuItem> items = new List<MenuItem>();
             UserType account = (UserType)System.Web.HttpContext.Current.Session["account"];
             IList<ModuleType> customerList = account.Modules;
             if (customerList.Count == 0)
             {
-                ISession Session = NHibernateHelper.CreateSession();
+
                 customerList = Session.CreateQuery("from ModuleType").List<ModuleType>();
             }
 
@@ -42,7 +42,6 @@ namespace KeWeiOMS.Web
 
                 //从all中加载自己的子菜单
                 List<ModuleType> subs = all.Where(p => p.ParentId == mi.menuid).OrderByDescending(f => f.SortCode).ToList();
-
                 //如果有
                 if (subs.Any())
                 {
@@ -51,17 +50,12 @@ namespace KeWeiOMS.Web
                     foreach (var subtype in subs)
                     {
                         MenuItem submi = new MenuItem() { icon = subtype.ImageIndex, menuid = subtype.Id, menuname = subtype.FullName, url = subtype.NavigateUrl };
-
                         subitems.Add(submi);
                     }
                     mi.menus = subitems;
                 }
                 items.Add(mi);
-
             }
-
-
-
             return items;
         }
     }

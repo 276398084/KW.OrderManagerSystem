@@ -22,7 +22,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult CreateByW(string Id)
         {
-            ViewData["No"] = Utilities.GetPlanNo();
+            ViewData["No"] = Utilities.GetPlanNo(NSession);
             IList<PurchasePlanType> obj =
                   NSession.CreateQuery("from PurchasePlanType where SKU=:sku order by Id desc").SetString("sku", Id)
                       .SetFirstResult(0)
@@ -38,7 +38,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult Create()
         {
-            ViewData["No"] = Utilities.GetPlanNo();
+            ViewData["No"] = Utilities.GetPlanNo(NSession);
             return View();
         }
 

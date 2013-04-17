@@ -14,9 +14,14 @@
                     window.open('@Url.Action("Edit", "Product")/' + r.Id);
                 }
             });
-
+            $('#IsScan').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
         });
-
             //新建
             function c_dlg() {
                 var url_str = '@Url.Action("Create", "Product")';
@@ -43,14 +48,8 @@
 
             //编辑框
             function e_dlg() {
-
                 window.open('@Url.Action("Edit", "Product")/' + getselectedRow());
-
             }
-
-
-
-
             function exportdt() {
                 var postUrl = "/Order/ExportDown/1";
                 jQuery.ajax({
@@ -91,11 +90,20 @@
                 return '<img  src=' + v + '  height="64px" width="64px" />';
             }
             function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search = "";
+                if ($('#IsScan').combobox("getValue") != "ALL") {
+                    search += "IsScan&" + $('#IsScan').combobox("getValue") + "^";
+                }
+                search += $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
                 $("#dg").datagrid("load", {
                     search: search
                 });
             }
+
+            function getSale(v, r, i) {
+                return r.SevenDay + "/" + r.Fifteen + "/" + r.ThirtyDay;
+            }
+
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -121,10 +129,10 @@
                     </th>
                     <th field="Weight" width="60" sortable="true">重量
                     </th>
-                    <th field="Long" width="100">长宽高
-                    </th>
-                    <th field="IsInfraction" width="100" formatter="getTrue">侵权
-                    </th>
+                    <th field="SevenDay" width="100" formatter="getSale">
+                    7/15/30
+
+                 
                     <th field="PackCoefficient" width="100">包装系数
                     </th>
 
@@ -138,14 +146,12 @@
             </thead>
         </table>
         <div id="toolbar">
-
-
-
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="e_dlg();">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportdt();">导出</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportdt();">导出</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            配货扫描
+            <input id="IsScan" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'SKU'">SKU</div>

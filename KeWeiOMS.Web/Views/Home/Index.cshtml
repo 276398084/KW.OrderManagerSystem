@@ -52,9 +52,6 @@
         }
         tabClose();
     }
-
-
-
     function closeTab(subtitle) {
         if ($('#tabs').tabs('exists', subtitle)) {
             $('#tabs').tabs('close', subtitle);
@@ -87,9 +84,7 @@
                 left: e.pageX,
                 top: e.pageY
             });
-
             var subtitle = $(this).children(".tabs-closable").text();
-
             $('#mm').data("currtab", subtitle);
             $('#tabs').tabs('select', subtitle);
             return false;
@@ -168,7 +163,7 @@
 </style>
 
 <body class="easyui-layout" id="mainframe">
-    <div region="north" border="false" style="overflow: hidden; height: 68px; line-height: 20px; background-color: green; font-family: 微软雅黑,黑体">
+    <div region="north" border="false" style="overflow: hidden; height: 68px; line-height: 20px; background: url('../../Content/imgs/bg.png') repeat-x; font-family: 微软雅黑,黑体">
         <div id="mainlogo">
             @*<img src="images/main.gif" width="575" height="72" alt="此处放置一个带有系统名称的图片，大小为“500x72”" />*@
         </div>
@@ -179,27 +174,30 @@
                 @ViewData["Username"]
                 ,欢迎您的光临！
             </div>
-            <div class="ctr">
-                <li>
-                    <img src="/Content/imgs/yuanjiao.png" alt="" /></li>
-                <li><a href="#">
-                    <img src="/Content/imgs/mimaxiugai.gif" alt="" border="0" /></a></li>
-                <li class="zi"><a href="#" id="ChangePassword" class="v1">密码修改</a></li>
-                <li><a href="#">
-                    <img src="/Content/imgs/anquantuichu.gif" alt="" border="0" /></a></li>
-                <li class="zi"><a href="#" id="loginOut" class="v1">安全退出</a></li>
 
-                <li><a href="#">
-                    <img src="/Content/imgs/duanxinxi.gif" alt="" border="0" /></a></li>
-                <li class="zi"><a href="#" class="v1"></a></li>
-                <li class="zi"><a href="#" class="v1"></a></li>
+
+            <div style="position: absolute; right: 0px; bottom: 0px;">
+                <a href="javascript:void(0);" class="easyui-menubutton" data-options="menu:'#layout_north_pfMenu',iconCls:'icon-ok'">更换皮肤</a> <a href="javascript:void(0);" class="easyui-menubutton" data-options="menu:'#layout_north_kzmbMenu',iconCls:'icon-help'">控制面板</a> <a href="#" id="loginOut" class="easyui-menubutton" data-options="iconCls:'icon-back'">安全退出</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
+            <div id="layout_north_pfMenu" style="width: 120px; display: none;">
+                <div onclick="changeTheme('default');">default</div>
+                <div onclick="changeTheme('gray');">gray</div>
+                <div onclick="changeTheme('metro');">metro</div>
+                <div onclick="changeTheme('metro-blue');">metro-blue</div>
+                <div onclick="changeTheme('metro-gray');">metro-gray</div>
+                <div onclick="changeTheme('metro-green');">metro-green</div>
+                <div onclick="changeTheme('metro-orange');">metro-orange</div>
+                <div onclick="changeTheme('metro-red');">metro-red</div>
+
+            </div>
+
+
         </div>
     </div>
 
     <div region="west" split="true" title="功能菜单" style="width: 170px; padding: 1px; overflow: hidden;">
         @{
-            Html.RenderPartial("Nav", FunctionMenu.GetFunctionMenus());
+            Html.RenderPartial("Nav", FunctionMenu.GetFunctionMenus(KeWeiOMS.NhibernateHelper.NhbHelper.GetCurrentSession()));
         }
     </div>
     <div region="center" title="" style="overflow: hidden; padding: 0px;" id="centerArea">
@@ -207,19 +205,19 @@
         </div>
     </div>
     <div style="display: none">
-         <div id="mm" class="easyui-menu" style="width: 150px;">
-        <div id="mm-tabupdate">刷新</div>
-        <div class="menu-sep"></div>
-        <div id="mm-tabclose">关闭</div>
-        <div id="mm-tabcloseall">全部关闭</div>
-        <div id="mm-tabcloseother">除此之外全部关闭</div>
-        <div class="menu-sep"></div>
-        <div id="mm-tabcloseright">当前页右侧全部关闭</div>
-        <div id="mm-tabcloseleft">当前页左侧全部关闭</div>
-        <div class="menu-sep"></div>
-        <div id="mm-exit">退出</div>
+        <div id="mm" class="easyui-menu" style="width: 150px;">
+            <div id="mm-tabupdate">刷新</div>
+            <div class="menu-sep"></div>
+            <div id="mm-tabclose">关闭</div>
+            <div id="mm-tabcloseall">全部关闭</div>
+            <div id="mm-tabcloseother">除此之外全部关闭</div>
+            <div class="menu-sep"></div>
+            <div id="mm-tabcloseright">当前页右侧全部关闭</div>
+            <div id="mm-tabcloseleft">当前页左侧全部关闭</div>
+            <div class="menu-sep"></div>
+            <div id="mm-exit">退出</div>
+        </div>
     </div>
-    </div>
-   
+
 </body>
 

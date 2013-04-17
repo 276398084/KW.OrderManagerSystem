@@ -23,7 +23,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Create()
         {
             UserType u = new UserType();
-            u.Code = Utilities.GetUserNo();
+            u.Code = Utilities.GetUserNo(NSession);
             return View(u);
         }
 
@@ -84,7 +84,7 @@ namespace KeWeiOMS.Web.Controllers
                 return View();
             }
 
-            bool iscon = Utilities.LoginByUser(user.Username, user.Password);
+            bool iscon = Utilities.LoginByUser(user.Username, user.Password, NSession);
             if (iscon)
             {
                 Utilities.CreateCookies(user.Username, user.Password);

@@ -85,7 +85,7 @@ namespace KeWeiOMS.Web.Controllers
 
         #region 出库统计
         /// <summary>
-        ///OutCount
+        /// OutCount
         /// </summary>
         /// <param name="st"></param>
         /// <param name="et"></param>
@@ -367,7 +367,7 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         [HttpPost]
         public ActionResult GetColumns(DateTime st, DateTime et)
         {
-            
+
             List<object> cols = new List<object>();
             cols.Add(new { field = "人员", title = "人员", width = "150" });
             DateTime date = st;
@@ -383,7 +383,7 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         [HttpPost]
         public String ScanCount(DateTime st, DateTime et)
         {
-            
+
             List<string> strData = new List<string>();
             StringBuilder sb = new StringBuilder();
             strData.Add("人员");
@@ -448,13 +448,13 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         [HttpPost]
         public String PeiCount(DateTime st, DateTime et)
         {
-          
+
             List<string> strData = new List<string>();
             StringBuilder sb = new StringBuilder();
             strData.Add("人员");
             sb.Append("select [PeiBy] as '扫描人',");
             DateTime date = st;
-           
+
             while (date <= et)
             {
                 string week = GetWeek("zh", date);
@@ -492,19 +492,19 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             for (int j = 1; j < strData.Count; j++)
             {
                 int sum = 0;
-            
+
                 jsonBuilder2.Append("\"");
                 jsonBuilder2.Append(strData[j]);
                 jsonBuilder2.Append("\":\"");
                 for (int i = 0; i < objectses.Count; i++)
                 {
-                   sum += Convert.ToInt32(objectses[i][j]);
+                    sum += Convert.ToInt32(objectses[i][j]);
 
 
                 }
                 jsonBuilder2.Append(sum.ToString());
                 jsonBuilder2.Append("\",");
-               
+
 
             }
             jsonBuilder2.Remove(jsonBuilder2.Length - 1, 1);
@@ -516,7 +516,7 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         [HttpPost]
         public String JiCount(DateTime st, DateTime et)
         {
-           
+
             List<string> strData = new List<string>();
             StringBuilder sb = new StringBuilder();
             strData.Add("人员");

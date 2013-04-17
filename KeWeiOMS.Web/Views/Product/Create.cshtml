@@ -112,7 +112,13 @@
                { field: 'Warehouse', title: '仓库', width: 200 }
             ]]
         });
-
+        $('#c_IsScan').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 50,
+            required: true,
+            data: checks
+        });
         $('#up_file').uploadify({
             'auto': false,
             'buttonText': '请选择图片',
@@ -207,14 +213,15 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.SKU, new { @id = "c_SKU", @class = "easyui-validatebox", @required = "true" })
-                </td>                <td>
+                </td>
+                <td>
                     @Html.LabelFor(model => model.Category, "类别:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.Category, new { @id = "c_Category" })
                 </td>
                 <td>
-                  
+
                     @Html.LabelFor(model => model.SKU, "主编号:")
                 </td>
                 <td>
@@ -242,161 +249,171 @@
                     @Html.HiddenFor(model => model.PicUrl, new { @id = "c_PicUrl" })
                 </td>
 
-            </tr> 
-
-        </table>
-            </fieldset>
-          <div id="tt" class="easyui-tabs" style="width:1180px;height:300px;"> 
-        <div title="仓库信息" style="padding:20px;">  
-        <table>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Price, "商品价格:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Price, new { @id = "c_Price", @class = "easyui-validatebox", @required = "true" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.Standard, "规格:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Standard, new { @id = "c_Standard" })
-                </td>
             </tr>
             <tr>
                 <td>
-                    @Html.LabelFor(model => model.Weight, "重量:")
+                    @Html.LabelFor(model => model.IsScan, "配货扫描:")
                 </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Weight, new { @id = "c_Weight", @class = "easyui-validatebox", @required = "true" })
+                <td colspan="5">
+                    @Html.TextBoxFor(model => model.IsScan, new { @id = "c_IsScan" })
                 </td>
-                <td>
-                    @Html.LabelFor(model => model.Long, "长×宽×高:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Long, new { @id = "c_Long", @style = "width:50px" })×
+
+
+            </tr>
+
+        </table>
+    </fieldset>
+    <div id="tt" class="easyui-tabs" style="width: 1180px; height: 300px;">
+        <div title="仓库信息" style="padding: 20px;">
+            <table>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Price, "商品价格:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Price, new { @id = "c_Price", @class = "easyui-validatebox", @required = "true" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Standard, "规格:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Standard, new { @id = "c_Standard" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Weight, "重量:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Weight, new { @id = "c_Weight", @class = "easyui-validatebox", @required = "true" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Long, "长×宽×高:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Long, new { @id = "c_Long", @style = "width:50px" })×
                    
                     @Html.TextBoxFor(model => model.Wide, new { @id = "c_Wide", @style = "width:50px" })×
                    
                     @Html.TextBoxFor(model => model.High, new { @id = "c_High", @style = "width:50px" })
-                </td>
+                    </td>
 
-                <td>
-                    @Html.LabelFor(model => model.DayByStock, "库存天数:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.DayByStock, new { @id = "c_DayByStock" })
-                </td>
-            </tr>
+                    <td>
+                        @Html.LabelFor(model => model.DayByStock, "库存天数:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.DayByStock, new { @id = "c_DayByStock", @class = "easyui-numberbox", @required = "true" })
+                    </td>
+                </tr>
 
-            <tr>               
-                 <td>
-                    @Html.LabelFor(model => model.Brand, "品牌:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Brand, new { @id = "c_Brand" })
-                </td>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Brand, "品牌:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Brand, new { @id = "c_Brand" })
+                    </td>
 
-                <td>
-                    @Html.LabelFor(model => model.Model, "型号:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Model, new { @id = "c_Model" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.Location, "库位:")
-                </td >
-                <td> 
-                    @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
-                 </td>
-            </tr>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.PackCoefficient, "包装系数:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.PackCoefficient, new { @id = "c_PackCoefficient" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.IsElectronic, "电子:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.IsElectronic, new { @id = "c_IsElectronic" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.HasBattery, "电池:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.HasBattery, new { @id = "c_HasBattery" })
-                </td>
-            </tr>
-                        <tr>
-                <td>
-                    @Html.LabelFor(model => model.Purchaser, "采购人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Purchaser, new { @id = "c_Purchaser" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.Examiner, "验货人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Examiner, new { @id = "c_Examiner" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.Packer, "包装人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Packer, new { @id = "c_Packer" })
-                </td>
-            </tr>
+                    <td>
+                        @Html.LabelFor(model => model.Model, "型号:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Model, new { @id = "c_Model" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Location, "库位:")
+                    </td>
+                    <td>
+                        @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PackCoefficient, "包装系数:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.PackCoefficient, new { @id = "c_PackCoefficient" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.IsElectronic, "电子:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.IsElectronic, new { @id = "c_IsElectronic" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.HasBattery, "电池:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.HasBattery, new { @id = "c_HasBattery" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Purchaser, "采购人:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Purchaser, new { @id = "c_Purchaser" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Examiner, "验货人:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Examiner, new { @id = "c_Examiner" })
+                    </td>
+                    <td>
+                        @Html.LabelFor(model => model.Packer, "包装人:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.Packer, new { @id = "c_Packer" })
+                    </td>
+                </tr>
 
-        </table>
-            </div>
-         <div title="是否侵权" style="overflow:auto;padding:20px;">  
+            </table>
+        </div>
+        <div title="是否侵权" style="overflow: auto; padding: 20px;">
             <table>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.IsInfraction, "是否侵权:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.IsInfraction, new { @id = "c_IsInfraction" })
-                </td>
-            </tr>
-               </table>
-             </div>
-          <div title="组合产品" style="overflow:auto;padding:20px;">  
-                    <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
-                        <thead>
-                            <tr>
-                                <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
-                    </th>
-                                <th field="SrcQty" width="100" data-options="editor:'text'">Qty
-                    </th>
-                        </thead>
-                    </table>
-              </div>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.IsInfraction, "是否侵权:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.IsInfraction, new { @id = "c_IsInfraction" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div title="组合产品" style="overflow: auto; padding: 20px;">
+            <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
+                <thead>
+                    <tr>
+                        <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
+                        </th>
+                        <th field="SrcQty" width="100" data-options="editor:'text'">Qty
+                        </th>
+                </thead>
+            </table>
+        </div>
 
-              <div title="备注信息" style="overflow:auto;padding:20px;">  
-              <table>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Summary, "简单描述:")
-                </td>
-                <td colspan="5">
-                    @Html.TextAreaFor(model => model.Summary, new { @id = "c_Summary", @style = "width:700px;height:100px;resize:none" })
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.PackMemo, "包装注意事项:")
-                </td>
-                <td colspan="5">
-                    @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:100px;resize:none" })
-                </td>
-            </tr>
-        </table>
-            </div>
-     </div>
+        <div title="备注信息" style="overflow: auto; padding: 20px;">
+            <table>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.Summary, "简单描述:")
+                    </td>
+                    <td colspan="5">
+                        @Html.TextAreaFor(model => model.Summary, new { @id = "c_Summary", @style = "width:700px;height:100px;resize:none" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.PackMemo, "包装注意事项:")
+                    </td>
+                    <td colspan="5">
+                        @Html.TextAreaFor(model => model.PackMemo, new { @id = "c_PackMemo", @style = "width:700px;height:100px;resize:none" })
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
    
 }

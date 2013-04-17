@@ -80,6 +80,23 @@
                 search: search
             });
         }
+
+        function ReP() {
+            $.messager.confirm("提示", "你确定要重置这些产品吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Product/ReP/",
+                        type: "post",
+                        data: "p=" + $("#ps").val(),
+                        success: function (sss) {
+                            alert("重置成功");
+                            $('#dg').datagrid("reload");
+                            $("#ps").val('');
+                        }
+                    });
+                }
+            });
+        }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -114,12 +131,29 @@
             配货：<input type="text" id="Pei" />
             发货：<input type="text" id="Send" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#r_dlg').dialog('open');">设置重置库存</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'Code'">Code</div>
             <div data-options="name:'SKU'">SKU</div>
             <div data-options="name:'OrderNo'">订单号</div>
             <div data-options="name:'PlanNo'">采购单号</div>
+        </div>
+
+        <div id="r_dlg" class="easyui-dialog" title="订单拦截设置" style="width: 400px; height: 300px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>选项:</td>
+                    <td>
+                        <textarea id="ps" style="width: 300px; height: 200px;"></textarea></td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="ReP()" /></td>
+                </tr>
+            </table>
         </div>
     </div>
 </body>

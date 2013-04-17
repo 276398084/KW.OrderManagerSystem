@@ -19,20 +19,6 @@ namespace KeWeiOMS.Web
 
     public class MvcApplication : System.Web.HttpApplication
     {
-
-
-        protected virtual void OnStart()
-        {
-
-            initSessionBuilder();
-            RegisterRoutes(RouteTable.Routes);
-        }
-
-        private void initSessionBuilder()
-        {
-            SessionBuilder.sessionStorage = new HttpSessionStorage();//这里创建Session实例
-        }
-
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
@@ -42,12 +28,14 @@ namespace KeWeiOMS.Web
                 "{controller}/{action}/{id}",                           // URL with parameters
                 new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
             );
-
         }
         protected void Application_Start()
         {
-            NHibernateHelper.CreateDatabase();
-            OnStart();
+            // Run();
+            // OnStart();
+            AreaRegistration.RegisterAllAreas();
+
+            RegisterRoutes(RouteTable.Routes);
         }
 
     }

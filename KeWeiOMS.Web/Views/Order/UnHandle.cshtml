@@ -214,6 +214,7 @@
         }
 
         function o_vali() {
+            $('#dg').datagrid("loading");
             jQuery.ajax({
                 url: "/Order/OrderVali",
                 type: "post",

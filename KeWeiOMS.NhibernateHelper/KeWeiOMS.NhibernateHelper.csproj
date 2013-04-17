@@ -41,6 +41,7 @@
       <HintPath>..\Lib\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -50,16 +51,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseObject.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="HttpSessionStorage.cs" />
-    <Compile Include="IRepository.cs" />
-    <Compile Include="ISessionStorage.cs" />
-    <Compile Include="NHibernateHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository.cs" />
-    <Compile Include="RepositoryException.cs" />
-    <Compile Include="SessionBuilder.cs" />
+    <Compile Include="RepositoryException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Repository\CurrentSessionModule.cs" />
+    <Compile Include="Repository\EnumConvention.cs" />
+    <Compile Include="Repository\HasManyConvention.cs" />
+    <Compile Include="Repository\NhbHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KeWeiOMS.Domain\KeWeiOMS.Domain.csproj">

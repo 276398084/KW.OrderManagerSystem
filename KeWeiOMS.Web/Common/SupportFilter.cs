@@ -25,7 +25,7 @@ namespace KeWeiOMS.Web
                     if (str.IndexOf('&') != -1)
                     {
                         string[] strs = str.Split('&');
-                        iscon = Utilities.LoginByUser(strs[0], strs[1]);
+                        iscon = Utilities.LoginByUser(strs[0], strs[1], NhibernateHelper.NhbHelper.GetCurrentSession());
                     }
                 }
                 if (iscon)
