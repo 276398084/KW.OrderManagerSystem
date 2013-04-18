@@ -6020,7 +6020,7 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:Code>Package_4</a:Code>
 <a:CreationDate>1357549516</a:CreationDate>
 <a:Creator>Administrator</a:Creator>
-<a:ModificationDate>1365987271</a:ModificationDate>
+<a:ModificationDate>1366180707</a:ModificationDate>
 <a:Modifier>gjy</a:Modifier>
 <c:PhysicalDiagrams>
 <o:PhysicalDiagram Id="o245">
@@ -6029,7 +6029,7 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:Code>PhysicalDiagram_1</a:Code>
 <a:CreationDate>1357549516</a:CreationDate>
 <a:Creator>Administrator</a:Creator>
-<a:ModificationDate>1365987271</a:ModificationDate>
+<a:ModificationDate>1366180707</a:ModificationDate>
 <a:Modifier>gjy</a:Modifier>
 <a:DisplayPreferences>[DisplayPreferences]
 
@@ -15939,9 +15939,9 @@ Shadow=0</a:DisplayPreferences>
 <c:Symbols>
 <o:TableSymbol Id="o707">
 <a:CreationDate>1359602360</a:CreationDate>
-<a:ModificationDate>1359602459</a:ModificationDate>
+<a:ModificationDate>1366181060</a:ModificationDate>
 <a:IconMode>-1</a:IconMode>
-<a:Rect>((-9451,-7437), (-4651,-3438))</a:Rect>
+<a:Rect>((-11251,-6912), (-6451,-2913))</a:Rect>
 <a:LineColor>12615680</a:LineColor>
 <a:FillColor>16570034</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -15964,9 +15964,9 @@ LABL 0 新宋体,8,N</a:FontList>
 </o:TableSymbol>
 <o:TableSymbol Id="o709">
 <a:CreationDate>1359602361</a:CreationDate>
-<a:ModificationDate>1359602505</a:ModificationDate>
+<a:ModificationDate>1366181063</a:ModificationDate>
 <a:IconMode>-1</a:IconMode>
-<a:Rect>((-2175,-7362), (2624,-3363))</a:Rect>
+<a:Rect>((-14395,6189), (-2707,13387))</a:Rect>
 <a:LineColor>12615680</a:LineColor>
 <a:FillColor>16570034</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -16084,12 +16084,110 @@ LABL 0 新宋体,8,N</a:FontList>
 <o:Table Id="o710">
 <a:ObjectID>2D35A156-22A3-461F-8694-5F2F8BE459EA</a:ObjectID>
 <a:Name>商品日志</a:Name>
-<a:Code>Table_2</a:Code>
+<a:Code>ProductRecord</a:Code>
 <a:CreationDate>1359602361</a:CreationDate>
 <a:Creator>Administrator</a:Creator>
-<a:ModificationDate>1359602432</a:ModificationDate>
-<a:Modifier>Administrator</a:Modifier>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
 <a:TotalSavingCurrency/>
+<c:Columns>
+<o:Column Id="o703">
+<a:ObjectID>5FF512A0-B2AB-4F0B-84F6-6D73A627EDD0</a:ObjectID>
+<a:Name>主键</a:Name>
+<a:Code>Id</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<a:DataType>int</a:DataType>
+<a:Mandatory>1</a:Mandatory>
+</o:Column>
+<o:Column Id="o704">
+<a:ObjectID>02182D8A-9A30-423B-848A-B50D72065E22</a:ObjectID>
+<a:Name>SKU</a:Name>
+<a:Code>SKU</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<a:DataType>nvarchar(255)</a:DataType>
+<a:Length>255</a:Length>
+</o:Column>
+<o:Column Id="o705">
+<a:ObjectID>98BB162E-B658-4D5D-A61E-D2FE09A4204C</a:ObjectID>
+<a:Name>OldSKU</a:Name>
+<a:Code>OldSKU</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<a:DataType>nvarchar(255)</a:DataType>
+<a:Length>255</a:Length>
+</o:Column>
+<o:Column Id="o706">
+<a:ObjectID>68DCE7D8-4ED8-4591-98F7-20889E94A711</a:ObjectID>
+<a:Name>操作类型</a:Name>
+<a:Code>RecordType</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<a:DataType>nvarchar(255)</a:DataType>
+<a:Length>255</a:Length>
+</o:Column>
+<o:Column Id="o707">
+<a:ObjectID>84CC2C1C-AA80-4EF0-97CE-7F6281FDB990</a:ObjectID>
+<a:Name>操作内容</a:Name>
+<a:Code>Content</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<a:DataType>nvarchar(2000)</a:DataType>
+<a:Length>2000</a:Length>
+</o:Column>
+<o:Column Id="o708">
+<a:ObjectID>8D8D34F5-40B1-45E5-AEB4-E4ABCC7878A7</a:ObjectID>
+<a:Name>操作人</a:Name>
+<a:Code>CreateBy</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<a:DataType>nvarchar(255)</a:DataType>
+<a:Length>255</a:Length>
+</o:Column>
+<o:Column Id="o709">
+<a:ObjectID>DF95BECA-11C1-47C1-8D7A-43C49DD047F4</a:ObjectID>
+<a:Name>操作时间</a:Name>
+<a:Code>CreateOn</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<a:DataType>datetime</a:DataType>
+</o:Column>
+</c:Columns>
+<c:Keys>
+<o:Key Id="o710">
+<a:ObjectID>F4D0EE11-AB98-4A3C-8068-EE23C94553A8</a:ObjectID>
+<a:Name>Key_1</a:Name>
+<a:Code>Key_1</a:Code>
+<a:CreationDate>1366180711</a:CreationDate>
+<a:Creator>gjy</a:Creator>
+<a:ModificationDate>1366181057</a:ModificationDate>
+<a:Modifier>gjy</a:Modifier>
+<c:Key.Columns>
+<o:Column Ref="o703"/>
+</c:Key.Columns>
+</o:Key>
+</c:Keys>
+<c:PrimaryKey>
+<o:Key Ref="o710"/>
+</c:PrimaryKey>
+<c:ClusterObject>
+<o:Key Ref="o710"/>
+</c:ClusterObject>
 </o:Table>
 <o:Table Id="o712">
 <a:ObjectID>5CF93AC0-DDFA-40C4-8E0B-6937285685D4</a:ObjectID>
@@ -16186,7 +16284,7 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:DataType>nvarchar(1000)</a:DataType>
 <a:Length>1000</a:Length>
 </o:Column>
-<o:Column Id="o723">
+<o:Column Id="o717">
 <a:ObjectID>D2CA3E95-7745-4993-B3F3-F09CCFC08639</a:ObjectID>
 <a:Name>操作人</a:Name>
 <a:Code>CreateBy</a:Code>
@@ -16199,7 +16297,7 @@ LABL 0 新宋体,8,N</a:FontList>
 </o:Column>
 </c:Columns>
 <c:Keys>
-<o:Key Id="o724">
+<o:Key Id="o718">
 <a:ObjectID>19B79989-683F-4B82-A1BD-90865A04B871</a:ObjectID>
 <a:Name>Key_1</a:Name>
 <a:Code>Key_1</a:Code>
@@ -16208,15 +16306,15 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:ModificationDate>1359602456</a:ModificationDate>
 <a:Modifier>Administrator</a:Modifier>
 <c:Key.Columns>
-<o:Column Ref="o717"/>
+<o:Column Ref="o711"/>
 </c:Key.Columns>
 </o:Key>
 </c:Keys>
 <c:PrimaryKey>
-<o:Key Ref="o724"/>
+<o:Key Ref="o718"/>
 </c:PrimaryKey>
 <c:ClusterObject>
-<o:Key Ref="o724"/>
+<o:Key Ref="o718"/>
 </c:ClusterObject>
 </o:Table>
 </c:Tables>
@@ -16230,7 +16328,7 @@ LABL 0 新宋体,8,N</a:FontList>
 <a:ModificationDate>1359706124</a:ModificationDate>
 <a:Modifier>Administrator</a:Modifier>
 <c:PhysicalDiagrams>
-<o:PhysicalDiagram Id="o725">
+<o:PhysicalDiagram Id="o719">
 <a:ObjectID>310BBDB2-405A-4F34-8725-17DB90EAEED4</a:ObjectID>
 <a:Name>PhysicalDiagram_1</a:Name>
 <a:Code>PhysicalDiagram_1</a:Code>
@@ -16650,7 +16748,7 @@ Shadow=0</a:DisplayPreferences>
 </o:PhysicalDiagram>
 </c:PhysicalDiagrams>
 <c:DefaultDiagram>
-<o:PhysicalDiagram Ref="o725"/>
+<o:PhysicalDiagram Ref="o719"/>
 </c:DefaultDiagram>
 </o:Package>
 </c:Packages>

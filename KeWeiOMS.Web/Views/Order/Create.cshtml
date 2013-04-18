@@ -27,33 +27,39 @@
             }
         }
     });
+    var editor;
+    var editor2;
+    var editor3;
     KindEditor.ready(function (K) {
-        window.editor = K.create('#c_BuyerMemo', {
+        editor = K.create('#c_BuyerMemo', {
             resizeType: 1,
             allowPreviewEmoticons: false,
             allowImageUpload: false,
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
-        window.editor = K.create('#c_SellerMemo', {
+        editor2 = K.create('#c_SellerMemo', {
             resizeType: 1,
             allowPreviewEmoticons: false,
             allowImageUpload: false,
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
-        window.editor = K.create('#c_CutOffMemo', {
+        editor3 = K.create('#c_CutOffMemo', {
             resizeType: 1,
             allowPreviewEmoticons: false,
             allowImageUpload: false,
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
     });
 

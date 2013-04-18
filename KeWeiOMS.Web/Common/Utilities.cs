@@ -319,7 +319,7 @@ namespace KeWeiOMS.Web
                         value2 = "";
                     if (value.ToString() != value2.ToString())
                     {
-                        sb.Append(" " + name + "从“" + value + "” 修改为 “" + value2 + "”");
+                        sb.Append(" " + name + "从“" + value + "” 修改为 “" + value2 + "”<br>");
                     }
 
                 }

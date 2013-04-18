@@ -3,27 +3,36 @@
 <script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
 <script type="text/javascript">
+    var editor;
+    var editor2;
     KindEditor.ready(function (K) {
-        window.editor = K.create('#e_Summary', {
+        editor = K.create('#e_Summary', {
             resizeType: 1,
             allowPreviewEmoticons: false,
             allowImageUpload: false,
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
-        window.editor = K.create('#e_PackMemo', {
+        editor2 = K.create('#e_PackMemo', {
             resizeType: 1,
             allowPreviewEmoticons: false,
             allowImageUpload: false,
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
     });
     $(function () {
+        $('#dg_record').datagrid({
+            url: '@Url.Action("Record","Product")/@ViewData["id"]',
+                    width:1200,
+                    height:280
+                })
         $('#dg_zu').datagrid({
             url: '@Url.Action("ZuList", "Product")/@Model.SKU',
             width: 300,
@@ -281,6 +290,7 @@
                     @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.CreateOn)
 
+           
                     @Html.HiddenFor(model => model.CreateBy)
                     @Html.HiddenFor(model => model.SPicUrl)
                     @Html.HiddenFor(model => model.PicUrl)
@@ -296,6 +306,14 @@
                 <td>
                     @Html.TextBoxFor(model => model.Category, new { @id = "e_Category" })
                 </td>
+                  <td>
+
+                    @Html.LabelFor(model => model.SKU, "是否扫描:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.IsScan, new { @id = "e_IsScan", @required = "true" })
+                </td>
+
 
             </tr>
             <tr>
@@ -319,13 +337,7 @@
                     @Html.TextBoxFor(model => model.OldSKU, new { @id = "e_OldSKU", @class = "easyui-validatebox", @required = "true" })
                 </td>
 
-                <td>
-
-                    @Html.LabelFor(model => model.SKU, "是否扫描:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.IsScan, new { @id = "e_IsScan", @required = "true" })
-                </td>
+              
             </tr>
         </table>
     </fieldset>
@@ -488,5 +500,22 @@
                 </tr>
             </table>
         </div>
+                          <div title="商品日志" style="padding:20px;">  
+        <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
+            <thead>
+                <tr>
+                    <th field="RecordType" width="150" >类型
+                    </th>
+                    <th field="Content" width="700">内容
+                    </th>
+                    <th field="CreateBy" width="60">处理人
+                    </th>
+                    <th field="CreateOn" width="200" formatter="getDate">处理时间
+                    </th>
+                </tr>
+            </thead>
+        </table>
+  
+</div>
     </div>
 }

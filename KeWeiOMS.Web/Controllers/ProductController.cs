@@ -32,6 +32,7 @@ namespace KeWeiOMS.Web.Controllers
         public ViewResult Details(int id)
         {
             ProductType obj = GetById(id);
+            ViewData["id"] = id;
             return View(obj);
         }
 
@@ -200,6 +201,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
                 if (list1.Count > 0)
                     obj.IsZu = 1;
+                obj.Enabled = 1;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
                 foreach (ProductComposeType productCompose in list1)
@@ -237,6 +239,16 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     NSession.SaveOrUpdate(stock);
                     NSession.Flush();
                 }
+                ProductRecordType productrecoud = new ProductRecordType();
+                productrecoud.OldSKU = obj.OldSKU;
+                productrecoud.SKU = obj.SKU;
+                productrecoud.OId = obj.Id;
+                productrecoud.RecordType = "新建";
+                productrecoud.Content = "商品创建";
+                productrecoud.CreateBy = CurrentUser.Realname;
+                productrecoud.CreateOn = DateTime.Now;
+                NSession.Save(productrecoud);
+                NSession.Flush();
             }
             catch (Exception ee)
             {
@@ -267,6 +279,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         public ActionResult Edit(int id)
         {
             ProductType obj = GetById(id);
+            ViewData["id"] = id;
             return View(obj);
         }
 
@@ -276,29 +289,108 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         {
             try
             {
+                string str = "";
+                obj.Enabled = 1;
+                ProductType obj2 = GetById(obj.Id);
                 List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
+                List<ProductComposeType> pis = NSession.CreateQuery("from ProductComposeType where SKU='" + obj.SKU + "'").List<ProductComposeType>().ToList<ProductComposeType>();
+                if (list1.Count != pis.Count)
+                {
+                    str += "组合产品由<br>";
+                    foreach (var item in pis)
+                    {
+                        str += " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
+                    }
+                    str += "修改为<br> ";
+                    foreach (var item in list1)
+                    {
+                        str += " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
+                    }
+                    str += "<br>";
+                }
+                else
+                {
+                    foreach (var item in pis)
+                    {
+                        int check = 0;
+                        foreach (var it in list1)
+                        {
+                            if (it.SrcSKU == item.SrcSKU && it.SrcQty == item.SrcQty)
+                            {
+                                check = 1;
+                            }
+                        }
+                        if (check != 1)
+                        {
+                            str += "组合产品由<br>";
+                            foreach (var zu in pis)
+                            {
+                                str += " sku:" + zu.SrcSKU + " Qty:" + zu.SrcQty + "<br>";
+                            }
+                            str += "修改为<br> ";
+                            foreach (var zu in list1)
+                            {
+                                str += " sku:" + zu.SrcSKU + " Qty:" + zu.SrcQty + "<br>";
+                            }
+                            str += "<br>";
+                        }
+                    }
+
+                }
                 NSession.Delete("from ProductComposeType where SKU='" + obj.SKU + "'");
                 NSession.Flush();
+                NSession.Clear();
                 foreach (ProductComposeType productCompose in list1)
                 {
                     productCompose.SKU = obj.SKU;
                     productCompose.PId = obj.Id;
                     NSession.Save(productCompose);
                     NSession.Flush();
+                    NSession.Clear();
                     obj.IsZu = 1;
                 }
+
+                str += Utilities.GetObjEditString(obj2, obj) + "<br>";
                 List<ProductIsInfractionType> list2 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductIsInfractionType>>(obj.rows2);
+                foreach (ProductIsInfractionType item in list2)
+                {
+                    IList<ProductIsInfractionType> qin = NSession.CreateQuery("from ProductIsInfractionType where SKU='" + obj.SKU + "' and Platform='" + item.Platform + "'").List<ProductIsInfractionType>();
+                    if (qin.Count != 0)
+                    {
+                        foreach (var s in qin)
+                        {
+                            if (item.Isinfraction != s.Isinfraction)
+                            {
+                                str += item.Platform + "是否侵权由" + s.Isinfraction + "修改为" + item.Isinfraction + "<br>";
+                            }
+                        }
+                    }
+                }
                 NSession.Delete("from ProductIsInfractionType where SKU='" + obj.SKU + "'");
                 NSession.Flush();
+                NSession.Clear();
                 foreach (ProductIsInfractionType item in list2)
                 {
                     item.OldSKU = obj.OldSKU;
                     item.SKU = obj.SKU;
                     NSession.Save(item);
                     NSession.Flush();
+                    NSession.Clear();
                 }
                 NSession.Update(obj);
                 NSession.Flush();
+                NSession.Clear();
+                ProductRecordType productrecoud = new ProductRecordType();
+                productrecoud.OldSKU = obj.OldSKU;
+                productrecoud.SKU = obj.SKU;
+                productrecoud.OId = obj.Id;
+                productrecoud.RecordType = "修改商品";
+                productrecoud.Content = str;
+                productrecoud.CreateBy = CurrentUser.Realname;
+                productrecoud.CreateOn = DateTime.Now;
+                NSession.Save(productrecoud);
+                NSession.Flush();
+                NSession.Clear();
             }
             catch (Exception ee)
             {
@@ -314,7 +406,18 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             try
             {
                 ProductType obj = GetById(id);
-                NSession.Delete(obj);
+                obj.Enabled = 0;
+                NSession.Update(obj);
+                NSession.Flush();
+                ProductRecordType productrecoud = new ProductRecordType();
+                productrecoud.OldSKU = obj.OldSKU;
+                productrecoud.SKU = obj.SKU;
+                productrecoud.OId = obj.Id;
+                productrecoud.RecordType = "删除";
+                productrecoud.Content = "商品被删除";
+                productrecoud.CreateBy = CurrentUser.Realname;
+                productrecoud.CreateOn = DateTime.Now;
+                NSession.Save(productrecoud);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -398,6 +501,14 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 {
                     where = " where " + where;
                 }
+            }
+            if (where != "")
+            {
+                where += " and  Enabled <>0";
+            }
+            else
+            {
+                where = "where Enabled <>0";
             }
             IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -587,6 +698,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 curr = s.CurrencyValue;
             }
             return curr;
+        }
+
+        public JsonResult Record(int id)
+        {
+            IList<ProductRecordType> obj = NSession.CreateQuery("from ProductRecordType where Oid='" + id + "'").List<ProductRecordType>();
+            return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult ToExcel()

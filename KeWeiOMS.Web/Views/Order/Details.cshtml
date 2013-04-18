@@ -8,7 +8,12 @@
         $('#dg_product').datagrid({
             url: '@Url.Action("List","OrderProduct")/@ViewData["id"]',
             width: 750,
-            height: 200,
+            height: 200
+        });
+        $('#dg_record').datagrid({
+            url: '@Url.Action("Record","Order")/@ViewData["id"]',
+            width: 1250,
+            height: 240
         })
     })
 </script>
@@ -240,10 +245,21 @@
        </table>
           </fieldset>
     </div>  
+        <div title="订单日志" style="padding:20px;">  
+        <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
+            <thead>
+                <tr>
+                    <th field="RecordType" width="150" >类型
+                    </th>
+                    <th field="Content" width="800">内容
+                    </th>
+                    <th field="CreateBy" width="60">处理人
+                    </th>
+                    <th field="CreateOn" width="200" formatter="getDate">处理时间
+                    </th>
+                </tr>
+            </thead>
+        </table>
+  
+</div>
     </div>
-
-@*<p>
-    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
-    @Html.ActionLink("返回列表", "Index")
-</p>
-*@

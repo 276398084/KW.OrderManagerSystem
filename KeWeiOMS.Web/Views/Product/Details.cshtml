@@ -13,6 +13,11 @@
             url: '@Url.Action("PlList", "Product")/@Model.SKU',
             width: 300
         });
+        $('#dg_record').datagrid({
+            url: '@Url.Action("Record","Product")/@ViewData["id"]',
+                    width: 1200,
+                    height: 300
+                })
     })
 
     function Ispl(value) {
@@ -230,6 +235,24 @@
             </tr>
         </table>
     </div>
+                <div title="商品日志" style="padding:20px;">  
+        <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
+            <thead>
+                <tr>
+                    <th field="RecordType" width="150" >类型
+                    </th>
+                    <th field="Content" width="700">内容
+                    </th>
+                    <th field="CreateBy" width="60">处理人
+                    </th>
+                    <th field="CreateOn" width="200" formatter="getDate">处理时间
+                    </th>
+                </tr>
+            </thead>
+        </table>
+  
+</div>
+
       </div>  
 
 @*    <div class="display-label">大图片网址</div>
