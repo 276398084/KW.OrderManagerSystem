@@ -3,24 +3,28 @@
 <script src="@Url.Content("~/Scripts/uploadify/jquery.uploadify-3.1.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/kindeditor/kindeditor-min.js")"></script>
 <script type="text/javascript">
+    var editor;
+    var editor2;
     KindEditor.ready(function (K) {
-        window.editor = K.create('#c_Summary', {
+       editor = K.create('#c_Summary', {
             resizeType: 1,
             allowPreviewEmoticons: false,
             allowImageUpload: false,
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
-        window.editor = K.create('#c_PackMemo', {
+       editor = K.create('#c_PackMemo', {
             resizeType: 1,
             allowPreviewEmoticons: false,
             allowImageUpload: false,
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
     });
     $(function () {

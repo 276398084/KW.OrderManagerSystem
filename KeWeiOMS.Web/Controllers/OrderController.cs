@@ -132,7 +132,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult OrderMerger()
         {
-            IList<OrderType> orderTypes = NSession.CreateQuery("from OrderType where Status='待处理' and Platform='Ebay' and Enabled=0 and BuyerName in (select BuyerName from OrderType where Status='待处理'  and Platform='Ebay' and Enabled=0   group by BuyerName,Country,Account having count (BuyerName)>1)").List<OrderType>();
+            IList<OrderType> orderTypes = NSession.CreateQuery("from OrderType where Status='待处理' and Platform='Ebay' and Enabled=1 and BuyerName in (select BuyerName from OrderType where Status='待处理'  and Platform='Ebay' and Enabled=1   group by BuyerName,Country,Account having count (BuyerName)>1)").List<OrderType>();
             string ids = "";
             foreach (var order in orderTypes)
             {
@@ -175,7 +175,7 @@ namespace KeWeiOMS.Web.Controllers
                         order.TId += "|" + orderType.TId;
                         orderType.MId = order.Id;
                         orderType.IsMerger = 1;
-                        orderType.Enabled = 1;
+                        orderType.Enabled = 0;
                         NSession.Clear();
                         NSession.SaveOrUpdate(orderType);
                         NSession.Flush();
@@ -486,8 +486,54 @@ namespace KeWeiOMS.Web.Controllers
                 string str = Utilities.GetObjEditString(obj2, obj);
                 NSession.Update(obj);
                 NSession.Flush();
-                NSession.CreateQuery("delete from OrderProductType where OId=" + obj.Id).ExecuteUpdate();
+                NSession.Clear();
                 List<OrderProductType> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(obj.rows);
+                List<OrderProductType> pis = NSession.CreateQuery("from OrderProductType where OId=" + obj.Id).List<OrderProductType>().ToList<OrderProductType>();
+                if (list.Count != pis.Count)
+                {
+                    str += "组合产品由<br>";
+                    foreach (var item in pis)
+                    {
+                        str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                    }
+                    str += "修改为<br> ";
+                    foreach (var item in list)
+                    {
+                        str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                    }
+                    str += "<br>";
+                }
+                else
+                {
+                    foreach (var it in pis)
+                    {
+                        int check = 0;
+                        foreach (var it1 in list)
+                        {
+                            if (it.ExSKU==it1.ExSKU && it.Title==it1.Title && it.SKU==it1.SKU && it.Qty==it1.Qty && it.Standard==it1.Standard && it.Price==it1.Price && it.Url==it1.Url && it.Remark==it1.Remark)
+                            {
+                                check = 1;
+                            }
+                        }
+                        if (check != 1)
+                        {
+                            str += "组合产品由<br>";
+                            foreach (var item in pis)
+                            {
+                                str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                            }
+                            str += "修改为<br> ";
+                            foreach (var item in list)
+                            {
+                                str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                            }
+                            str += "<br>";
+                        }
+                    }
+                
+                }
+
+                NSession.CreateQuery("delete from OrderProductType where OId=" + obj.Id).ExecuteUpdate();
                 foreach (OrderProductType orderProductType in list)
                 {
                     orderProductType.OId = obj.Id;
@@ -734,7 +780,7 @@ namespace KeWeiOMS.Web.Controllers
             string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
 
-            sql += " where  O.Enabled=0 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
+            sql += " where  O.Enabled=1 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
 
             DataSet ds = GetOrderExport(sql);
             // 设置编码和附件格式 
@@ -752,11 +798,11 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 if (!string.IsNullOrEmpty(s))
                 {
-                    sql += " where O.Enabled=0 and O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                    sql += " where O.Enabled=1 and O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
                 }
                 else
                 {
-                    sql += " where O.Enabled=0 and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                    sql += " where O.Enabled=1 and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
                 }
             }
             else
@@ -1294,12 +1340,12 @@ left join Products P On OP.SKU=P.SKU ";
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
-                    where = " where Enabled=0 and  Status" + flag + "'待处理' and " + where;
+                    where = " where Enabled=1 and  Status" + flag + "'待处理' and " + where;
                 }
             }
             if (where.Length == 0)
             {
-                where = " where Enabled=0 and  Status" + flag + "'待处理'";
+                where = " where Enabled=1 and  Status" + flag + "'待处理'";
             }
             IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))

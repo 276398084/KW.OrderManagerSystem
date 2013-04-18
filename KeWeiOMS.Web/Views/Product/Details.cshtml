@@ -15,8 +15,8 @@
         });
         $('#dg_record').datagrid({
             url: '@Url.Action("Record","Product")/@ViewData["id"]',
-                    width: 750,
-                    height: 200
+                    width: 1200,
+                    height: 300
                 })
     })
 
@@ -239,9 +239,9 @@
         <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
             <thead>
                 <tr>
-                    <th field="RecordType" width="130" >类型
+                    <th field="RecordType" width="150" >类型
                     </th>
-                    <th field="Content" width="300">内容
+                    <th field="Content" width="700">内容
                     </th>
                     <th field="CreateBy" width="60">处理人
                     </th>

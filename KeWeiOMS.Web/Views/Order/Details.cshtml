@@ -12,8 +12,8 @@
         });
         $('#dg_record').datagrid({
             url: '@Url.Action("Record","Order")/@ViewData["id"]',
-            width: 750,
-            height: 200
+            width: 1250,
+            height: 240
         })
     })
 </script>
@@ -245,13 +245,13 @@
        </table>
           </fieldset>
     </div>  
-                <div title="订单日志" style="padding:20px;">  
+        <div title="订单日志" style="padding:20px;">  
         <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
             <thead>
                 <tr>
-                    <th field="RecordType" width="130" >类型
+                    <th field="RecordType" width="150" >类型
                     </th>
-                    <th field="Content" width="300">内容
+                    <th field="Content" width="800">内容
                     </th>
                     <th field="CreateBy" width="60">处理人
                     </th>

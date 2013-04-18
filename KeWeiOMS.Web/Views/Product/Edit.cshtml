@@ -13,7 +13,8 @@
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
         editor2 = K.create('#e_PackMemo', {
             resizeType: 1,
@@ -22,14 +23,15 @@
             items: [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline',
                 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
-                'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+                'insertunorderedlist', '|', 'emoticons', 'image', 'link'],
+            afterBlur: function () { this.sync(); }
         });
     });
     $(function () {
         $('#dg_record').datagrid({
             url: '@Url.Action("Record","Product")/@ViewData["id"]',
-                    width: 750,
-                    height: 200
+                    width:1200,
+                    height:280
                 })
         $('#dg_zu').datagrid({
             url: '@Url.Action("ZuList", "Product")/@Model.SKU',
@@ -279,6 +281,8 @@
                 @Html.HiddenFor(model => model.Id)
                 @Html.HiddenFor(model => model.CreateOn)
 
+                @Html.HiddenFor(model => model.IsScan)
+
                 @Html.HiddenFor(model => model.CreateBy)
                 @Html.HiddenFor(model => model.SPicUrl)
                 @Html.HiddenFor(model => model.PicUrl)
@@ -479,9 +483,9 @@
         <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
             <thead>
                 <tr>
-                    <th field="RecordType" width="130" >类型
+                    <th field="RecordType" width="150" >类型
                     </th>
-                    <th field="Content" width="300">内容
+                    <th field="Content" width="700">内容
                     </th>
                     <th field="CreateBy" width="60">处理人
                     </th>
