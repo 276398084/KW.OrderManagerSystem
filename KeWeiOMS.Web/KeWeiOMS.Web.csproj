@@ -1584,6 +1584,7 @@
     <Content Include="Views\ProductIsInfraction\Details.cshtml" />
     <Content Include="Views\ProductIsInfraction\Edit.cshtml" />
     <Content Include="Views\ProductIsInfraction\Index.cshtml" />
+    <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

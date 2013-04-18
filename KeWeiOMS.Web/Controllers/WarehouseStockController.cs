@@ -62,7 +62,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Export(string o)
         {
             StringBuilder sb = new StringBuilder();
-            string sql = "select  Warehouse,SKU,Qty,Title from WarehouseStock";
+            string sql = "select  Warehouse,SKU,Qty,(select count(1) from SkuCode where SKU =WarehouseStock.SKU) as '未配货',Title from WarehouseStock";
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
@@ -149,7 +149,6 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
             foreach (var objectse in objs)
             {
-
                 WarehouseStockType warehouse =
                 objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().Trim());
                 if (warehouse != null)
