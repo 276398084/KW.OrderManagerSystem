@@ -97,6 +97,13 @@
      function pic(v,r,i){
          return '<a href="#" class="easyui-linkbutton" ><img src="' + v + '" height="60px" width="60px" /></a>'
      }
+     function dao(v,r,i) {
+         return '<a href="#" class="easyui-linkbutton" onclick=\'addproduct(' + v + ')\'>到货</a>'
+     }
+     function addproduct(v)
+     {
+         window.location.href = "@Url.Action("Received", "NoStock")/"+v;
+     }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -104,7 +111,9 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
+            <th field="Id" width="50" formatter="dao">
 
+            </th>
             <th field="SKU" width="100">
                 SKU
             </th>

@@ -1591,6 +1591,7 @@
     <Content Include="Views\NoStock\Edit.cshtml" />
     <Content Include="Views\NoStock\Index.cshtml" />
     <Content Include="Views\NoStock\ProductLink.cshtml" />
+    <Content Include="Views\NoStock\Received.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -70,6 +70,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual DateTime CreateOn { get; set; }
 
+        /// <summary>
+        /// 是否显示
+        /// </summary>
+        public virtual  int Enabled{ get; set; }
 
         /// <summary>
         /// rows

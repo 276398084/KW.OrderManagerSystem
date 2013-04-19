@@ -27,6 +27,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.Enabled = 1;
                 obj.CreateBy = CurrentUser.Realname;
                 obj.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(obj);
@@ -115,7 +116,8 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 NoStockType obj = GetById(id);
-                NSession.Delete(obj);
+                obj.Enabled = 0;
+                NSession.Update(obj);
                 NSession.Flush();
             }
             catch (Exception ee)
@@ -174,6 +176,17 @@ namespace KeWeiOMS.Web.Controllers
                 }
             }
             return View(objList);
+        }
+        public ViewResult Received(int id)
+        {
+            NoStockType obj = GetById(id); 
+            ProductType product= new ProductType();
+            product.OldSKU = obj.OldSKU;
+            product.SKU = obj.SKU;
+            product.ProductName = obj.Name;
+            product.Standard = obj.Standard;
+            ViewData["nid"] = id;
+            return View(product);
         }
 
     }
