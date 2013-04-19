@@ -1,0 +1,176 @@
+﻿@model KeWeiOMS.Domain.NoStockType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('#e_SKU').validatebox({ required: true });
+        $('#e_OldSKU').validatebox({ required: true });
+        $('#e_Name').validatebox({ required: true });
+
+        $('#dg_producte').datagrid({
+            width: 800,
+            url:'@Url.Action("Linklist","NoStock")/@ViewData["id"]',
+            toolbar: [{
+                id: 'btnadd',
+                text: '添加',
+                iconCls: 'icon-add',
+                handler: function () {
+                    addp();
+                }
+            }, {
+                id: 'btndel',
+                text: '删除',
+                iconCls: 'icon-add',
+                handler: function () {
+                    if (editIndex == undefined) {
+                        return;
+                    }
+                    $('#dg_producte').datagrid('cancelEdit', editIndex)
+                            .datagrid('deleteRow', editIndex);
+                    editIndex = undefined;
+                }
+            }, {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    accept();
+                }
+            }],
+            onClickRow: onClickRow
+        });
+    });
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) {
+            return true;
+        }
+        if ($('#dg_producte').datagrid('validateRow', editIndex)) {
+            $('#dg_producte').datagrid('endEdit', editIndex);
+
+            editIndex = undefined;
+
+            return true;
+
+        } else {
+            return false;
+        }
+    }
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dg_producte').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dg_producte').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function addp() {
+        if (endEditing()) {
+            $('#dg_producte').datagrid('appendRow', { Qty: 1, Price: 0 });
+            editIndex = $('#dg_producte').datagrid('getRows').length - 1;
+            $('#dg_producte').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function accept() {
+        if (endEditing()) {
+            $('#dg_producte').datagrid('acceptChanges');
+        }
+    }
+</script>
+@using (Html.BeginForm("Edit", "NoStock", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td style="display:none">
+            
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td><input type="hidden" id="rowse" name="rowse" />
+            @Html.LabelFor(model => model.SKU,"SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+		</td>	
+        <td>
+            @Html.LabelFor(model => model.OldSKU,"主编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OldSKU,new{@id="e_OldSKU"})
+		</td>	
+	</tr>
+
+	<tr>
+       	<td>
+            @Html.LabelFor(model => model.Name,"商品名称:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Name,new{@id="e_Name"})
+		</td>
+		<td>
+            @Html.LabelFor(model => model.Standard,"规格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Standard,new{@id="e_Standard"})
+		</td>
+        <td>
+            @Html.LabelFor(model => model.PicUrl,"图片链接:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PicUrl,new{@id="e_PicUrl"})
+		</td>
+@*		<td>
+            @Html.LabelFor(model => model.Price,"价格:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Price,new{@id="e_Price"})
+		</td>*@
+	</tr>
+
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr> 
+</table>
+            <table id="dg_producte" class="easyui-datagrid" rownumbers="true" singleselect="true">
+            <thead>
+                <tr>
+                    <th field="Supplier" width="80" data-options="editor:'text'">
+                        供应商
+                    </th>
+
+                    <th field="Url" width="250" data-options="editor:'text'">
+                        链接地址
+                    </th>
+
+                    <th field="QPrice" width="80" data-options="editor:'text'">
+                        报价
+                    </th>
+
+                    <th field="Freight"  width="80" data-options="editor:'text'">
+                       运费
+                    </th>
+                    <th field="Adr" width="150" data-options="editor:'text'">
+                        地址
+                    </th>
+                </tr>
+            </thead>
+        </table>
+</fieldset>
+}

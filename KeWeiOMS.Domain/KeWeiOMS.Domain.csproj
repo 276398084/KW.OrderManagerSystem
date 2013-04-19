@@ -74,6 +74,8 @@
     <Compile Include="Entities\MachineType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
     <Compile Include="Entities\NewGuideType.cs" />
+    <Compile Include="Entities\NoStockLinkType.cs" />
+    <Compile Include="Entities\NoStockType.cs" />
     <Compile Include="Entities\OrderAddressType.cs" />
     <Compile Include="Entities\OrderAmountType.cs" />
     <Compile Include="Entities\OrderBuyerType.cs" />
@@ -137,6 +139,8 @@
     <Compile Include="Mappings\MachineTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
     <Compile Include="Mappings\NewGuideTypeMap.cs" />
+    <Compile Include="Mappings\NoStockLinkTypeMap.cs" />
+    <Compile Include="Mappings\NoStockTypeMap.cs" />
     <Compile Include="Mappings\OrderAddressTypeMap.cs" />
     <Compile Include="Mappings\OrderAmountTypeMap.cs" />
     <Compile Include="Mappings\OrderBuyerTypeMap.cs" />

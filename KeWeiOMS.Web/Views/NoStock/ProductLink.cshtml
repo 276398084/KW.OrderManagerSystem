@@ -1,0 +1,19 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.NoStockLinkType>
+@{
+    ViewBag.Title = "ProductLink";
+}
+<script language="javascript" type="text/javascript">
+  </script>
+<table class="dv-table" border="0" style="width: 100%;">
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>供应商:@p.Supplier</td>
+            <td><a href="@p.Url" target="_blank">链接地址</a></td>
+            <td>报价:@p.QPrice</td>
+            <td>运费:@p.Freight</td>
+            <td>地址: @p.Adr</td>
+            <td>平均接收时间: @p.Received</td>
+        </tr>
+    }
+</table>

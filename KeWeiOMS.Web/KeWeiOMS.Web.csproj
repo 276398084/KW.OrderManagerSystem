@@ -169,6 +169,7 @@
     <Compile Include="Controllers\MachineController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NewGuideController.cs" />
+    <Compile Include="Controllers\NoStockController.cs" />
     <Compile Include="Controllers\OrderAddresController.cs" />
     <Compile Include="Controllers\OrderAmountController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
@@ -1584,6 +1585,12 @@
     <Content Include="Views\ProductIsInfraction\Details.cshtml" />
     <Content Include="Views\ProductIsInfraction\Edit.cshtml" />
     <Content Include="Views\ProductIsInfraction\Index.cshtml" />
+    <Content Include="Views\NoStock\Create.cshtml" />
+    <Content Include="Views\NoStock\Delete.cshtml" />
+    <Content Include="Views\NoStock\Details.cshtml" />
+    <Content Include="Views\NoStock\Edit.cshtml" />
+    <Content Include="Views\NoStock\Index.cshtml" />
+    <Content Include="Views\NoStock\ProductLink.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
