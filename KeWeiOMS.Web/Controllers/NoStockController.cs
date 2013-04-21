@@ -144,6 +144,10 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
+            if (!string.IsNullOrEmpty(where))
+                where += " and Enabled<>0";
+            else
+                where = "where Enabled<>0";
             IList<NoStockType> objList = NSession.CreateQuery("from NoStockType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -189,6 +193,14 @@ namespace KeWeiOMS.Web.Controllers
             return View(product);
         }
 
+        public JsonResult IsReceived(int id)
+        {
+            NoStockType obj = GetById(id);
+            obj.Enabled = 0;
+            NSession.Update(obj);
+            NSession.Flush();
+            return Json("");
+        }
     }
 }
 

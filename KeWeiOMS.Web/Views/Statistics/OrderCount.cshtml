@@ -19,6 +19,14 @@
             showFooter: true,
             striped: true
         });
+        $('#dg3').datagrid({
+            url: '@Url.Action("OrderLeveData", "Statistics")',
+                    queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+                    height: 400,
+                    width: 400,
+                    showFooter: true,
+                    striped: true
+                });
         $("#cc").datebox({
             parser: myparser
         });
@@ -48,6 +56,12 @@
             a: $('#aa').combobox("getText")
         });
         $('#dg2').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+        $('#dg3').datagrid("load", {
             st: $('#cc').combobox("getValue"),
             et: $('#cc2').combobox("getValue"),
             p: $('#pp').combobox("getText"),
@@ -116,26 +130,26 @@
                 </thead>
             </table>
         </td>
+        <td>
+            <table id="dg3" class="easyui-datagrid" title="订单金额区间分布"
+                rownumbers="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="Platform" width="100">金额区间
+                </th>
+                        <th field="OCount" width="100">比例
+                </th>
+                        <th field="Account" width="100">订单数
+                </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
     </tr>
 </table>
 
 
-
-<table id="dg3" class="easyui-datagrid" title="订单金额区间分布"
-    rownumbers="true" singleselect="true">
-    <thead>
-        <tr>
-            <th field="Platform" width="100">区间
-            </th>
-            <th field="Account" width="100">订单数
-            </th>
-            <th field="OCount" width="100">比例
-            </th>
-        </tr>
-    </thead>
-</table>
-
-<table id="dg3" class="easyui-datagrid" title="历史销售记录15天"
+<table id="dg4" class="easyui-datagrid" title="历史销售记录15天"
     rownumbers="true" fitcolumns="true" singleselect="true">
     <thead>
         <tr>
