@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using KeWeiOMS.Domain;
+using System.Collections;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -81,6 +82,54 @@ namespace KeWeiOMS.Web.Controllers
             List<object> footers = new List<object>();
             footers.Add(new { Count = sum });
             return Json(new { rows = list.OrderByDescending(f => f.Proportion), footer = footers, total = list.Count });
+        }
+
+        [HttpPost]
+        public ActionResult OrderLeveData(DateTime st, DateTime et, string a, string p)
+        {
+            int sum = 0;
+            var sqlWhere = SqlWhere(st, et, a, p);
+            List<LeveData> list = new List<LeveData>();
+            IList<OrderType> objs = NSession.CreateQuery(string.Format("from OrderType "+sqlWhere)).List<OrderType>();
+            //定义区间
+            double[,] arry = { { 0, 5 }, { 5, 10 }, { 10, 20 }, {20, 50 }, { 50, 100 }, { 100,0} };
+            for (int i = 0; i < arry.Length/2; i++)
+            {
+                int count=0;
+                LeveData leve = new LeveData();
+                foreach (var item in objs)
+                {
+                    if (arry[i, 1] != Convert.ToDouble(0))
+                    {
+                        if (item.Amount >= arry[i, 0] && item.Amount < arry[i, 1])
+                        {
+                            
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        if (item.Amount >= arry[i, 0])
+                        {
+                            count++;
+                        }
+                    }
+                }      
+                sum = objs.Count;
+                if (sum != 0)
+                { 
+                    if (arry[i, 1] != Convert.ToDouble(0))
+                        leve.Platform = arry[i, 0] + "-" + arry[i, 1];
+                    else
+                        leve.Platform = arry[i, 0] + " 以上";
+                    leve.Account = count;
+                    leve.OCount = Math.Round((Convert.ToDecimal(count)/ sum) * 100, 2);
+                    list.Add(leve);
+                }
+            }
+            List<object> footers = new List<object>();
+            footers.Add(new { Account = sum });
+            return Json(new { rows = list, footer = footers, total = list.Count });
         }
 
         #region 出库统计
