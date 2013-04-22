@@ -114,15 +114,18 @@ namespace KeWeiOMS.Web.Controllers
                             count++;
                         }
                     }
-                }
-                if (arry[i, 1] != Convert.ToDouble(0))
-                    leve.Platform = arry[i, 0] + "-" + arry[i, 1];
-                else
-                    leve.Platform = arry[i, 0] + " 以上";
-                leve.Account = count;
+                }      
                 sum = objs.Count;
-                leve.OCount = Math.Round((Convert.ToDecimal(count)/ sum) * 100, 2);
-                list.Add(leve);
+                if (sum != 0)
+                { 
+                    if (arry[i, 1] != Convert.ToDouble(0))
+                        leve.Platform = arry[i, 0] + "-" + arry[i, 1];
+                    else
+                        leve.Platform = arry[i, 0] + " 以上";
+                    leve.Account = count;
+                    leve.OCount = Math.Round((Convert.ToDecimal(count)/ sum) * 100, 2);
+                    list.Add(leve);
+                }
             }
             List<object> footers = new List<object>();
             footers.Add(new { Account = sum });
