@@ -20,11 +20,18 @@ namespace KeWeiOMS.Web.Controllers
     [ValidateInput(false)]
     public class OrderController : BaseController
     {
+        #region 页面指向
         public ViewResult Index()
         {
             return View();
         }
-
+        public ActionResult Details(int id)
+        {
+            OrderType obj = GetById(id);
+            obj.AddressInfo = NSession.Get<OrderAddressType>(obj.AddressId);
+            ViewData["id"] = id;
+            return View(obj);
+        }
         public ActionResult Create()
         {
             ViewData["OrderNO"] = Utilities.GetOrderNo(NSession);
@@ -65,8 +72,6 @@ namespace KeWeiOMS.Web.Controllers
             return View();
 
         }
-
-
         public ActionResult OrderExport()
         {
             return View();
@@ -75,14 +80,23 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
-        public ActionResult Details(int id)
+
+        public ActionResult QuestionScan()
         {
-            OrderType obj = GetById(id);
-            obj.AddressInfo = NSession.Get<OrderAddressType>(obj.AddressId);
-            ViewData["id"] = id;
-            return View(obj);
+            return View();
+        }
+        public ActionResult QuestionOrderIndex()
+        {
+            return View();
         }
 
+        public ActionResult Import()
+        {
+            return View();
+        }
+        #endregion
+
+        #region 订单处理
         [HttpPost]
         public ActionResult OrderReplace(string ids, string oldField, string newField, string fieldName)
         {
@@ -107,12 +121,6 @@ namespace KeWeiOMS.Web.Controllers
             int num = Query.ExecuteUpdate();
             return Json(new { IsSuccess = true });
         }
-
-        public ActionResult Import()
-        {
-            return View();
-        }
-
         public ActionResult OrderVali()
         {
             List<CountryType> countrys = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
@@ -129,7 +137,6 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
         }
-
         public ActionResult OrderMerger()
         {
             IList<OrderType> orderTypes = NSession.CreateQuery("from OrderType where Status='待处理' and Platform='Ebay' and Enabled=1 and BuyerName in (select BuyerName from OrderType where Status='待处理'  and Platform='Ebay' and Enabled=1   group by BuyerName,Country,Account having count (BuyerName)>1)").List<OrderType>();
@@ -203,16 +210,12 @@ namespace KeWeiOMS.Web.Controllers
         {
 
             BinaryFormatter bFormatter = new BinaryFormatter();
-
             MemoryStream stream = new MemoryStream();
-
             bFormatter.Serialize(stream, ObjectInstance);
-
             stream.Seek(0, SeekOrigin.Begin);
-
             return bFormatter.Deserialize(stream);
-
         }
+        #endregion
 
 
         [HttpPost]
@@ -264,7 +267,6 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
 
             }
-
         }
 
         [HttpPost]
@@ -335,7 +337,6 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
 
             }
-
         }
 
         [HttpPost]
@@ -740,6 +741,8 @@ namespace KeWeiOMS.Web.Controllers
                     {
                         orderType.Status = "已处理";
                         orderType.IsPrint = 0;
+                        NSession.CreateQuery("update SKUCodeType set IsOut=0 where OrderNo='" + orderType.OrderNo + "'")
+                           .ExecuteUpdate();
                     }
                     NSession.Update(orderType);
                     NSession.Flush();
@@ -1084,7 +1087,6 @@ left join Products P On OP.SKU=P.SKU ";
                 o.Freight = Convert.ToDouble(OrderHelper.GetFreight(o.Weight, o.LogisticMode, o.Country, session));
                 session.SaveOrUpdate(o);
                 session.Flush();
-
 
                 //上传挂号条码
                 UploadTrackCode(o);

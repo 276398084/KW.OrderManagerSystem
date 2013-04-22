@@ -128,7 +128,7 @@
                 { field: 'LogisticsCode', title: '代码', width: 100 }
             ]]
         });
-        $('#dg_p').datagrid({ closed: true });
+
 
         $('#dg_record').datagrid({
             url: '@Url.Action("Record","Order")/@ViewData["id"]',
@@ -310,6 +310,7 @@
             onClickRow: onClickRow1
         });
         $('#dlg').dialog({
+            width:750,
             title: title,
             modal: true,
             loadingMessage: '正在加载...',
@@ -602,11 +603,11 @@
     </div>
 }
 
-<div id="dlg">
+<div id="dlg"  class="easyui-dialog" closed="true" >
     <table id="dg_p" class="easyui-datagrid" rownumbers="true">
         <thead>
             <tr>
-                <th data-options="field:'Id',checkbox:true,hidden:true"></th>
+                <th data-options="field:'Id',checkbox:true"></th>
                 <th field="ExSKU" width="80">ExSKU
                 </th>
                 <th field="Title" width="100">名称

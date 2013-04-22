@@ -129,8 +129,8 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 ProductType p = new ProductType { CreateOn = DateTime.Now };
-                p.SKU = dt.Rows[i]["SKU"].ToString();
-                p.Status = ProductStatusEnum.销售中.ToString();
+                p.SKU = dt.Rows[i]["子SKU"].ToString();
+                p.Status = dt.Rows[i]["销售状态"].ToString();
                 p.ProductName = dt.Rows[i]["名称"].ToString();
                 p.Category = dt.Rows[i]["分类"].ToString();
                 p.Standard = dt.Rows[i]["规格"].ToString();
@@ -139,13 +139,13 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 p.Long = Convert.ToInt16(dt.Rows[i]["长"]);
                 p.Wide = Convert.ToInt16(dt.Rows[i]["宽"]);
                 p.High = Convert.ToInt16(dt.Rows[i]["高"]);
-                p.Location = dt.Rows[i]["库位"].ToString();
-                p.OldSKU = dt.Rows[i]["旧SKU"].ToString();
+                p.Location = dt.Rows[i]["库位号"].ToString();
+                p.OldSKU = dt.Rows[i]["SKU"].ToString();
                 p.HasBattery = Convert.ToInt32(dt.Rows[i]["电池"].ToString());
                 p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
-                p.IsLiquid = Convert.ToInt32(dt.Rows[i]["液体"].ToString());
-                p.PackCoefficient = Convert.ToInt32(dt.Rows[i]["包装系数"].ToString());
-                p.Manager = dt.Rows[i]["管理人"].ToString();
+                p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
+                p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
+              
                 NSession.SaveOrUpdate(p);
                 //
                 //在仓库中添加产品库存
