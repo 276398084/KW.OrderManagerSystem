@@ -25,6 +25,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        
         public ActionResult Details(int id)
         {
             OrderType obj = GetById(id);
@@ -49,12 +50,10 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult QueScan()
         {
             return View();
-
         }
         public ActionResult Merge()
         {
             return View();
-
         }
         public ActionResult PeiScan()
         {
@@ -64,7 +63,6 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult SendScan()
         {
             return View();
-
         }
 
         public ActionResult IsNotQue()
@@ -265,7 +263,6 @@ namespace KeWeiOMS.Web.Controllers
             catch (Exception ex)
             {
                 return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
-
             }
         }
 
@@ -389,15 +386,7 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Save(item);
                 }
                 NSession.Flush();
-                OrderRecordType orderrecoud = new OrderRecordType();
-                orderrecoud.OId = obj.Id;
-                orderrecoud.OrderNo = obj.OrderNo;
-                orderrecoud.RecordType = "新建";
-                orderrecoud.Content = "创建订单";
-                orderrecoud.CreateBy = CurrentUser.Realname;
-                orderrecoud.CreateOn = DateTime.Now;
-                NSession.Save(orderrecoud);
-                NSession.Flush();
+                LoggerUtil.GetOrderRecord(obj, "新建订单", "创建订单", CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -477,7 +466,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(OrderType obj)
         {
             try
-            {                
+            {
                 obj.Enabled = 1;
                 OrderType obj2 = GetById(obj.Id);
                 NSession.Update(obj.AddressInfo);
@@ -495,12 +484,12 @@ namespace KeWeiOMS.Web.Controllers
                     str += "组合产品由<br>";
                     foreach (var item in pis)
                     {
-                        str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                        str += Zu1(item);
                     }
                     str += "修改为<br> ";
                     foreach (var item in list)
                     {
-                        str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                        str += Zu1(item);
                     }
                     str += "<br>";
                 }
@@ -511,7 +500,7 @@ namespace KeWeiOMS.Web.Controllers
                         int check = 0;
                         foreach (var it1 in list)
                         {
-                            if (it.ExSKU==it1.ExSKU && it.Title==it1.Title && it.SKU==it1.SKU && it.Qty==it1.Qty && it.Standard==it1.Standard && it.Price==it1.Price && it.Url==it1.Url && it.Remark==it1.Remark)
+                            if (it.ExSKU == it1.ExSKU && it.Title == it1.Title && it.SKU == it1.SKU && it.Qty == it1.Qty && it.Standard == it1.Standard && it.Price == it1.Price && it.Url == it1.Url && it.Remark == it1.Remark)
                             {
                                 check = 1;
                             }
@@ -521,17 +510,17 @@ namespace KeWeiOMS.Web.Controllers
                             str += "组合产品由<br>";
                             foreach (var item in pis)
                             {
-                                str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                                str += Zu1(item);
                             }
                             str += "修改为<br> ";
                             foreach (var item in list)
                             {
-                                str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                                str += Zu1(item);
                             }
                             str += "<br>";
                         }
                     }
-                
+
                 }
 
                 NSession.CreateQuery("delete from OrderProductType where OId=" + obj.Id).ExecuteUpdate();
@@ -542,15 +531,7 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Save(orderProductType);
                     NSession.Flush();
                 }
-                OrderRecordType orderrecoud = new OrderRecordType();
-                orderrecoud.OId = obj.Id;
-                orderrecoud.OrderNo = obj.OrderNo;
-                orderrecoud.RecordType = "修改订单";
-                orderrecoud.Content =str;
-                orderrecoud.CreateBy = CurrentUser.Realname;
-                orderrecoud.CreateOn = DateTime.Now;
-                NSession.Save(orderrecoud);
-                NSession.Flush();
+                LoggerUtil.GetOrderRecord(obj, "修改订单", str, CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -558,6 +539,11 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
 
+        }
+        public string Zu1(OrderProductType item)
+        {
+            string str = " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+            return str;
         }
 
         [HttpPost]
@@ -577,7 +563,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.MId = Utilities.ToInt(o);
                 NSession.Save(obj);
                 NSession.Flush();
-                GetOrderRecord(obj, "发货拆分订单！", CurrentUser.Realname + "拆分新建！");
+                LoggerUtil.GetOrderRecord(obj, "发货拆分订单！", "拆分新建！", CurrentUser, NSession);
             }
             return Json(new { IsSuccess = true });
         }
@@ -591,7 +577,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
-            GetOrderRecord(obj, "拆分订单！", CurrentUser.Realname + "将订单拆分！");
+            LoggerUtil.GetOrderRecord(obj, "拆分订单！", "将订单拆分！", CurrentUser, NSession);
             NSession.Clear();
             obj.Amount = 0;
             obj.IsPrint = 0;
@@ -615,7 +601,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(orderProductType);
                 NSession.Flush();
             }
-            GetOrderRecord(obj, "拆分订单！", CurrentUser.Realname + "拆分新建！");
+            LoggerUtil.GetOrderRecord(obj, "拆分订单！", "拆分新建！", CurrentUser, NSession);
             return Json(new { IsSuccess = true });
         }
 
@@ -650,7 +636,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Flush();
             }
 
-            GetOrderRecord(obj, "重发！", CurrentUser.Realname + "将订单重发！");
+            LoggerUtil.GetOrderRecord(obj, "重发！", "将订单重发！", CurrentUser, NSession);
             return Json(new { IsSuccess = true });
         }
         [HttpPost]
@@ -661,7 +647,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 if (orderType.Status == OrderStatusEnum.已发货.ToString())
                 {
-                    GetOrderRecord(orderType, "重新发货！", CurrentUser.Realname + "将订单从已发货的订单中转为 待发货，重新发货！");
+                    LoggerUtil.GetOrderRecord(orderType, "重新发货！", "将订单从已发货的订单中转为 待发货，重新发货！", CurrentUser, NSession);
 
                     IList<OrderProductType> ps = NSession.CreateQuery("from OrderProductType where OId=" + orderType.Id).List<OrderProductType>();
                     foreach (OrderProductType orderProductType in ps)
@@ -719,7 +705,7 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Update(orderType);
                     NSession.Flush();
 
-                    GetOrderRecord(orderType, "拦截订单！", CurrentUser.Realname + "将订单拦截，原因：" + t + " " + d);
+                    LoggerUtil.GetOrderRecord(orderType, "拦截订单！", "将订单拦截，原因：" + t + " " + d, CurrentUser, NSession);
                 }
 
             }
@@ -746,7 +732,7 @@ namespace KeWeiOMS.Web.Controllers
                     }
                     NSession.Update(orderType);
                     NSession.Flush();
-                    GetOrderRecord(orderType, "取消拦截订单！", CurrentUser.Realname + "将订单取消拦截" + ((s == 1) ? "重置产品" : ""));
+                    LoggerUtil.GetOrderRecord(orderType, "取消拦截订单！", "将订单取消拦截" + ((s == 1) ? "重置产品" : ""), CurrentUser, NSession);
                 }
 
             }
@@ -893,7 +879,7 @@ left join Products P On OP.SKU=P.SKU ";
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
-                GetOrderRecord(orderType, "订单作废！", CurrentUser.Realname + "将订单的状态设为作废订单！");
+                LoggerUtil.GetOrderRecord(orderType, "订单作废！", "将订单的状态设为作废订单！", CurrentUser, NSession);
             }
             if (t > 0)
                 return Json(new { IsSuccess = true });
@@ -924,7 +910,7 @@ left join Products P On OP.SKU=P.SKU ";
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
-                GetOrderRecord(orderType, "设置订单作废！", CurrentUser.Realname + "将订单状态设置为作废！");
+                LoggerUtil.GetOrderRecord(orderType, "设置订单作废！", "将订单状态设置为作废！", CurrentUser, NSession);
             }
 
             if (t > 0)
@@ -943,7 +929,7 @@ left join Products P On OP.SKU=P.SKU ";
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
-                GetOrderRecord(orderType, "撤销订单的缺货状态！", CurrentUser.Realname + "将订单的缺货标记删除！");
+                LoggerUtil.GetOrderRecord(orderType, "撤销订单的缺货状态！", "将订单的缺货标记删除！", CurrentUser, NSession);
             }
             if (t > 0)
                 return Json(new { IsSuccess = true });
@@ -1031,7 +1017,7 @@ left join Products P On OP.SKU=P.SKU ";
                         Utilities.StockOut(s, orderProductType.SKU, orderProductType.Qty, "扫描出库", CurrentUser.Realname, "", order.OrderNo, NSession);
                     }
                     NSession.CreateQuery("update SKUCodeType set IsSend=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "' where OrderNo ='" + order.OrderNo + "'").ExecuteUpdate();
-                    GetOrderRecord(order, "订单扫描发货！", CurrentUser.Realname + "将订单扫描发货了！");
+                    LoggerUtil.GetOrderRecord(order, "订单扫描发货！", "将订单扫描发货了！", CurrentUser, NSession);
                     new System.Threading.Thread(TrackCodeUpLoad) { IsBackground = true }.Start(order);
                     string html = "订单： " + order.OrderNo + "已经发货";
                     return Json(new { IsSuccess = true, Result = html, OId = order.Id });
@@ -1168,7 +1154,7 @@ left join Products P On OP.SKU=P.SKU ";
                 OrderType order = orders[0];
                 if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
                 {
-                    GetOrderRecord(order, "缺货扫描", CurrentUser.Realname + "将订单添加到 添加到缺货订单中！");
+                    LoggerUtil.GetOrderRecord(order, "缺货扫描", CurrentUser.Realname + "将订单添加到 添加到缺货订单中！", CurrentUser, NSession);
                     order.IsOutOfStock = 1;
                     NSession.Update(order);
                     NSession.Flush();
@@ -1187,19 +1173,6 @@ left join Products P On OP.SKU=P.SKU ";
                 return Json(new { IsSuccess = false, Result = "订单状态不符！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
-        }
-
-        private void GetOrderRecord(OrderType order, string recordType, string Content)
-        {
-            OrderRecordType orderRecord = new OrderRecordType();
-            orderRecord.OId = order.Id;
-            orderRecord.OrderNo = order.OrderNo;
-            orderRecord.RecordType = recordType;
-            orderRecord.CreateBy = CurrentUser.Realname;
-            orderRecord.Content = Content;
-            orderRecord.CreateOn = DateTime.Now;
-            NSession.Save(orderRecord);
-            NSession.Flush();
         }
 
         public JsonResult GetOrderByPei(string orderNo)
@@ -1272,11 +1245,11 @@ left join Products P On OP.SKU=P.SKU ";
                     string html = "订单：" + order.OrderNo + " 配货完成！";
                     if (iscon)
                     {
-                        GetOrderRecord(order, "订单配货扫描！", CurrentUser.Realname + "将订单配货扫描，订单的缺货状态删除！");
+                        LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描，订单的缺货状态删除！", CurrentUser, NSession);
                     }
                     else
                     {
-                        GetOrderRecord(order, "订单配货扫描！", CurrentUser.Realname + "将订单配货扫描！");
+                        LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描！", CurrentUser, NSession);
                     }
 
                     return Json(new { IsSuccess = true, Result = html });
@@ -1296,7 +1269,7 @@ left join Products P On OP.SKU=P.SKU ";
                 OrderType order = orders[0];
                 if (order.Status == OrderStatusEnum.待包装.ToString())
                 {
-                    GetOrderRecord(order, "订单计件扫描！", CurrentUser.Realname + "将订单 包装疾计件！");
+                    LoggerUtil.GetOrderRecord(order, "订单计件扫描！", "将订单 包装疾计件！", CurrentUser, NSession);
                     order.Status = OrderStatusEnum.待发货.ToString();
                     NSession.Update(order);
                     NSession.Flush();
@@ -1369,7 +1342,7 @@ left join Products P On OP.SKU=P.SKU ";
 
         public JsonResult Record(int id)
         {
-            IList<OrderRecordType> obj = NSession.CreateQuery("from OrderRecordType where Oid='"+id+"'").List<OrderRecordType>();
+            IList<OrderRecordType> obj = NSession.CreateQuery("from OrderRecordType where Oid='" + id + "'").List<OrderRecordType>();
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
 

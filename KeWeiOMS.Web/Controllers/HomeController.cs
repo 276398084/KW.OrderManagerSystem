@@ -183,7 +183,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult SetPrintData(string m, string r, string d, string t)
         {
             string sql = "";
-            sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,
+            sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.Id,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,
 O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
 OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,P.OldSKU,P.Location,
 R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn,
@@ -224,10 +224,21 @@ left join ReturnAddress R On r.Id=" + r;
             DataTable dt = ds.Tables[0].DefaultView.ToTable();
             dt.Columns.Add("PrintName");
             dt.Columns.Add("TrackCode");
+            List<string> list2 = new List<string>();
             foreach (DataRow dr in dt.Rows)
             {
                 dr["PrintName"] = CurrentUser.Realname;
                 dr["TrackCode"] = "1372100" + dr["OrderNo"].ToString();
+
+                if (list2.Contains(dr["OrderNo"].ToString()))
+                {
+                    dr.Delete();
+                }
+                else
+                {
+                    LoggerUtil.GetOrderRecord(Convert.ToInt32(dr["Id"]), dr["OrderNo"].ToString(), "订单打印", CurrentUser.Realname + "订单打印！", CurrentUser, NSession);
+                    list2.Add(dr["OrderNo"].ToString());
+                }
 
             }
             //标记打印

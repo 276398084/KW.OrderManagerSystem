@@ -239,7 +239,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     NSession.SaveOrUpdate(stock);
                     NSession.Flush();
                 }
-                SaveRecord(obj,"商品创建","创建一件商品");
+                LoggerUtil.GetProductRecord(obj,"商品创建","创建一件商品",CurrentUser,NSession);
             }
             catch (Exception ee)
             {
@@ -290,12 +290,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     str += "组合产品由<br>";
                     foreach (var item in pis)
                     {
-                        str += " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
+                        str += Zu(item);
                     }
                     str += "修改为<br> ";
                     foreach (var item in list1)
                     {
-                        str += " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
+                        str += Zu(item);
                     }
                     str += "<br>";
                 }
@@ -316,12 +316,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                             str += "组合产品由<br>";
                             foreach (var zu in pis)
                             {
-                                str += " sku:" + zu.SrcSKU + " Qty:" + zu.SrcQty + "<br>";
+                                str += Zu(zu);
                             }
                             str += "修改为<br> ";
                             foreach (var zu in list1)
                             {
-                                str += " sku:" + zu.SrcSKU + " Qty:" + zu.SrcQty + "<br>";
+                                str += Zu(zu);
                             }
                             str += "<br>";
                         }
@@ -371,7 +371,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 NSession.Update(obj);
                 NSession.Flush();
                 NSession.Clear();
-                SaveRecord(obj,"商品修改",str);
+                LoggerUtil.GetProductRecord(obj,"商品修改",str,CurrentUser,NSession);
             }
             catch (Exception ee)
             {
@@ -379,6 +379,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             }
             return Json(new { IsSuccess = true });
 
+        }
+
+        public string Zu(ProductComposeType item)
+        {
+            string  str= " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
+            return str;
         }
 
         [HttpPost, ActionName("Delete")]
@@ -390,16 +396,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 obj.Enabled = 0;
                 NSession.Update(obj);
                 NSession.Flush();
-                ProductRecordType productrecoud = new ProductRecordType();
-                productrecoud.OldSKU = obj.OldSKU;
-                productrecoud.SKU = obj.SKU;
-                productrecoud.OId = obj.Id;
-                productrecoud.RecordType = "删除";
-                productrecoud.Content = "商品被删除";
-                productrecoud.CreateBy = CurrentUser.Realname;
-                productrecoud.CreateOn = DateTime.Now;
-                NSession.Save(productrecoud);
-                NSession.Flush();
+                LoggerUtil.GetProductRecord(obj,"删除商品","商品被删除",CurrentUser,NSession);
             }
             catch (Exception ee)
             {
@@ -748,20 +745,20 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             return ds;
         }
 
-        public void SaveRecord(ProductType obj, string title, string str) 
-        {
-            ProductRecordType productrecoud = new ProductRecordType();
-            productrecoud.OldSKU = obj.OldSKU;
-            productrecoud.SKU = obj.SKU;
-            productrecoud.OId = obj.Id;
-            productrecoud.RecordType = title;
-            productrecoud.Content =str;
-            productrecoud.CreateBy = CurrentUser.Realname;
-            productrecoud.CreateOn = DateTime.Now;
-            NSession.Save(productrecoud);
-            NSession.Flush();
+        //public void SaveRecord(ProductType obj, string title, string str) 
+        //{
+        //    ProductRecordType productrecoud = new ProductRecordType();
+        //    productrecoud.OldSKU = obj.OldSKU;
+        //    productrecoud.SKU = obj.SKU;
+        //    productrecoud.OId = obj.Id;
+        //    productrecoud.RecordType = title;
+        //    productrecoud.Content =str;
+        //    productrecoud.CreateBy = CurrentUser.Realname;
+        //    productrecoud.CreateOn = DateTime.Now;
+        //    NSession.Save(productrecoud);
+        //    NSession.Flush();
         
-        }
+        //}
 
 
     }

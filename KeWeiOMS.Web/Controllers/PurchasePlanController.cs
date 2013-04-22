@@ -61,6 +61,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.BuyBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                LoggerUtil.GetPurchasePlanRecord(obj,"新建计划","创建采购计划",CurrentUser,NSession);
             }
             catch (Exception ee)
             {
@@ -102,8 +103,12 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+                string str = "";
+                PurchasePlanType obj2 = GetById(obj.Id);
+                str += Utilities.GetObjEditString(obj2, obj) + "<br>";
                 NSession.Update(obj);
                 NSession.Flush();
+                LoggerUtil.GetPurchasePlanRecord(obj,"修改采购计划",str,CurrentUser,NSession);
             }
             catch (Exception ee)
             {
@@ -116,7 +121,6 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
             try
             {
                 PurchasePlanType obj = GetById(id);

@@ -116,13 +116,14 @@ namespace KeWeiOMS.Web
                             NSession.Flush();
                             CreateOrderPruduct(mc3.Groups["sku"].Value, Utilities.ToInt(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo, NSession);
                         }
+
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
                     }
-
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
+                    LoggerUtil.GetOrderRecord(order,"订单导入","导入成功",NSession);
                 }
                 else
                 {
@@ -181,6 +182,7 @@ namespace KeWeiOMS.Web
                     CreateOrderPruduct(item["sku"], Utilities.ToInt(item["quantity-purchased"]), item["sku"], "", 0, "", order.Id, order.OrderNo, NSession);
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
                     listOrder.Add(OrderExNo, order.Id);
+                    LoggerUtil.GetOrderRecord(order, "订单导入", "导入成功", NSession);
                 }
                 else
                 {
@@ -233,6 +235,7 @@ namespace KeWeiOMS.Web
                         CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", order.Id, order.OrderNo, NSession);
                         results.Add(GetResult(OrderExNo, "", "导入成功"));
                         listOrder.Add(OrderExNo, order.Id);
+                        LoggerUtil.GetOrderRecord(order, "订单导入", "导入成功", NSession);
                     }
                     else
                     {
@@ -280,7 +283,7 @@ namespace KeWeiOMS.Web
 
                         CreateOrderPruduct(item["商品"].ToString(), item["商品"].ToString(), Utilities.ToInt(item["数量"].ToString()), "", "", 0, item["属性"].ToString(), order.Id, order.OrderNo, NSession);
                         results.Add(GetResult(OrderExNo, "", "导入成功"));
-
+                        LoggerUtil.GetOrderRecord(order, "订单导入", "导入成功", NSession);
 
                     }
                 }
@@ -830,6 +833,9 @@ namespace KeWeiOMS.Web
             NSession.Clear();
             NSession.SaveOrUpdate(order);
             NSession.Flush();
+            if (order.ErrorInfo == "")
+                order.ErrorInfo = "验证成功！";
+            LoggerUtil.GetOrderRecord(order,"验证订单",order.ErrorInfo,NSession);
             return resultValue;
         }
         public static void UpdateAmount(OrderType order, ISession NSession)
