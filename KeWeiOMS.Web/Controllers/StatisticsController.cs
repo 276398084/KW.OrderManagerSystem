@@ -87,6 +87,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult OrderLeveData(DateTime st, DateTime et, string a, string p)
         {
+            int sum = 0;
             var sqlWhere = SqlWhere(st, et, a, p);
             List<LeveData> list = new List<LeveData>();
             IList<OrderType> objs = NSession.CreateQuery(string.Format("from OrderType "+sqlWhere)).List<OrderType>();
@@ -119,11 +120,13 @@ namespace KeWeiOMS.Web.Controllers
                 else
                     leve.Platform = arry[i, 0] + " 以上";
                 leve.Account = count;
-                int sum = objs.Count;
+                sum = objs.Count;
                 leve.OCount = Math.Round((Convert.ToDecimal(count)/ sum) * 100, 2);
                 list.Add(leve);
             }
-            return Json(new { rows = list,total = list.Count });
+            List<object> footers = new List<object>();
+            footers.Add(new { Account = sum });
+            return Json(new { rows = list, footer = footers, total = list.Count });
         }
 
         #region 出库统计
