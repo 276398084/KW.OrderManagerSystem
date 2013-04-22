@@ -162,6 +162,7 @@ namespace KeWeiOMS.Web.Controllers
             string fileExtension = Path.GetExtension(fileName); // 文件扩展名
             fileName = Path.GetFileNameWithoutExtension(fileName);
             saveName = filePath + Guid.NewGuid().ToString() + fileExtension; // 保存文件名称
+            
             fileData.SaveAs(saveName);
         }
         [OutputCache(Location = OutputCacheLocation.None)]
@@ -192,7 +193,7 @@ left join OrderProducts OP on o.Id=op.OId
 left join OrderAddress OA on o.AddressId=oa.Id
 Left Join Products P ON OP.SKU=P.SKU
 left join ReturnAddress R On r.Id=" + r;
-            sql += " where O.OrderNo IN('" + d.Replace(",", "','") + "')";
+            sql += " where  O.OrderNo IN('" + d.Replace(",", "','") + "')";
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;

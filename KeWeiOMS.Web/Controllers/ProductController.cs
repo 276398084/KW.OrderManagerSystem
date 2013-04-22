@@ -145,7 +145,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
                 p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
                 p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
-              
+                p.Enabled = 1;
                 NSession.SaveOrUpdate(p);
                 //
                 //在仓库中添加产品库存

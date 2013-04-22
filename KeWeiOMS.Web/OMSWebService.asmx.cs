@@ -62,6 +62,7 @@ namespace KeWeiOMS.Web
         {
             NSession.Save(order.AddressInfo);
             NSession.Flush();
+            order.Enabled = 1;
             order.AddressId = order.AddressInfo.Id;
             NSession.Save(order);
             NSession.Flush();
