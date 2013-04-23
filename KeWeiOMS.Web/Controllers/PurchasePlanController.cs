@@ -167,7 +167,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true });
         }
 
-        public JsonResult ExportPlan(string st, string et, string s)
+        public JsonResult ExportPlan()
         {
             try
             {
