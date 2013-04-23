@@ -636,6 +636,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Flush();
             }
 
+
             LoggerUtil.GetOrderRecord(obj, "重发！", "将订单重发！", CurrentUser, NSession);
             return Json(new { IsSuccess = true });
         }
