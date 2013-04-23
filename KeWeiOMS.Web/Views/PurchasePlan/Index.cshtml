@@ -108,14 +108,6 @@
         function ajaxTrouble() {
             formPost('t_form', '@Url.Action("Create", "PurchaseTrouble")', 't_dlg', 'dg');
         }
-@*        function troubleing(id)
-        {
-            $.getJSON('@Url.Action("GetTroubleing","PurchaseTrouble")/' + id, function (json) {
-                return json;
-            })
-        }*@
-
-
         //异步新建提交
         function ajaxAddDao() {
             $.messager.confirm('确认', '确定到货吗?', function () {
