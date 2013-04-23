@@ -132,6 +132,7 @@
     <Compile Include="Common\Enum.cs" />
     <Compile Include="Common\ExcelHelper.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
+    <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\MenuItem.cs" />
     <Compile Include="Common\Statistics\LeveData.cs" />
     <Compile Include="Common\Statistics\OrderCount.cs" />

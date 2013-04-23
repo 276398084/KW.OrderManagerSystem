@@ -51,6 +51,7 @@ namespace KeWeiOMS.Web.Controllers
                         plan[0].DaoQty += obj.RealQty;
                         NSession.SaveOrUpdate(plan[0]);
                         NSession.Flush();
+                        LoggerUtil.GetPurchasePlanRecord(plan[0], "采购到货", "采购到货"+ obj.Status+obj.RealQty, CurrentUser, NSession);
                     }
                 }
                 else

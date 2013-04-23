@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -194,7 +194,6 @@
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\PurchasePlanController.cs" />
     <Compile Include="Controllers\PurchaseTroubleController.cs" />
-    <Compile Include="Controllers\QuestionOrderController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
@@ -1588,9 +1587,6 @@
     <Content Include="Views\ProductIsInfraction\Edit.cshtml" />
     <Content Include="Views\ProductIsInfraction\Index.cshtml" />
 <<<<<<< HEAD
-    <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
-    <Content Include="Views\Order\QuestionScan.cshtml" />
-=======
     <Content Include="Views\NoStock\Create.cshtml" />
     <Content Include="Views\NoStock\Delete.cshtml" />
     <Content Include="Views\NoStock\Details.cshtml" />
@@ -1598,7 +1594,9 @@
     <Content Include="Views\NoStock\Index.cshtml" />
     <Content Include="Views\NoStock\ProductLink.cshtml" />
     <Content Include="Views\NoStock\Received.cshtml" />
->>>>>>> kewei/ttt
+=======
+    <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
+>>>>>>> KeWeiOMS/jmyd2
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -99,6 +99,7 @@
     <Compile Include="Entities\ProductSKUType.cs" />
     <Compile Include="Entities\ProductType.cs" />
     <Compile Include="Entities\ProjectType.cs" />
+    <Compile Include="Entities\PurchasePlanRecordType.cs" />
     <Compile Include="Entities\PurchasePlanType.cs" />
     <Compile Include="Entities\PurchaseTroubleType.cs" />
     <Compile Include="Entities\QuestionOrderType.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Mappings\ProductSKUTypeMap.cs" />
     <Compile Include="Mappings\ProductTypeMap.cs" />
     <Compile Include="Mappings\ProjectTypeMap.cs" />
+    <Compile Include="Mappings\PurchasePlanRecordTypeMap.cs" />
     <Compile Include="Mappings\PurchasePlanTypeMap.cs" />
     <Compile Include="Mappings\PurchaseTroubleTypeMap.cs" />
     <Compile Include="Mappings\QuestionOrderTypeMap.cs" />

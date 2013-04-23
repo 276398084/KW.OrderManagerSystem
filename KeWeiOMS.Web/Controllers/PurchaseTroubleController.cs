@@ -48,6 +48,9 @@ namespace KeWeiOMS.Web.Controllers
                 obj.DealOn = Convert.ToDateTime("2000-01-01");
                 NSession.Save(obj);
                 NSession.Flush();
+                PurchasePlanController a = new PurchasePlanController();
+                PurchasePlanType pu = a.GetById(obj.PurchaseId);
+                LoggerUtil.GetPurchasePlanRecord(pu,"采购问题","采购出现问题："+obj.TroubleDetail,CurrentUser,NSession);
             }
             catch (Exception ee)
             {
