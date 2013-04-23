@@ -21,6 +21,22 @@
                 data: checksall,
                 width: 100
             });
+            $('#SearchStatus').combobox({
+                url: '/Home/ProductStatus/',
+                valueField: 'id',
+                textField: 'text',
+                width: 100,
+                panelHeight: 'auto'
+            });
+            $('#SearchCategory').combobox({
+                url: '/ProductCategory/PList',
+                valueField: 'id',
+                textField: 'text',
+                width: 100
+            });
+            $('#IsScan').combobox("setValue", "ALL");
+            $('#SearchStatus').combobox("setValue", "所有");
+            $('#SearchCategory').combobox("setValue", "所有");
         });
             //新建
             function c_dlg() {
@@ -95,6 +111,12 @@
                     search += "IsScan&" + $('#IsScan').combobox("getValue") + "^";
                 }
                 search += $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                if ($('#SearchStatus').combobox("getText")!= "所有") {
+                    search += "Status&" + $('#SearchStatus').combobox("getText")+ "^";
+                }
+                if ($('#SearchCategory').combobox("getText") != "所有") {
+                    search += "Category&" + $('#SearchCategory').combobox("getText") + "^";
+                }
                 $("#dg").datagrid("load", {
                     search: search
                 });
@@ -149,8 +171,10 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="e_dlg();">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportdt();">导出</a>&nbsp;&nbsp;&nbsp;&nbsp;
-            配货扫描
+            配货扫描:
             <input id="IsScan" />
+            类别：<input id="SearchCategory" />
+            状态：<input id="SearchStatus" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
