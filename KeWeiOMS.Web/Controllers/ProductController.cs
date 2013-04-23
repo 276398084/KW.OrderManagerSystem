@@ -64,7 +64,7 @@ namespace KeWeiOMS.Web.Controllers
             IList<ProductType> products =
                 NSession.CreateQuery(
                    @" From ProductType p where (
-(round((SevenDay/7*0.5+Fifteen/15*0.3+ThirtyDay/30*0.2),0)*5)>(select SUM(Qty) from WarehouseStockType where SKU= p.SKU)
+(round((SevenDay/7*0.5+Fifteen/15*0.3+ThirtyDay/30*0.2),0)*5)>(select count(Id) from SKUCodeType where IsOut=0 and SKU= p.SKU)
 Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType where IsOutOfStock=1 and  Status<>'作废订单'))
 )and IsScan=1 and Status not in('滞销','清仓','停产','暂停销售')")
                     .List<ProductType>();
@@ -77,7 +77,9 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             stocks =
                 NSession.CreateQuery("from WarehouseStockType where SKU in(" + ids.Trim(',') + ")").List<WarehouseStockType>();
             plans = NSession.CreateQuery("from PurchasePlanType where Status not in('异常','已收到')  and SKU in(" + ids.Trim(',') + ")").List<PurchasePlanType>();
-
+            IList<object[]> SKUCount =
+                NSession.CreateQuery("select SKU,count(Id) from SKUCodeType where IsOut=0 and SKU In (" + ids.Trim(',') +
+                                     ") group by SKU").List<object[]>();
             IList<OrderProductType> orderProducts = NSession.CreateQuery("from OrderProductType where SKU in(" + ids.Trim(',') + ") and IsQue=1 and OId In(select Id from OrderType where IsOutOfStock=1 and Status<>'作废订单')").List<OrderProductType>();
             foreach (var p in products)
             {
@@ -96,7 +98,15 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 }
                 data.IsImportant = 0;
                 data.AvgQty = Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 2);
-                data.NowQty = stocks.Where(x => x.SKU.Trim().ToUpper() == p.SKU.Trim().ToUpper()).Sum(x => x.Qty);
+                foreach (var objectes in SKUCount)
+                {
+                    if(objectes[0].ToString().ToUpper()==data.SKU.ToUpper())
+                    {
+                        data.NowQty = Convert.ToInt32(objectes[1]);
+                        break;
+                    }
+                }
+                
                 if (Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 0) * 3 < data.NowQty)
                 {
                     data.IsImportant = 1;
@@ -240,7 +250,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     NSession.SaveOrUpdate(stock);
                     NSession.Flush();
                 }
-                LoggerUtil.GetProductRecord(obj,"商品创建","创建一件商品",CurrentUser,NSession);
+                LoggerUtil.GetProductRecord(obj, "商品创建", "创建一件商品", CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -372,7 +382,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 NSession.Update(obj);
                 NSession.Flush();
                 NSession.Clear();
-                LoggerUtil.GetProductRecord(obj,"商品修改",str,CurrentUser,NSession);
+                LoggerUtil.GetProductRecord(obj, "商品修改", str, CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -384,7 +394,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
         public string Zu(ProductComposeType item)
         {
-            string  str= " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
+            string str = " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
             return str;
         }
 
@@ -397,7 +407,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 obj.Enabled = 0;
                 NSession.Update(obj);
                 NSession.Flush();
-                LoggerUtil.GetProductRecord(obj,"删除商品","商品被删除",CurrentUser,NSession);
+                LoggerUtil.GetProductRecord(obj, "删除商品", "商品被删除", CurrentUser, NSession);
             }
             catch (Exception ee)
             {

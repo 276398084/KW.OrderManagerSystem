@@ -254,6 +254,8 @@ left join ReturnAddress R On r.Id=" + r;
         public ContentResult PrintData()
         {
             object obj = Session["data"];
+            if (obj == null)
+                obj = "";
             //Session["data"] = null;
             return Content(obj.ToString(), "text/xml");
         }

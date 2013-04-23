@@ -3,7 +3,7 @@
 //2、gr_Version 等号后面的参数是插件安装包的版本号，如果有新版本插件安装包，应上传新版
 //   本插件安装文件到网站对应目录，并更新这里的版本号。
 //3、更多详细信息请参考帮助中“报表插件(WEB报表)->在服务器部署插件安装包”部分
-var gr_InstallPath = "grinstall";
+var gr_InstallPath = "/Scripts";
 var gr_Version = "5,8,13,408";
 
 //以下注册号为本机开发测试注册号，报表访问地址为localhost时可以去掉试用标志
@@ -58,6 +58,7 @@ function CreatePrintViewerEx2(PluginID, Width, Height, ReportURL, DataURL, AutoR
         typeid = 'classid="clsid:B7EF88E6-A0AD-4235-B418-6F07D8533A9F" ' + gr_CodeBase;
     else
         typeid = 'type="application/x-grplugin-printviewer"';
+    alert(gr_CodeBase);
 	document.write('<object id="' + PluginID + '" ' + typeid);
 	document.write(' width="' + Width + '" height="' + Height + '">');
 	document.write('<param name="ReportURL" value="' + ReportURL + '">');

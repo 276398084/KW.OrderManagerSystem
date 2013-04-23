@@ -391,7 +391,7 @@ namespace KeWeiOMS.Web.Controllers
                 }
                 NSession.Flush();
                 LoggerUtil.GetOrderRecord(obj, "新建订单", "创建订单", CurrentUser, NSession);
-             
+
             }
             catch (Exception ee)
             {
@@ -487,14 +487,14 @@ namespace KeWeiOMS.Web.Controllers
                 if (list.Count != pis.Count)
                 {
                     str += "组合产品由<br>";
-                    foreach (var item in pis)  
+                    foreach (var item in pis)
                     {
                         str += Zu1(item);
                     }
                     str += "修改为<br> ";
                     foreach (var item in list)
                     {
-                       // str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
+                        // str += " ExSKU:" + item.ExSKU + " 名称:" + item.Title + " SKU:" + item.SKU + " 数量:" + item.Qty + " 规格:" + item.Standard + " 价格：" + item.Price + " 网址：" + item.Url + " 描述：" + item.Remark + "<br>";
                         str += Zu1(item);
                     }
                     str += "<br>";
@@ -513,7 +513,7 @@ namespace KeWeiOMS.Web.Controllers
                         }
                         if (check != 1)
                         {
-                             str += "组合产品由<br>";
+                            str += "组合产品由<br>";
                             foreach (var item in pis)
                             {
                                 str += Zu1(item);
@@ -539,7 +539,7 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Flush();
                 }
                 LoggerUtil.GetOrderRecord(obj, "修改订单", str, CurrentUser, NSession);
-                
+
             }
             catch (Exception ee)
             {
@@ -645,10 +645,31 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Flush();
             }
             SetQuestionOrder("订单重发", obj);
-           
+
             LoggerUtil.GetOrderRecord(obj, "重发！", "将订单重发！", CurrentUser, NSession);
             return Json(new { IsSuccess = true });
         }
+        private void SetQuestionOrder(string subject, OrderType orderType, string content = "")
+        {
+            QuestionOrderType question = new QuestionOrderType();
+            question.OId = orderType.Id;
+            question.OrderNo = orderType.OrderNo;
+            question.Status = 0;
+            question.Subjest = subject;
+            if (string.IsNullOrEmpty(content)) { question.Content = orderType.CutOffMemo; }
+            else
+            {
+                question.Content = content;
+            }
+
+            question.CreateBy = CurrentUser.Realname;
+            question.CreateOn = DateTime.Now;
+            question.SolveOn = DateTime.Now;
+            NSession.Save(question);
+            NSession.Flush();
+        }
+
+
         [HttpPost]
         public JsonResult ReSend(string o)
         {
@@ -702,7 +723,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-       
+
         public ActionResult OrderHoldUp(string o, string t, string d, int s)
         {
             IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
@@ -728,7 +749,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
         }
-        
+
 
         [HttpPost]
         public ActionResult ExportZM(string o)
@@ -1124,7 +1145,7 @@ left join Products P On OP.SKU=P.SKU ";
                             string tttt = "订单:" + order.OrderNo + ", 无法扫描，请拦截此包裹，原因：" + order.CutOffMemo;
                             return Json(new { IsSuccess = false, Result = tttt });
                         }
-                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td  width='120px'><b>库存</b></td><td><b>Desc</b></td></tr>";
+
                         if (order.IsAudit == 0)
                         {
                             string tttt = "订单:" + order.OrderNo + ", 需要审核";

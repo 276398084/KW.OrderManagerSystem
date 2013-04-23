@@ -48,6 +48,7 @@ namespace KeWeiOMS.Web.Controllers
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 PurchasePlanType p = new PurchasePlanType { CreateOn = DateTime.Now, BuyOn = DateTime.Now, ReceiveOn = DateTime.Now, SendOn = DateTime.Now };
+                p.PlanNo = Utilities.GetPlanNo(NSession);
                 p.SKU = dt.Rows[i]["SKU"].ToString();
                 p.Price = Convert.ToDouble(dt.Rows[i]["单价"].ToString());
                 p.Qty = Convert.ToInt32(dt.Rows[i]["Qty"].ToString());
@@ -61,9 +62,10 @@ namespace KeWeiOMS.Web.Controllers
                 p.TrackCode = dt.Rows[i]["追踪码"].ToString();
                 p.Status = dt.Rows[i]["状态"].ToString();
                 p.Memo = dt.Rows[i]["备注"].ToString();
-                NSession.SaveOrUpdate(p);
+
+                NSession.Save(p);
                 NSession.Flush();
-               
+
 
             }
             return Json(new { IsSuccess = true });
