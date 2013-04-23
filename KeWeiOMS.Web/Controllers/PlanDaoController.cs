@@ -75,11 +75,11 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     //obj.DaoOn = DateTime.Now;
                     obj.IsAudit = 1;
-                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo,NSession);
+                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo, NSession);
 
                     NSession.SaveOrUpdate(obj);
                     NSession.Flush();
-                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo,NSession, true);
+                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo, NSession, true);
                     return Json(new { IsSuccess = true });
                 }
                 return Json(new { ErrorMsg = "已经审核了", IsSuccess = false });
@@ -197,13 +197,22 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+
                 PlanDaoType obj = GetById(id);
+                PurchasePlanType plan =
+                NSession.Get<PurchasePlanType>(obj.PlanId);
+                if (plan != null)
+                {
+                    plan.Status = "已发货";
+                    plan.DaoQty = plan.DaoQty - obj.RealQty;
+                    NSession.Update(plan);
+                    NSession.Flush();
+                }
                 NSession.Delete(obj);
                 NSession.Flush();
                 NSession.Delete("from SKUCodeType where PlanNo='" + obj.PlanNo + "'");
                 NSession.Flush();
-                NSession.CreateQuery("update PurchasePlanType set Status='已发货' where Id=" + obj.PlanId);
-                NSession.Flush();
+
             }
             catch (Exception ee)
             {

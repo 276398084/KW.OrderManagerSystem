@@ -224,6 +224,9 @@
             if (r.IsError == 1) {
                 html += "(问题订单)";
             }
+            if (r.IsAudit == 0) {
+                html += "(等待审核)";
+            }
             html += "<br/>";
             if (r.IsPrint >= 1)
                 html += "<img src='/Content/imgs/Print.gif'> ";
@@ -297,9 +300,9 @@
             var g = $('#IsQue').combobox("getValue");
             if (g != "ALL" && g != "") {
                 if (g == "1") {
-                    search += "IsOutOfStock_si&1^";
+                    search += "IsOutOfStock_ds&1^";
                 } else {
-                    search += "IsOutOfStock_ei&0^";
+                    search += "IsOutOfStock_dsi&0^";
                 }
             }
             var q = $('#IsChai').combobox("getValue");
@@ -603,32 +606,6 @@
             return html;
         }
 
-
-        function ReHoldUp() {
-            s_ids = [];
-            var rows = $('#dg').datagrid('getSelections');
-            for (var i = 0; i < rows.length; i++) {
-                s_ids.push(rows[i]["Id"]);
-            }
-            if (s_ids.length == 0) {
-                $.messager.alert("请选择一条数据");
-                return;
-            }
-
-            $.messager.confirm("提示", "你要取消拦截 " + s_ids.length + "条订单吗？", function (r) {
-                if (r) {
-                    jQuery.ajax({
-                        url: "/Order/ReHoldUp/",
-                        type: "post",
-                        data: "o=" + s_ids.join(',') + "&s=" + $("#CReHoldUp").val(),
-                        success: function (sss) {
-                            $('#dg').datagrid("reload");
-                        }
-                    });
-                }
-            });
-        }
-
         function o_LanJie() {
 
             s_ids = [];
@@ -646,7 +623,7 @@
                     jQuery.ajax({
                         url: "/Order/OrderHoldUp/",
                         type: "post",
-                        data: "o=" + s_ids.join(',') + "&t=" + $("#HoldUpType").combobox("getValue") + "&d=" + $("#HoldUpDesc").val(),
+                        data: "o=" + s_ids.join(',') + "&t=" + $("#HoldUpType").combobox("getValue") + "&d=" + $("#HoldUpDesc").val() + "&s=" + $("#CReHoldUp").val(),
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
@@ -698,7 +675,7 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReQue()">缺货订单修正</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_SplitZu()">分割组合产品</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#l_dlg').dialog('open');">拦截</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#r_dlg').dialog('open');">取消拦截</a><br />
+            <br />
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
             状态<input type="text" id="OrderStatus" />
@@ -741,7 +718,14 @@
                     <td>
                         <textarea id="HoldUpDesc" style="width: 300px;"></textarea></td>
                 </tr>
-
+                <tr>
+                    <td>产品设置:</td>
+                    <td>
+                        <select id="CReHoldUp" style="width: 200px;">
+                            <option value="0">不操作</option>
+                            <option value="1">重置入库</option>
+                        </select></td>
+                </tr>
 
                 <tr>
                     <td></td>
@@ -750,25 +734,7 @@
                 </tr>
             </table>
         </div>
-        <div id="r_dlg" class="easyui-dialog" title="订单拦截设置" style="width: 400px; height: 200px; padding: 10px" closed="true">
-            <table>
-                <tr>
-                    <td>选项:</td>
-                    <td>
-                        <select id="CReHoldUp" style="width: 200px;">
-                            <option value="0">恢复</option>
-                            <option value="1">重置</option>
-                        </select></td>
-                </tr>
-
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="button" value="确定" onclick="ReHoldUp()" /></td>
-                </tr>
-            </table>
-        </div>
-
+    
 
     </div>
 </body>

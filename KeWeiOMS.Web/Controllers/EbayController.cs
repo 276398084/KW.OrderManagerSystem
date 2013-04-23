@@ -121,31 +121,13 @@ namespace KeWeiOMS.Web.Controllers
 
             }
             Session["ToExcel"] = where + orderby;
-            List<EbayType> objList = NSession.CreateQuery("from EbayType " + where + orderby)
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
-                .List<EbayType>().ToList();
-
-            string ids = "";
-            foreach (var warehouseStockType in objList)
-            {
-                ids += warehouseStockType.SKU + ",";
-            }
-            if (ids.Length > 0)
-            {
-                ids = ids.Trim(',');
-            }
-            IList<object[]> objs =
-                NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
-            foreach (var objectse in objs)
-            {
-
-                EbayType warehouse =
-                objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().Trim());
-                if (warehouse != null)
-                    warehouse.UnPeiQty = Convert.ToInt32(objectse[1]);
-            }
-
+            List<EbayType> objList =
+                NSession.CreateSQLQuery(
+                    "select [Id],[ItemId],[ItemTitle],[Currency],[Price],[PicUrl],[StartNum],[NowNum],[ProductUrl],[StartTime],[CreateOn],[Account],[SKU],[Status],isnull((select top 1 COUNT(Id) from SKUCode where SKUCode.SKU = Ebay.SKU and IsOut=0 group by SKU),0) as UnPeiQty from Ebay " +
+                    where + orderby).AddEntity(typeof(EbayType))
+                    .SetFirstResult(rows*(page - 1))
+                    .SetMaxResults(rows)
+                    .List<EbayType>().ToList();
             object count = NSession.CreateQuery("select count(Id) from EbayType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }

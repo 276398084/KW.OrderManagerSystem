@@ -115,7 +115,7 @@
 
         function showPrint(v, r) {
             if (r.IsAudit == 1)
-                return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a> &nbsp; <a href="javascript:void(0)" onclick="delete(' + v + ')">删除</a>';
+                return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a> &nbsp; <a href="javascript:void(0)" onclick="del(' + v + ')">删除</a>';
             else {
                 return '<a href="javascript:void(0)" onclick="AuditDao(' + v + ')">审核</a>';
             }

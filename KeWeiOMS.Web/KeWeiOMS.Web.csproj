@@ -195,6 +195,7 @@
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\PurchasePlanController.cs" />
     <Compile Include="Controllers\PurchaseTroubleController.cs" />
+    <Compile Include="Controllers\QuestionOrderController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
@@ -472,6 +473,7 @@
     <Content Include="Scripts\easyUI\themes\metro-red\window.css" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
     <Content Include="Scripts\griectl.cab" />
+    <Content Include="Scripts\GRInstall.js" />
     <Content Include="Scripts\images\Data.gif" />
     <Content Include="Scripts\images\Data.png" />
     <Content Include="Scripts\images\Design.gif" />
@@ -1588,6 +1590,7 @@
     <Content Include="Views\ProductIsInfraction\Edit.cshtml" />
     <Content Include="Views\ProductIsInfraction\Index.cshtml" />
     <Content Include="Views\NoStock\Create.cshtml" />
+    <Content Include="Views\Order\QuestionScan.cshtml" />
     <Content Include="Views\NoStock\Delete.cshtml" />
     <Content Include="Views\NoStock\Details.cshtml" />
     <Content Include="Views\NoStock\Edit.cshtml" />

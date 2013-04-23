@@ -40,6 +40,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.SKU);
             Map(x => x.ProductUrl).Length(250);
             Map(x => x.StartTime);
+            Map(x => x.UnPeiQty);
             Map(x => x.CreateOn);
             Map(x => x.Account).Length(250);
             Map(x => x.Status).Length(250);

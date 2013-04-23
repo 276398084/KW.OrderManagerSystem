@@ -90,12 +90,12 @@ namespace KeWeiOMS.Web.Controllers
             int sum = 0;
             var sqlWhere = SqlWhere(st, et, a, p);
             List<LeveData> list = new List<LeveData>();
-            IList<OrderType> objs = NSession.CreateQuery(string.Format("from OrderType "+sqlWhere)).List<OrderType>();
+            IList<OrderType> objs = NSession.CreateQuery(string.Format("from OrderType " + sqlWhere)).List<OrderType>();
             //定义区间
-            double[,] arry = { { 0, 5 }, { 5, 10 }, { 10, 20 }, {20, 50 }, { 50, 100 }, { 100,0} };
-            for (int i = 0; i < arry.Length/2; i++)
+            double[,] arry = { { 0, 5 }, { 5, 10 }, { 10, 20 }, { 20, 50 }, { 50, 100 }, { 100, 0 } };
+            for (int i = 0; i < arry.Length / 2; i++)
             {
-                int count=0;
+                int count = 0;
                 LeveData leve = new LeveData();
                 foreach (var item in objs)
                 {
@@ -103,7 +103,7 @@ namespace KeWeiOMS.Web.Controllers
                     {
                         if (item.Amount >= arry[i, 0] && item.Amount < arry[i, 1])
                         {
-                            
+
                             count++;
                         }
                     }
@@ -114,16 +114,16 @@ namespace KeWeiOMS.Web.Controllers
                             count++;
                         }
                     }
-                }      
+                }
                 sum = objs.Count;
                 if (sum != 0)
-                { 
+                {
                     if (arry[i, 1] != Convert.ToDouble(0))
                         leve.Platform = arry[i, 0] + "-" + arry[i, 1];
                     else
                         leve.Platform = arry[i, 0] + " 以上";
                     leve.Account = count;
-                    leve.OCount = Math.Round((Convert.ToDecimal(count)/ sum) * 100, 2);
+                    leve.OCount = Math.Round((Convert.ToDecimal(count) / sum) * 100, 2);
                     list.Add(leve);
                 }
             }
@@ -285,14 +285,14 @@ namespace KeWeiOMS.Web.Controllers
             {
                 s = " and OP.SKU like '%" + s + "%'";
             }
-            IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * ,(Qty-BuyQty) as NeedQty,(select COUNT(Id) from SKUCode where IsOut=0 and SKUCode.SKU=tbl.SKU) as UnPei from (
+            IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * ,(Qty-BuyQty) as NeedQty,(select COUNT(Id) from SKUCode where IsOut=0 and SKUCode.SKU=tbl.SKU) as UnPeiQty from (
 select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty-DaoQty),0) from PurchasePlan where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and O.Status<>'作废订单' and  O.Status<>'已发货' and OP.IsQue=1 {0} group by SKU,Standard
 ) as tbl {1}", s, orderby)).List<object[]>();
 
             List<QueCount> list = new List<QueCount>();
             foreach (object[] objectse in objs)
             {
-                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), MinDate = Convert.ToDateTime(objectse[2]), BuyQty = Utilities.ToInt(objectse[4]), UnPeiQty = Utilities.ToInt(objectse[5]) };
+                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), MinDate = Convert.ToDateTime(objectse[2]), BuyQty = Utilities.ToInt(objectse[4]), NeedQty = Utilities.ToInt(objectse[5]), UnPeiQty = Utilities.ToInt(objectse[6]) };
                 if (objectse[3] is DBNull || objectse[3] == null)
                 {
                 }
@@ -300,14 +300,12 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
                 {
                     oc.Standard = objectse[3].ToString();
                 }
-                oc.NeedQty = oc.Qty - oc.BuyQty;
-                if (ValidateRequest)
+                oc.NeedQty -= oc.UnPeiQty;
+                if (oc.NeedQty <= 0)
                 {
-                    if (oc.NeedQty <= 0)
-                    {
-                        oc.NeedQty = 0;
-                    }
+                    oc.NeedQty = 0;
                 }
+
                 list.Add(oc);
             }
 

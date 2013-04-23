@@ -62,7 +62,7 @@ namespace KeWeiOMS.Web
                 bool isExist = IsExist(OrderExNo, NSession);
                 if (isExist)
                 {
-                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     try
                     {
                         order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -122,6 +122,7 @@ namespace KeWeiOMS.Web
                     {
                         Console.WriteLine(ex.Message);
                     }
+
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
                     LoggerUtil.GetOrderRecord(order,"订单导入","导入成功",NSession);
                 }
@@ -156,7 +157,7 @@ namespace KeWeiOMS.Web
                 bool isExist = IsExist(OrderExNo, NSession);
                 if (isExist)
                 {
-                    OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo(NSession);
                     try
                     {
@@ -215,7 +216,7 @@ namespace KeWeiOMS.Web
                     bool isExist = IsExist(OrderExNo, NSession);
                     if (isExist)
                     {
-                        OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                        OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                         order.OrderNo = Utilities.GetOrderNo(NSession);
                         order.CurrencyCode = item["Currency"];
                         order.OrderExNo = OrderExNo;
@@ -264,7 +265,7 @@ namespace KeWeiOMS.Web
                     bool isExist = IsExist(OrderExNo, NSession);
                     if (isExist)
                     {
-                        OrderType order = new OrderType { IsMerger = 0, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                        OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                         order.OrderNo = Utilities.GetOrderNo(NSession);
                         order.OrderExNo = OrderExNo;
                         order.Amount = Utilities.ToDouble(item["金额"].ToString());
@@ -313,6 +314,7 @@ namespace KeWeiOMS.Web
                     {
                         OrderType order = new OrderType
                                               {
+                                                  Enabled = 1,
                                                   IsMerger = 0,
                                                   IsOutOfStock = 0,
                                                   IsRepeat = 0,
@@ -467,6 +469,7 @@ namespace KeWeiOMS.Web
                         OrderType order = new OrderType
                                               {
                                                   IsMerger = 0,
+                                                  Enabled = 1,
                                                   IsOutOfStock = 0,
                                                   IsRepeat = 0,
                                                   IsSplit = 0,
@@ -826,6 +829,7 @@ namespace KeWeiOMS.Web
 
             if (resultValue)
             {
+                order.IsAudit = 1;
                 SaveAmount(order, currencys, NSession);
             }
 
@@ -1130,6 +1134,23 @@ namespace KeWeiOMS.Web
             return ReturnFreight;
         }
 
+        public static void GetOrderRecord(OrderType order, string recordType, string Content, string CreateBy, ISession NSession)
+        {
+            GetOrderRecord(order.Id, order.OrderNo, recordType, Content, CreateBy, NSession);
+
+        }
+        public static void GetOrderRecord(int id, string orderNo, string recordType, string Content, string CreateBy, ISession NSession)
+        {
+            OrderRecordType orderRecord = new OrderRecordType();
+            orderRecord.OId = id;
+            orderRecord.OrderNo = orderNo;
+            orderRecord.RecordType = recordType;
+            orderRecord.CreateBy = CreateBy;
+            orderRecord.Content = Content;
+            orderRecord.CreateOn = DateTime.Now;
+            NSession.Save(orderRecord);
+            NSession.Flush();
+        }
     }
     #region
 

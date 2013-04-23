@@ -65,9 +65,8 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.CreateQuery(
                    @" From ProductType p where (
 (round((SevenDay/7*0.5+Fifteen/15*0.3+ThirtyDay/30*0.2),0)*5)>(select SUM(Qty) from WarehouseStockType where SKU= p.SKU)
-Or (select SUM(Qty) from WarehouseStockType where SKU= p.SKU)=0
 Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType where IsOutOfStock=1 and  Status<>'作废订单'))
-)and IsScan=1 and Status not in('滞销','清仓')")
+)and IsScan=1 and Status not in('滞销','清仓','停产','暂停销售')")
                     .List<ProductType>();
             string ids = "";
             foreach (var p in products)
@@ -109,8 +108,9 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 if ((data.NowQty + data.BuyQty - data.WarningQty - data.QueQty) < 0)
                 {
 
-                    data.NeedQty = Convert.ToInt32(data.AvgQty * 10) + data.QueQty - data.NowQty - data.BuyQty;
-                    list.Add(data);
+                    data.NeedQty = Convert.ToInt32(data.AvgQty * p.DayByStock) + data.QueQty - data.NowQty - data.BuyQty;
+                    if (data.NeedQty > 0)
+                        list.Add(data);
                 }
 
 
@@ -145,8 +145,9 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
                 p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
                 p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
-              
+                p.Enabled = 1;
                 NSession.SaveOrUpdate(p);
+                NSession.Flush();
                 //
                 //在仓库中添加产品库存
                 //
@@ -757,7 +758,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         //    productrecoud.CreateOn = DateTime.Now;
         //    NSession.Save(productrecoud);
         //    NSession.Flush();
-        
+
         //}
 
 

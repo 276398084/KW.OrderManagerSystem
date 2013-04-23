@@ -9,16 +9,10 @@
   <connectionStrings>
 
     <!--<add name="db" connectionString="server=.;database=DuDu;uid=sa;pwd=`1q2w3e4r"
-<<<<<<< HEAD
       providerName="System.Data.SqlClient" KeweiBackUp  KeweiOMS />-->
-    <add name="db" connectionString="server=122.227.207.204;database=KeweibackUp;uid=sa;pwd=`1q2w3e4r" providerName="System.Data.SqlClient"/>
-    <add name="defaultConnection" connectionString="server=122.227.207.204;database=KeweibackUp;uid=sa;pwd=`1q2w3e4r" providerName="System.Data.SqlClient"/>
+    <add name="db" connectionString="server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r" providerName="System.Data.SqlClient"/>
+    <add name="defaultConnection" connectionString="server=122.227.207.203;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r" providerName="System.Data.SqlClient"/>
 
-=======
-      providerName="System.Data.SqlClient" KeweiBackUp  />-->
-    <add name="db" connectionString="server=122.227.207.204;database=KeweibackUp;uid=sa;pwd=`1q2w3e4r" providerName="System.Data.SqlClient"/>
-       
->>>>>>> kewei/ttt
   </connectionStrings>
   <appSettings>
     <add key="webpages:Version" value="1.0.0.0"/>
@@ -133,5 +127,5 @@
       </setting>
     </KeWeiOMS.Web.Properties.Settings>
   </applicationSettings>
-  
+
 </configuration>

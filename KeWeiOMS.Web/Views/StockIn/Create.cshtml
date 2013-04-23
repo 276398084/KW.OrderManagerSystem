@@ -36,7 +36,7 @@
                 { field: 'ProductName', title: 'Title', width: 200 },
                 { field: 'Standard', title: '规格', width: 100 }
             ]]
-        })
+        });
 
         $('#c_InType').combobox({
             url: '@Url.Action("GetIntType", "Dictionary")',
@@ -84,14 +84,7 @@
 {
     <fieldset>
         <table class="editForm">
-            @*	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td style="display:none">
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>*@
+            
 
             <tr>
                 <td>
@@ -140,14 +133,7 @@
                 </td>
             </tr>
 
-            @*	<tr>
-		<td>
-            @Html.LabelFor(model => model.SourceQty,"原有库存:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SourceQty,new{@id="c_SourceQty"})
-		</td>
-	</tr>*@
+     
 
 
             <tr>
