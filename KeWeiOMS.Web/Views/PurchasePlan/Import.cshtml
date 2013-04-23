@@ -15,16 +15,16 @@
             'onUploadSuccess': function (file, data, response) {
                 eval("data=" + data);
                 $('#fileName').val(data.SaveName);
-                formPost('c_form', '@Url.Action("ImportProduct", "Product")');
+                formPost('c_form', '@Url.Action("ImportPlan", "PurchasePlan")');
             }
         });
     });
 </script>
-@using (Html.BeginForm("ImportProduct", "Product", FormMethod.Post, new { id = "c_form" }))
+@using (Html.BeginForm("ImportPlan", "PurchasePlan", FormMethod.Post, new { id = "c_form" }))
 {
     <fieldset>
-        <legend>商品批量上传</legend>
-        <tble class="editForm">
+        <legend>采购计划批量上传</legend>
+        <table class="editForm">
             <tr>
                 <td>选择文件</td>
                 <td>
@@ -37,7 +37,7 @@
                 <td>
                     <input type="button" value="上传" onclick="$('#up_file').uploadify('upload', '*');" /></td>
             </tr>
-        </tble>
+        </table>
     </fieldset>
 }
 

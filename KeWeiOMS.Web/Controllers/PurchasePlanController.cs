@@ -19,6 +19,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ViewResult Import()
+        {
+            return View();
+        }
 
         public ActionResult CreateByW(string Id)
         {
@@ -34,6 +38,35 @@ namespace KeWeiOMS.Web.Controllers
             PurchasePlanType p = new PurchasePlanType();
             p.SKU = Id;
             return View(p);
+        }
+
+        [HttpPost]
+        public ActionResult ImportPlan(string fileName)
+        {
+            DataTable dt = OrderHelper.GetDataTable(fileName);
+            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                PurchasePlanType p = new PurchasePlanType { CreateOn = DateTime.Now, BuyOn = DateTime.Now, ReceiveOn = DateTime.Now, SendOn = DateTime.Now };
+                p.SKU = dt.Rows[i]["SKU"].ToString();
+                p.Price = Convert.ToDouble(dt.Rows[i]["单价"].ToString());
+                p.Qty = Convert.ToInt32(dt.Rows[i]["Qty"].ToString());
+                p.DaoQty = 0;
+                p.ProductName = "";
+                p.Freight = Convert.ToDouble(dt.Rows[i]["运费"].ToString());
+                p.ProductUrl = dt.Rows[i]["产品链接"].ToString();
+                p.PicUrl = dt.Rows[i]["图片链接"].ToString();
+                p.Suppliers = dt.Rows[i]["供应商"].ToString();
+                p.LogisticsMode = dt.Rows[i]["发货方式"].ToString();
+                p.TrackCode = dt.Rows[i]["追踪码"].ToString();
+                p.Status = dt.Rows[i]["状态"].ToString();
+                p.Memo = dt.Rows[i]["备注"].ToString();
+                NSession.SaveOrUpdate(p);
+                NSession.Flush();
+               
+
+            }
+            return Json(new { IsSuccess = true });
         }
 
         public ActionResult Create()
@@ -61,7 +94,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.BuyBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
-                LoggerUtil.GetPurchasePlanRecord(obj,"新建计划","创建采购计划",CurrentUser,NSession);
+                LoggerUtil.GetPurchasePlanRecord(obj, "新建计划", "创建采购计划", CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -108,7 +141,7 @@ namespace KeWeiOMS.Web.Controllers
                 str += Utilities.GetObjEditString(obj2, obj) + "<br>";
                 NSession.Update(obj);
                 NSession.Flush();
-                LoggerUtil.GetPurchasePlanRecord(obj,"修改采购计划",str,CurrentUser,NSession);
+                LoggerUtil.GetPurchasePlanRecord(obj, "修改采购计划", str, CurrentUser, NSession);
             }
             catch (Exception ee)
             {

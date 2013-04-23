@@ -167,7 +167,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 }
 
             }
-            return View();
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost]

@@ -1427,7 +1427,7 @@
     <Content Include="Views\Product\ImportPic.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Product\ImportProduct.cshtml" />
+    <Content Include="Views\PurchasePlan\Import.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Login.cshtml" />
@@ -1597,6 +1597,9 @@
     <Content Include="Views\NoStock\Index.cshtml" />
     <Content Include="Views\NoStock\ProductLink.cshtml" />
     <Content Include="Views\NoStock\Received.cshtml" />
+    <Content Include="Views\PurchasePlan\CreateByW.cshtml">
+      <SubType>Code</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
