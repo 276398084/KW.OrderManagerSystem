@@ -317,20 +317,22 @@
             }
 
             function exportPlan(parameters) {
-                search = "st=" + $('#StartDate').datebox("getValue") + "&" + "et=" + $('#EndDate').datebox("getValue");
-                var a = $('#SearchStatus').combobox("getText");
-                if (a != "所有") {
-                    search += "s&" + a + "^";
-                }
+                $('#dg').datagrid('loading');
                 var postUrl = "/Order/ExportDown/1";
-                jQuery.ajax({
-                    url: "/PurchasePlan/ExportPlan/",
-                    type: "post",
-                    data: search,
-                    success: function (sss) {
-                        location.href = postUrl;
-                    }
-                });
+                $.ajax({
+                    url: '@Url.Action("ExportPlan", "PurchasePlan")/',
+            success: function (result) {
+
+                $.messager.show({
+                    title: '提示',
+                    msg: result.Msg,
+                    timeout: 0,
+                    showType: 'slide'
+                })
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        })
             }
 
             function datecheck(value) {

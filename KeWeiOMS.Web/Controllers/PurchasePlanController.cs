@@ -169,29 +169,21 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult ExportPlan(string st, string et, string s)
         {
-            string sql = @"select * from  PurchasePlan";
-
-            if (!string.IsNullOrEmpty(s))
+            try
             {
-                sql += " where Status='" + s + "' and CreateOn  between '" + st + "' and '" + et + "'";
+                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
+                con.Open();
+                SqlDataAdapter da = new SqlDataAdapter("select * from PurchasePlan " + Session["ToExcel"].ToString(), con);
+                DataSet ds = new DataSet();
+                da.Fill(ds, "content");
+                con.Close();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             }
-            else
+            catch (Exception ee)
             {
-                sql += " where CreateOn  between '" + st + "' and '" + et + "'";
+                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
             }
-            DataSet ds = new DataSet();
-            IDbCommand command = NSession.Connection.CreateCommand();
-            command.CommandText = sql + " order by CreateOn asc";
-            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
-            da.Fill(ds);
-
-            DataTable dt = ds.Tables[0];
-
-            List<string> list = new List<string>();
-            string str = "";
-            // 设置编码和附件格式 
-            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
-            return Json(new { IsSuccess = true });
+            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
@@ -212,6 +204,7 @@ namespace KeWeiOMS.Web.Controllers
                 }
 
             }
+            Session["ToExcel"] = where + orderby;
             IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -231,25 +224,6 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<SupplierType> obj = NSession.CreateQuery("from SupplierType").List<SupplierType>();
             return Json(obj, JsonRequestBehavior.AllowGet);
-        }
-
-        public static string GetSearch(string search)
-        {
-            string where = "";
-            string startdate = search.Substring(0, search.IndexOf("&"));
-            string enddate = search.Substring(search.IndexOf("&") + 1);
-            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
-            {
-                if (!string.IsNullOrEmpty(startdate))
-                    where += "BuyOn >=\'" + Convert.ToDateTime(startdate) + "\'";
-                if (!string.IsNullOrEmpty(enddate))
-                {
-                    if (where != "")
-                        where += " and ";
-                    where += "BuyOn <\'" + Convert.ToDateTime(enddate).AddDays(1) + "\'";
-                }
-            }
-            return where;
         }
 
     }

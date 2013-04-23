@@ -728,7 +728,26 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
         }
-        
+
+        private void SetQuestionOrder(string subject, OrderType orderType, string content = "")
+        {
+            QuestionOrderType question = new QuestionOrderType();
+            question.OId = orderType.Id;
+            question.OrderNo = orderType.OrderNo;
+            question.Status = 0;
+            question.Subjest = subject;
+            if (string.IsNullOrEmpty(content)) { question.Content = orderType.CutOffMemo; }
+            else
+            {
+                question.Content = content;
+            }
+
+            question.CreateBy = CurrentUser.Realname;
+            question.CreateOn = DateTime.Now;
+            question.SolveOn = DateTime.Now;
+            NSession.Save(question);
+            NSession.Flush();
+        }
 
         [HttpPost]
         public ActionResult ExportZM(string o)
@@ -1130,7 +1149,6 @@ left join Products P On OP.SKU=P.SKU ";
                             string tttt = "订单:" + order.OrderNo + ", 需要审核";
                             return Json(new { IsSuccess = false, Result = tttt });
                         }
-                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td  width='120px'><b>库存</b></td><td><b>Desc</b></td></tr>";
                         foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                         {
 
