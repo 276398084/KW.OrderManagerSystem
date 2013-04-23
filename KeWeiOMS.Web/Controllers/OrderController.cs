@@ -1063,6 +1063,8 @@ left join Products P On OP.SKU=P.SKU ";
 
             OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
 
+
+
             return Json(new { IsS = 1 });
             //IList<OrderType> orders = NSession.CreateQuery("from OrderType where CreateOn>'2013-03-20'").List<OrderType>();
             //List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();

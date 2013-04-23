@@ -131,10 +131,10 @@
 
 
         $('#dg_record').datagrid({
-            url: '@Url.Action("Record","Order")/@ViewData["id"]',
+            url: '@Url.Action("Record", "Order")/@ViewData["id"]',
             width: 1250,
             height: 240
-            })
+        })
     });
 
     function changeCountry(v) {
@@ -310,7 +310,7 @@
             onClickRow: onClickRow1
         });
         $('#dlg').dialog({
-            width:750,
+            width: 750,
             title: title,
             modal: true,
             loadingMessage: '正在加载...',
@@ -367,7 +367,7 @@
                     @Html.HiddenFor(model => model.IsError)
                     @Html.HiddenFor(model => model.IsRepeat)
                     @Html.HiddenFor(model => model.IsSplit)
-                      @Html.HiddenFor(model => model.IsAudit)
+                    @Html.HiddenFor(model => model.IsAudit)
                     @Html.HiddenFor(model => model.Platform)
                     @Html.HiddenFor(model => model.Account)
                     @Html.HiddenFor(model => model.ScanningOn)
@@ -382,7 +382,7 @@
                 </td>
                 <td>
                     @Html.LabelFor(model => model.OrderExNo, "外部编号:")
-                    
+
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.OrderExNo, new { @id = "e_OrderExNo" })
@@ -584,28 +584,28 @@
                 </tr>
             </table>
         </div>
-                <div title="订单日志" style="padding:20px;">  
-        <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
-            <thead>
-                <tr>
-                    <th field="RecordType" width="150" >类型
-                    </th>
-                    <th field="Content" width="800">内容
-                    </th>
-                    <th field="CreateBy" width="60">处理人
-                    </th>
-                    <th field="CreateOn" width="200" formatter="getDate">处理时间
-                    </th>
-                </tr>
-            </thead>
-        </table>
-  
-</div>
+        <div title="订单日志" style="padding: 20px;">
+            <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="RecordType" width="150">类型
+                        </th>
+                        <th field="Content" width="800">内容
+                        </th>
+                        <th field="CreateBy" width="60">处理人
+                        </th>
+                        <th field="CreateOn" width="200" formatter="getDate">处理时间
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
 
     </div>
 }
 
-<div id="dlg"  class="easyui-dialog" closed="true" >
+<div id="dlg" class="easyui-dialog" closed="true">
     <table id="dg_p" class="easyui-datagrid" rownumbers="true">
         <thead>
             <tr>

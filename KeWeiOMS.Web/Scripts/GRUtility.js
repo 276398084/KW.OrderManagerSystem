@@ -4,25 +4,22 @@ function ColorFromRGB(red, green, blue)
     return red + green*256 + blue*256*256;
 }
 
-//创建一个MSXML DOM 对象
-function CreateXMLDOM() 
+//获取颜色中的红色值，传入参数为整数表示的RGB值
+function ColorGetR(intColor)
 {
-    var arrSignatures = ["MSXML2.DOMDocument.5.0", "MSXML2.DOMDocument.4.0",
-                         "MSXML2.DOMDocument.3.0", "MSXML2.DOMDocument",
-                         "Microsoft.XmlDom"];
-    for (var i=0; i < arrSignatures.length; i++) 
-    {
-        try 
-        {
-            var oXmlDom = new ActiveXObject(arrSignatures[i]);
-            return oXmlDom;
-        
-        } 
-        catch (oError) 
-        {
-            //ignore
-        }
-    }              
+    return intColor & 255;
+}
 
-    throw new Error("你的系统没有安装MSXML");           
-}     
+//获取颜色中的绿色值，传入参数为整数表示的RGB值
+function ColorGetG(intColor)
+{
+    //return intColor & 255*256;
+    return (intColor>>8) & 255;
+}
+
+//获取颜色中的蓝色值，传入参数为整数表示的RGB值
+function ColorGetB(intColor)
+{
+    //return intColor & 255*256*256;
+    return (intColor>>16) & 255;
+}

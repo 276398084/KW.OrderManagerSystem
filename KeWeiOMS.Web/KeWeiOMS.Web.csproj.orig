@@ -133,6 +133,7 @@
     <Compile Include="Common\ExcelHelper.cs" />
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Statistics\LeveData.cs" />
     <Compile Include="Common\Statistics\OrderCount.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Controllers\MachineController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NewGuideController.cs" />
+    <Compile Include="Controllers\NoStockController.cs" />
     <Compile Include="Controllers\OrderAddresController.cs" />
     <Compile Include="Controllers\OrderAmountController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
@@ -192,6 +194,7 @@
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\PurchasePlanController.cs" />
     <Compile Include="Controllers\PurchaseTroubleController.cs" />
+    <Compile Include="Controllers\QuestionOrderController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
@@ -1574,18 +1577,27 @@
     <Content Include="Views\EbayReplay\Details.cshtml" />
     <Content Include="Views\EbayReplay\Edit.cshtml" />
     <Content Include="Views\EbayReplay\Index.cshtml" />
-<<<<<<< HEAD
     <Content Include="Scripts\easyUI\themes\metro-blue\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\themes\metro-gray\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\themes\metro-green\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\themes\metro-orange\images\Thumbs.db" />
     <Content Include="Scripts\easyUI\themes\metro-red\images\Thumbs.db" />
-=======
     <Content Include="Views\ProductIsInfraction\Create.cshtml" />
     <Content Include="Views\ProductIsInfraction\Delete.cshtml" />
     <Content Include="Views\ProductIsInfraction\Details.cshtml" />
     <Content Include="Views\ProductIsInfraction\Edit.cshtml" />
     <Content Include="Views\ProductIsInfraction\Index.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
+    <Content Include="Views\Order\QuestionScan.cshtml" />
+=======
+    <Content Include="Views\NoStock\Create.cshtml" />
+    <Content Include="Views\NoStock\Delete.cshtml" />
+    <Content Include="Views\NoStock\Details.cshtml" />
+    <Content Include="Views\NoStock\Edit.cshtml" />
+    <Content Include="Views\NoStock\Index.cshtml" />
+    <Content Include="Views\NoStock\ProductLink.cshtml" />
+    <Content Include="Views\NoStock\Received.cshtml" />
 >>>>>>> kewei/ttt
   </ItemGroup>
   <ItemGroup>

@@ -472,6 +472,7 @@
     <Content Include="Scripts\easyUI\themes\metro-red\window.css" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
     <Content Include="Scripts\griectl.cab" />
+    <Content Include="Scripts\GRInstall.js" />
     <Content Include="Scripts\images\Data.gif" />
     <Content Include="Scripts\images\Data.png" />
     <Content Include="Scripts\images\Design.gif" />

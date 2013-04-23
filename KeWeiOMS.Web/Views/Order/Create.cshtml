@@ -289,6 +289,7 @@
                 <td>
                     @Html.TextBoxFor(model => model.BuyerEmail, new { @id = "c_BuyerEmail" })
                     @Html.HiddenFor(model => model.BuyerId, new { @id = "c_BuyerId" })
+                    
                 </td>
             </tr>
         </table>
@@ -301,7 +302,7 @@
                     @Html.LabelFor(model => model.BuyerMemo, "买家留言:")
                 </td>
                 <td colspan="3">
-                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "c_BuyerMemo",@style="width:600px;height:40px;resize:none" })
+                    @Html.TextAreaFor(model => model.BuyerMemo, new { @id = "c_BuyerMemo", @style = "width:600px;height:40px;resize:none" })
                 </td>
             </tr>
 
@@ -310,7 +311,7 @@
                     @Html.LabelFor(model => model.SellerMemo, "商家留言:")
                 </td>
                 <td colspan="3">
-                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "c_SellerMemo" ,@style="width:600px;height:40px;resize:none"})
+                    @Html.TextAreaFor(model => model.SellerMemo, new { @id = "c_SellerMemo", @style = "width:600px;height:40px;resize:none" })
                 </td>
             </tr>
 
@@ -319,7 +320,7 @@
                     @Html.LabelFor(model => model.CutOffMemo, "包裹截留留言:")
                 </td>
                 <td>
-                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "c_CutOffMemo" ,@style="width:600px;height:40px;resize:none"})
+                    @Html.TextAreaFor(model => model.CutOffMemo, new { @id = "c_CutOffMemo", @style = "width:600px;height:40px;resize:none" })
                 </td>
             </tr>
        </table>
@@ -401,7 +402,7 @@
                     @Html.LabelFor(model => model.AddressInfo.Street, "街道:")
                 </td>
                 <td colspan="3">
-                    @Html.TextBoxFor(model => model.AddressInfo.Street, new { @id = "c_Street",@style="width:500px" })
+                    @Html.TextBoxFor(model => model.AddressInfo.Street, new { @id = "c_Street", @style = "width:500px" })
                 </td>
             </tr>
             </table>
