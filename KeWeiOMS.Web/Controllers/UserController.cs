@@ -106,7 +106,7 @@ namespace KeWeiOMS.Web.Controllers
             foreach (var item in ms)
             {
                 if (string.IsNullOrEmpty(item))
-                    continue; ;
+                    continue;
                 sc = new PermissionScopeType();
                 sc.ResourceCategory = ResourceCategoryEnum.User.ToString();
                 sc.ResourceId = uid;
