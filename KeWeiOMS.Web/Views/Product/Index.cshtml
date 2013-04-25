@@ -63,8 +63,11 @@
             }
 
             //编辑框
-            function e_dlg() {
-                window.open('@Url.Action("Edit", "Product")/' + getselectedRow());
+        function e_dlg() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    window.open('@Url.Action("Edit", "Product")/' + getselectedRow());
+                }
             }
             function exportdt() {
                 search = getSearch();

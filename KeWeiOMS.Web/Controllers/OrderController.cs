@@ -582,6 +582,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Clear();
             OrderType obj = GetById(Utilities.ToInt(o));
             obj.IsSplit = 1;
+           // obj.IsRepeat=1
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);

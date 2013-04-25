@@ -381,7 +381,9 @@
 
         function e_order() {
             var id = getselectedRow();
-            window.open('@Url.Action("Edit", "Order")/' + id);
+            if (id != undefined) {
+                window.open('@Url.Action("Edit", "Order")/' + id);
+            }
         }
 
         function reSend() {
