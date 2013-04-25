@@ -218,9 +218,12 @@ namespace KeWeiOMS.Web
                 if (!string.IsNullOrWhiteSpace(s[i]) && !s[i].Contains("undefined"))
                 {
                     var ss = s[i].Split('&');
-                    if ((!string.IsNullOrEmpty(ss[0])) && (!string.IsNullOrEmpty(ss[1])))
+                    if (ss.Length == 2)
                     {
-                        queryDictionary.Add(ss[0], ss[1]);
+                        if ((!string.IsNullOrEmpty(ss[0])) && (!string.IsNullOrEmpty(ss[1])))
+                        {
+                            queryDictionary.Add(ss[0], ss[1]);
+                        }
                     }
                 }
 
@@ -305,7 +308,7 @@ namespace KeWeiOMS.Web
             foreach (System.Reflection.PropertyInfo item in properties)
             {
                 string name = item.Name;
-                if(name.StartsWith("rows"))
+                if (name.StartsWith("rows"))
                 {
                     continue;
                 }

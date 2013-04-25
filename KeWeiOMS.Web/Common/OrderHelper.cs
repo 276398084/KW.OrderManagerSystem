@@ -1130,7 +1130,6 @@ namespace KeWeiOMS.Web
                     }
                 }
             }
-
             return ReturnFreight;
         }
 
@@ -1138,6 +1137,18 @@ namespace KeWeiOMS.Web
         {
             GetOrderRecord(order.Id, order.OrderNo, recordType, Content, CreateBy, NSession);
 
+        }
+
+         public  static void SplitProduct(IList<OrderProductType> orders,ISession NSession)
+        {
+            IList<ProductComposeType> products = NSession.CreateQuery("from ProductComposeType").List<ProductComposeType>();
+            foreach (OrderProductType orderProductType in orders)
+            {
+                List<ProductComposeType> compose =
+                    products.Where(x => x.SKU.Trim().ToUpper() == orderProductType.SKU.Trim().ToUpper()).ToList();
+                if (compose.Count > 0)
+                    OrderHelper.SplitProduct(orderProductType, compose, NSession);
+            }
         }
         public static void GetOrderRecord(int id, string orderNo, string recordType, string Content, string CreateBy, ISession NSession)
         {

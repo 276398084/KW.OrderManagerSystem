@@ -133,39 +133,13 @@
 
             //删除
             function del() {
-                var id = getselectedRow();
-                if (id != undefined) {
-                    $.messager.confirm('确认', '确定删除?', function (r) {
-                        if (r) {
-                            var url = '@Url.Action("Delete", "StockIn")/' + id;
-                            $.post(url, function () {
-                            }).success(function (data) {
-                                var msgstr = "删除成功";
-                                if (!data.IsSuccess) {
-                                    msgstr = "删除失败" + data;
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: msgstr,
-                                        timeout: 0,
-                                        showType: 'slide'
-                                    });
-                                } else {
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: msgstr,
-                                        timeout: 3000,
-                                        showType: 'slide'
-                                    });
-                                }
-
-                                $('#dg').datagrid('reload');
-                            }).error(function () {
-                                $.messager.alert('错误', '删除发生错误');
-                            });
-
-                        }
-                    });
+                var id = v;
+                $.messager.confirm("提示", "确定要删除吗？删除后数据无法恢复！", function (r) {
+                    if (r) {
+                        var url = '@Url.Action("Delete", "StockIn")/' + id;
+                    delData(url, 'dg');
                 }
+            });
             }
 
             //获取选中行
@@ -212,7 +186,7 @@
             }
             function showPrint(v, r) {
                 if (r.IsAudit == 1)
-                    return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a>';
+                    return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a> &nbsp; <a href="javascript:void(0)" onclick="del(' + v + ')">删除</a>';
                 else {
                     return '<a href="javascript:void(0)" onclick="AuditIn(' + v + ')">审核</a>';
                 }

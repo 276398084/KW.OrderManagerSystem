@@ -20,15 +20,11 @@ namespace KeWeiOMS.Web.Controllers
     [ValidateInput(false)]
     public class OrderController : BaseController
     {
-        #region “≥√Ê÷∏œÚ
+        #region È°µÈù¢ÊåáÂêë
         public ViewResult Index()
         {
             return View();
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> kewei/ttt
         public ActionResult Details(int id)
         {
             OrderType obj = GetById(id);
@@ -100,7 +96,7 @@ namespace KeWeiOMS.Web.Controllers
         }
         #endregion
 
-        #region ∂©µ•¥¶¿Ì
+        #region ËÆ¢ÂçïÂ§ÑÁêÜ
         [HttpPost]
         public ActionResult OrderReplace(string ids, string oldField, string newField, string fieldName)
         {
@@ -134,11 +130,7 @@ namespace KeWeiOMS.Web.Controllers
             List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
 
             List<LogisticsModeType> logistics = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>().ToList();
-<<<<<<< HEAD
-            IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Status='¥˝¥¶¿Ì'").List<OrderType>();
-=======
             IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Status='ÂæÖÂ§ÑÁêÜ'").List<OrderType>();
->>>>>>> kewei/ttt
             foreach (var order in orders)
             {
                 OrderHelper.ValiOrder(order, countrys, products, currencys, logistics, NSession);
@@ -147,11 +139,7 @@ namespace KeWeiOMS.Web.Controllers
         }
         public ActionResult OrderMerger()
         {
-<<<<<<< HEAD
-            IList<OrderType> orderTypes = NSession.CreateQuery("from OrderType where Status='¥˝¥¶¿Ì' and Platform='Ebay' and Enabled=1 and BuyerName in (select BuyerName from OrderType where Status='¥˝¥¶¿Ì'  and Platform='Ebay' and Enabled=1   group by BuyerName,Country,Account having count (BuyerName)>1)").List<OrderType>();
-=======
             IList<OrderType> orderTypes = NSession.CreateQuery("from OrderType where Status='ÂæÖÂ§ÑÁêÜ' and Platform='Ebay' and Enabled=1 and BuyerName in (select BuyerName from OrderType where Status='ÂæÖÂ§ÑÁêÜ'  and Platform='Ebay' and Enabled=1   group by BuyerName,Country,Account having count (BuyerName)>1)").List<OrderType>();
->>>>>>> kewei/ttt
             string ids = "";
             foreach (var order in orderTypes)
             {
@@ -184,6 +172,7 @@ namespace KeWeiOMS.Web.Controllers
                     order.OrderNo = Utilities.GetOrderNo(NSession);
                     order.Amount = 0;
                     order.IsMerger = 1;
+                    order.Enabled = 1;
                     NSession.SaveOrUpdate(order);
                     NSession.Flush();
                     foreach (var orderType in orders)
@@ -371,7 +360,7 @@ namespace KeWeiOMS.Web.Controllers
                 case PlatformEnum.LT:
                 case PlatformEnum.SMT:
                 default:
-                    return Json(new { IsSuccess = false, ErrorMsg = "∏√∆ΩÃ®√ª”–Õ¨≤Ωπ¶ƒ‹£°" });
+                    return Json(new { IsSuccess = false, ErrorMsg = "ËØ•Âπ≥Âè∞Ê≤°ÊúâÂêåÊ≠•ÂäüËÉΩÔºÅ" });
             }
             return Json(new { IsSuccess = true });
         }
@@ -389,11 +378,7 @@ namespace KeWeiOMS.Web.Controllers
                     obj.Account = acc.AccountName;
                 obj.AddressId = obj.AddressInfo.Id;
                 obj.Country = obj.AddressInfo.Country;
-<<<<<<< HEAD
-                obj.Status = OrderStatusEnum.¥˝¥¶¿Ì.ToString();
-=======
                 obj.Status = OrderStatusEnum.ÂæÖÂ§ÑÁêÜ.ToString();
->>>>>>> kewei/ttt
                 obj.GenerateOn = obj.ScanningOn = obj.CreateOn = DateTime.Now;
                 List<OrderProductType> list = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(obj.rows);
                 obj.Enabled = 1;
@@ -405,29 +390,18 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Save(item);
                 }
                 NSession.Flush();
-                OrderRecordType orderrecoud = new OrderRecordType();
-                orderrecoud.OId = obj.Id;
-                orderrecoud.OrderNo = obj.OrderNo;
-                orderrecoud.RecordType = "–¬Ω®";
-                orderrecoud.Content = "¥¥Ω®∂©µ•";
-                orderrecoud.CreateBy = CurrentUser.Realname;
-                orderrecoud.CreateOn = DateTime.Now;
-                NSession.Save(orderrecoud);
-                NSession.Flush();
+                LoggerUtil.GetOrderRecord(obj, "Êñ∞Âª∫ËÆ¢Âçï", "ÂàõÂª∫ËÆ¢Âçï", CurrentUser, NSession);
+
             }
             catch (Exception ee)
             {
-<<<<<<< HEAD
-                return Json(new { IsSuccess = false, ErrorMsg = "≥ˆ¥Ì¡À" });
-=======
                 return Json(new { IsSuccess = false, ErrorMsg = "Âá∫Èîô‰∫Ü" });
->>>>>>> kewei/ttt
             }
             return Json(new { IsSuccess = true });
         }
 
         /// <summary>
-        /// ∏˘æ›IdªÒ»°
+        /// Ê†πÊçÆIdËé∑Âèñ
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -436,7 +410,7 @@ namespace KeWeiOMS.Web.Controllers
             OrderType obj = NSession.Get<OrderType>(Id);
             if (obj == null)
             {
-                throw new Exception("∑µªÿ µÃÂŒ™ø’");
+                throw new Exception("ËøîÂõûÂÆû‰Ωì‰∏∫Á©∫");
             }
             else
             {
@@ -461,11 +435,7 @@ namespace KeWeiOMS.Web.Controllers
                 key = "and ScanningBy= '" + key + "' ";
             }
             List<LogisticsModeType> modes = NSession.CreateQuery("from LogisticsModeType").List<LogisticsModeType>().ToList();
-<<<<<<< HEAD
-            string sql = "select OrderNo as 'PackageNo',Weight as 'PackageWeight',ScanningBy,TrackCode as 'TrackCode',ScanningOn as 'ShippedTime',LogisticMode as 'LogisticsMode',Country from Orders where Status in ('“—∑¢ªı','“—ÕÍ≥…') and {0}  ScanningOn  between '{1}' and '{2}' {3}  order by ScanningOn asc ";
-=======
             string sql = "select OrderNo as 'PackageNo',Weight as 'PackageWeight',ScanningBy,TrackCode as 'TrackCode',ScanningOn as 'ShippedTime',LogisticMode as 'LogisticsMode',Country from Orders where Status in ('Â∑≤ÂèëË¥ß','Â∑≤ÂÆåÊàê') and {0}  ScanningOn  between '{1}' and '{2}' {3}  order by ScanningOn asc ";
->>>>>>> kewei/ttt
             sql = string.Format(sql, u, st.ToString("yyyy/MM/dd HH:mm:ss"), et.ToString("yyyy/MM/dd HH:mm:ss"), key);
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
@@ -478,11 +448,7 @@ namespace KeWeiOMS.Web.Controllers
                 if (mode != null)
                     dataRow["LogisticsMode"] = mode.LogisticsName.Trim();
             }
-<<<<<<< HEAD
-            // …Ë÷√±‡¬Î∫Õ∏Ωº˛∏Ò Ω 
-=======
             // ËÆæÁΩÆÁºñÁ†ÅÂíåÈôÑ‰ª∂Ê†ºÂºè 
->>>>>>> kewei/ttt
             System.Web.HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
             System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
             System.Web.HttpContext.Current.Response.Charset = "gb2312";
@@ -520,23 +486,16 @@ namespace KeWeiOMS.Web.Controllers
                 List<OrderProductType> pis = NSession.CreateQuery("from OrderProductType where OId=" + obj.Id).List<OrderProductType>().ToList<OrderProductType>();
                 if (list.Count != pis.Count)
                 {
-<<<<<<< HEAD
-                    str += "◊È∫œ≤˙∆∑”…<br>";
-=======
                     str += "ÁªÑÂêà‰∫ßÂìÅÁî±<br>";
->>>>>>> kewei/ttt
                     foreach (var item in pis)
                     {
-                        str += " ExSKU:" + item.ExSKU + " √˚≥∆:" + item.Title + " SKU:" + item.SKU + "  ˝¡ø:" + item.Qty + " πÊ∏Ò:" + item.Standard + " º€∏Ò£∫" + item.Price + " Õ¯÷∑£∫" + item.Url + " √Ë ˆ£∫" + item.Remark + "<br>";
+                        str += Zu1(item);
                     }
-<<<<<<< HEAD
-                    str += "–ﬁ∏ƒŒ™<br> ";
-=======
                     str += "‰øÆÊîπ‰∏∫<br> ";
->>>>>>> kewei/ttt
                     foreach (var item in list)
                     {
-                        str += " ExSKU:" + item.ExSKU + " √˚≥∆:" + item.Title + " SKU:" + item.SKU + "  ˝¡ø:" + item.Qty + " πÊ∏Ò:" + item.Standard + " º€∏Ò£∫" + item.Price + " Õ¯÷∑£∫" + item.Url + " √Ë ˆ£∫" + item.Remark + "<br>";
+                        // str += " ExSKU:" + item.ExSKU + " ÂêçÁß∞:" + item.Title + " SKU:" + item.SKU + " Êï∞Èáè:" + item.Qty + " ËßÑÊ†º:" + item.Standard + " ‰ª∑Ê†ºÔºö" + item.Price + " ÁΩëÂùÄÔºö" + item.Url + " ÊèèËø∞Ôºö" + item.Remark + "<br>";
+                        str += Zu1(item);
                     }
                     str += "<br>";
                 }
@@ -554,25 +513,18 @@ namespace KeWeiOMS.Web.Controllers
                         }
                         if (check != 1)
                         {
-<<<<<<< HEAD
-                            str += "◊È∫œ≤˙∆∑”…<br>";
-=======
                             str += "ÁªÑÂêà‰∫ßÂìÅÁî±<br>";
->>>>>>> kewei/ttt
                             foreach (var item in pis)
                             {
-                                str += " ExSKU:" + item.ExSKU + " √˚≥∆:" + item.Title + " SKU:" + item.SKU + "  ˝¡ø:" + item.Qty + " πÊ∏Ò:" + item.Standard + " º€∏Ò£∫" + item.Price + " Õ¯÷∑£∫" + item.Url + " √Ë ˆ£∫" + item.Remark + "<br>";
+                                str += Zu1(item);
                             }
-<<<<<<< HEAD
-                            str += "–ﬁ∏ƒŒ™<br> ";
-=======
                             str += "‰øÆÊîπ‰∏∫<br> ";
->>>>>>> kewei/ttt
                             foreach (var item in list)
                             {
-                                str += " ExSKU:" + item.ExSKU + " √˚≥∆:" + item.Title + " SKU:" + item.SKU + "  ˝¡ø:" + item.Qty + " πÊ∏Ò:" + item.Standard + " º€∏Ò£∫" + item.Price + " Õ¯÷∑£∫" + item.Url + " √Ë ˆ£∫" + item.Remark + "<br>";
+                                str += Zu1(item);
                             }
                             str += "<br>";
+
                         }
                     }
 
@@ -586,35 +538,21 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Save(orderProductType);
                     NSession.Flush();
                 }
-                OrderRecordType orderrecoud = new OrderRecordType();
-                orderrecoud.OId = obj.Id;
-                orderrecoud.OrderNo = obj.OrderNo;
-                orderrecoud.RecordType = "–ﬁ∏ƒ∂©µ•";
-                orderrecoud.Content = str;
-                orderrecoud.CreateBy = CurrentUser.Realname;
-                orderrecoud.CreateOn = DateTime.Now;
-                NSession.Save(orderrecoud);
-                NSession.Flush();
+                LoggerUtil.GetOrderRecord(obj, "‰øÆÊîπËÆ¢Âçï", str, CurrentUser, NSession);
+
             }
             catch (Exception ee)
             {
-<<<<<<< HEAD
-                return Json(new { IsSuccess = false, ErrorMsg = "≥ˆ¥Ì¡À" });
-=======
                 return Json(new { IsSuccess = false, ErrorMsg = "Âá∫Èîô‰∫Ü" });
->>>>>>> kewei/ttt
             }
             return Json(new { IsSuccess = true });
 
         }
-<<<<<<< HEAD
-=======
         public string Zu1(OrderProductType item)
         {
             string str = " ExSKU:" + item.ExSKU + " ÂêçÁß∞:" + item.Title + " SKU:" + item.SKU + " Êï∞Èáè:" + item.Qty + " ËßÑÊ†º:" + item.Standard + " ‰ª∑Ê†ºÔºö" + item.Price + " ÁΩëÂùÄÔºö" + item.Url + " ÊèèËø∞Ôºö" + item.Remark + "<br>";
             return str;
         }
->>>>>>> kewei/ttt
 
         [HttpPost]
         public JsonResult SplitSendOrder(string o, int c)
@@ -633,11 +571,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.MId = Utilities.ToInt(o);
                 NSession.Save(obj);
                 NSession.Flush();
-<<<<<<< HEAD
-                OrderHelper.GetOrderRecord(obj, "∑¢ªı≤∑÷∂©µ•£°", CurrentUser.Realname + "≤∑÷–¬Ω®£°", CurrentUser.Realname, NSession);
-=======
                 LoggerUtil.GetOrderRecord(obj, "ÂèëË¥ßÊãÜÂàÜËÆ¢ÂçïÔºÅ", "ÊãÜÂàÜÊñ∞Âª∫ÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
             }
             return Json(new { IsSuccess = true });
         }
@@ -651,11 +585,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
-<<<<<<< HEAD
-            OrderHelper.GetOrderRecord(obj, "≤∑÷∂©µ•£°", CurrentUser.Realname + "Ω´∂©µ•≤∑÷£°", CurrentUser.Realname, NSession);
-=======
             LoggerUtil.GetOrderRecord(obj, "ÊãÜÂàÜËÆ¢ÂçïÔºÅ", "Â∞ÜËÆ¢ÂçïÊãÜÂàÜÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
             NSession.Clear();
             obj.Amount = 0;
             obj.IsPrint = 0;
@@ -679,11 +609,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(orderProductType);
                 NSession.Flush();
             }
-<<<<<<< HEAD
-            OrderHelper.GetOrderRecord(obj, "≤∑÷∂©µ•£°", CurrentUser.Realname + "≤∑÷–¬Ω®£°", CurrentUser.Realname, NSession);
-=======
             LoggerUtil.GetOrderRecord(obj, "ÊãÜÂàÜËÆ¢ÂçïÔºÅ", "ÊãÜÂàÜÊñ∞Âª∫ÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
             return Json(new { IsSuccess = true });
         }
 
@@ -705,12 +631,9 @@ namespace KeWeiOMS.Web.Controllers
             obj.CreateOn = DateTime.Now;
             obj.MId = obj.Id;
             obj.RMB = 0;
-<<<<<<< HEAD
-            obj.Status = OrderStatusEnum.“—¥¶¿Ì.ToString();
-=======
             obj.Status = OrderStatusEnum.Â∑≤Â§ÑÁêÜ.ToString();
->>>>>>> kewei/ttt
             obj.IsOutOfStock = 0;
+            obj.IsAudit = 0;
             obj.OrderNo = Utilities.GetOrderNo(NSession);
             NSession.Save(obj);
             NSession.Flush();
@@ -721,43 +644,49 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(orderProductType);
                 NSession.Flush();
             }
-<<<<<<< HEAD
-            SetQuestionOrder("∂©µ•÷ÿ∑¢", obj);
-            OrderHelper.GetOrderRecord(obj, "÷ÿ∑¢£°", CurrentUser.Realname + "Ω´∂©µ•÷ÿ∑¢£°", CurrentUser.Realname, NSession);
-=======
-
+            SetQuestionOrder("ËÆ¢ÂçïÈáçÂèë", obj);
 
             LoggerUtil.GetOrderRecord(obj, "ÈáçÂèëÔºÅ", "Â∞ÜËÆ¢ÂçïÈáçÂèëÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
             return Json(new { IsSuccess = true });
         }
+        private void SetQuestionOrder(string subject, OrderType orderType, string content = "")
+        {
+            QuestionOrderType question = new QuestionOrderType();
+            question.OId = orderType.Id;
+            question.OrderNo = orderType.OrderNo;
+            question.Status = 0;
+            question.Subjest = subject;
+            if (string.IsNullOrEmpty(content)) { question.Content = orderType.CutOffMemo; }
+            else
+            {
+                question.Content = content;
+            }
+
+            question.CreateBy = CurrentUser.Realname;
+            question.CreateOn = DateTime.Now;
+            question.SolveOn = DateTime.Now;
+            NSession.Save(question);
+            NSession.Flush();
+        }
+
+
         [HttpPost]
         public JsonResult ReSend(string o)
         {
             IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
             foreach (OrderType orderType in list)
             {
-<<<<<<< HEAD
-                if (orderType.Status == OrderStatusEnum.“—∑¢ªı.ToString())
-                {
-                    OrderHelper.GetOrderRecord(orderType, "÷ÿ–¬∑¢ªı£°", CurrentUser.Realname + "Ω´∂©µ•¥”“—∑¢ªıµƒ∂©µ•÷–◊™Œ™ ¥˝∑¢ªı£¨÷ÿ–¬∑¢ªı£°", CurrentUser.Realname, NSession);
-=======
                 if (orderType.Status == OrderStatusEnum.Â∑≤ÂèëË¥ß.ToString())
                 {
                     LoggerUtil.GetOrderRecord(orderType, "ÈáçÊñ∞ÂèëË¥ßÔºÅ", "Â∞ÜËÆ¢Âçï‰ªéÂ∑≤ÂèëË¥ßÁöÑËÆ¢Âçï‰∏≠ËΩ¨‰∏∫ ÂæÖÂèëË¥ßÔºåÈáçÊñ∞ÂèëË¥ßÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
 
                     IList<OrderProductType> ps = NSession.CreateQuery("from OrderProductType where OId=" + orderType.Id).List<OrderProductType>();
                     foreach (OrderProductType orderProductType in ps)
                     {
-                        Utilities.StockIn(1, orderProductType.SKU.Trim(), orderProductType.Qty, 0, "÷ÿ–¬∑¢ªı",
+                        Utilities.StockIn(1, orderProductType.SKU.Trim(), orderProductType.Qty, 0, "ÈáçÊñ∞ÂèëË¥ß",
                                           CurrentUser.Realname, "", NSession);
                     }
-<<<<<<< HEAD
-                    orderType.Status = OrderStatusEnum.¥˝∑¢ªı.ToString();
-=======
                     orderType.Status = OrderStatusEnum.ÂæÖÂèëË¥ß.ToString();
->>>>>>> kewei/ttt
                     NSession.Save(orderType);
                     NSession.Flush();
                 }
@@ -794,68 +723,55 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult OrderHoldUp(string o, string t, string d)
+
+        public ActionResult OrderHoldUp(string o, string t, string d, int s)
         {
             IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
             foreach (OrderType orderType in list)
             {
-<<<<<<< HEAD
-                if (orderType.Status != OrderStatusEnum.“—∑¢ªı.ToString())
-=======
                 if (orderType.Status != OrderStatusEnum.Â∑≤ÂèëË¥ß.ToString())
->>>>>>> kewei/ttt
                 {
                     NSession.Clear();
                     orderType.IsError = 1;
                     orderType.CutOffMemo = t + " " + d;
                     NSession.Update(orderType);
                     NSession.Flush();
-<<<<<<< HEAD
-                    string subjest = "¿πΩÿ";
+                    string subjest = "Êã¶Êà™";
                     if (s == 1)
                     {
-                        subjest = "¿πΩÿ-÷ÿ÷√≤˙∆∑»Îø‚";
+                        subjest = "Êã¶Êà™-ÈáçÁΩÆ‰∫ßÂìÅÂÖ•Â∫ì";
                     }
                     SetQuestionOrder(subjest, orderType);
 
-                    OrderHelper.GetOrderRecord(orderType, "¿πΩÿ∂©µ•£°", CurrentUser.Realname + "Ω´∂©µ•" + subjest + "£¨‘≠“Ú£∫" + t + " " + d, CurrentUser.Realname, NSession);
-=======
-
                     LoggerUtil.GetOrderRecord(orderType, "Êã¶Êà™ËÆ¢ÂçïÔºÅ", "Â∞ÜËÆ¢ÂçïÊã¶Êà™ÔºåÂéüÂõ†Ôºö" + t + " " + d, CurrentUser, NSession);
->>>>>>> kewei/ttt
                 }
 
             }
             return Json(new { IsSuccess = true });
         }
-        [HttpPost]
-        public ActionResult ReHoldUp(string o, int s)
+
+<<<<<<< HEAD
+=======
+        private void SetQuestionOrder(string subject, OrderType orderType, string content = "")
         {
-            IList<OrderType> list = NSession.CreateQuery(" from OrderType where Id in(" + o + ")").List<OrderType>();
-            foreach (OrderType orderType in list)
+            QuestionOrderType question = new QuestionOrderType();
+            question.OId = orderType.Id;
+            question.OrderNo = orderType.OrderNo;
+            question.Status = 0;
+            question.Subjest = subject;
+            if (string.IsNullOrEmpty(content)) { question.Content = orderType.CutOffMemo; }
+            else
             {
-                if (orderType.Status != OrderStatusEnum.Â∑≤ÂèëË¥ß.ToString())
-                {
-                    NSession.Clear();
-                    orderType.IsError = 0;
-                    orderType.CutOffMemo = "";
-
-                    if (s == 1)
-                    {
-                        orderType.Status = "Â∑≤Â§ÑÁêÜ";
-                        orderType.IsPrint = 0;
-                        NSession.CreateQuery("update SKUCodeType set IsOut=0 where OrderNo='" + orderType.OrderNo + "'")
-                           .ExecuteUpdate();
-                    }
-                    NSession.Update(orderType);
-                    NSession.Flush();
-                    LoggerUtil.GetOrderRecord(orderType, "ÂèñÊ∂àÊã¶Êà™ËÆ¢ÂçïÔºÅ", "Â∞ÜËÆ¢ÂçïÂèñÊ∂àÊã¶Êà™" + ((s == 1) ? "ÈáçÁΩÆ‰∫ßÂìÅ" : ""), CurrentUser, NSession);
-                }
-
+                question.Content = content;
             }
-            return Json(new { IsSuccess = true });
-        }
 
+            question.CreateBy = CurrentUser.Realname;
+            question.CreateOn = DateTime.Now;
+            question.SolveOn = DateTime.Now;
+            NSession.Save(question);
+            NSession.Flush();
+        }
+>>>>>>> kewei/ttt
 
         [HttpPost]
         public ActionResult ExportZM(string o)
@@ -883,21 +799,13 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult ExportOrder2(string ids, string s)
         {
-<<<<<<< HEAD
-            string sql = @"select '' as 'º«¬º∫≈',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
-=======
             string sql = @"select '' as 'ËÆ∞ÂΩïÂè∑',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
->>>>>>> kewei/ttt
 left join Products P On OP.SKU=P.SKU ";
 
             sql += " where  O.Enabled=1 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
 
             DataSet ds = GetOrderExport(sql);
-<<<<<<< HEAD
-            // …Ë÷√±‡¬Î∫Õ∏Ωº˛∏Ò Ω 
-=======
             // ËÆæÁΩÆÁºñÁ†ÅÂíåÈôÑ‰ª∂Ê†ºÂºè 
->>>>>>> kewei/ttt
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
         }
@@ -906,11 +814,7 @@ left join Products P On OP.SKU=P.SKU ";
         public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p, string dd)
         {
             StringBuilder sb = new StringBuilder();
-<<<<<<< HEAD
-            string sql = @"select '' as 'º«¬º∫≈',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
-=======
             string sql = @"select '' as 'ËÆ∞ÂΩïÂè∑',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
->>>>>>> kewei/ttt
 left join Products P On OP.SKU=P.SKU ";
             if (string.IsNullOrEmpty(o))
             {
@@ -929,11 +833,7 @@ left join Products P On OP.SKU=P.SKU ";
             }
             DataSet ds = GetOrderExport(sql);
 
-<<<<<<< HEAD
-            // …Ë÷√±‡¬Î∫Õ∏Ωº˛∏Ò Ω 
-=======
             // ËÆæÁΩÆÁºñÁ†ÅÂíåÈôÑ‰ª∂Ê†ºÂºè 
->>>>>>> kewei/ttt
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
         }
@@ -974,11 +874,7 @@ left join Products P On OP.SKU=P.SKU ";
                 }
                 else
                 {
-<<<<<<< HEAD
-                    dr["º«¬º∫≈"] = i;
-=======
                     dr["ËÆ∞ÂΩïÂè∑"] = i;
->>>>>>> kewei/ttt
                     i++;
                     DataRow[] drs = dt.Select("OrderExNo='" + dr["OrderExNo"] + "'");
                     double amount = 0;
@@ -1004,11 +900,7 @@ left join Products P On OP.SKU=P.SKU ";
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
             da.Fill(ds);
-<<<<<<< HEAD
-            // …Ë÷√±‡¬Î∫Õ∏Ωº˛∏Ò Ω 
-=======
             // ËÆæÁΩÆÁºñÁ†ÅÂíåÈôÑ‰ª∂Ê†ºÂºè 
->>>>>>> kewei/ttt
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
         }
@@ -1016,21 +908,13 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpPost]
         public ActionResult ErrorOrder(string o)
         {
-<<<<<<< HEAD
-            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.◊˜∑œ∂©µ•.ToString() + "', IsAudit=0  where Id in(" + o + ")").ExecuteUpdate();
+            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.‰ΩúÂ∫üËÆ¢Âçï.ToString() + "', IsAudit=0  where Id in(" + o + ")").ExecuteUpdate();
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
-                SetQuestionOrder("◊˜∑œ∂©µ•-÷ÿ÷√∞¸π¸»Îø‚", orderType);
-
-                OrderHelper.GetOrderRecord(orderType, "∂©µ•◊˜∑œ£°", CurrentUser.Realname + "Ω´∂©µ•µƒ◊¥Ã¨…ËŒ™◊˜∑œ∂©µ•£°", CurrentUser.Realname, NSession);
-=======
-            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.‰ΩúÂ∫üËÆ¢Âçï.ToString() + "' where Id in(" + o + ")").ExecuteUpdate();
-            IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
-            foreach (var orderType in orders)
-            {
+                SetQuestionOrder("‰ΩúÂ∫üËÆ¢Âçï-ÈáçÁΩÆÂåÖË£πÂÖ•Â∫ì", orderType);
                 LoggerUtil.GetOrderRecord(orderType, "ËÆ¢Âçï‰ΩúÂ∫üÔºÅ", "Â∞ÜËÆ¢ÂçïÁöÑÁä∂ÊÄÅËÆæ‰∏∫‰ΩúÂ∫üËÆ¢ÂçïÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
+
             }
             if (t > 0)
                 return Json(new { IsSuccess = true });
@@ -1057,19 +941,11 @@ left join Products P On OP.SKU=P.SKU ";
         public ActionResult ReError(string o)
         {
 
-<<<<<<< HEAD
-            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.“—¥¶¿Ì.ToString() + "',IsError=0 where Id in(" + o + ")").ExecuteUpdate();
-            IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
-            foreach (var orderType in orders)
-            {
-                OrderHelper.GetOrderRecord(orderType, "…Ë÷√∂©µ•◊˜∑œ£°", CurrentUser.Realname + "Ω´∂©µ•◊¥Ã¨…Ë÷√Œ™◊˜∑œ£°", CurrentUser.Realname, NSession);
-=======
             int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.Â∑≤Â§ÑÁêÜ.ToString() + "',IsError=0 where Id in(" + o + ")").ExecuteUpdate();
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
                 LoggerUtil.GetOrderRecord(orderType, "ËÆæÁΩÆËÆ¢Âçï‰ΩúÂ∫üÔºÅ", "Â∞ÜËÆ¢ÂçïÁä∂ÊÄÅËÆæÁΩÆ‰∏∫‰ΩúÂ∫üÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
             }
 
             if (t > 0)
@@ -1088,11 +964,7 @@ left join Products P On OP.SKU=P.SKU ";
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
-<<<<<<< HEAD
-                OrderHelper.GetOrderRecord(orderType, "≥∑œ˙∂©µ•µƒ»±ªı◊¥Ã¨£°", CurrentUser.Realname + "Ω´∂©µ•µƒ»±ªı±Íº«…æ≥˝£°", CurrentUser.Realname, NSession);
-=======
                 LoggerUtil.GetOrderRecord(orderType, "Êí§ÈîÄËÆ¢ÂçïÁöÑÁº∫Ë¥ßÁä∂ÊÄÅÔºÅ", "Â∞ÜËÆ¢ÂçïÁöÑÁº∫Ë¥ßÊ†áËÆ∞Âà†Èô§ÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
             }
             if (t > 0)
                 return Json(new { IsSuccess = true });
@@ -1114,8 +986,8 @@ left join Products P On OP.SKU=P.SKU ";
                 OrderRecordType orderrecoud = new OrderRecordType();
                 orderrecoud.OId = obj.Id;
                 orderrecoud.OrderNo = obj.OrderNo;
-                orderrecoud.RecordType = "…æ≥˝";
-                orderrecoud.Content = "…æ≥˝∂©µ•";
+                orderrecoud.RecordType = "Âà†Èô§";
+                orderrecoud.Content = "Âà†Èô§ËÆ¢Âçï";
                 orderrecoud.CreateBy = CurrentUser.Realname;
                 orderrecoud.CreateOn = DateTime.Now;
                 NSession.Save(orderrecoud);
@@ -1123,11 +995,7 @@ left join Products P On OP.SKU=P.SKU ";
             }
             catch (Exception ee)
             {
-<<<<<<< HEAD
-                return Json(new { IsSuccess = false, ErrorMsg = "≥ˆ¥Ì¡À" });
-=======
                 return Json(new { IsSuccess = false, ErrorMsg = "Âá∫Èîô‰∫Ü" });
->>>>>>> kewei/ttt
             }
             return Json(new { IsSuccess = true });
         }
@@ -1138,45 +1006,29 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-<<<<<<< HEAD
-                if (order.Status == OrderStatusEnum.¥˝∑¢ªı.ToString())
+                if (order.Status == OrderStatusEnum.ÂæÖÂèëË¥ß.ToString())
                 {
                     if (order.IsAudit == 0)
                     {
-                        string tttt = "∂©µ•:" + order.OrderNo + ", –Ë“™…Û∫À";
+                        string tttt = "ËÆ¢Âçï:" + order.OrderNo + ", ÈúÄË¶ÅÂÆ°Ê†∏";
                         return Json(new { IsSuccess = false, Result = tttt });
                     }
                     if (order.IsError == 0 && string.IsNullOrEmpty(order.CutOffMemo))
                     {
-                        string html = "∂©µ•:" + order.OrderNo + ", µ±«∞◊¥Ã¨£∫¥˝∑¢ªı£¨ø…“‘∑¢ªı°£<br>∑¢ªı∑Ω Ω£∫" +
-=======
-                if (order.Status == OrderStatusEnum.ÂæÖÂèëË¥ß.ToString())
-                {
-                    if (order.IsError == 0 && string.IsNullOrEmpty(order.CutOffMemo))
-                    {
                         string html = "ËÆ¢Âçï:" + order.OrderNo + ", ÂΩìÂâçÁä∂ÊÄÅÔºöÂæÖÂèëË¥ßÔºåÂèØ‰ª•ÂèëË¥ß„ÄÇ<br>ÂèëË¥ßÊñπÂºèÔºö" +
->>>>>>> kewei/ttt
                                 "<s id='logisticsMode'>" + order.LogisticMode + "</s>";
                         return Json(new { IsSuccess = true, Result = html });
                     }
                     else
                     {
-<<<<<<< HEAD
-                        string html = "∂©µ•:" + order.OrderNo + ", Œﬁ∑®…®√Ë£¨«Î¿πΩÿ¥À∞¸π¸£¨‘≠“Ú£∫" + order.CutOffMemo;
-=======
                         string html = "ËÆ¢Âçï:" + order.OrderNo + ", Êó†Ê≥ïÊâ´ÊèèÔºåËØ∑Êã¶Êà™Ê≠§ÂåÖË£πÔºåÂéüÂõ†Ôºö" + order.CutOffMemo;
->>>>>>> kewei/ttt
                         return Json(new { IsSuccess = false, Result = html });
                     }
 
                 }
-<<<<<<< HEAD
-                return Json(new { IsSuccess = false, Result = " Œﬁ∑®≥ˆø‚£° µ±«∞◊¥Ã¨Œ™£∫" + order.Status + "£¨–Ë“™∂©µ•◊¥Ã¨Œ™°∞¥˝∑¢ªı°±∑Ωø……®√Ë£°" });
-=======
                 return Json(new { IsSuccess = false, Result = " Êó†Ê≥ïÂá∫Â∫ìÔºÅ ÂΩìÂâçÁä∂ÊÄÅ‰∏∫Ôºö" + order.Status + "ÔºåÈúÄË¶ÅËÆ¢ÂçïÁä∂ÊÄÅ‰∏∫‚ÄúÂæÖÂèëË¥ß‚ÄùÊñπÂèØÊâ´ÊèèÔºÅ" });
->>>>>>> kewei/ttt
             }
-            return Json(new { IsSuccess = false, Result = "’“≤ªµΩ∏√∂©µ•" });
+            return Json(new { IsSuccess = false, Result = "Êâæ‰∏çÂà∞ËØ•ËÆ¢Âçï" });
         }
 
         public JsonResult OutStockBySend(string o, string t, int s, string l, double w)
@@ -1185,11 +1037,7 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-<<<<<<< HEAD
-                if (order.Status == OrderStatusEnum.¥˝∑¢ªı.ToString())
-=======
                 if (order.Status == OrderStatusEnum.ÂæÖÂèëË¥ß.ToString())
->>>>>>> kewei/ttt
                 {
                     order.TrackCode = t;
                     order.Weight = Convert.ToInt32(w);
@@ -1198,11 +1046,7 @@ left join Products P On OP.SKU=P.SKU ";
                         order.LogisticMode = l;
                     }
                     order.ScanningOn = DateTime.Now;
-<<<<<<< HEAD
-                    order.Status = OrderStatusEnum.“—∑¢ªı.ToString();
-=======
                     order.Status = OrderStatusEnum.Â∑≤ÂèëË¥ß.ToString();
->>>>>>> kewei/ttt
                     order.ScanningBy = CurrentUser.Realname;
                     NSession.Update(order);
                     NSession.Flush();
@@ -1210,31 +1054,22 @@ left join Products P On OP.SKU=P.SKU ";
                         NSession.CreateQuery("from OrderProductType where OId=" + order.Id).List<OrderProductType>();
                     foreach (var orderProductType in ps)
                     {
-                        Utilities.StockOut(s, orderProductType.SKU, orderProductType.Qty, "…®√Ë≥ˆø‚", CurrentUser.Realname, "", order.OrderNo, NSession);
+                        Utilities.StockOut(s, orderProductType.SKU, orderProductType.Qty, "Êâ´ÊèèÂá∫Â∫ì", CurrentUser.Realname, "", order.OrderNo, NSession);
                     }
                     NSession.CreateQuery("update SKUCodeType set IsSend=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "' where OrderNo ='" + order.OrderNo + "'").ExecuteUpdate();
-<<<<<<< HEAD
-                    OrderHelper.GetOrderRecord(order, "∂©µ•…®√Ë∑¢ªı£°", CurrentUser.Realname + "Ω´∂©µ•…®√Ë∑¢ªı¡À£°", CurrentUser.Realname, NSession);
-                    new System.Threading.Thread(TrackCodeUpLoad) { IsBackground = true }.Start(order);
-                    string html = "∂©µ•£∫ " + order.OrderNo + "“—æ≠∑¢ªı";
-                    return Json(new { IsSuccess = true, Result = html, OId = order.Id });
-                }
-                return Json(new { IsSuccess = false, Result = " Œﬁ∑®≥ˆø‚£° µ±«∞◊¥Ã¨Œ™£∫" + order.Status + "£¨–Ë“™∂©µ•◊¥Ã¨Œ™°∞¥˝∑¢ªı°±∑Ωø……®√Ë£°" });
-=======
                     LoggerUtil.GetOrderRecord(order, "ËÆ¢ÂçïÊâ´ÊèèÂèëË¥ßÔºÅ", "Â∞ÜËÆ¢ÂçïÊâ´ÊèèÂèëË¥ß‰∫ÜÔºÅ", CurrentUser, NSession);
                     new System.Threading.Thread(TrackCodeUpLoad) { IsBackground = true }.Start(order);
                     string html = "ËÆ¢ÂçïÔºö " + order.OrderNo + "Â∑≤ÁªèÂèëË¥ß";
                     return Json(new { IsSuccess = true, Result = html, OId = order.Id });
                 }
                 return Json(new { IsSuccess = false, Result = " Êó†Ê≥ïÂá∫Â∫ìÔºÅ ÂΩìÂâçÁä∂ÊÄÅ‰∏∫Ôºö" + order.Status + "ÔºåÈúÄË¶ÅËÆ¢ÂçïÁä∂ÊÄÅ‰∏∫‚ÄúÂæÖÂèëË¥ß‚ÄùÊñπÂèØÊâ´ÊèèÔºÅ" });
->>>>>>> kewei/ttt
             }
-            return Json(new { IsSuccess = false, Result = "’“≤ªµΩ∏√∂©µ•" });
+            return Json(new { IsSuccess = false, Result = "Êâæ‰∏çÂà∞ËØ•ËÆ¢Âçï" });
         }
 
 
         /// <summary>
-        /// 4Aº∂ÃÌº”π“∫≈µΩ∆ΩÃ®
+        /// 4AÁ∫ßÊ∑ªÂä†ÊåÇÂè∑Âà∞Âπ≥Âè∞
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -1258,11 +1093,7 @@ left join Products P On OP.SKU=P.SKU ";
             //return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
 
             //IList<OrderType> orders =
-<<<<<<< HEAD
-            //    NSession.CreateQuery("from OrderType where Account='jinbostore' and Status='“—∑¢ªı' and ScanningOn>'2013-03-25'").List
-=======
             //    NSession.CreateQuery("from OrderType where Account='jinbostore' and Status='Â∑≤ÂèëË¥ß' and ScanningOn>'2013-03-25'").List
->>>>>>> kewei/ttt
             //        <OrderType>();
             //foreach (var orderType in orders)
             //{
@@ -1283,7 +1114,7 @@ left join Products P On OP.SKU=P.SKU ";
                 session.SaveOrUpdate(o);
                 session.Flush();
 
-                //…œ¥´π“∫≈Ãı¬Î
+                //‰∏ä‰º†ÊåÇÂè∑Êù°Á†Å
                 UploadTrackCode(o);
             }
             session.Close();
@@ -1327,29 +1158,21 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-<<<<<<< HEAD
-                if (order.Status == OrderStatusEnum.¥˝ºªı.ToString() || (order.Status == OrderStatusEnum.“—¥¶¿Ì.ToString()))
-=======
                 if (order.Status == OrderStatusEnum.ÂæÖÊã£Ë¥ß.ToString() || (order.Status == OrderStatusEnum.Â∑≤Â§ÑÁêÜ.ToString()))
->>>>>>> kewei/ttt
                 {
                     if (order.IsOutOfStock != 1)
                     {
                         if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
                         {
-<<<<<<< HEAD
-                            string tttt = "∂©µ•:" + order.OrderNo + ", Œﬁ∑®…®√Ë£¨«Î¿πΩÿ¥À∞¸π¸£¨‘≠“Ú£∫" + order.CutOffMemo;
+                            string tttt = "ËÆ¢Âçï:" + order.OrderNo + ", Êó†Ê≥ïÊâ´ÊèèÔºåËØ∑Êã¶Êà™Ê≠§ÂåÖË£πÔºåÂéüÂõ†Ôºö" + order.CutOffMemo;
                             return Json(new { IsSuccess = false, Result = tttt });
                         }
+
                         if (order.IsAudit == 0)
                         {
-                            string tttt = "∂©µ•:" + order.OrderNo + ", –Ë“™…Û∫À";
-=======
-                            string tttt = "ËÆ¢Âçï:" + order.OrderNo + ", Êó†Ê≥ïÊâ´ÊèèÔºåËØ∑Êã¶Êà™Ê≠§ÂåÖË£πÔºåÂéüÂõ†Ôºö" + order.CutOffMemo;
->>>>>>> kewei/ttt
+                            string tttt = "ËÆ¢Âçï:" + order.OrderNo + ", ÈúÄË¶ÅÂÆ°Ê†∏";
                             return Json(new { IsSuccess = false, Result = tttt });
                         }
-                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>—°‘Ò</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td  width='120px'><b>ø‚¥Ê</b></td><td><b>Desc</b></td></tr>";
                         foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                         {
 
@@ -1361,11 +1184,11 @@ left join Products P On OP.SKU=P.SKU ";
                         html += "</table>";
                         return Json(new { IsSuccess = true, Result = html });
                     }
-                    return Json(new { IsSuccess = false, Result = "“—æ≠ «»±ªı∂©µ•£°" });
+                    return Json(new { IsSuccess = false, Result = "Â∑≤ÁªèÊòØÁº∫Ë¥ßËÆ¢ÂçïÔºÅ" });
                 }
-                return Json(new { IsSuccess = false, Result = "∂©µ•◊¥Ã¨≤ª∑˚£°" });
+                return Json(new { IsSuccess = false, Result = "ËÆ¢ÂçïÁä∂ÊÄÅ‰∏çÁ¨¶ÔºÅ" });
             }
-            return Json(new { IsSuccess = false, Result = "’“≤ªµΩ∏√∂©µ•" });
+            return Json(new { IsSuccess = false, Result = "Êâæ‰∏çÂà∞ËØ•ËÆ¢Âçï" });
         }
 
         public JsonResult OutStockByQue(string o, string ids)
@@ -1374,15 +1197,9 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-<<<<<<< HEAD
-                if (order.Status == OrderStatusEnum.¥˝ºªı.ToString() || (order.Status == OrderStatusEnum.“—¥¶¿Ì.ToString()))
-                {
-                    OrderHelper.GetOrderRecord(order, "»±ªı…®√Ë", CurrentUser.Realname + "Ω´∂©µ•ÃÌº”µΩ ÃÌº”µΩ»±ªı∂©µ•÷–£°", CurrentUser.Realname, NSession);
-=======
                 if (order.Status == OrderStatusEnum.ÂæÖÊã£Ë¥ß.ToString() || (order.Status == OrderStatusEnum.Â∑≤Â§ÑÁêÜ.ToString()))
                 {
                     LoggerUtil.GetOrderRecord(order, "Áº∫Ë¥ßÊâ´Êèè", CurrentUser.Realname + "Â∞ÜËÆ¢ÂçïÊ∑ªÂä†Âà∞ Ê∑ªÂä†Âà∞Áº∫Ë¥ßËÆ¢Âçï‰∏≠ÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
                     order.IsOutOfStock = 1;
                     NSession.Update(order);
                     NSession.Flush();
@@ -1395,16 +1212,12 @@ left join Products P On OP.SKU=P.SKU ";
                             NSession.Flush();
                         }
                     }
-<<<<<<< HEAD
-                    string html = "∂©µ•£∫" + order.OrderNo + " ÃÌº”µΩ»±ªı£°";
-=======
                     string html = "ËÆ¢ÂçïÔºö" + order.OrderNo + " Ê∑ªÂä†Âà∞Áº∫Ë¥ßÔºÅ";
->>>>>>> kewei/ttt
                     return Json(new { IsSuccess = true, Result = html });
                 }
-                return Json(new { IsSuccess = false, Result = "∂©µ•◊¥Ã¨≤ª∑˚£°" });
+                return Json(new { IsSuccess = false, Result = "ËÆ¢ÂçïÁä∂ÊÄÅ‰∏çÁ¨¶ÔºÅ" });
             }
-            return Json(new { IsSuccess = false, Result = "’“≤ªµΩ∏√∂©µ•" });
+            return Json(new { IsSuccess = false, Result = "Êâæ‰∏çÂà∞ËØ•ËÆ¢Âçï" });
         }
 
 
@@ -1415,30 +1228,22 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-<<<<<<< HEAD
-                if (order.Status == OrderStatusEnum.¥˝ºªı.ToString() || (order.Status == OrderStatusEnum.“—¥¶¿Ì.ToString()))
-                {
-                    if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
-                    {
-                        string tttt = "∂©µ•:" + order.OrderNo + ", Œﬁ∑®…®√Ë£¨«Î¿πΩÿ¥À∞¸π¸£¨‘≠“Ú£∫" + order.CutOffMemo;
-                        return Json(new { IsSuccess = false, Result = tttt });
-                    }
-                    if (order.IsAudit == 0)
-                    {
-                        string tttt = "∂©µ•:" + order.OrderNo + ", –Ë“™…Û∫À";
-=======
                 if (order.Status == OrderStatusEnum.ÂæÖÊã£Ë¥ß.ToString() || (order.Status == OrderStatusEnum.Â∑≤Â§ÑÁêÜ.ToString()))
                 {
                     if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
                     {
                         string tttt = "ËÆ¢Âçï:" + order.OrderNo + ", Êó†Ê≥ïÊâ´ÊèèÔºåËØ∑Êã¶Êà™Ê≠§ÂåÖË£πÔºåÂéüÂõ†Ôºö" + order.CutOffMemo;
->>>>>>> kewei/ttt
+                        return Json(new { IsSuccess = false, Result = tttt });
+                    }
+                    if (order.IsAudit == 0)
+                    {
+                        string tttt = "ËÆ¢Âçï:" + order.OrderNo + ", ÈúÄË¶ÅÂÆ°Ê†∏";
                         return Json(new { IsSuccess = false, Result = tttt });
                     }
 
                     string html = @"  <table width='100%' class='dataTable'>
                                                         <tr class='dataTableHead'>
-                                                            <th width='300px' >Õº∆¨</th><td width='200px'>SKU* ˝¡ø</td><td>πÊ∏Ò</td><td>…®√Ë¥Œ ˝</td>
+                                                            <th width='300px' >ÂõæÁâá</th><td width='200px'>SKU*Êï∞Èáè</td><td>ËßÑÊ†º</td><td>Êâ´ÊèèÊ¨°Êï∞</td>
                                                         </tr>";
                     string html2 = @"<tr style='font-weight:bold; font-size:30px;' name='tr_{0}' code='{3}' qty='{1}' cqty='{4}'><td><img width='220px' src='/imgs/pic/{0}/1.jpg' /></td><td>{0}*{1}</td><td>{2}</td><td><span><span id='r_{3}' style='color:red'>{4}</span>/<span style='color:green'>{1}</span></td></tr>";
                     order.Products =
@@ -1461,13 +1266,9 @@ left join Products P On OP.SKU=P.SKU ";
                     html += "</table>";
                     return Json(new { IsSuccess = true, Result = html });
                 }
-<<<<<<< HEAD
-                return Json(new { IsSuccess = false, Result = "∂©µ•◊¥Ã¨≤ª∑˚£°¥À∂©µ•µƒ◊¥Ã¨ «£∫" + order.Status });
-=======
                 return Json(new { IsSuccess = false, Result = "ËÆ¢ÂçïÁä∂ÊÄÅ‰∏çÁ¨¶ÔºÅÊ≠§ËÆ¢ÂçïÁöÑÁä∂ÊÄÅÊòØÔºö" + order.Status });
->>>>>>> kewei/ttt
             }
-            return Json(new { IsSuccess = false, Result = "’“≤ªµΩ∏√∂©µ•" });
+            return Json(new { IsSuccess = false, Result = "Êâæ‰∏çÂà∞ËØ•ËÆ¢Âçï" });
         }
 
         public JsonResult OutStockByPei(string p1, string p2, string o, string skuCode)
@@ -1476,21 +1277,13 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-<<<<<<< HEAD
-                if (order.Status == OrderStatusEnum.¥˝ºªı.ToString() || (order.Status == OrderStatusEnum.“—¥¶¿Ì.ToString()))
-=======
                 if (order.Status == OrderStatusEnum.ÂæÖÊã£Ë¥ß.ToString() || (order.Status == OrderStatusEnum.Â∑≤Â§ÑÁêÜ.ToString()))
->>>>>>> kewei/ttt
                 {
                     bool iscon = false;
                     OrderPeiRecordType orderPeiRecord = new OrderPeiRecordType { OrderNo = order.OrderNo, PeiBy = p1, ValiBy = p2, CreateOn = DateTime.Now, OId = order.Id, ScanBy = CurrentUser.Realname };
                     NSession.Save(orderPeiRecord);
                     NSession.Flush();
-<<<<<<< HEAD
-                    order.Status = OrderStatusEnum.¥˝∞¸◊∞.ToString();
-=======
                     order.Status = OrderStatusEnum.ÂæÖÂåÖË£Ö.ToString();
->>>>>>> kewei/ttt
                     if (order.IsOutOfStock == 1)
                     {
                         iscon = true;
@@ -1501,16 +1294,6 @@ left join Products P On OP.SKU=P.SKU ";
                     NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + order.Id).ExecuteUpdate();
                     if (skuCode != "")
                         NSession.CreateQuery("update SKUCodeType set IsOut=1,PeiOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='" + order.OrderNo + "' where Code in ('" + skuCode.Replace(",", "','") + "')").ExecuteUpdate();
-<<<<<<< HEAD
-                    string html = "∂©µ•£∫" + order.OrderNo + " ≈‰ªıÕÍ≥…£°";
-                    if (iscon)
-                    {
-                        OrderHelper.GetOrderRecord(order, "∂©µ•≈‰ªı…®√Ë£°", CurrentUser.Realname + "Ω´∂©µ•≈‰ªı…®√Ë£¨∂©µ•µƒ»±ªı◊¥Ã¨…æ≥˝£°", CurrentUser.Realname, NSession);
-                    }
-                    else
-                    {
-                        OrderHelper.GetOrderRecord(order, "∂©µ•≈‰ªı…®√Ë£°", CurrentUser.Realname + "Ω´∂©µ•≈‰ªı…®√Ë£°", CurrentUser.Realname, NSession);
-=======
                     string html = "ËÆ¢ÂçïÔºö" + order.OrderNo + " ÈÖçË¥ßÂÆåÊàêÔºÅ";
                     if (iscon)
                     {
@@ -1519,18 +1302,13 @@ left join Products P On OP.SKU=P.SKU ";
                     else
                     {
                         LoggerUtil.GetOrderRecord(order, "ËÆ¢ÂçïÈÖçË¥ßÊâ´ÊèèÔºÅ", "Â∞ÜËÆ¢ÂçïÈÖçË¥ßÊâ´ÊèèÔºÅ", CurrentUser, NSession);
->>>>>>> kewei/ttt
                     }
 
                     return Json(new { IsSuccess = true, Result = html });
                 }
-<<<<<<< HEAD
-                return Json(new { IsSuccess = false, Result = "∂©µ•◊¥Ã¨≤ª∑˚£°œ÷‘⁄µƒ∂©µ•◊¥Ã¨Œ™£∫" + order.Status + " Ω´∂©µ•◊¥Ã¨…Ë÷√Œ™°∞“—¥¶¿Ì°±≤≈ƒ‹≈‰ªı…®√Ë£°" });
-=======
                 return Json(new { IsSuccess = false, Result = "ËÆ¢ÂçïÁä∂ÊÄÅ‰∏çÁ¨¶ÔºÅÁé∞Âú®ÁöÑËÆ¢ÂçïÁä∂ÊÄÅ‰∏∫Ôºö" + order.Status + " Â∞ÜËÆ¢ÂçïÁä∂ÊÄÅËÆæÁΩÆ‰∏∫‚ÄúÂ∑≤Â§ÑÁêÜ‚ÄùÊâçËÉΩÈÖçË¥ßÊâ´ÊèèÔºÅ" });
->>>>>>> kewei/ttt
             }
-            return Json(new { IsSuccess = false, Result = "’“≤ªµΩ∏√∂©µ•" });
+            return Json(new { IsSuccess = false, Result = "Êâæ‰∏çÂà∞ËØ•ËÆ¢Âçï" });
         }
 
 
@@ -1541,17 +1319,10 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-<<<<<<< HEAD
-                if (order.Status == OrderStatusEnum.¥˝∞¸◊∞.ToString())
-                {
-                    OrderHelper.GetOrderRecord(order, "∂©µ•º∆º˛…®√Ë£°", CurrentUser.Realname + "Ω´∂©µ• ∞¸◊∞º≤º∆º˛£°", CurrentUser.Realname, NSession);
-                    order.Status = OrderStatusEnum.¥˝∑¢ªı.ToString();
-=======
                 if (order.Status == OrderStatusEnum.ÂæÖÂåÖË£Ö.ToString())
                 {
                     LoggerUtil.GetOrderRecord(order, "ËÆ¢ÂçïËÆ°‰ª∂Êâ´ÊèèÔºÅ", "Â∞ÜËÆ¢Âçï ÂåÖË£ÖÁñæËÆ°‰ª∂ÔºÅ", CurrentUser, NSession);
                     order.Status = OrderStatusEnum.ÂæÖÂèëË¥ß.ToString();
->>>>>>> kewei/ttt
                     NSession.Update(order);
                     NSession.Flush();
 
@@ -1565,19 +1336,12 @@ left join Products P On OP.SKU=P.SKU ";
                     };
                     NSession.Save(orderPackRecord);
                     NSession.Flush();
-<<<<<<< HEAD
-                    string html = "∂©µ•£∫ " + order.OrderNo + "º∆º˛≥…π¶£°∞¸◊∞»À£∫" + p;
-                    return Json(new { IsSuccess = true, Result = html });
-                }
-                return Json(new { IsSuccess = false, Result = " Œﬁ∑®≥ˆø‚£° µ±«∞◊¥Ã¨Œ™£∫" + order.Status + "£¨–Ë“™∂©µ•◊¥Ã¨Œ™°∞¥˝∑¢ªı°±∑Ωø……®√Ë£°" });
-=======
                     string html = "ËÆ¢ÂçïÔºö " + order.OrderNo + "ËÆ°‰ª∂ÊàêÂäüÔºÅÂåÖË£Ö‰∫∫Ôºö" + p;
                     return Json(new { IsSuccess = true, Result = html });
                 }
                 return Json(new { IsSuccess = false, Result = " Êó†Ê≥ïÂá∫Â∫ìÔºÅ ÂΩìÂâçÁä∂ÊÄÅ‰∏∫Ôºö" + order.Status + "ÔºåÈúÄË¶ÅËÆ¢ÂçïÁä∂ÊÄÅ‰∏∫‚ÄúÂæÖÂèëË¥ß‚ÄùÊñπÂèØÊâ´ÊèèÔºÅ" });
->>>>>>> kewei/ttt
             }
-            return Json(new { IsSuccess = false, Result = "’“≤ªµΩ∏√∂©µ•" });
+            return Json(new { IsSuccess = false, Result = "Êâæ‰∏çÂà∞ËØ•ËÆ¢Âçï" });
 
         }
 
@@ -1603,20 +1367,12 @@ left join Products P On OP.SKU=P.SKU ";
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
-<<<<<<< HEAD
-                    where = " where Enabled=1 and  Status" + flag + "'¥˝¥¶¿Ì' and " + where;
-=======
                     where = " where Enabled=1 and  Status" + flag + "'ÂæÖÂ§ÑÁêÜ' and " + where;
->>>>>>> kewei/ttt
                 }
             }
             if (where.Length == 0)
             {
-<<<<<<< HEAD
-                where = " where Enabled=1 and  Status" + flag + "'¥˝¥¶¿Ì'";
-=======
                 where = " where Enabled=1 and  Status" + flag + "'ÂæÖÂ§ÑÁêÜ'";
->>>>>>> kewei/ttt
             }
             IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -1645,7 +1401,7 @@ left join Products P On OP.SKU=P.SKU ";
         public JsonResult GetNotQueList()
         {
             IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * from (
-select SKU,SUM(Qty) as Qty,(select isnull(SUM(Qty),0) from WarehouseStock where SKU=OP.SKU ) as NowQty,(select count(Id) from SKUCode where SKU=OP.SKU and IsOut=0) as unPeiQty,COUNT(O.Id) as'OrderQty' from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1 and O.Status<>'◊˜∑œ∂©µ•' group by SKU
+select SKU,SUM(Qty) as Qty,(select isnull(SUM(Qty),0) from WarehouseStock where SKU=OP.SKU ) as NowQty,(select count(Id) from SKUCode where SKU=OP.SKU and IsOut=0) as unPeiQty,COUNT(O.Id) as'OrderQty' from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and OP.IsQue=1 and O.Status<>'‰ΩúÂ∫üËÆ¢Âçï' group by SKU
 ) as tbl  where NowQty>0")).List<object[]>();
             List<QueCount> list = new List<QueCount>();
             foreach (object[] objectse in objs)
@@ -1658,7 +1414,7 @@ select SKU,SUM(Qty) as Qty,(select isnull(SUM(Qty),0) from WarehouseStock where 
             return Json(new { total = list.Count, rows = list });
         }
 
-        //µº≥ˆŒ™Excel
+        //ÂØºÂá∫‰∏∫Excel
         public JsonResult ToExcel()
         {
             try
@@ -1669,16 +1425,12 @@ select SKU,SUM(Qty) as Qty,(select isnull(SUM(Qty),0) from WarehouseStock where 
             }
             catch (Exception ee)
             {
-<<<<<<< HEAD
-                return Json(new { Msg = "≥ˆ¥Ì¡À" }, JsonRequestBehavior.AllowGet);
-=======
                 return Json(new { Msg = "Âá∫Èîô‰∫Ü" }, JsonRequestBehavior.AllowGet);
->>>>>>> kewei/ttt
             }
-            return Json(new { Msg = "µº≥ˆ≥…π¶" }, JsonRequestBehavior.AllowGet);
+            return Json(new { Msg = "ÂØºÂá∫ÊàêÂäü" }, JsonRequestBehavior.AllowGet);
         }
 
-        //IList◊™DataSet
+        //IListËΩ¨DataSet
         public static DataSet ConvertToDataSet<T>(IList<T> list)
         {
             if (list == null || list.Count <= 0)

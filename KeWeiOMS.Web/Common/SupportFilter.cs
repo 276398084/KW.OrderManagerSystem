@@ -1,5 +1,7 @@
 ﻿
 using System.Web.Mvc;
+using System.Web.Providers.Entities;
+
 namespace KeWeiOMS.Web
 {
     public class SupportFilterAttribute : ActionFilterAttribute
@@ -16,6 +18,8 @@ namespace KeWeiOMS.Web
             {
                 return;
             }
+            var controller = filterContext.RouteData.Values["controller"].ToString();
+            var action = filterContext.RouteData.Values["action"].ToString();
 
             if (filterContext.HttpContext.Session["account"] == null)
             {
@@ -26,6 +30,7 @@ namespace KeWeiOMS.Web
                     {
                         string[] strs = str.Split('&');
                         iscon = Utilities.LoginByUser(strs[0], strs[1], NhibernateHelper.NhbHelper.GetCurrentSession());
+                       // IsAuthorization(filterContext, controller, action);
                     }
                 }
                 if (iscon)
@@ -34,7 +39,31 @@ namespace KeWeiOMS.Web
                 filterContext.Result = new EmptyResult();
                 return;
             }
+           // IsAuthorization(filterContext, controller, action);
+
         }
 
+        private static void IsAuthorization(ActionExecutingContext filterContext, string controller, string action)
+        {
+            if (controller.ToUpper() == "HOME" || controller.ToUpper() == "USER")
+            {
+                return;
+            }
+            KeWeiOMS.Domain.UserType account = (KeWeiOMS.Domain.UserType)filterContext.HttpContext.Session["account"];
+            if (account.Username.ToUpper() == "ADMIN")
+            {
+                return;
+            }
+            if (account.Permissions.FindIndex(
+                p =>
+                p.Code.ToString().ToUpper() ==
+                controller.Trim().ToUpper() + "." + action.Trim().ToUpper()) == -1)
+            {
+                filterContext.RequestContext.HttpContext.Response.Write("{\"IsSuccess\":false,\"ErrorMsg\"=\"无权访问\"}");
+                filterContext.RequestContext.HttpContext.Response.End();
+            }
+        }
     }
+
+
 }

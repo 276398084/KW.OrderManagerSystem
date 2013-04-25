@@ -17,11 +17,12 @@ using ITransaction = NHibernate.ITransaction;
 namespace KeWeiOMS.Web.Controllers
 {
     [SupportFilter]//此处如果去掉注释，则全部继承BaseController的Controller，都将执行SupportFilter过滤
+
     public class BaseController : Controller
     {
         protected ISession NSession = NhbHelper.GetCurrentSession();
 
-        // public ISession NSession = SessionBuilder.CreateSession();
+
 
         private UserType currentUser;
 

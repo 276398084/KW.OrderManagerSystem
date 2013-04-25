@@ -317,22 +317,28 @@
             }
 
             function exportPlan(parameters) {
+                var search = "BuyOn_st&" + $('#StartDate').datebox("getValue") + "^BuyOn_et&" + $('#EndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                var a = $('#SearchStatus').combobox("getText");
+                if (a != "所有") {
+                    search += "Status&" + a + "^";
+                }
                 $('#dg').datagrid('loading');
                 var postUrl = "/Order/ExportDown/1";
                 $.ajax({
                     url: '@Url.Action("ExportPlan", "PurchasePlan")/',
-            success: function (result) {
-
-                $.messager.show({
-                    title: '提示',
-                    msg: result.Msg,
-                    timeout: 0,
-                    showType: 'slide'
-                })
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        })
+                    type: 'post',
+                    data: 'search=' + encodeURIComponent(search),
+                    success: function (result) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: result.Msg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                        location.href = postUrl;
+                        $('#dg').datagrid('reload');
+                    }
+                });
             }
 
             function datecheck(value) {

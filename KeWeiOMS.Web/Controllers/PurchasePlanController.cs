@@ -141,6 +141,7 @@ namespace KeWeiOMS.Web.Controllers
                 string str = "";
                 PurchasePlanType obj2 = GetById(obj.Id);
                 str += Utilities.GetObjEditString(obj2, obj) + "<br>";
+                NSession.Clear();
                 NSession.Update(obj);
                 NSession.Flush();
                 LoggerUtil.GetPurchasePlanRecord(obj, "修改采购计划", str, CurrentUser, NSession);
@@ -169,17 +170,13 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true });
         }
 
-        public JsonResult ExportPlan()
+        public JsonResult ExportPlan(string search)
         {
             try
             {
-                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from PurchasePlan " + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+                List<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + SqlWhere(search))
+                    .List<PurchasePlanType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
             }
             catch (Exception ee)
             {
@@ -196,16 +193,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 orderby = " order by " + sort + " " + order;
             }
-            if (!string.IsNullOrEmpty(search))
-            {
-
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-
-            }
+            where = SqlWhere(search);
             Session["ToExcel"] = where + orderby;
             IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -215,6 +203,22 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from PurchasePlanType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+
+        private static string SqlWhere(string search)
+        {
+           // search=HttpUtility.UrlDecode(search);
+            string where = string.Empty;
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            return where;
+        }
+
         public JsonResult SearchSKU(string id)
         {
             IList<PurchasePlanType> obj = NSession.CreateQuery("from PurchasePlanType where SKU=:sku order by Id desc").SetString("sku", id)

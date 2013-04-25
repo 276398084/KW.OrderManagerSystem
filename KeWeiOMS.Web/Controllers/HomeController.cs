@@ -233,7 +233,7 @@ left join ReturnAddress R On r.Id=" + r;
 
                 if (list2.Contains(dr["OrderNo"].ToString()))
                 {
-                    dr.Delete();
+                   
                 }
                 else
                 {

@@ -123,6 +123,7 @@
     <Compile Include="Common\BaseController.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\Config.cs" />
     <Compile Include="Common\easyui\CheckBoxListHelper.cs" />
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />

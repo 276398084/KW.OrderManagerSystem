@@ -33,6 +33,9 @@ namespace KeWeiOMS.Web
         {
             // Run();
             // OnStart();
+            System.Configuration.AppSettingsReader appReader = new System.Configuration.AppSettingsReader();//配置文件中取
+            var isji = appReader.GetValue("IsJi", typeof(bool));
+            Config.IsJi = Convert.ToBoolean(isji);
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);

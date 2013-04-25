@@ -122,9 +122,6 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult BuMenList(int id)
         {
-
-
-
             IList<OrganizeType> objList = NSession.CreateQuery("from OrganizeType").List<OrganizeType>();
             IList<OrganizeType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
             List<SystemTree> tree = new List<SystemTree>();

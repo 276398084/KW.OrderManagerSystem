@@ -171,6 +171,9 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
                 StockInType obj = GetById(id);
+                NSession.Delete("from SKUCodeType where PlanNo='" + obj.Id + "'");
+                NSession.Flush();
+                Utilities.StockOut(1, obj.SKU, obj.Qty, "入库删除", CurrentUser.Realname, "", "", NSession);
                 NSession.Delete(obj);
                 NSession.Flush();
             }

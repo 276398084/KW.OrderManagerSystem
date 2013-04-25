@@ -100,13 +100,13 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 data.AvgQty = Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 2);
                 foreach (var objectes in SKUCount)
                 {
-                    if(objectes[0].ToString().ToUpper()==data.SKU.ToUpper())
+                    if (objectes[0].ToString().ToUpper() == data.SKU.ToUpper())
                     {
                         data.NowQty = Convert.ToInt32(objectes[1]);
                         break;
                     }
                 }
-                
+
                 if (Math.Round(((p.SevenDay / 7) * 0.5 + p.Fifteen / 15 * 0.3 + p.ThirtyDay / 30 * 0.2), 0) * 3 < data.NowQty)
                 {
                     data.IsImportant = 1;
@@ -337,7 +337,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                             str += "<br>";
                         }
                     }
-
                 }
                 NSession.Delete("from ProductComposeType where SKU='" + obj.SKU + "'");
                 NSession.Flush();
@@ -382,6 +381,22 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 NSession.Update(obj);
                 NSession.Flush();
                 NSession.Clear();
+
+                //修改库存中的数据
+                IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where PId=" + obj.Id).List<WarehouseStockType>();
+                //
+                //在仓库中添加产品库存
+                //
+                foreach (var item in list)
+                {
+                    WarehouseStockType stock = new WarehouseStockType();
+                    stock.Pic = obj.SPicUrl;
+                    stock.SKU = obj.SKU;
+                    stock.Title = obj.ProductName;
+                    stock.UpdateOn = DateTime.Now;
+                    NSession.Update(item);
+                    NSession.Flush();
+                }
                 LoggerUtil.GetProductRecord(obj, "商品修改", str, CurrentUser, NSession);
             }
             catch (Exception ee)

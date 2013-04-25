@@ -119,7 +119,7 @@ namespace KeWeiOMS.Web.Controllers
                                 orderType.Status = "已处理";
                                 orderType.IsPrint = 0;
                             }
-                            NSession.CreateQuery("update SKUCodeType set IsOut=0,PeiOn='' where OrderNo='" + orderType.OrderNo + "'")
+                            NSession.CreateQuery("update SKUCodeType set IsOut=1,IsSend=1,SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='拦截报废出库' where OrderNo='" + orderType.OrderNo + "'")
                                .ExecuteUpdate();
                         }
 

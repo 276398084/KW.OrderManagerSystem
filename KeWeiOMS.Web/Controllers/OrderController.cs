@@ -750,25 +750,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true });
         }
 
-        private void SetQuestionOrder(string subject, OrderType orderType, string content = "")
-        {
-            QuestionOrderType question = new QuestionOrderType();
-            question.OId = orderType.Id;
-            question.OrderNo = orderType.OrderNo;
-            question.Status = 0;
-            question.Subjest = subject;
-            if (string.IsNullOrEmpty(content)) { question.Content = orderType.CutOffMemo; }
-            else
-            {
-                question.Content = content;
-            }
 
-            question.CreateBy = CurrentUser.Realname;
-            question.CreateOn = DateTime.Now;
-            question.SolveOn = DateTime.Now;
-            NSession.Save(question);
-            NSession.Flush();
-        }
 
         [HttpPost]
         public ActionResult ExportZM(string o)
@@ -796,7 +778,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult ExportOrder2(string ids, string s)
         {
-            string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+            string sql = @"select '' as '记录号',  SplitZuO.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发'   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
 
             sql += " where  O.Enabled=1 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
@@ -811,7 +793,7 @@ left join Products P On OP.SKU=P.SKU ";
         public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p, string dd)
         {
             StringBuilder sb = new StringBuilder();
-            string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+            string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发'  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
             if (string.IsNullOrEmpty(o))
             {
@@ -883,6 +865,8 @@ left join Products P On OP.SKU=P.SKU ";
                     dr["TotalPrice"] = amount;
                     list.Add(dr["OrderExNo"].ToString().Trim());
                 }
+                dr["拆分"] = dr["拆分"].ToString() == "1" ? "是" : "否";
+                dr["重发"] = dr["重发"].ToString() == "1" ? "是" : "否";
             }
             return ds;
         }
@@ -911,7 +895,6 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 SetQuestionOrder("作废订单-重置包裹入库", orderType);
                 LoggerUtil.GetOrderRecord(orderType, "订单作废！", "将订单的状态设为作废订单！", CurrentUser, NSession);
-
             }
             if (t > 0)
                 return Json(new { IsSuccess = true });
@@ -924,15 +907,11 @@ left join Products P On OP.SKU=P.SKU ";
         public ActionResult SplitZu(string o)
         {
             IList<OrderProductType> orders = NSession.CreateQuery("from OrderProductType where OId In (" + o + ")").List<OrderProductType>();
-            IList<ProductComposeType> products = NSession.CreateQuery("from ProductComposeType").List<ProductComposeType>();
-            foreach (OrderProductType orderProductType in orders)
-            {
-                List<ProductComposeType> compose = products.Where(x => x.SKU.Trim().ToUpper() == orderProductType.SKU.Trim().ToUpper()).ToList();
-                if (compose.Count > 0)
-                    OrderHelper.SplitProduct(orderProductType, compose, NSession);
-            }
+            OrderHelper.SplitProduct(orders, NSession);
             return Json(new { IsSuccess = true });
         }
+
+
 
         [HttpPost]
         public ActionResult ReError(string o)
@@ -1003,7 +982,7 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待发货.ToString())
+                if (order.Status == OrderStatusEnum.待发货.ToString() || (!Config.IsJi && order.Status == OrderStatusEnum.待包装.ToString()))
                 {
                     if (order.IsAudit == 0)
                     {
@@ -1034,7 +1013,7 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待发货.ToString())
+                if (order.Status == OrderStatusEnum.待发货.ToString() || (!Config.IsJi && order.Status == OrderStatusEnum.待包装.ToString()))
                 {
                     order.TrackCode = t;
                     order.Weight = Convert.ToInt32(w);
@@ -1170,6 +1149,8 @@ left join Products P On OP.SKU=P.SKU ";
                             string tttt = "订单:" + order.OrderNo + ", 需要审核";
                             return Json(new { IsSuccess = false, Result = tttt });
                         }
+                        string html = "<table width='100%' border='1'><tr><td width='100px' align='right'><b>选择</b></td><td width='120px'><b>SKU</b></td><td  width='120px'><b>Qty</b></td><td  width='120px'><b>库存</b></td><td><b>Desc</b></td></tr>";
+
                         foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                         {
 
