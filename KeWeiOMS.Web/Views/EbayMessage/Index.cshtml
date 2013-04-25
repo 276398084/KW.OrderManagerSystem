@@ -95,29 +95,36 @@
         }
 
     function toExcel() {
+        search = getSearch();
         $('#dg').datagrid('loading');
         var postUrl = "/Order/ExportDown/1";
         $.ajax({
             url: '@Url.Action("ToExcel", "EbayMessage")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
             success: function (result) {
-
                 $.messager.show({
                     title: '提示',
-                    msg: result.Msg,
+                    msg: result.ErrorMsg,
                     timeout: 0,
                     showType: 'slide'
-                })
+                });
                 location.href = postUrl;
                 $('#dg').datagrid('reload');
             }
-        })
+        });
     }
 
     function doSearch() {
-        search = "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
+        search = getSearch();
         $("#dg").datagrid("load", {
             search: search
         });
+    }
+
+    function getSearch() {
+        search = "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
+        return search;
     }
 
     function syn() {

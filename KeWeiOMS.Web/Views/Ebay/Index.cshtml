@@ -24,12 +24,13 @@
 
         //编辑框
         function e_dlg() {
-            var url = '@Url.Action("Edit", "Ebay")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit);
-            }
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit","Ebay")/' + id;
+        if (id != undefined) {
+            showdlg(url, 'e_dlg', ajaxEdit)
         }
+    }
+
 
         //异步新建提交
         function ajaxAdd() {
@@ -67,35 +68,45 @@
             });
             return (undefined);
         }
+
         function toExcel() {
+            search = getSearch();
             $('#dg').datagrid('loading');
             var postUrl = "/Order/ExportDown/1";
             $.ajax({
                 url: '@Url.Action("ToExcel", "Ebay")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
             success: function (result) {
-
                 $.messager.show({
                     title: '提示',
-                    msg: result.Msg,
+                    msg: result.ErrorMsg,
                     timeout: 0,
                     showType: 'slide'
-                })
+                });
                 location.href = postUrl;
                 $('#dg').datagrid('reload');
             }
-        })
-    }
-
-    function doSearch() {
-        search = "StartTime_st&" + $('#txtStartDate').datebox("getValue") + "^StartTime_et&"+$('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        $("#dg").datagrid("load", {
-            search: search
         });
     }
+        function getSearch()
+        {
+            search = "StartTime_st&" + $('#txtStartDate').datebox("getValue") + "^StartTime_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            return search;
+        }
+
+        function doSearch() {
+            search = getSearch();
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
     function url(v, r, i) {
         return '<a href="' + r.ProductUrl + '"  target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="100px" width="100px" /></a>'
     }
-    function syn() {
+
+@*    function syn() {
         $('#dg').datagrid("loading");
         $.ajax({
             url: '@Url.Action("Syn", "Ebay")',
@@ -119,7 +130,7 @@
                  $('#dg').datagrid('reload');
              }
          })
-     }
+     }*@
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"

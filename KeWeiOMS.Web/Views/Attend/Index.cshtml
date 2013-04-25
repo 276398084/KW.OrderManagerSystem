@@ -44,29 +44,35 @@
     }
 
     function doSearch() {
-        search = "^CurrentDate_st&" + $('#txtStartDate').datebox("getValue") + "^CurrentDate_et&" +$('#txtEndDate').datebox("getValue") + "^RealName&" + $('#txtSearch').attr("value");
+        search = getSearch();
         $("#dg").datagrid("load", {
             search: search
         });
     }
+    function getSearch() {
+        search = "^CurrentDate_st&" + $('#txtStartDate').datebox("getValue") + "^CurrentDate_et&" + $('#txtEndDate').datebox("getValue") + "^RealName&" + $('#txtSearch').attr("value");
+        return search;
+    }
 
     function toExcel() {
+        search = getSearch();
         $('#dg').datagrid('loading');
         var postUrl = "/Order/ExportDown/1";
         $.ajax({
             url: '@Url.Action("ToExcel", "Attend")/',
-                     success: function (result) {
-                         
-                         $.messager.show({
-                             title: '提示',
-                             msg: result.Msg,
-                             timeout: 0,
-                             showType: 'slide'
-                         })
-                         location.href = postUrl;
-                         $('#dg').datagrid('reload');
-                     }
-                 })
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        });
     }
 </script>
 <div region="center">

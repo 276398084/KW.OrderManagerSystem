@@ -25,12 +25,12 @@
 
         //编辑框
         function e_dlg() {
+            var id = getselectedRow();
             var url = '@Url.Action("Edit","EbayMessageRe")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
+                if (id != undefined) {
+                    showdlg(url, 'e_dlg', ajaxEdit)
+                }
             }
-        }
 
         //异步新建提交
         function ajaxAdd() {
@@ -70,29 +70,36 @@
         return (undefined);
     }
     function toExcel() {
+        search = getSearch();
         $('#dg').datagrid('loading');
         var postUrl = "/Order/ExportDown/1";
         $.ajax({
             url: '@Url.Action("ToExcel", "EbayMessageRe")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
             success: function (result) {
-
                 $.messager.show({
                     title: '提示',
-                    msg: result.Msg,
+                    msg: result.ErrorMsg,
                     timeout: 0,
                     showType: 'slide'
-                })
+                });
                 location.href = postUrl;
                 $('#dg').datagrid('reload');
             }
-        })
+        });
     }
 
     function doSearch() {
-        search = "ReplayOn_st&" + $('#txtStartDate').datebox("getValue") + "^ReplayOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        search = getSearch();
         $("#dg").datagrid("load", {
             search: search
         });
+    }
+
+    function getSearch() {
+        search = "ReplayOn_st&" + $('#txtStartDate').datebox("getValue") + "^ReplayOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        return search;
     }
 
      function replay(v, r, i) {

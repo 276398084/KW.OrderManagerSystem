@@ -5,7 +5,13 @@ using System.Web.UI;
 using KeWeiOMS.Domain;
 using System.Data.SqlClient;
 using System.Data;
+using NHibernate;
 using System.Text.RegularExpressions;
+using System.Collections;
+using System.Linq;
+using System.Web;
+using KeWeiOMS.NhibernateHelper;
+
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -106,10 +112,10 @@ namespace KeWeiOMS.Web.Controllers
                 orderby = " order by " + sort + " " + order;
             }
 
-            if (!string.IsNullOrEmpty(search)) 
-            { 
-                string key = search.Substring(0,search.IndexOf("$"));  
-                type = search.Substring(search.LastIndexOf("$")+1);
+            if (!string.IsNullOrEmpty(search))
+            {
+                string key = search.Substring(0, search.IndexOf("$"));
+                type = search.Substring(search.LastIndexOf("$") + 1);
                 where = Utilities.Resolve(key);
                 if (where.Length > 0)
                 {
@@ -137,7 +143,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 where = " where (ReplayOnlyBy is null ";
             }
-            where += " or ReplayOnlyBy ='"+CurrentUser.Realname+"')";
+            where += " or ReplayOnlyBy ='" + CurrentUser.Realname + "')";
             if (!string.IsNullOrEmpty(type))
             {
                 string pid = type.Substring(0, type.IndexOf("~"));
@@ -210,13 +216,28 @@ namespace KeWeiOMS.Web.Controllers
 
         }
 
-        public string init(string key,string all)
+        public JsonResult ToExcel(string search)
+        {
+            try
+            {
+                List<EbayMessageType> objList = NSession.CreateQuery("from EbayMessageType " + Utilities.SqlWhere(search))
+                    .List<EbayMessageType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
+
+        public string init(string key, string all)
         {
             string qty = "";
             Regex regex = new Regex(key, RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant);
             if (regex.IsMatch(all))
             {
-                    qty ="0";
+                qty = "0";
             }
             return qty;
         }
@@ -225,10 +246,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             string where = "";
             string name = CurrentUser.Realname;
-            IList<EbayReplayType> ac = NSession.CreateQuery("from EbayReplayType where ReplayBy='"+name+"'").List<EbayReplayType>();
-            foreach(var item in ac)
-            { 
-                if(where=="")
+            IList<EbayReplayType> ac = NSession.CreateQuery("from EbayReplayType where ReplayBy='" + name + "'").List<EbayReplayType>();
+            foreach (var item in ac)
+            {
+                if (where == "")
                 {
                     where += " Shop='" + item.ReplayAccount + "' ";
                 }
@@ -239,33 +260,15 @@ namespace KeWeiOMS.Web.Controllers
             }
             return where;
         }
-        public JsonResult ToExcel()
-        {
-            try
-            {
-                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from EbayMessage " + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
-            }
-            catch (Exception ee)
-            {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
-            }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
-        }
 
-        public JsonResult IsRead(int id) 
+        public JsonResult IsRead(int id)
         {
-            EbayMessageType obj =GetById(id);
+            EbayMessageType obj = GetById(id);
             if (obj.MessageStatus != "未回复")
-            { 
-                return Json(new { Msg =1}, JsonRequestBehavior.AllowGet);
+            {
+                return Json(new { Msg = 1 }, JsonRequestBehavior.AllowGet);
             }
-                 return Json(new { Msg =0}, JsonRequestBehavior.AllowGet);
+            return Json(new { Msg = 0 }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -282,25 +285,25 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult Forward(string id) 
+        public JsonResult Forward(string id)
         {
             try
             {
-                int mid = int.Parse(id.Substring(0,id.IndexOf("$")).ToString());
-                string name = id.Substring(id.IndexOf("$") + 1, id.IndexOf("~")-id.IndexOf("$")-1);
-                string remark = id.Substring(id.IndexOf("~")+1);
+                int mid = int.Parse(id.Substring(0, id.IndexOf("$")).ToString());
+                string name = id.Substring(id.IndexOf("$") + 1, id.IndexOf("~") - id.IndexOf("$") - 1);
+                string remark = id.Substring(id.IndexOf("~") + 1);
                 EbayMessageType obj = GetById(mid);
                 obj.ReplayOnlyBy = name;
                 obj.ForwardWhy = remark;
                 NSession.Update(obj);
                 NSession.Flush();
-                return Json(new { Msg =0}, JsonRequestBehavior.AllowGet); ;
+                return Json(new { Msg = 0 }, JsonRequestBehavior.AllowGet); ;
             }
             catch (Exception e)
-            { 
-            
+            {
+
             }
-            return Json(new { Msg =1}, JsonRequestBehavior.AllowGet);
+            return Json(new { Msg = 1 }, JsonRequestBehavior.AllowGet);
         }
 
 

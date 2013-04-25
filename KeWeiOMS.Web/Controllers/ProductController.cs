@@ -181,23 +181,19 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         }
 
         [HttpPost]
-        public ActionResult Export()
+        public ActionResult Export(string search)
         {
             try
             {
-                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from Products" + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+                List<ProductType> objList = NSession.CreateQuery("from ProductType " + Utilities.SqlWhere(search))
+                    .List<ProductType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
             }
             catch (Exception ee)
             {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
 
         [HttpPost]
@@ -497,20 +493,8 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string where = "";
-            string orderby = " order by Id desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
+            string orderby = Utilities.OrdeerBy(sort, order);
+            string where = Utilities.SqlWhere(search);
             if (where != "")
             {
                 where += " and  Enabled <>0";
@@ -519,7 +503,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             {
                 where = "where Enabled <>0";
             }
-            Session["ToExcel"] = where + orderby;
             IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)

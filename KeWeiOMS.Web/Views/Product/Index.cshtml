@@ -67,14 +67,24 @@
                 window.open('@Url.Action("Edit", "Product")/' + getselectedRow());
             }
             function exportdt() {
+                search = getSearch();
+                $('#dg').datagrid('loading');
                 var postUrl = "/Order/ExportDown/1";
-                jQuery.ajax({
-                    url: "/Product/Export/",
-                    type: "post",
-                    success: function (sss) {
-                        location.href = postUrl;
-                    }
-                });
+                $.ajax({
+                    url: '@Url.Action("Export", "Product")/',
+                type: 'post',
+                data: 'search=' + encodeURIComponent(search),
+                success: function (result) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.ErrorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                    location.href = postUrl;
+                    $('#dg').datagrid('reload');
+                }
+            });
             }
             //删除
             function del() {
@@ -106,22 +116,25 @@
                 return '<img  src=' + v + '  height="64px" width="64px" />';
             }
             function doSearch() {
+                search = getSearch();
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+            function getSearch() {
                 search = "";
                 if ($('#IsScan').combobox("getValue") != "ALL") {
                     search += "IsScan&" + $('#IsScan').combobox("getValue") + "^";
                 }
                 search += $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                if ($('#SearchStatus').combobox("getText")!= "所有") {
-                    search += "Status&" + $('#SearchStatus').combobox("getText")+ "^";
+                if ($('#SearchStatus').combobox("getText") != "所有") {
+                    search += "Status&" + $('#SearchStatus').combobox("getText") + "^";
                 }
                 if ($('#SearchCategory').combobox("getText") != "所有") {
                     search += "Category&" + $('#SearchCategory').combobox("getText") + "^";
                 }
-                $("#dg").datagrid("load", {
-                    search: search
-                });
+                return search;
             }
-
             function getSale(v, r, i) {
                 return r.SevenDay + "/" + r.Fifteen + "/" + r.ThirtyDay;
             }

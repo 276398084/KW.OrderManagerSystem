@@ -58,32 +58,14 @@
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
-        //编辑框
+    //编辑框
     function e_dlg() {
         var id = getselectedRow();
-        if (id != undefined) {
-            var url = '@Url.Action("Edit","Dispute")/' + id;
-            $('#e_dlg').load(url, function () {
-                $(this).dialog({
-                    title: '编辑',
-                    modal: true,
-                    loadingMessage: '正在加载...',
-                    buttons: [{
-                        text: '提交',
-                        iconCls: 'icon-ok',
-                        handler: function () {
-                            ajaxEdit();
-                        }
-                    }, {
-                        text: '取消',
-                        handler: function () {
-                            $('#e_dlg').dialog('close');
-                        }
-                    }]
-                });
-            }).dialog('open');
+        var url = '@Url.Action("Edit","Dispute")/' + id;
+            if (id != undefined) {
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
         }
-    }
 
         //异步新建提交
         function ajaxAdd() {
@@ -127,9 +109,6 @@
                     search: search
                 });
       }
-@*    function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "Dispute")', 's_dlg', 'dg');
-      }		*@
 
 </script>
 <div region="center">

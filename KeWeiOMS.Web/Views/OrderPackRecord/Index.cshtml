@@ -70,26 +70,32 @@
         }
 
         function toExcel() {
+            search = getSearch();
             $('#dg').datagrid('loading');
             var postUrl = "/Order/ExportDown/1";
             $.ajax({
                 url: '@Url.Action("ToExcel", "OrderPackRecord")/',
-            success: function (result) {
-
-                $.messager.show({
-                    title: '提示',
-                    msg: result.Msg,
-                    timeout: 0,
-                    showType: 'slide'
-                })
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        })
+                type: 'post',
+                data: 'search=' + encodeURIComponent(search),
+                success: function (result) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.ErrorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                    location.href = postUrl;
+                    $('#dg').datagrid('reload');
+                }
+            });
         }
 
+        function getSearch() {
+            search = "PackOn_st&" + $('#txtStartDate').datebox("getValue") + "^PackOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            return search;
+        }
         function doSearch() {
-            search = $('#txtStartDate').datebox("getValue") + "&" + $('#txtEndDate').datebox("getValue") + "$" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            search = getSearch();
             $("#dg").datagrid("load", {
                     search: search
             });

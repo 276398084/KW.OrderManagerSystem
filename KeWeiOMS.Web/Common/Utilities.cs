@@ -466,11 +466,11 @@ namespace KeWeiOMS.Web
         /// </summary>
         /// <param name="modelList">实体类列表</param>
         /// <returns></returns>
-        public static DataTable FillDataTable<T>(List<T> modelList)
+        public static DataTable FillDataTable<T>(IList<T> modelList)
         {
             if (modelList == null || modelList.Count == 0)
             {
-                return null;
+                return new DataTable();
             }
             DataTable dt = CreateData<T>(modelList[0]);
 
@@ -655,6 +655,29 @@ namespace KeWeiOMS.Web
             }
 
         }
+        public static string OrdeerBy(string sort, string order)
+        {
+            string orderby = " order by Id desc ";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            return orderby;
+        }
+        public static string SqlWhere(string search)
+        {
+            //search=HttpUtility.UrlDecode(search);
+            string where = string.Empty;
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            return where;
+        }
     }
 
 
@@ -680,4 +703,5 @@ namespace KeWeiOMS.Web
         /// </summary>
         public virtual string Memo { get; set; }
     }
+
 }

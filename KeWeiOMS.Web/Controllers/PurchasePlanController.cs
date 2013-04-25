@@ -174,49 +174,27 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                List<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + SqlWhere(search))
+                List<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + Utilities.SqlWhere(search))
                     .List<PurchasePlanType>().ToList();
                 Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
             }
             catch (Exception ee)
             {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string orderby = " order by Id desc ";
-            string where = "";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            where = SqlWhere(search);
-            Session["ToExcel"] = where + orderby;
+            string orderby= Utilities.OrdeerBy(sort,order);
+            string where =Utilities.SqlWhere(search);
             IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<PurchasePlanType>();
-
             object count = NSession.CreateQuery("select count(Id) from PurchasePlanType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
-        }
-
-        private static string SqlWhere(string search)
-        {
-           // search=HttpUtility.UrlDecode(search);
-            string where = string.Empty;
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
-            return where;
         }
 
         public JsonResult SearchSKU(string id)
