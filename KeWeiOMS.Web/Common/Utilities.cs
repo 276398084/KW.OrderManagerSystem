@@ -540,8 +540,13 @@ namespace KeWeiOMS.Web
         public static void SetComposeStock(string sku, ISession NSession)
         {
             //这个产品有几个产品组成
-            List<ProductComposeType> products = NSession.CreateQuery("from ProductComposeType where SrcSKU='" + sku + "'").List<ProductComposeType>().ToList();
+            List<ProductComposeType> products = NSession.CreateQuery(" from ProductComposeType where SKU in (select SKU from ProductComposeType where SrcSKU='" + sku + "')").List<ProductComposeType>().ToList();
             string skulist = "";
+            if (products.Count == 0)
+            {
+                return;
+
+            }
             foreach (ProductComposeType productComposeType in products)
             {
                 skulist += productComposeType.SrcSKU + ",";
@@ -562,15 +567,16 @@ namespace KeWeiOMS.Web
             }
 
 
-            IList<WarehouseStockType> list = NSession.CreateQuery("from WarehouseStockType where SKU ='" + sku + "'").List<WarehouseStockType>();
+            IList<WarehouseStockType> list = NSession.CreateQuery("from WarehouseStockType where SKU ='" + products[0].SKU + "'").List<WarehouseStockType>();
             if (list.Count > 0)
             {
                 list[0].Qty = min;
                 NSession.Update(list[0]);
+                NSession.Flush();
             }
             else
             {
-                IList<ProductType> productTypes = NSession.CreateQuery("from WarehouseStockType where SKU ='" + sku + "'").List<ProductType>();
+                IList<ProductType> productTypes = NSession.CreateQuery("from ProductType where SKU ='" + products[0].SKU + "'").List<ProductType>();
                 if (products.Count > 0)
                 {
                     AddToWarehouse(productTypes[0], NSession, min);

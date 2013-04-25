@@ -1051,8 +1051,67 @@ left join Products P On OP.SKU=P.SKU ";
 
             //return Json(new { IsS = 1 });
 
-            IList<OrderProductType> orders = NSession.CreateQuery("from OrderProductType where OId in (select Id from OrderType where Status='已处理')").List<OrderProductType>();
-            OrderHelper.SplitProduct(orders, NSession);
+            List<string> list = new List<string>();
+            list.Add("8155");
+            list.Add("8261");
+            list.Add("8176");
+            list.Add("8047");
+            list.Add("8211");
+            list.Add("9502");
+            list.Add("9911");
+            list.Add("9911");
+            list.Add("9870");
+            list.Add("9922");
+            list.Add("9716");
+            list.Add("9746");
+            list.Add("9502");
+            list.Add("9559");
+            list.Add("9505");
+            list.Add("9502");
+            list.Add("9507");
+            list.Add("9505");
+            list.Add("8084");
+            list.Add("8085");
+            list.Add("9915");
+            list.Add("8622");
+            list.Add("8153");
+            list.Add("8622");
+            list.Add("8422");
+            list.Add("8622");
+            list.Add("8155");
+            list.Add("9751");
+            list.Add("9742");
+            list.Add("8109");
+            list.Add("8110");
+            list.Add("06WE5176");
+            list.Add("06BN5176");
+            list.Add("06BK5176");
+            list.Add("05WE5176");
+            list.Add("05BN5176");
+            list.Add("05BK5176");
+            list.Add("04WE5176");
+            list.Add("04BN5176");
+            list.Add("04BK5176");
+            list.Add("03WE5176");
+            list.Add("03BN5176");
+            list.Add("03BK5176");
+            list.Add("02WE5176");
+            list.Add("02BN5176");
+            list.Add("02BK5176");
+            list.Add("01WE5176");
+            list.Add("01BN5176");
+            list.Add("01BK5176");
+            list.Add("F0419");
+            list.Add("F0419");
+            foreach (string s in list)
+            {
+                Utilities.SetComposeStock(s, NSession);
+            }
+
+
+
+            //IList<OrderProductType> orders = NSession.CreateQuery("from OrderProductType where OId in (select Id from OrderType where Status='已处理')").List<OrderProductType>();
+            //OrderHelper.SplitProduct(orders, NSession);
             return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
             //IList<OrderType> orders = NSession.CreateQuery("from OrderType where CreateOn>'2013-03-20'").List<OrderType>();
             //List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();

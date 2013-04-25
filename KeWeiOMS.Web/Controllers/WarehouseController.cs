@@ -117,7 +117,8 @@ namespace KeWeiOMS.Web.Controllers
 
                 .List<WarehouseType>();
 
-            // object count = NSession.CreateQuery("select count(Id) from WarehouseType ").UniqueResult();
+          
+            //object count = NSession.CreateQuery("select count(Id) from WarehouseType ").UniqueResult();
             return Json(new { total = objList.Count, rows = objList });
         }
 

@@ -29,10 +29,10 @@
     });
     $(function () {
         $('#dg_record').datagrid({
-            url: '@Url.Action("Record","Product")/@ViewData["id"]',
-                    width:1200,
-                    height:280
-                })
+            url: '@Url.Action("Record", "Product")/@ViewData["id"]',
+            width: 1200,
+            height: 280
+        });
         $('#dg_zu').datagrid({
             url: '@Url.Action("ZuList", "Product")/@Model.SKU',
             width: 300,
@@ -115,7 +115,7 @@
             url: '/User/QList/' + Purchaser,
             valueField: 'Id',
             textField: 'Realname',
-            required: true,
+
             width: 200,
             panelHeight: 'auto'
         });
@@ -123,7 +123,7 @@
             url: '/User/QList/' + Examiner,
             valueField: 'Id',
             textField: 'Realname',
-            required: true,
+
             width: 200,
             panelHeight: 'auto'
         });
@@ -139,7 +139,7 @@
             url: '/Home/ProductStatus/',
             valueField: 'id',
             textField: 'text',
-            required: true,
+
             width: 200,
             panelHeight: 'auto'
         });
@@ -290,7 +290,7 @@
                     @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.CreateOn)
 
-           
+
                     @Html.HiddenFor(model => model.CreateBy)
                     @Html.HiddenFor(model => model.SPicUrl)
                     @Html.HiddenFor(model => model.PicUrl)
@@ -333,7 +333,7 @@
                     @Html.TextBoxFor(model => model.OldSKU, new { @id = "e_OldSKU", @class = "easyui-validatebox", @required = "true" })
                 </td>
 
-              
+
             </tr>
         </table>
     </fieldset>
@@ -470,9 +470,9 @@
                 <thead>
                     <tr>
                         <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
-                                </th>
+                        </th>
                         <th field="SrcQty" width="100" data-options="editor:'text'">Qty
-                                </th>
+                        </th>
                 </thead>
             </table>
         </div>
@@ -496,22 +496,22 @@
                 </tr>
             </table>
         </div>
-                          <div title="商品日志" style="padding:20px;">  
-        <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true" >
-            <thead>
-                <tr>
-                    <th field="RecordType" width="150" >类型
-                    </th>
-                    <th field="Content" width="700">内容
-                    </th>
-                    <th field="CreateBy" width="60">处理人
-                    </th>
-                    <th field="CreateOn" width="200" formatter="getDate">处理时间
-                    </th>
-                </tr>
-            </thead>
-        </table>
-  
-</div>
+        <div title="商品日志" style="padding: 20px;">
+            <table id="dg_record" class="easyui-datagrid" rownumbers="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="RecordType" width="150">类型
+                        </th>
+                        <th field="Content" width="700">内容
+                        </th>
+                        <th field="CreateBy" width="60">处理人
+                        </th>
+                        <th field="CreateOn" width="200" formatter="getDate">处理时间
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+
+        </div>
     </div>
 }

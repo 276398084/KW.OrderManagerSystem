@@ -152,7 +152,15 @@ namespace KeWeiOMS.Web.Controllers
                 WarehouseStockType warehouse =
                 objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().Trim());
                 if (warehouse != null)
+                {
                     warehouse.UnPeiQty = Convert.ToInt32(objectse[1]);
+                    if (warehouse.UnPeiQty == 0)
+                    {
+                        warehouse.UnPeiQty = warehouse.Qty;
+                    }
+
+                }
+
             }
             object count = NSession.CreateQuery("select count(Id) from WarehouseStockType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
