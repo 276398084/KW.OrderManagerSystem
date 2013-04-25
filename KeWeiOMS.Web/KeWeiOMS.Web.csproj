@@ -1601,6 +1601,8 @@
     <Content Include="Views\PurchasePlan\CreateByW.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\Product\副本 Index.cshtml" />
+    <Content Include="Views\Order\StopIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

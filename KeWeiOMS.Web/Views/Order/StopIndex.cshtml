@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<KeWeiOMS.Domain.OrderType>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "停售订单";
 }
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
@@ -10,12 +10,13 @@
                 url: '@Url.Action("List", "Order")',
                 pageNumber: 1,
                 nowrap: false,
+                queryParams: { "search": "IsStop_ds&1^" },
                 pageSize: 20,
                 height: 500,
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
                 onDblClickRow: function (i, r) {
-                    window.open('@Url.Action("Details", "Order")/' + r.Id);
+                    window.open('@Url.Action("Edit", "Order")/' + r.Id);
                 },
                 detailFormatter: function (index, row) {
                     var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
@@ -89,7 +90,6 @@
                 width: 100
             });
 
-
             $('#IsLiu').combobox({
                 valueField: 0,
                 textField: 1,
@@ -106,51 +106,15 @@
                 width: 100
             });
 
-            $('#HoldUpType').combobox({
-                url: '@Url.Action("GetDataByCode", "Dictionary")/HoldUpType',
+            $('#ErrorType').combobox({
+                url: '@Url.Action("GetDataByCode", "Dictionary")/ErrorType',
                 valueField: 'FullName',
                 textField: 'FullName',
                 panelHeight: 'auto',
                 width: 300
             });
-            $('#ErrorType').combobox({
-                url: '@Url.Action("GetDataByCode", "Dictionary")/ErrorType',
-                  valueField: 'FullName',
-                  textField: 'FullName',
-                  panelHeight: 'auto',
-                  width: 300
-              });
 
-            $('#IsNo').combobox({
-                valueField: 0,
-                textField: 1,
-                panelHeight: 'auto',
-                data: checkOrdersAll,
-                width: 160,
-                onSelect: function (record) {
-                    if (record[0] == "ALL")
-                        return;
-                    var search = "";
 
-                    var a = $('#Account').combobox("getText");
-                    if (a != "ALL" && a != "") {
-                        search += "Account_es&" + a + "^";
-                    }
-                    var b = $('#Platform').combobox("getText");
-                    if (b != "ALL" && b != "") {
-                        search += "Platform_es&" + b + "^";
-                    }
-                    if (record[0] == 0)
-                        search += "Status_es&已处理^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(1, "d") + "^";;
-                    if (record[0] == 1)
-                        search = "Status_es&待包装^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
-                    if (record[0] == 2)
-                        search = "Status_es&待发货^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
-                    $("#dg").datagrid("load", {
-                        search: search
-                    });
-                }
-            });
             $('#OrderStatus').combobox("setValue", "ALL");
             $('#IsPrint').combobox("setValue", "ALL");
             $('#orderdateType').combobox("setValue", "CreateOn");
@@ -240,12 +204,10 @@
 
         function GeStatus(v, r, i) {
             var html = v;
-            if (r.IsError == 1) {
-                html += "(问题订单)";
+            if (r.IsStop == 1) {
+                html += "(停售订单)";
             }
-            if (r.IsAudit == 0) {
-                html += "(等待审核)";
-            }
+
             html += "<br/>";
             if (r.IsPrint >= 1)
                 html += "<img src='/Content/imgs/Print.gif'> ";
@@ -279,6 +241,7 @@
 
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            search += "IsStop_ds&1^";
             var a = $('#Account').combobox("getText");
             if (a != "ALL" && a != "") {
                 search += "Account_es&" + a + "^";
@@ -488,8 +451,7 @@
             });
         }
 
-        function o_Error(parameters) {
-
+        function o_Error() {
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows();
             $.messager.confirm("提示", "确定要作废这" + s_ids.length + "条订单吗？", function (r) {
@@ -497,7 +459,7 @@
                     jQuery.ajax({
                         url: "/Order/ErrorOrder",
                         type: "post",
-                        data: "o=" + s_ids.join(',') + "&t=" + $("#ErrorType").combobox("getValue") + "&d=" + $("#ErrorDesc").val(),
+                        data: "o=" + s_ids.join(',')+"&t="+$("#ErrorType").combobox("getValue")+"&d="+$("#ErrorDesc").val(),
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
@@ -505,9 +467,7 @@
                 }
             });
         }
-
-        function o_ReQue(parameters) {
-
+        function o_ReQue() {
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows();
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
@@ -524,27 +484,7 @@
             });
 
         }
-
-        function o_ReError() {
-
-            var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
-            $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
-                if (r) {
-                    jQuery.ajax({
-                        url: "/Order/ReError",
-                        type: "post",
-                        data: "o=" + s_ids.join(','),
-                        success: function (sss) {
-                            $('#dg').datagrid("reload");
-                        }
-                    });
-                }
-            });
-        }
-
         function o_SplitZu() {
-
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows();
             $.messager.confirm("提示", "检验可能有组合产品的" + s_ids.length + "条订单吗？", function (r) {
@@ -578,26 +518,7 @@
             return html;
         }
 
-        function o_LanJie() {
-
-
-            var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
-
-            $.messager.confirm("提示", "你要拦截 " + s_ids.length + "条订单吗？", function (r) {
-                if (r) {
-                    jQuery.ajax({
-                        url: "/Order/OrderHoldUp/",
-                        type: "post",
-                        data: "o=" + s_ids.join(',') + "&t=" + $("#HoldUpType").combobox("getValue") + "&d=" + $("#HoldUpDesc").val() + "&s=" + $("#CReHoldUp").val(),
-                        success: function (sss) {
-                            $('#dg').datagrid("reload");
-                        }
-                    });
-                }
-            });
-
-        }
+      
 
     </script>
     <div region="center">
@@ -630,17 +551,9 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#dlgError').dialog('open');">标记失效</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true"  onclick="$('#dlgError').dialog('open');" >作废订单</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="reSend();">重新发货</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportZM();">中美导出</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-ok" plain="true" onclick="exportOrder();">订单导出</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReError()">失效订单修正</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReQue()">缺货订单修正</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_SplitZu()">分割组合产品</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#l_dlg').dialog('open');">拦截</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">标记为正常</a>
             <br />
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />
@@ -672,35 +585,8 @@
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
         <div id="o_dlg"></div>
-        <div id="l_dlg" class="easyui-dialog" title="订单拦截设置" style="width: 400px; height: 250px; padding: 10px" closed="true">
-            <table>
-                <tr>
-                    <td>原因:</td>
-                    <td>
-                        <input type="text" id="HoldUpType" /></td>
-                </tr>
-                <tr>
-                    <td>描述</td>
-                    <td>
-                        <textarea id="HoldUpDesc" style="width: 300px;"></textarea></td>
-                </tr>
-                <tr>
-                    <td>产品设置:</td>
-                    <td>
-                        <select id="CReHoldUp" style="width: 200px;">
-                            <option value="0">不操作</option>
-                            <option value="1">重置入库</option>
-                        </select></td>
-                </tr>
 
-                <tr>
-                    <td></td>
-                    <td>
-                        <input type="button" value="确定" onclick="o_LanJie()" /></td>
-                </tr>
-            </table>
-        </div>
-         <div id="dlgError" class="easyui-dialog" title="作废订单" style="width: 400px; height: 250px; padding: 10px" closed="true">
+        <div id="dlgError" class="easyui-dialog" title="作废订单" style="width: 400px; height: 250px; padding: 10px" closed="true">
             <table>
                 <tr>
                     <td>原因:</td>
@@ -719,7 +605,6 @@
                 </tr>
             </table>
         </div>
-
 
     </div>
 </body>

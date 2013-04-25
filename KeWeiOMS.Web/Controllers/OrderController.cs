@@ -37,6 +37,11 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["OrderNO"] = Utilities.GetOrderNo(NSession);
             return View();
         }
+
+        public ActionResult StopIndex()
+        {
+            return View();
+        }
         public ActionResult UnHandle()
         {
             return View();
@@ -117,7 +122,7 @@ namespace KeWeiOMS.Web.Controllers
                 default:
                     break;
             }
-            IQuery Query = NSession.CreateQuery(string.Format("update OrderType set {0}='{1}' where {0}='{2}'", fieldName, newField, oldField));
+            IQuery Query = NSession.CreateQuery(string.Format("update {3} set {0}='{1}' where {0}='{2}'", fieldName, newField, oldField, fieldName == "SKU" ? "OrderProductType" : "OrderType"));
             int num = Query.ExecuteUpdate();
             return Json(new { IsSuccess = true });
         }
@@ -684,7 +689,7 @@ namespace KeWeiOMS.Web.Controllers
                     foreach (OrderProductType orderProductType in ps)
                     {
                         Utilities.StockIn(1, orderProductType.SKU.Trim(), orderProductType.Qty, 0, "重新发货",
-                                          CurrentUser.Realname, "", NSession);
+                                          CurrentUser.Realname, "", NSession, true);
                     }
                     orderType.Status = OrderStatusEnum.待发货.ToString();
                     NSession.Save(orderType);
@@ -887,16 +892,17 @@ left join Products P On OP.SKU=P.SKU ";
         }
 
         [HttpPost]
-        public ActionResult ErrorOrder(string o)
+        public ActionResult ErrorOrder(string o, string t, string d)
         {
-            int t = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.作废订单.ToString() + "', IsAudit=0  where Id in(" + o + ")").ExecuteUpdate();
+            string str = t + " " + d;
+            int i = NSession.CreateQuery(" Update OrderType set Status='" + OrderStatusEnum.作废订单.ToString() + "', IsAudit=0,SellerMemo='" + str + "'  where Id in(" + o + ")").ExecuteUpdate();
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
             foreach (var orderType in orders)
             {
                 SetQuestionOrder("作废订单-重置包裹入库", orderType);
                 LoggerUtil.GetOrderRecord(orderType, "订单作废！", "将订单的状态设为作废订单！", CurrentUser, NSession);
             }
-            if (t > 0)
+            if (i > 0)
                 return Json(new { IsSuccess = true });
             else
             {
@@ -911,8 +917,6 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { IsSuccess = true });
         }
 
-
-
         [HttpPost]
         public ActionResult ReError(string o)
         {
@@ -923,7 +927,6 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 LoggerUtil.GetOrderRecord(orderType, "设置订单作废！", "将订单状态设置为作废！", CurrentUser, NSession);
             }
-
             if (t > 0)
                 return Json(new { IsSuccess = true });
             else
@@ -951,23 +954,14 @@ left join Products P On OP.SKU=P.SKU ";
         }
 
         [HttpPost, ActionName("Delete")]
-        public JsonResult DeleteConfirmed(int id)
+        public JsonResult DeleteConfirmed(string o)
         {
             try
             {
-                OrderType obj = GetById(id);
-                obj.Enabled = 0;
-                NSession.Update(obj);
+
+                NSession.Delete(" from OrderType where Id in(" + o + ")");
                 NSession.Flush();
-                OrderRecordType orderrecoud = new OrderRecordType();
-                orderrecoud.OId = obj.Id;
-                orderrecoud.OrderNo = obj.OrderNo;
-                orderrecoud.RecordType = "删除";
-                orderrecoud.Content = "删除订单";
-                orderrecoud.CreateBy = CurrentUser.Realname;
-                orderrecoud.CreateOn = DateTime.Now;
-                NSession.Save(orderrecoud);
-                NSession.Flush();
+
             }
             catch (Exception ee)
             {
@@ -1051,11 +1045,15 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpGet]
         public JsonResult AAAA()
         {
-            AccountType account = NSession.CreateQuery("from AccountType where Id=7").List<AccountType>()[0];
+            // AccountType account = NSession.CreateQuery("from AccountType where Id=7").List<AccountType>()[0];
 
-            OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
+            //  OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
 
-            return Json(new { IsS = 1 });
+            //return Json(new { IsS = 1 });
+
+            IList<OrderProductType> orders = NSession.CreateQuery("from OrderProductType where OId in (select Id from OrderType where Status='已处理')").List<OrderProductType>();
+            OrderHelper.SplitProduct(orders, NSession);
+            return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
             //IList<OrderType> orders = NSession.CreateQuery("from OrderType where CreateOn>'2013-03-20'").List<OrderType>();
             //List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
             //NSession.Clear();

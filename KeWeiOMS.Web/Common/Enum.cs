@@ -14,7 +14,8 @@ namespace KeWeiOMS.Web
         待发货 = 4,
         已发货 = 5,
         已完成 = 6,
-        作废订单 = 7
+        作废订单 = 7,
+        停售订单 = 8
     }
 
     public enum ProductStatusEnum

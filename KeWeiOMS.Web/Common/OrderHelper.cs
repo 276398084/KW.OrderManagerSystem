@@ -123,8 +123,9 @@ namespace KeWeiOMS.Web
                         Console.WriteLine(ex.Message);
                     }
 
+
                     results.Add(GetResult(OrderExNo, "", "导入成功"));
-                    LoggerUtil.GetOrderRecord(order,"订单导入","导入成功",NSession);
+                    LoggerUtil.GetOrderRecord(order, "订单导入", "导入成功", NSession);
                 }
                 else
                 {
@@ -674,7 +675,7 @@ namespace KeWeiOMS.Web
 
         public static void CreateOrderPruduct(OrderProductType product, ISession NSession)
         {
-
+            IList<ProductComposeType> products = NSession.CreateQuery("from ProductComposeType").List<ProductComposeType>();
             if (product.SKU == null)
                 product.SKU = "";
             if (product.SKU.IndexOf("+") != -1)
@@ -685,6 +686,7 @@ namespace KeWeiOMS.Web
                     GetItem(product, NSession);
                     NSession.Save(product);
                     NSession.Flush();
+                    SplitProduct(product, NSession, products);
                 }
             }
             else
@@ -692,7 +694,16 @@ namespace KeWeiOMS.Web
                 GetItem(product, NSession);
                 NSession.Save(product);
                 NSession.Flush();
+                SplitProduct(product, NSession, products);
             }
+        }
+
+        private static void SplitProduct(OrderProductType product, ISession NSession, IList<ProductComposeType> products)
+        {
+            List<ProductComposeType> compose =
+                products.Where(x => x.SKU.Trim().ToUpper() == product.SKU.Trim().ToUpper()).ToList();
+            if (compose.Count > 0)
+                OrderHelper.SplitProduct(product, compose, NSession);
         }
 
         public static void GetItem(OrderProductType item, ISession NSession)
@@ -839,7 +850,7 @@ namespace KeWeiOMS.Web
             NSession.Flush();
             if (order.ErrorInfo == "")
                 order.ErrorInfo = "验证成功！";
-            LoggerUtil.GetOrderRecord(order,"验证订单",order.ErrorInfo,NSession);
+            LoggerUtil.GetOrderRecord(order, "验证订单", order.ErrorInfo, NSession);
             return resultValue;
         }
         public static void UpdateAmount(OrderType order, ISession NSession)
@@ -995,15 +1006,24 @@ namespace KeWeiOMS.Web
             string sql = "";
             if (!string.IsNullOrEmpty(ids))
             {
-                ids = "  Id in(" + ids + ")  ";
+                ids = " and Id in(" + ids + ")  ";
+
+            }
+            if (!string.IsNullOrEmpty(oldValue))
+            {
+                if (type == 1)
+                    ids += " and  CurrencyCode='" + oldValue + "'  ";
+
+                else
+                    ids += " and  LogisticMode='" + oldValue + "'  ";
 
             }
 
 
             if (type == 1)
-                sql = "update OrderType set CurrencyCode='{0}' where  {1}";
+                sql = "update OrderType set CurrencyCode='{0}' where 1=1 {1}";
             else
-                sql = "update OrderType set LogisticMode='{0}' where  {1}";
+                sql = "update OrderType set LogisticMode='{0}' where 1=1  {1}";
 
             sql = string.Format(sql, newValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
@@ -1136,12 +1156,13 @@ namespace KeWeiOMS.Web
         public static void GetOrderRecord(OrderType order, string recordType, string Content, string CreateBy, ISession NSession)
         {
             GetOrderRecord(order.Id, order.OrderNo, recordType, Content, CreateBy, NSession);
-
+            
         }
 
-         public  static void SplitProduct(IList<OrderProductType> orders,ISession NSession)
+        public static void SplitProduct(IList<OrderProductType> orders, ISession NSession)
         {
             IList<ProductComposeType> products = NSession.CreateQuery("from ProductComposeType").List<ProductComposeType>();
+
             foreach (OrderProductType orderProductType in orders)
             {
                 List<ProductComposeType> compose =

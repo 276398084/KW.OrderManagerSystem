@@ -80,11 +80,33 @@
         }
         //删除
         function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-                var url = '@Url.Action("Delete", "Order")/' + id;
-                delData(url, 'dg', 't');
+            var ids = getselectedRows();
+            if (ids != undefined) {
+                if (confirm("你确定要删除吗？")) {
+                    jQuery.ajax({
+                        url: '@Url.Action("Delete", "Order")',
+                        type: "post",
+                        data: "o=" + ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+
             }
+        }
+
+        function getselectedRows() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return s_ids;
+            }
+            return s_ids;
         }
 
         //获取选中行
@@ -223,7 +245,7 @@
                 }
             });
         }
-        
+
         function e_Meger() {
             jQuery.ajax({
                 url: "/Order/OrderMerger",
@@ -233,7 +255,7 @@
                 }
             });
         }
-        
+
         function changePlatform(n, o) {
             $('#Account').combotree({
                 url: '/Account/AccountList/' + n,
@@ -316,7 +338,7 @@
                     idField: 'ECountry',
                     textField: 'ECountry',
                     url: '/Country/ListALL',
-                    fit: true,
+                    
                     columns: [[
                         { field: 'CCountry', title: '中文', width: 150 },
                         { field: 'ECountry', title: '英文', width: 100 },
@@ -334,7 +356,7 @@
                         idField: 'ECountry',
                         textField: 'ECountry',
                         url: '/Country/ListALL',
-                        fit: true,
+
                         columns: [[
                             { field: 'CCountry', title: '中文', width: 150 },
                             { field: 'ECountry', title: '英文', width: 100 },
@@ -350,7 +372,7 @@
                         idField: 'SKU',
                         textField: 'SKU',
                         url: '/Product/ListQ',
-                        fit: true,
+
                         columns: [[
                             { field: 'SKU', title: 'SKU', width: 100 },
                             { field: 'ProductName', title: 'Title', width: 200 },
@@ -366,7 +388,7 @@
                         idField: 'LogisticsCode',
                         textField: 'LogisticsName',
                         url: '/LogisticsMode/ALLList',
-                        fit: true,
+
                         columns: [[
                             { field: 'LogisticsName', title: '名称', width: 250 },
                             { field: 'LogisticsCode', title: '代码', width: 100 }
@@ -379,11 +401,9 @@
                 if (n == "CurrencyCode") {
                     $('#txtNew').combogrid({
                         panelWidth: 360,
-
                         idField: 'CurrencyCode',
                         textField: 'CurrencyCode',
                         url: '/Currency/List',
-                        fit: true,
                         columns: [[
                             { field: 'CurrencyName', title: '货币', width: 150 },
                             { field: 'CurrencyCode', title: '代码', width: 100 },

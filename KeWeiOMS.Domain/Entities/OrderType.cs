@@ -65,12 +65,15 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual int IsLiu { get; set; }
 
-
-
         /// <summary>
         /// 问题订单
         /// </summary>
         public virtual int IsError { get; set; }
+
+        /// <summary>
+        /// 停售订单
+        /// </summary>
+        public virtual int IsStop { get; set; }
 
         /// <summary>
         /// 问题订单处理

@@ -37,6 +37,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.IsPrint);
             Map(x => x.IsAudit);
             Map(x => x.IsLiu);
+            Map(x => x.IsStop);
             Map(x => x.IsError);
             Map(x => x.IsMerger);
             Map(x => x.Enabled);

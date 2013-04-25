@@ -537,8 +537,69 @@ namespace KeWeiOMS.Web
             return list;
         }
 
+        public static void SetComposeStock(string sku, ISession NSession)
+        {
+            //这个产品有几个产品组成
+            List<ProductComposeType> products = NSession.CreateQuery("from ProductComposeType where SrcSKU='" + sku + "'").List<ProductComposeType>().ToList();
+            string skulist = "";
+            foreach (ProductComposeType productComposeType in products)
+            {
+                skulist += productComposeType.SrcSKU + ",";
+            }
+
+            skulist = skulist.Trim(',').Replace(",", "','");
+            IList<WarehouseStockType> stocklist = NSession.CreateQuery("from WarehouseStockType where SKU in ('" + skulist + "')").List<WarehouseStockType>();
+
+            int min = 0;
+            foreach (WarehouseStockType warehouseStockType in stocklist)
+            {
+                ProductComposeType composeType = products.Find(p => p.SrcSKU.Trim().ToUpper() == warehouseStockType.SKU.ToUpper());
+                int j = warehouseStockType.Qty / composeType.SrcQty;
+                if (min == 0 || j < min)
+                {
+                    min = j;
+                }
+            }
 
 
+            IList<WarehouseStockType> list = NSession.CreateQuery("from WarehouseStockType where SKU ='" + sku + "'").List<WarehouseStockType>();
+            if (list.Count > 0)
+            {
+                list[0].Qty = min;
+                NSession.Update(list[0]);
+            }
+            else
+            {
+                IList<ProductType> productTypes = NSession.CreateQuery("from WarehouseStockType where SKU ='" + sku + "'").List<ProductType>();
+                if (products.Count > 0)
+                {
+                    AddToWarehouse(productTypes[0], NSession, min);
+                }
+            }
+
+        }
+        private static void AddToWarehouse(ProductType obj, ISession NSession, int Qty = 0)
+        {
+            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+
+            //
+            //在仓库中添加产品库存
+            //
+            foreach (var item in list)
+            {
+                WarehouseStockType stock = new WarehouseStockType();
+                stock.Pic = obj.SPicUrl;
+                stock.WId = item.Id;
+                stock.Warehouse = item.WName;
+                stock.PId = obj.Id;
+                stock.SKU = obj.SKU;
+                stock.Title = obj.ProductName;
+                stock.Qty = Qty;
+                stock.UpdateOn = DateTime.Now;
+                NSession.SaveOrUpdate(stock);
+                NSession.Flush();
+            }
+        }
 
 
         public static bool StockOut(int wid, string sku, int num, string outType, string user, string memo, string orderNo, ISession NSession)
@@ -551,7 +612,7 @@ namespace KeWeiOMS.Web
                 ws.Qty = ws.Qty - num;
                 NSession.SaveOrUpdate(ws);
                 NSession.Flush();
-
+                SetComposeStock(sku, NSession);
                 StockOutType stockOutType = new StockOutType();
                 stockOutType.CreateBy = user;
                 stockOutType.CreateOn = DateTime.Now;
@@ -579,6 +640,7 @@ namespace KeWeiOMS.Web
                 ws.Qty = ws.Qty + num;
                 NSession.SaveOrUpdate(ws);
                 NSession.Flush();
+                SetComposeStock(sku, NSession);
                 if (price != 0)
                 {
                     IList<ProductType> foo =
