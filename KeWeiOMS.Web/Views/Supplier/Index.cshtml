@@ -31,111 +31,38 @@
         $("#txtStartDate").datebox("setValue", getStartDate(30));
 
     });
-
     //新建
     function c_dlg() {
         var url_str = '@Url.Action("Create","Supplier")';
-            $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '新建',
-                modal: true,
-                loadingMessage: '正在加载...',
-                onClose: function () {
-                    $.ajax({
-                        url: '/SuppliersProduct/DelSession'
-                    })
-                },
-                buttons: [{
-                    text: '提交',
-                    iconCls: 'icon-ok',
-                    handler: function () {
-                        addSupliersProduct();
-                        $('#c_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                    }
-                }, {
-                    text: '取消',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-        }).dialog('open');;
-    }
-    //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-        if (id != undefined)
-        { 
-            var url_str = '@Url.Action("Edit","Supplier")/' + id;
-            $('#e_dlg').load(url_str, function () {
-                $(this).dialog({
-                    title: '编辑',
-                    modal: true,
-                    loadingMessage: '正在加载...',
-                    onClose: function () {
-                        $.ajax({
-                            url: '/SuppliersProduct/EDelSession'
-                        })
-                    },
-                    buttons: [{
-                        text: '提交',
-                        iconCls: 'icon-ok',
-                        handler: function () {
-                            editSupliersProduct();
-                            $('#e_dlg').dialog('close');
-                            $('#dg').datagrid('reload');
-                        }
-                    }, {
-                        text: '取消',
-                        handler: function () {
-                            $('#e_dlg').dialog('close');
-                        }
-                    }]
-                });
-            }).dialog('open');;
-        }
+            showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
-   
-
-    //删除
-    function del() {
-        var id = getselectedRow();
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit","Supplier")/' + id;
         if (id != undefined) {
-            $.messager.confirm('确认', '确定删除?', function (r) {
-                if (r) {
-                    var url = '@Url.Action("Delete","Supplier")/' + id;
-                    $.post(url, function () {
-                    }).success(function (data) {
-                        var msgstr = "删除成功";
-                      if (!data.IsSuccess){
-                            msgstr = "删除失败" + data;
-							$.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-								 timeout: 0,
-	                            showType: 'slide'
-                        	});
-                        }else{
-	                        $.messager.show({
-	                            title: '提示',
-	                            msg: msgstr,
-	                            timeout: 3000,
-	                            showType: 'slide'
-	                        });
-						}
-
-                        $('#dg').datagrid('reload');
-                    }) .error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
-                }
-            });
+            showdlg(url, 'e_dlg', ajaxEdit)
         }
     }
 
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "Supplier")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "Supplier")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "Supplier")/' + id;
+                delData(url, 'dg');
+
+            }
+        }
     //获取选中行
     function getselectedRow() {
         var row = $('#dg').datagrid('getSelected');
@@ -155,29 +82,35 @@
     }
 
   function toExcel() {
-        $('#dg').datagrid('loading');
-        var postUrl = "/Order/ExportDown/1";
-        $.ajax({
-            url: '@Url.Action("ToExcel", "Supplier")/',
+      search = getSearch();
+      $('#dg').datagrid('loading');
+      var postUrl = "/Order/ExportDown/1";
+      $.ajax({
+          url: '@Url.Action("ToExcel", "Supplier")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
             success: function (result) {
-
                 $.messager.show({
                     title: '提示',
-                    msg: result.Msg,
+                    msg: result.ErrorMsg,
                     timeout: 0,
                     showType: 'slide'
-                })
+                });
                 location.href = postUrl;
                 $('#dg').datagrid('reload');
             }
-        })
+        });
     }
 
     function doSearch() {
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        search = getSearch();
         $("#dg").datagrid("load", {
             search: search
         });
+    }
+    function getSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        return search;
     }
 </script>
 <div region="center">

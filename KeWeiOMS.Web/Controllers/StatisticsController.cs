@@ -206,16 +206,16 @@ namespace KeWeiOMS.Web.Controllers
         #region 销售统计
 
         [HttpPost]
-        public ActionResult SellCount(DateTime st, DateTime et, string a, string p)
+        public ActionResult SellCount(DateTime st, DateTime et, string a, string p,string ss)
         {
-            var list = GetSellCount(st, et, a, p);
+            var list = GetSellCount(st, et, a, p,ss);
             List<object> footers = new List<object>();
             return Json(new { rows = list.OrderByDescending(f => f.Qty), total = list.Count });
         }
         [HttpPost]
-        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p)
+        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p,string ss)
         {
-            var sqlWhere = SqlWhere(st, et, a, p);
+            var sqlWhere = SqlWhere(st, et, a, p,ss);
             IList<object[]> objs =
                 NSession.CreateSQLQuery(
                     string.Format(
@@ -258,9 +258,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public JsonResult ExportSellCount(DateTime st, DateTime et, string a, string p)
+        public JsonResult ExportSellCount(DateTime st, DateTime et, string a, string p,string ss)
         {
-            var list = GetSellCount(st, et, a, p);
+            var list = GetSellCount(st, et, a, p,ss);
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable(list));
             return Json(new { IsSuccess = true });
@@ -376,7 +376,7 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         }
 
 
-        private string SqlWhere(DateTime st, DateTime et, string a, string p)
+        private string SqlWhere(DateTime st, DateTime et, string a, string p,string ss="")
         {
             string sqlWhere = " where Status<>'待处理' and IsSplit=0 and IsRepeat=0 and CreateOn between '" + st.ToString("yyyy/MM/dd 00:00:00") + "' and '" +
                               et.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' and";
@@ -387,6 +387,10 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             if (!string.IsNullOrEmpty(a) && a != "ALL")
             {
                 sqlWhere += " Account='" + a + "' and";
+            }
+            if (!string.IsNullOrEmpty(ss) && ss != "ALL")
+            {
+                sqlWhere += " SKU='" + ss + "' and";
             }
             sqlWhere = sqlWhere.Substring(0, sqlWhere.Length - 3);
             return sqlWhere;

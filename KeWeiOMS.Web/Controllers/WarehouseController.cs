@@ -99,20 +99,8 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(string sort, string order, string search)
         {
-            string orderby = " order by Id desc ";
-            string where = "";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
+            string orderby = Utilities.OrdeerBy(sort, order);
+            string where = Utilities.SqlWhere(search);
             IList<WarehouseType> objList = NSession.CreateQuery("from WarehouseType" + where + orderby)
 
                 .List<WarehouseType>();

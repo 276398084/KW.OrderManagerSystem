@@ -105,21 +105,8 @@ namespace KeWeiOMS.Web.Controllers
 
 		public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string where =" where  RealName=\'"+CurrentUser.Realname+"\' ";
-            string orderby = " order by UserCode ,CurrentDate desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
-            Session["ToExcel"] = where + orderby;
+            string orderby = Utilities.OrdeerBy(sort, order);
+            string where = Utilities.SqlWhere(search);
             IList<AttendType> objList = NSession.CreateQuery("from AttendType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -224,21 +211,20 @@ namespace KeWeiOMS.Web.Controllers
             }
         }
 
-        //导出为Excel
-        public JsonResult ToExcel() 
+        public JsonResult ToExcel(string search)
         {
-            IList<AttendType> signout = new List<AttendType>();
             try
             {
-                signout = NSession.CreateQuery("from AttendType " + Session["ToExcel"].ToString()).List<AttendType>();
-                DataSet ds = ConvertToDataSet<AttendType>(signout);
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+                List<AttendType> objList = NSession.CreateQuery("from AttendType " + Utilities.SqlWhere(search))
+                    .List<AttendType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
+
             }
             catch (Exception ee)
             {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
 
         //获取IP地址
@@ -266,53 +252,6 @@ namespace KeWeiOMS.Web.Controllers
                     return true;
             }
             return false;
-        }
-
-        //IList转DataSet
-        public static DataSet ConvertToDataSet<T>(IList<T> list)
-        {
-            if (list == null || list.Count <= 0)
-            {
-                return null;
-            }
-
-            DataSet ds = new DataSet();
-            DataTable dt = new DataTable(typeof(T).Name);
-            DataColumn column;
-            DataRow row;
-
-            System.Reflection.PropertyInfo[] myPropertyInfo = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-
-            foreach (T t in list)
-            {
-                if (t == null)
-                {
-                    continue;
-                }
-
-                row = dt.NewRow();
-
-                for (int i = 0, j = myPropertyInfo.Length; i < j; i++)
-                {
-                    System.Reflection.PropertyInfo pi = myPropertyInfo[i];
-
-                    string name = pi.Name;
-
-                    if (dt.Columns[name] == null)
-                    {
-                        column = new DataColumn(name, pi.PropertyType);
-                        dt.Columns.Add(column);
-                    }
-
-                    row[name] = pi.GetValue(t, null);
-                }
-
-                dt.Rows.Add(row);
-            }
-
-            ds.Tables.Add(dt);
-
-            return ds;
         }
 
     }

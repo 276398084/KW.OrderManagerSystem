@@ -144,22 +144,8 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string where = "";
-            string orderby = " order by Id desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
-            Session["ToExcel"] = where + orderby;
+            string orderby = Utilities.OrdeerBy(sort, order);
+            string where = Utilities.SqlWhere(search);
             IList<NewGuideType> objList = NSession.CreateQuery("from NewGuideType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -168,24 +154,20 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from NewGuideType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
-
-        public JsonResult ToExcel()
+        public JsonResult ToExcel(string search)
         {
             try
             {
-                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from NewGuide" + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+                List<NewGuideType> objList = NSession.CreateQuery("from NewGuideType " + Utilities.SqlWhere(search))
+                    .List<NewGuideType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
+
             }
             catch (Exception ee)
             {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
 
     }

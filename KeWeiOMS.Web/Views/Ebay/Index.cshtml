@@ -24,12 +24,13 @@
 
         //编辑框
         function e_dlg() {
-            var url = '@Url.Action("Edit", "Ebay")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit);
-            }
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit","Ebay")/' + id;
+        if (id != undefined) {
+            showdlg(url, 'e_dlg', ajaxEdit)
         }
+    }
+
 
         //异步新建提交
         function ajaxAdd() {
@@ -67,34 +68,44 @@
             });
             return (undefined);
         }
+
         function toExcel() {
+            search = getSearch();
             $('#dg').datagrid('loading');
             var postUrl = "/Order/ExportDown/1";
             $.ajax({
                 url: '@Url.Action("ToExcel", "Ebay")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
             success: function (result) {
-
                 $.messager.show({
                     title: '提示',
-                    msg: result.Msg,
+                    msg: result.ErrorMsg,
                     timeout: 0,
                     showType: 'slide'
-                })
+                });
                 location.href = postUrl;
                 $('#dg').datagrid('reload');
             }
-        })
-    }
-
-    function doSearch() {
-        search = "StartTime_st&" + $('#txtStartDate').datebox("getValue") + "^StartTime_et&"+$('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        $("#dg").datagrid("load", {
-            search: search
         });
     }
+        function getSearch()
+        {
+            search = "StartTime_st&" + $('#txtStartDate').datebox("getValue") + "^StartTime_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            return search;
+        }
+
+        function doSearch() {
+            search = getSearch();
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
     function url(v, r, i) {
         return '<a href="' + r.ProductUrl + '"  target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="100px" width="100px" /></a>'
     }
+
     function syn() {
         $('#dg').datagrid("loading");
         $.ajax({
@@ -161,7 +172,7 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="syn();">同步</a>
+@*            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="syn();">同步</a>*@
             开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width: 100px" readonly="readonly" />&nbsp;
                 结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width: 100px" />&nbsp;&nbsp;
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>

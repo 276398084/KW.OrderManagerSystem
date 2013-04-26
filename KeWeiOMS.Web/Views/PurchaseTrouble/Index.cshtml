@@ -47,11 +47,16 @@
         return (undefined);
     }
      function doSearch() {
-         search = "CreateOn_st&" + $('#txtStartDate').datebox("getValue") + "^CreateOn_et&"+$('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         search = getSearch();
                 $("#dg").datagrid("load", {
                     search: search
                 });
-      }
+     }
+     function getSearch() {
+         search = "CreateOn_st&" + $('#txtStartDate').datebox("getValue") + "^CreateOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         return search;
+     }
+
      function deal(v, r, i) {
          if (r.Status!="已解决")
              return '<a href="javascript:void(0);" onclick="e_dlg(' + v + ')">处理</a>';
@@ -65,22 +70,24 @@
          return getOnlyDate(value);
      }
      function toExcel() {
+         search = getSearch();
          $('#dg').datagrid('loading');
          var postUrl = "/Order/ExportDown/1";
          $.ajax({
              url: '@Url.Action("ToExcel", "PurchaseTrouble")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
             success: function (result) {
-                
                 $.messager.show({
                     title: '提示',
-                    msg: result.Msg,
+                    msg: result.ErrorMsg,
                     timeout: 0,
                     showType: 'slide'
-                })
+                });
                 location.href = postUrl;
                 $('#dg').datagrid('reload');
             }
-        })
+        });
      }
     function sku(v,r,i) {
         return "SKU:" + v + "<br>数量：" + r.Qty + "<br>单价：" + r.Price + "<br>运费：" + r.Freight;

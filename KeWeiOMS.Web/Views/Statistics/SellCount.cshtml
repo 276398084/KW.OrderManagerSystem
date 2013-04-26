@@ -32,13 +32,28 @@
         });
         $('#pp').combobox("setValue", "ALL");
 
+        $('#ss').combogrid({
+            panelWidth: 430,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+            ]]
+        });
+        $('#ss').combogrid("setValue", "ALL");
     });
     function onSelect1() {
         $('#dg').datagrid("load", {
             st: $('#cc').combobox("getValue"),
             et: $('#cc2').combobox("getValue"),
             p: $('#pp').combobox("getText"),
-            a: $('#aa').combobox("getText")
+            a: $('#aa').combobox("getText"),
+            ss: $('#ss').combobox("getText")
         });
     }
     function changePlatform(n, o) {
@@ -70,7 +85,7 @@
         jQuery.ajax({
             url: "/Statistics/ExportSellCount",
             type: "post",
-            data: "a=" + $('#aa').combobox("getText") + "&p=" + $('#pp').combobox("getText") + "&st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue"),
+            data: "a=" + $('#aa').combobox("getText") + "&p=" + $('#pp').combobox("getText") + "&st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue") + "&ss=" + $('#ss').combogrid("getText"),
             success: function (sss) {
                 location.href = postUrl;
                 $('#dg').datagrid("reload");
@@ -82,6 +97,7 @@
 结束<input id="cc2" type="text">
 平台<input id="pp" type="text">
 账户<input id="aa" type="text">
+SKU<input id="ss" type="text">
 <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
 <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ExportOut();">导出</a>
 <table>

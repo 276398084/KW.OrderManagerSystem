@@ -17,131 +17,39 @@
             $('#txtEndDate').datebox("setValue", getStartDate(-1));
         });
 
+
         //新建
         function c_dlg() {
-            var url_str = '@Url.Action("Create", "StockIn")';
-
-            $('#c_dlg').load(url_str, function () {
-                $(this).dialog({
-                    title: '新建',
-                    modal: true,
-                    loadingMessage: '正在加载...',
-                    buttons: [{
-                        text: '提交',
-                        iconCls: 'icon-ok',
-                        handler: function () {
-                            ajaxAdd();
-                        }
-                    }, {
-                        text: '取消',
-                        handler: function () {
-                            $('#c_dlg').dialog('close');
-                        }
-                    }]
-                });
-            }).dialog('open');;
+            var url_str = '@Url.Action("Create","StockIn")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
         function e_dlg() {
             var id = getselectedRow();
+            var url = '@Url.Action("Edit","StockIn")/' + id;
+        if (id != undefined) {
+            showdlg(url, 'e_dlg', ajaxEdit)
+        }
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "StockIn")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "StockIn")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
             if (id != undefined) {
-                var url = '@Url.Action("Edit", "StockIn")/' + id;
-                $('#e_dlg').load(url, function () {
-                    $(this).dialog({
-                        title: '编辑',
-                        modal: true,
-                        loadingMessage: '正在加载...',
-                        buttons: [{
-                            text: '提交',
-                            iconCls: 'icon-ok',
-                            handler: function () {
-                                ajaxEdit();
-                            }
-                        }, {
-                            text: '取消',
-                            handler: function () {
-                                $('#e_dlg').dialog('close');
-                            }
-                        }]
-                    });
-                }).dialog('open');
+                var url = '@Url.Action("Delete", "StockIn")/' + id;
+                delData(url, 'dg');
+
             }
         }
-
-        //异步新建提交
-        function ajaxAdd() {
-            $('#c_WName').attr("value", $('#c_WId').combogrid("getText"));
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create", "StockIn")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (result2) {
-                    var result = $.parseJSON(result2);
-                    if (!result.IsSuccess) {
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存失败:' + result.ErrorMsg,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                    } else {
-                        $('#c_dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                        $.messager.show({
-                            title: '提示',
-                            msg: '保存成功',
-                            timeout: 2000,
-                            showType: 'slide'
-                        });
-                    }
-                }
-            });
-            }
-            //异步修改提交
-            function ajaxEdit() {
-                $('#e_WName').attr("value", $('#e_WId').combogrid("getText"));
-                $('#e_form').form('submit', {
-                    url: '@Url.Action("Edit", "StockIn")',
-                    onSubmit: function () {
-                        return $(this).form('validate');
-                    },
-                    success: function (result2) {
-                        var result = $.parseJSON(result2);
-                        if (!result.IsSuccess) {
-                            $.messager.show({
-                                title: '提示',
-                                msg: '保存失败:' + result.ErrorMsg,
-                                timeout: 0,
-                                showType: 'slide'
-                            });
-                        } else {
-                            $('#e_dlg').dialog('close');
-                            $('#dg').datagrid('reload');
-                            $.messager.show({
-                                title: '提示',
-                                msg: '保存成功',
-                                timeout: 2000,
-                                showType: 'slide'
-                            });
-                        }
-                    }
-                });
-            }
-
-
-            //删除
-            function del() {
-                var id = v;
-                $.messager.confirm("提示", "确定要删除吗？删除后数据无法恢复！", function (r) {
-                    if (r) {
-                        var url = '@Url.Action("Delete", "StockIn")/' + id;
-                    delData(url, 'dg');
-                }
-            });
-            }
-
             //获取选中行
             function getselectedRow() {
                 var row = $('#dg').datagrid('getSelected');
@@ -160,30 +68,37 @@
                 return (undefined);
             }
             function toExcel() {
+                search = getSearch();
                 $('#dg').datagrid('loading');
                 var postUrl = "/Order/ExportDown/1";
                 $.ajax({
                     url: '@Url.Action("ToExcel", "StockIn")/',
-                    success: function(result) {
-
-                        $.messager.show({
-                            title: '提示',
-                            msg: result.Msg,
-                            timeout: 0,
-                            showType: 'slide'
-                        });
-                        location.href = postUrl;
-                        $('#dg').datagrid('reload');
-                    }
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
                 });
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        });
             }
 
             function doSearch() {
-                search = "CreateOn_st&" + $('#txtStartDate').datebox("getValue") + "^CreateOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                search = getSearch();
                 $("#dg").datagrid("load", {
                     search: search
                 });
             }
+            function getSearch() {
+                search = "CreateOn_st&" + $('#txtStartDate').datebox("getValue") + "^CreateOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                return search;
+            }
+
             function showPrint(v, r) {
                 if (r.IsAudit == 1)
                     return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a> &nbsp; <a href="javascript:void(0)" onclick="del(' + v + ')">删除</a>';

@@ -22,34 +22,14 @@
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
-        //编辑框
-        function e_dlg() {
-
-                var id = getselectedRow();
-                if (id != undefined) {
-                    var url = '@Url.Action("Edit","Machine")/' + id;
-            $('#e_dlg').load(url, function () {
-                $(this).dialog({
-                    title: '编辑',
-                    modal: true,
-                    loadingMessage: '正在加载...',
-                    buttons: [{
-                        text: '提交',
-                        iconCls: 'icon-ok',
-                        handler: function () {
-                            ajaxEdit();
-                        }
-                    }, {
-                        text: '取消',
-                        handler: function () {
-                            $('#e_dlg').dialog('close');
-                        }
-                    }]
-                });
-            }).dialog('open');
+    //编辑框
+    function e_dlg() {
+        var id = getselectedRow();
+        var url = '@Url.Action("Edit","Machine")/' + id;
+        if (id != undefined) {
+            showdlg(url, 'e_dlg', ajaxEdit)
         }
-            }
-   
+    }
 
         //异步新建提交
         function ajaxAdd() {
@@ -59,47 +39,15 @@
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "Machine")', 'e_dlg', 'dg');
         }
-        //删除
-        function del() {
-@*            var id = getselectedRow();
-            if (id != undefined) {
-                var url = '@Url.Action("Delete", "Machine")/' + id;
-                delData(url, 'dg');*@
+    //删除
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
+            var url = '@Url.Action("Delete", "Machine")/' + id;
+                delData(url, 'dg');
 
-                var id = getselectedRow();
-                if (id != undefined) {
-                    $.messager.confirm('确认', '确定删除?', function (r) {
-                        if (r) {
-                            var url = '@Url.Action("Delete", "Machine")/' + id;
-                        $.post(url, function () {
-                        }).success(function (data) {
-                            var msgstr = "删除成功";
-                          if (!data.IsSuccess){
-                                msgstr = "删除失败" + data;
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 0,
-                                    showType: 'slide'
-                                });
-                            } else {
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: msgstr,
-                                    timeout: 3000,
-                                    showType: 'slide'
-                                });
-                            }
-
-                            $('#dg').datagrid('reload');
-                        }).error(function () {
-                            $.messager.alert('错误', '删除发生错误');
-                        });
-
-                    }
-                });
             }
-            }
+        }
 
     //获取选中行
     function getselectedRow() {

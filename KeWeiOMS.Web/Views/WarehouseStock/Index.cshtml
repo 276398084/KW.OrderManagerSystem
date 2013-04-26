@@ -86,9 +86,6 @@
                 search: search
             });
         }
-        function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "WarehouseStock")', 's_dlg', 'dg');
-        }
 
     </script>
     <div region="center">
@@ -116,8 +113,6 @@
 
                     <th field="UpdateOn" width="100" formatter="getDate ">更新时间
                     </th>
-
-
                 </tr>
             </thead>
         </table>
@@ -127,7 +122,6 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="exportdt();">导出</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'SKU'">商品SKU</div>

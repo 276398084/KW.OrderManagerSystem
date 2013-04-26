@@ -101,74 +101,29 @@ namespace KeWeiOMS.Web.Controllers
 
 		public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string where = "";
-            string orderby = " order by Id desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                string date = search.Substring(0, search.IndexOf("$"));
-                string key = Utilities.Resolve(search.Substring(search.IndexOf("$") + 1));
-                where = GetSearch(date);
-                if (!string.IsNullOrEmpty(where) && !string.IsNullOrEmpty(key))
-                    where += " and " + key;
-                else
-                {
-                    if (!string.IsNullOrEmpty(key))
-                        where = " where " + key;
-                }
-
-            }
-            Session["ToExcel"] = where + orderby;
+            string orderby = Utilities.OrdeerBy(sort,order);
+            string where = Utilities.SqlWhere(search);
             IList<OrderPackRecordType> objList = NSession.CreateQuery("from OrderPackRecordType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<OrderPackRecordType>();
-
             object count = NSession.CreateQuery("select count(Id) from OrderPackRecordType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
-        public JsonResult ToExcel()
+        public JsonResult ToExcel(string search)
         {
             try
             {
-                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from OrderPackRecord" + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+                List<OrderPackRecordType> objList = NSession.CreateQuery("from OrderPackRecordType " + Utilities.SqlWhere(search))
+                    .List<OrderPackRecordType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
             }
             catch (Exception ee)
             {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
-        }
-
-        public static string GetSearch(string search)
-        {
-            string where = "";
-            string startdate = search.Substring(0, search.IndexOf("&"));
-            string enddate = search.Substring(search.IndexOf("&") + 1);
-            if (!string.IsNullOrEmpty(startdate) || !string.IsNullOrEmpty(enddate))
-            {
-                if (!string.IsNullOrEmpty(startdate))
-                    where += "PackOn >=\'" + Convert.ToDateTime(startdate) + "\'";
-                if (!string.IsNullOrEmpty(enddate))
-                {
-                    if (where != "")
-                        where += " and ";
-                    where += "PackOn <=\'" + Convert.ToDateTime(enddate) + "\'";
-                }
-                where = " where " + where;
-            }
-            return where;
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
     }
 }

@@ -132,21 +132,8 @@ namespace KeWeiOMS.Web.Controllers
 
 		public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string where = "";
-            string orderby = " order by Id desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
+            string orderby = Utilities.OrdeerBy(sort, order);
+            string where = Utilities.SqlWhere(search);
             IList<ProjectType> objList = NSession.CreateQuery("from ProjectType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)

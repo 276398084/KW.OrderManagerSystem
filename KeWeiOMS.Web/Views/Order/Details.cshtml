@@ -15,15 +15,36 @@
             width: 1250,
             height: 240
         })
+        $('#dg_connect').datagrid({
+            url: '@Url.Action("Connect","Order")/@ViewData["id"]',
+                    width: 1250,
+                    height: 240
+                })
     })
+
+    function split(v, r, i) {
+        if (r.IsSplit!='0')
+            return "拆分订单";
+        if (r.IsRepeat != '0')
+            return "重发订单";
+    }
+    function dealtime(v,r,i) {
+        return "同步：" + getDate(v) + "<br>扫描：" + getDate(r.ScanningOn);
+    }
+    function Logistic(v, r, i){
+        var t= r.TrackCode;
+        if(t==null)
+            t="";
+        return "发货方式：" + v + "<br>追踪码：" +t;
+    }
+
+    function GetAmount(v, r, i) {
+        var html = v + ":" + r.Amount;
+        return html;
+    }
 </script>
 <fieldset>
     <legend>订单信息</legend>
-@*    <div class="display-label">主键</div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Id)
-    </div>*@
-
     <table>
     <tr>
         <td>
@@ -260,6 +281,27 @@
                 </tr>
             </thead>
         </table>
-  
+</div>
+     <div title="关联订单" style="padding:20px;">  
+        <table id="dg_connect" class="easyui-datagrid" rownumbers="true" singleselect="true" >
+            <thead>
+                <tr>
+                    <th field="OrderNo" width="150" >订单编号
+                    </th>
+                    <th field="Status" width="150">订单状态
+                    </th>
+                    <th field="CurrencyCode" width="150" formatter="GetAmount">货币
+                    </th> 
+                    <th field="Weight" width="100" >重量
+                    </th>
+                    <th field="LogisticMode" width="300" formatter="Logistic">发货方式
+                    </th>
+                    <th field="IsSplit" width="100" formatter="split">关联方式
+                    </th>
+                    <th field="CreateOn" width="200" formatter="dealtime">处理时间
+                    </th>
+                </tr>
+            </thead>
+        </table>
 </div>
     </div>
