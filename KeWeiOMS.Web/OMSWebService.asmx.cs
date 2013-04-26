@@ -200,23 +200,18 @@ namespace KeWeiOMS.Web
         }
 
         [WebMethod]
-        public List<AccountType> ApiToken(string psw)
+        public List<AccountType> ApiToken()
         {
             List<AccountType> account = new List<AccountType>();
             ArrayList arry = new ArrayList();
-            if (psw == "feidujingbostore")
-            {
-
                 try
                 {
                     account = NSession.CreateQuery("from AccountType where Platform ='Ebay' and ApiToken <>''").List<AccountType>().ToList();
-
                 }
                 catch (Exception ex)
                 {
 
                 }
-            }
             return account;
         }
 
@@ -260,5 +255,37 @@ namespace KeWeiOMS.Web
 
         }
 
+        [WebMethod]
+        public string SetStock(EbayType obj)
+        {
+            try
+            {
+                NSession.Save(obj);
+                NSession.Flush();
+                return "保存成功";
+            }
+            catch (Exception e)
+            {
+                return "保存出错";
+            }
+
+        }
+
+        [WebMethod]
+        public string DeleteStock(AccountType obj)
+        {
+            try
+            {
+                object ject = NSession.Delete(" from EbayType where Account='" +obj.AccountName+ "'");
+                NSession.Flush();
+                return "删除该账号库存信息成功";
+            }
+            catch (Exception e)
+            {
+                return "删除该账号库存信息出错";
+            }
+
+        }
+        
     }
 }

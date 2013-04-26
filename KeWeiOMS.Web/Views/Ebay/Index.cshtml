@@ -106,7 +106,7 @@
         return '<a href="' + r.ProductUrl + '"  target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="100px" width="100px" /></a>'
     }
 
-@*    function syn() {
+    function syn() {
         $('#dg').datagrid("loading");
         $.ajax({
             url: '@Url.Action("Syn", "Ebay")',
@@ -130,7 +130,7 @@
                  $('#dg').datagrid('reload');
              }
          })
-     }*@
+     }
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -172,7 +172,7 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="syn();">同步</a>
+@*            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="syn();">同步</a>*@
             开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width: 100px" readonly="readonly" />&nbsp;
                 结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width: 100px" />&nbsp;&nbsp;
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>

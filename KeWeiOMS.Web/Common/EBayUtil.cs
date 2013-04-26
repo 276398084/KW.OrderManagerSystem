@@ -211,7 +211,6 @@ namespace KeWeiOMS.Web
 
         private static void DeleteALL(string accountName, ISession NSession)
         {
-
             object obj = NSession.Delete(" from EbayType where Account='" + accountName + "'");
             NSession.Flush();
         }

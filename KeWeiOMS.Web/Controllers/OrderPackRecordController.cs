@@ -117,11 +117,6 @@ namespace KeWeiOMS.Web.Controllers
             {
                 List<OrderPackRecordType> objList = NSession.CreateQuery("from OrderPackRecordType " + Utilities.SqlWhere(search))
                     .List<OrderPackRecordType>().ToList();
-                if (objList.Count == 0)
-                {
-                    Session["ExportDown"] = "";
-                    return Json(new { IsSuccess = false, ErrorMsg = "条件记录为空" });
-                }
                 Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
             }
             catch (Exception ee)

@@ -122,11 +122,6 @@ namespace KeWeiOMS.Web.Controllers
             {
                 List<EbayType> objList = NSession.CreateQuery("from EbayType " + Utilities.SqlWhere(search))
                     .List<EbayType>().ToList();
-                if (objList.Count == 0)
-                {
-                    Session["ExportDown"] = "";
-                    return Json(new { IsSuccess = false, ErrorMsg = "条件记录为空" });
-                }
                 Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
 
             }
