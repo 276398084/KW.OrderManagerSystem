@@ -1,0 +1,170 @@
+﻿@{
+    ViewBag.Title = "速卖通扫描";
+}
+
+
+<table width="100%" cellspacing="6" cellpadding="0" border="0" style="border-collapse: separate; border-spacing: 6px;">
+    <tbody>
+        <tr valign="top">
+            <td>
+                <table width="100%" cellspacing="0" cellpadding="6" border="0" class="blockTable">
+                    <tbody>
+
+
+                        <tr>
+                            <td style="padding-top: 0px; padding-left: 6px; padding-right: 6px; padding-bottom: 8px;">
+                                <div>
+                                    <table cellspacing="0" cellpadding="1" bordercolor="#eeeeee" border="1" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td height="25" width="22%">
+                                                    <h2>
+                                                        <b>选项</b></h2>
+                                                </td>
+                                                <td width="78%">覆盖<input type="checkbox" id="ckF" />
+                                                </td>
+                                            </tr>
+                                            <tr id="tr_ID">
+                                                <td height="25" width="22%">
+                                                    <h2>
+                                                        <b>扫描包裹</b></h2>
+                                                </td>
+                                                <td width="78%">
+                                                    <input id="txt" onkeydown="return txt_keydown(event)" style="font-size: 50px; background-image: none; width: 511px" />
+                                                </td>
+                                            </tr>
+                                            <tr id="tr2">
+                                                <td height="25" width="22%">
+                                                    <h2>状态</h2>
+                                                </td>
+                                                <td width="78%">
+                                                    <font style="color: Red; font-size: 30px"><span id="spanStatus">等待包裹扫描 </span></font>
+                                                </td>
+                                            </tr>
+                                            <tr id="tr4">
+                                                <td height="25" width="22%">
+                                                    <h2>信息</h2>
+                                                </td>
+                                                <td width="78%">
+                                                    <font style="color: Blue; font-size: 30px"><span id="spanInfo"></span></font>
+                                                </td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<script type="text/javascript">
+
+    var o = ""; //包裹编号
+    var progress = 0;
+    var iscon = 0;
+    var txt = document.getElementById("txt");
+
+
+    var spanInfo = document.getElementById("spanInfo");
+    var spanStatus = document.getElementById("spanStatus");
+    function txt_keydown(e) {
+        var keynum;
+        if (window.event) //IE
+        {
+            keynum = e.keyCode;
+        }
+        else if (e.which) //Netscape/Firefox/Opera
+        {
+            keynum = e.which;
+        }
+        if (keynum == 13) {
+            if (txt.value == "") { Reset(); }
+            if (progress == 0) {
+                getOrder(txt.value);
+            }
+            else if (progress == 1) {
+                OutStock(txt.value);
+            }
+            txt.value = "";
+            return false;
+        }
+        return true;
+    }
+
+    function getOrder(str) {
+
+        if ($("#ckF").attr("checked")) {
+            iscon = 1;
+        } else {
+            iscon = 0;
+        }
+        jQuery.ajax({
+            url: "/Order/GetOrderByAliSend/",
+            type: "post",
+            data: "o=" + str + "&f=" + iscon,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    progress = 1;
+                    o = str;
+                    ShowMessage(msg.Result, "请输入追踪码", true);
+
+                }
+                else {
+                    progress = 0;
+                    ShowMessage(msg.Result,
+                "等待扫描",
+                false);
+                }
+            }
+        });
+    }
+    function OutStock(str) {
+
+        if ($("#ckF").attr("checked")) {
+            iscon = 1;
+        } else {
+            iscon = 0;
+        }
+        jQuery.ajax({
+            url: "/Order/OutStockByAliSend/",
+            type: "post",
+            data: "o=" + o + "&f=" + iscon + "&t=" + str,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    progress = 0;
+                    ShowMessage(msg.Result, "等待扫描", true);
+
+                } else {
+                    progress = 0;
+                    ShowMessage(msg.Result, "等待扫描", false);
+                }
+            }
+        });
+
+    }
+
+    //重置
+    function Reset() {
+        progress = 0;
+        txt.value = "";
+    }
+    function ShowMessage(msgInfo, msgStatus, isOk) {
+        if (msgInfo != null) {
+            spanInfo.innerHTML = msgInfo;
+        }
+        if (msgStatus != null) {
+            spanStatus.innerHTML = msgStatus;
+        }
+        if (isOk) {
+            spanInfo.style.color = "Blue";
+        }
+        else {
+            spanInfo.style.color = "Red";
+        }
+    }
+</script>

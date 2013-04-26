@@ -1603,6 +1603,8 @@
     </Content>
     <Content Include="Views\Product\副本 Index.cshtml" />
     <Content Include="Views\Order\StopIndex.cshtml" />
+    <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
+    <Content Include="Views\Order\AliSendScan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

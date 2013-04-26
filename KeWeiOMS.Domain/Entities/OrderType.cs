@@ -191,6 +191,11 @@ namespace KeWeiOMS.Domain
         public virtual string TrackCode { get; set; }
 
         /// <summary>
+        /// 运输条码
+        /// </summary>
+        public virtual string TrackCode2 { get; set; }
+
+        /// <summary>
         /// 生成时间
         /// </summary>
         public virtual DateTime GenerateOn { get; set; }

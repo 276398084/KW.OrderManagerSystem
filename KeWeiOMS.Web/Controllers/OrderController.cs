@@ -56,11 +56,13 @@ namespace KeWeiOMS.Web.Controllers
             return View();
 
         }
-        public ActionResult Merge()
+
+        public ActionResult AliSendScan()
         {
             return View();
 
         }
+
         public ActionResult PeiScan()
         {
             return View();
@@ -426,6 +428,38 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult ScanExport()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult ScanExport3(DateTime st, DateTime et, string u, string key)
+        {
+            string sql = string.Format("select OrderNo,OrderExNo,TrackCode,TrackCode2,Account,ScanningOn from Orders where Status in ('已发货','已完成') and TrackCode<> TrackCode2 and TrackCode2 is not null and ScanningOn  between '{0}' and '{1}'", st.ToString("yyyy/MM/dd HH:mm:ss"), et.ToString("yyyy/MM/dd HH:mm:ss"));
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            // 设置编码和附件格式 
+            System.Web.HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
+            System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+            System.Web.HttpContext.Current.Response.Charset = "gb2312";
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + st.ToShortDateString() + "-" + et.ToShortDateString() + ".xls");
+            return File(System.Text.Encoding.UTF8.GetBytes(ExcelHelper.GetExcelXml(ds)), "attachment;filename=" + st.ToShortDateString() + "-" + et.ToShortDateString() + ".xls");
+        }
+        [HttpPost]
+        public ActionResult ScanExport2(DateTime st, DateTime et, string u, string key)
+        {
+            string sql = string.Format("select OrderNo,OrderExNo,TrackCode,TrackCode2,Account,CreateOn from Orders where TrackCode2 is not null and TrackCode2 <>''  and CreateOn  between '{0}' and '{1}'", st.ToString("yyyy/MM/dd HH:mm:ss"), et.ToString("yyyy/MM/dd HH:mm:ss"));
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            // 设置编码和附件格式 
+            System.Web.HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
+            System.Web.HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
+            System.Web.HttpContext.Current.Response.Charset = "gb2312";
+            Response.AppendHeader("Content-Disposition", "attachment;filename=" + st.ToShortDateString() + "-" + et.ToShortDateString() + ".xls");
+            return File(System.Text.Encoding.UTF8.GetBytes(ExcelHelper.GetExcelXml(ds)), "attachment;filename=" + st.ToShortDateString() + "-" + et.ToShortDateString() + ".xls");
         }
 
         [HttpPost]
@@ -1037,6 +1071,78 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
+        public JsonResult GetOrderByAliSend(string o, int f)
+        {
+            List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
+            if (orders.Count > 0)
+            {
+                string html = "";
+                OrderType order = orders[0];
+
+                if (string.IsNullOrEmpty(order.TrackCode2))
+                {
+                    html = "订单:" + order.OrderNo + ", 没有设置过速卖通追踪号!可以设置条码";
+                    return Json(new { IsSuccess = true, Result = html });
+                }
+                else
+                {
+                    if (f == 1)
+                    {
+                        html = "订单:" + order.OrderNo + ", 已经设置覆盖扫描!可以设置条码";
+                        return Json(new { IsSuccess = true, Result = html });
+                    }
+
+                }
+                html = "订单:" + order.OrderNo + ", 已经扫描过!";
+                return Json(new { IsSuccess = false, Result = html });
+
+
+              
+
+
+            }
+            return Json(new { IsSuccess = false, Result = "找不到该订单" });
+        }
+
+        public JsonResult OutStockByAliSend(string o, string t, int f)
+        {
+            List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
+            if (orders.Count > 0)
+            {
+                OrderType order = orders[0];
+                string html = "";
+               
+                    if (string.IsNullOrEmpty(order.TrackCode2))
+                    {
+                        order.TrackCode2 = t;
+                        NSession.Update(order);
+                        NSession.Flush();
+                        LoggerUtil.GetOrderRecord(order, "订单速卖通扫描！", "订单速卖通扫描！", CurrentUser, NSession);
+                        html = "订单:" + order.OrderNo + ", 设置成功，追踪号为：" + t;
+                        return Json(new { IsSuccess = true, Result = html });
+                    }
+                    else
+                    {
+                        if (f == 1)
+                        {
+                            order.TrackCode2 = t;
+                            NSession.Update(order);
+                            NSession.Flush();
+                            LoggerUtil.GetOrderRecord(order, "订单速卖通扫描！", "订单速卖通扫描！", CurrentUser, NSession);
+                            html = "订单:" + order.OrderNo + ", 设置成功，追踪号为：" + t;
+                            return Json(new { IsSuccess = true, Result = html });
+                        }
+
+                    }
+                    html = "订单:" + order.OrderNo + ", 已经扫描过!";
+                    return Json(new { IsSuccess = false, Result = html });
+                
+
+
+            }
+            return Json(new { IsSuccess = false, Result = "找不到该订单" });
+        }
+
 
         /// <summary>
         /// 4A级添加挂号到平台
@@ -1052,57 +1158,7 @@ left join Products P On OP.SKU=P.SKU ";
             //return Json(new { IsS = 1 });
 
             List<string> list = new List<string>();
-            list.Add("8155");
-            list.Add("8261");
-            list.Add("8176");
-            list.Add("8047");
-            list.Add("8211");
-            list.Add("9502");
-            list.Add("9911");
-            list.Add("9911");
-            list.Add("9870");
-            list.Add("9922");
-            list.Add("9716");
-            list.Add("9746");
-            list.Add("9502");
-            list.Add("9559");
-            list.Add("9505");
-            list.Add("9502");
-            list.Add("9507");
-            list.Add("9505");
-            list.Add("8084");
-            list.Add("8085");
-            list.Add("9915");
-            list.Add("8622");
-            list.Add("8153");
-            list.Add("8622");
-            list.Add("8422");
-            list.Add("8622");
-            list.Add("8155");
-            list.Add("9751");
-            list.Add("9742");
-            list.Add("8109");
-            list.Add("8110");
-            list.Add("06WE5176");
-            list.Add("06BN5176");
-            list.Add("06BK5176");
-            list.Add("05WE5176");
-            list.Add("05BN5176");
-            list.Add("05BK5176");
-            list.Add("04WE5176");
-            list.Add("04BN5176");
-            list.Add("04BK5176");
-            list.Add("03WE5176");
-            list.Add("03BN5176");
-            list.Add("03BK5176");
-            list.Add("02WE5176");
-            list.Add("02BN5176");
-            list.Add("02BK5176");
-            list.Add("01WE5176");
-            list.Add("01BN5176");
-            list.Add("01BK5176");
-            list.Add("F0419");
-            list.Add("F0419");
+
             foreach (string s in list)
             {
                 Utilities.SetComposeStock(s, NSession);

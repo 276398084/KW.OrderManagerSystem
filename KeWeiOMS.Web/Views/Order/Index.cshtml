@@ -221,14 +221,19 @@
             return (undefined);
         }
 
-        function getselectedRows() {
+        function getselectedRows(i) {
             var s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
                 s_ids.push(rows[i]["Id"]);
             }
             if (s_ids.length == 0) {
-                $.messager.alert("请选择一条数据");
+                if(i==1) {
+                    
+                } else {
+                    $.messager.alert("请选择一条数据");
+                }
+               
                 return s_ids;
             }
             return s_ids;
@@ -365,7 +370,7 @@
         }
 
         function showEdit() {
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
 
             $('#s_dlg').show();
             $("#s_dlg").dialog({
@@ -401,7 +406,7 @@
         }
 
         function reSend() {
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要重新发货吗？一共是" + s_ids.length + "条订单", function (r) {
                 if (r) {
                     jQuery.ajax({
@@ -418,7 +423,7 @@
 
         function exportZM() {
             $('#dg').datagrid("loading");
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
             var postUrl = "/Order/ExportDown";
             jQuery.ajax({
                 url: "/Order/ExportZM",
@@ -433,7 +438,7 @@
 
         function exportOrder() {
             $('#dg').datagrid("loading");
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(1);
             var search = "";
             if (s_ids.length == 0) {
 
@@ -491,7 +496,7 @@
         function o_Error(parameters) {
 
             var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要作废这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
@@ -509,7 +514,7 @@
         function o_ReQue(parameters) {
 
             var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
@@ -528,7 +533,7 @@
         function o_ReError() {
 
             var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
@@ -546,7 +551,7 @@
         function o_SplitZu() {
 
             var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "检验可能有组合产品的" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
@@ -582,7 +587,7 @@
 
 
             var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
+            var s_ids = getselectedRows(0);
 
             $.messager.confirm("提示", "你要拦截 " + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
