@@ -181,23 +181,19 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         }
 
         [HttpPost]
-        public ActionResult Export()
+        public ActionResult Export(string search)
         {
             try
             {
-                SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-                con.Open();
-                SqlDataAdapter da = new SqlDataAdapter("select * from Products" + Session["ToExcel"].ToString(), con);
-                DataSet ds = new DataSet();
-                da.Fill(ds, "content");
-                con.Close();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+                List<ProductType> objList = NSession.CreateQuery("from ProductType " + Utilities.SqlWhere(search))
+                    .List<ProductType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
             }
             catch (Exception ee)
             {
-                return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
 
         [HttpPost]
@@ -236,25 +232,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     NSession.Flush();
                 }
 
-                IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
-
-                //
-                //在仓库中添加产品库存
-                //
-                foreach (var item in list)
-                {
-                    WarehouseStockType stock = new WarehouseStockType();
-                    stock.Pic = obj.SPicUrl;
-                    stock.WId = item.Id;
-                    stock.Warehouse = item.WName;
-                    stock.PId = obj.Id;
-                    stock.SKU = obj.SKU;
-                    stock.Title = obj.ProductName;
-                    stock.Qty = 0;
-                    stock.UpdateOn = DateTime.Now;
-                    NSession.SaveOrUpdate(stock);
-                    NSession.Flush();
-                }
+                AddToWarehouse(obj);
                 LoggerUtil.GetProductRecord(obj, "商品创建", "创建一件商品", CurrentUser, NSession);
             }
             catch (Exception ee)
@@ -262,6 +240,29 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true });
+        }
+
+        private void AddToWarehouse(ProductType obj)
+        {
+            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+
+            //
+            //在仓库中添加产品库存
+            //
+            foreach (var item in list)
+            {
+                WarehouseStockType stock = new WarehouseStockType();
+                stock.Pic = obj.SPicUrl;
+                stock.WId = item.Id;
+                stock.Warehouse = item.WName;
+                stock.PId = obj.Id;
+                stock.SKU = obj.SKU;
+                stock.Title = obj.ProductName;
+                stock.Qty = 0;
+                stock.UpdateOn = DateTime.Now;
+                NSession.SaveOrUpdate(stock);
+                NSession.Flush();
+            }
         }
 
         /// <summary>
@@ -375,6 +376,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 NSession.Delete("from ProductIsInfractionType where SKU='" + obj.SKU + "'");
                 NSession.Flush();
                 NSession.Clear();
+
                 foreach (ProductIsInfractionType item in list2)
                 {
                     item.OldSKU = obj.OldSKU;
@@ -392,15 +394,22 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 //
                 //在仓库中添加产品库存
                 //
-                foreach (var item in list)
+                if (list.Count > 0)
                 {
-                    WarehouseStockType stock = new WarehouseStockType();
-                    stock.Pic = obj.SPicUrl;
-                    stock.SKU = obj.SKU;
-                    stock.Title = obj.ProductName;
-                    stock.UpdateOn = DateTime.Now;
-                    NSession.Update(item);
-                    NSession.Flush();
+                    foreach (var item in list)
+                    {
+
+                        item.Pic = obj.SPicUrl;
+                        item.SKU = obj.SKU;
+                        item.Title = obj.ProductName;
+                        item.UpdateOn = DateTime.Now;
+                        NSession.Update(item);
+                        NSession.Flush();
+                    }
+                }
+                else
+                {
+                    AddToWarehouse(obj);
                 }
                 LoggerUtil.GetProductRecord(obj, "商品修改", str, CurrentUser, NSession);
             }
@@ -416,6 +425,39 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         {
             string str = " sku:" + item.SrcSKU + " Qty:" + item.SrcQty + "<br>";
             return str;
+        }
+
+        [HttpPost]
+        public ActionResult UpdateStatus(string p, string s)
+        {
+            List<ProductType> products =
+                NSession.CreateQuery("from ProductType where Id in(" + p + ")").List<ProductType>().ToList();
+            foreach (ProductType productType in products)
+            {
+                productType.Status = s;
+                NSession.Update(productType);
+                NSession.Flush();
+                LoggerUtil.GetProductRecord(productType, "订单产品属性修改",
+                                                 "产品：" + productType.SKU + "状态修改为“" + s + "”",
+                                                 CurrentUser, NSession);
+                if (s == "停产")
+                {
+                    List<OrderType> orderTypes =
+                        NSession.CreateQuery(
+                            "from OrderType where Id in(select OId from OrderProductType where SKU='" + productType.SKU + "') and Status='已处理' and Enabled=1")
+                            .List<OrderType>().ToList();
+                    foreach (OrderType orderType in orderTypes)
+                    {
+                        orderType.IsStop = 1;
+                        NSession.Update(orderType);
+                        NSession.Flush();
+                        LoggerUtil.GetOrderRecord(orderType, "订单产品属性修改",
+                                                  "产品：" + productType.SKU + "状态修改为“" + s + "”，同时订单属性设置为停售订单",
+                                                  CurrentUser, NSession);
+                    }
+                }
+            }
+            return Json(new { IsSuccess = true });
         }
 
         [HttpPost, ActionName("Delete")]
@@ -461,7 +503,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             return Json(new { total = objList.Count, rows = objList });
         }
 
-
         public ActionResult SKUScan()
         {
             return View();
@@ -497,20 +538,8 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string where = "";
-            string orderby = " order by Id desc ";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where " + where;
-                }
-            }
+            string orderby = Utilities.OrdeerBy(sort, order);
+            string where = Utilities.SqlWhere(search);
             if (where != "")
             {
                 where += " and  Enabled <>0";
@@ -519,7 +548,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             {
                 where = "where Enabled <>0";
             }
-            Session["ToExcel"] = where + orderby;
             IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -532,9 +560,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         public JsonResult ReP(string p)
         {
             string ps = p.Replace("\r", "").Trim('\n').Replace("\n", "','");
-
             NSession.CreateQuery("update  SKUCodeType set IsOut=1,IsSend=1 where SKU in('" + ps + "') ").ExecuteUpdate();
-
             NSession.CreateSQLQuery("update WarehouseStock set Qty=(select COUNT(1) from skucode where SKU=WarehouseStock.SKU and IsSend=0) where SKU  in('" + ps + "')").ExecuteUpdate();
             return Json(new { IsSuccess = true });
         }
@@ -578,8 +604,8 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
         public ActionResult SetSKUCode(int code, string sku)
         {
+            return Json(new { IsSuccess = false, Result = "此功能作废，请不要这个功能！" });
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
-
             sku = sku.Trim();
             SqlConnection conn = new SqlConnection("server=122.227.207.204;database=Feidu;uid=sa;pwd=`1q2w3e4r");
             string sql = "select top 1 SKU from SkuCode where Code={0}or Code={1} ";
@@ -716,39 +742,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
-        //public JsonResult ToExcel()
-        //{
-        //    try
-        //    {
-        //        SqlConnection con = new SqlConnection("server=122.227.207.204;database=KeweiBackUp;uid=sa;pwd=`1q2w3e4r");
-        //        con.Open();
-        //        SqlDataAdapter da = new SqlDataAdapter("select * from Products" + Session["ToExcel"].ToString(), con);
-        //        DataSet ds = new DataSet();
-        //        da.Fill(ds, "content");
-        //        con.Close();
-        //        Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
-        //    }
-        //    catch (Exception ee)
-        //    {
-        //        return Json(new { Msg = "出错了" }, JsonRequestBehavior.AllowGet);
-        //    }
-        //    return Json(new { Msg = "导出成功" }, JsonRequestBehavior.AllowGet);
-        //}
-
-        //public void SaveRecord(ProductType obj, string title, string str) 
-        //{
-        //    ProductRecordType productrecoud = new ProductRecordType();
-        //    productrecoud.OldSKU = obj.OldSKU;
-        //    productrecoud.SKU = obj.SKU;
-        //    productrecoud.OId = obj.Id;
-        //    productrecoud.RecordType = title;
-        //    productrecoud.Content =str;
-        //    productrecoud.CreateBy = CurrentUser.Realname;
-        //    productrecoud.CreateOn = DateTime.Now;
-        //    NSession.Save(productrecoud);
-        //    NSession.Flush();
-
-        //}
 
 
     }

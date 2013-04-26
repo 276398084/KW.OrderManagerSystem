@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -16,10 +19,61 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ViewResult Import()
+        {
+            return View();
+        }
+
+        public ActionResult CreateByW(string Id)
+        {
+            ViewData["No"] = Utilities.GetPlanNo(NSession);
+            IList<PurchasePlanType> obj =
+                  NSession.CreateQuery("from PurchasePlanType where SKU=:sku order by Id desc").SetString("sku", Id)
+                      .SetFirstResult(0)
+                      .SetMaxResults(1).List<PurchasePlanType>();
+            if (obj.Count > 0)
+            {
+                return View(obj[0]);
+            }
+            PurchasePlanType p = new PurchasePlanType();
+            p.SKU = Id;
+            return View(p);
+        }
+
+        [HttpPost]
+        public ActionResult ImportPlan(string fileName)
+        {
+            DataTable dt = OrderHelper.GetDataTable(fileName);
+            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                PurchasePlanType p = new PurchasePlanType { CreateOn = DateTime.Now, BuyOn = DateTime.Now, ReceiveOn = DateTime.Now, SendOn = DateTime.Now };
+                p.PlanNo = Utilities.GetPlanNo(NSession);
+                p.SKU = dt.Rows[i]["SKU"].ToString();
+                p.Price = Convert.ToDouble(dt.Rows[i]["单价"].ToString());
+                p.Qty = Convert.ToInt32(dt.Rows[i]["Qty"].ToString());
+                p.DaoQty = 0;
+                p.ProductName = "";
+                p.Freight = Convert.ToDouble(dt.Rows[i]["运费"].ToString());
+                p.ProductUrl = dt.Rows[i]["产品链接"].ToString();
+                p.PicUrl = dt.Rows[i]["图片链接"].ToString();
+                p.Suppliers = dt.Rows[i]["供应商"].ToString();
+                p.LogisticsMode = dt.Rows[i]["发货方式"].ToString();
+                p.TrackCode = dt.Rows[i]["追踪码"].ToString();
+                p.Status = dt.Rows[i]["状态"].ToString();
+                p.Memo = dt.Rows[i]["备注"].ToString();
+
+                NSession.Save(p);
+                NSession.Flush();
+
+
+            }
+            return Json(new { IsSuccess = true });
+        }
 
         public ActionResult Create()
         {
-            ViewData["No"] = Utilities.GetPlanNo();
+            ViewData["No"] = Utilities.GetPlanNo(NSession);
             return View();
         }
 
@@ -42,12 +96,13 @@ namespace KeWeiOMS.Web.Controllers
                 obj.BuyBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                LoggerUtil.GetPurchasePlanRecord(obj, "新建计划", "创建采购计划", CurrentUser, NSession);
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -80,31 +135,29 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(PurchasePlanType obj)
         {
-<<<<<<< HEAD
 
             try
             {
+                string str = "";
+                PurchasePlanType obj2 = GetById(obj.Id);
+                str += Utilities.GetObjEditString(obj2, obj) + "<br>";
+                NSession.Clear();
                 NSession.Update(obj);
                 NSession.Flush();
+                LoggerUtil.GetPurchasePlanRecord(obj, "修改采购计划", str, CurrentUser, NSession);
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true });
 
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
             try
-=======
-            string orderby = " order by Id desc ";
-            string where = "";
-            if(!string.IsNullOrEmpty(sort)&&!string.IsNullOrEmpty(order))
->>>>>>> kewei/ttt
             {
                 PurchasePlanType obj = GetById(id);
                 NSession.Delete(obj);
@@ -112,19 +165,43 @@ namespace KeWeiOMS.Web.Controllers
             }
             catch (Exception ee)
             {
-                return Json(new { errorMsg = "出错了" });
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = "true" });
+            return Json(new { IsSuccess = true });
+        }
+
+        public JsonResult ExportPlan(string search)
+        {
+            try
+            {
+                List<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + Utilities.SqlWhere(search))
+                    .List<PurchasePlanType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
-            string orderby = " order by Id desc ";
-            string where = "";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
+            string orderby= Utilities.OrdeerBy(sort,order);
+            string where =Utilities.SqlWhere(search);
+            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType " + where + orderby)
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows)
+                .List<PurchasePlanType>();
+            object count = NSession.CreateQuery("select count(Id) from PurchasePlanType " + where).UniqueResult();
+            return Json(new { total = count, rows = objList });
+        }
+
+<<<<<<< HEAD
+        private static string SqlWhere(string search)
+        {
+           // search =HttpUtility.UrlDecode(search);
+            string where = string.Empty;
             if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
@@ -133,20 +210,11 @@ namespace KeWeiOMS.Web.Controllers
                     where = " where " + where;
                 }
             }
-<<<<<<< HEAD
-            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType" + where + orderby)
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
-=======
-            IList<PurchasePlanType> objList = NSession.CreateQuery("from PurchasePlanType "+ where + orderby)
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
->>>>>>> kewei/ttt
-                .List<PurchasePlanType>();
-
-            object count = NSession.CreateQuery("select count(Id) from PurchasePlanType " + where).UniqueResult();
-            return Json(new { total = count, rows = objList });
+            return where;
         }
+
+=======
+>>>>>>> kewei/ttt
         public JsonResult SearchSKU(string id)
         {
             IList<PurchasePlanType> obj = NSession.CreateQuery("from PurchasePlanType where SKU=:sku order by Id desc").SetString("sku", id)

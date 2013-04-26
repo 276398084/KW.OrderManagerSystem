@@ -1,0 +1,369 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.PurchasePlanType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "PurchasePlan")',
+                pageNumber: 1,
+                pageSize: 20,
+                nowrap: false,
+                pageList: [20, 40, 60, 80, 100],
+                columns: [[
+                     {
+                         field: 'Id', width: 100, formatter: function (v, r, i) {
+                             if (r.Status != '已收到')
+                                 return '<a href="javascript:void(0);" onclick="shooDao(' + v + ')">到货</a>';
+                             return '';
+                         }
+                     },
+                     {
+                         field: 'SendOn', width: 100, formatter: function (v, r, i) {
+                             return '<a href="javascript:void(0);" onclick="trouble(' + r.Id + ')">有问题</a>';
+                         }
+                     },
+                    { field: 'PlanNo', title: '计划编号', width: 100, sortable: true },
+                    {
+                        field: 'PicUrl', title: '图片', width: 200, sortable: true,
+                        formatter: function (v, r, i) {
+                            return '<a href="' + r.ProductUrl + '" target="_blank"  class="easyui-linkbutton" ><img src="' + v + '" height="160px" width="160px" /></a></br>(SKU:' + r.SKU + ')' + r.ProductName
+                        }
+                    },
+
+                    { field: 'Price', title: '单价', width: 30, sortable: true },
+                    { field: 'Qty', title: '数量', width: 30, sortable: true },
+                    { field: 'DaoQty', title: '到', width: 30, sortable: true },
+                    { field: 'Freight', title: '运费', width: 30, sortable: true },
+                    { field: 'Suppliers', title: '供应商', width: 80, sortable: true },
+                     { field: 'BuyBy', title: '采购人', width: 80, sortable: true },
+                    {
+                        field: 'Status', title: '状态', width: 100, sortable: true
+
+                    },
+                    { field: 'LogisticsMode', title: '发货方式', width: 80, sortable: true },
+                    { field: 'TrackCode', title: '运单号', width: 80, sortable: true },
+                    { field: 'Memo', title: '备注', width: 100 },
+                    {
+                        field: 'CreateOn', title: '时间', width: 100, sortable: true,
+                        formatter: function (v, r, i) {
+                            return '创建时间:' + datecheck(v) + "<br>" + '采购时间:' + datecheck(r.BuyOn) + "<br>" + '发货时间:' + datecheck(r.SendOn) + "<br>" + '收到时间:' + datecheck(r.ReceiveOn) + "<br>";
+                        }
+                    }
+
+                ]]
+            });
+            $('#StartDate').datebox();
+            $('#EndDate').datebox();
+            $('#StartDate').datebox("setValue", getStartDate(7));
+            $('#EndDate').datebox("setValue", getStartDate(-1));
+            $('#SearchStatus').combobox({
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: [{ id: "所有", text: "所有" }, { id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分到货", text: "部分到货" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
+            });
+            $('#IsNo').combobox({
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: [{ id: "ALL", text: "ALL" }, { id: "0", text: "3天未发货" }, { id: "1", text: "5天未到货" }],
+                onSelect: function (record) {
+                    if (record[0] == "ALL") {
+                        doSearch();
+                    }
+                    var search = "";
+                    if (record["id"] == 1)
+                        search += "Status_es&已发货^BuyOn_et&" + getStartDateTime(5, "d") + "^";
+                    if (record["id"] == 0)
+                        search += "Status_es&已采购^BuyOn_et&" + getStartDateTime(3, "d") + "^";
+
+                    $("#dg").datagrid("load", {
+                        search: search
+                    });
+                }
+            });
+            $('#SearchStatus').combobox("setValue", "所有");
+            $('#IsNo').combobox("setValue", "ALL");
+        });
+        function shooDao(id) {
+            var url_str = '@Url.Action("Create", "PlanDao")/' + id;
+            showdlg(url_str, 'c_dlg', ajaxAddDao);
+        }
+        function trouble(id) {
+            $.getJSON('@Url.Action("GetTroubleing", "PurchaseTrouble")/' + id, function (json) {
+                if (json != "否") {
+                    alert("该条记录已经在问题列表中了！");
+                } else {
+                    var url_str = '@Url.Action("Create", "PurchaseTrouble")/' + id;
+                    showdlg(url_str, 't_dlg', ajaxTrouble);
+                }
+
+            });
+
+        }
+        function ajaxTrouble() {
+            formPost('t_form', '@Url.Action("Create", "PurchaseTrouble")', 't_dlg', 'dg');
+        }
+        //异步新建提交
+        function ajaxAddDao() {
+            $.messager.confirm('确认', '确定到货吗?', function () {
+                $('#c_form').form('submit', {
+                    url: '@Url.Action("Create", "PlanDao")',
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (result) {
+                        result = $.parseJSON(result);
+                        if (!result.IsSuccess) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.ErrorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#c_dlg').dialog('close');
+
+                            $('#dg').datagrid('reload');
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
+                    }
+                });
+            });
+
+        }
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","PurchasePlan")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit","PurchasePlan")/' + id;
+        if (id != undefined) {
+            showdlg(url, 'e_dlg', ajaxEdit)
+        }
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        formPost('c_form', '@Url.Action("Create", "PurchasePlan")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "PurchasePlan")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "PurchasePlan")/' + id;
+                delData(url, 'dg');
+
+            }
+        }
+<<<<<<< HEAD
+
+        //异步新建提交
+        function ajaxAdd() {
+            $('#c_form').form('submit', {
+                url: '@Url.Action("Create", "PurchasePlan")',
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (msg) {
+                    var result = $.parseJSON(msg);
+                    if (!result.IsSuccess) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存失败:' + result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $('#c_dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                        $.messager.show({
+                            title: '提示',
+                            msg: '保存成功',
+                            timeout: 2000,
+                            showType: 'slide'
+                        });
+                    }
+                }
+            });
+            }
+            //异步修改提交
+            function ajaxEdit() {
+                $('#e_form').form('submit', {
+                    url: '@Url.Action("Edit", "PurchasePlan")',
+                    onSubmit: function () {
+                        return $(this).form('validate');
+                    },
+                    success: function (msg) {
+                        var result = $.parseJSON(msg);
+                        if (!result.IsSuccess) {
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存失败:' + result.ErrorMsg,
+                                timeout: 0,
+                                showType: 'slide'
+                            });
+                        } else {
+                            $('#e_dlg').dialog('close');
+                            $('#dg').datagrid('reload');
+                            $.messager.show({
+                                title: '提示',
+                                msg: '保存成功',
+                                timeout: 2000,
+                                showType: 'slide'
+                            });
+                        }
+                    }
+                });
+            }
+
+
+            //删除
+            function del() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    $.messager.confirm('确认', '确定删除?', function (r) {
+                        if (r) {
+                            var url = '@Url.Action("Delete", "PurchasePlan")/' + id;
+                            $.post(url, function () {
+                            }).success(function (data) {
+                                var msgstr = "删除成功";
+                                if (!data.IsSuccess) {
+                                    msgstr = "删除失败";
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 0,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.show({
+                                        title: '提示',
+                                        msg: msgstr,
+                                        timeout: 3000,
+                                        showType: 'slide'
+                                    });
+                                }
+                                $('#dg').datagrid('reload');
+                            }).error(function () {
+                                $.messager.alert('错误', '删除发生错误');
+                            });
+                        }
+                    });
+                }
+            }
+
+=======
+>>>>>>> kewei/ttt
+            //获取选中行
+            function getselectedRow() {
+                var row = $('#dg').datagrid('getSelected');
+                if (row != undefined) {
+                    if (row.hasOwnProperty('Id')) {
+                        var id = row['Id'];
+                        return id;
+                    }
+                }
+                $.messager.show({
+                    title: '提示',
+                    msg: '请选择行',
+                    timeout: 3000,
+                    showType: 'slide'
+                });
+                return (undefined);
+            }
+            function doSearch() {
+                search = getSearch();
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+
+            function getSearch() {
+                var search = "BuyOn_st&" + $('#StartDate').datebox("getValue") + "^BuyOn_et&" + $('#EndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                var a = $('#SearchStatus').combobox("getText");
+                if (a != "所有") {
+                    search += "Status&" + a + "^";
+                }
+                return search;
+            }
+
+            function exportPlan(parameters) {
+                search = getSearch();
+                $('#dg').datagrid('loading');
+                var postUrl = "/Order/ExportDown/1";
+                $.ajax({
+                    url: '@Url.Action("ExportPlan", "PurchasePlan")/',
+                    type: 'post',
+                    data: 'search=' + encodeURIComponent(search),
+                    success: function (result) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                        location.href = postUrl;
+                        $('#dg').datagrid('reload');
+                    }
+                });
+            }
+
+            function datecheck(value) {
+                var day = new Date("2000-01-02");
+                var date = new Date(getOnlyDate(value));
+                if (date < day)
+                    return "";
+                return getDate(value);
+            }
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del()">删除</a>
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="exportPlan()">导出</a>
+            开始时间:<input id="StartDate" />
+            结束时间:<input id="EndDate" />&nbsp&nbsp
+            状态：<input id="SearchStatus" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            异常采购：<input id="IsNo" />
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'PlanNo'">计划编号</div>
+            <div data-options="name:'SKU'">SKU</div>
+            <div data-options="name:'ProductName'">名称</div>
+            <div data-options="name:'Suppliers'">供应商</div>
+            <div data-options="name:'TrackCode'">运单号</div>
+            <div data-options="name:'BuyBy'">采购人</div>
+            <div data-options="name:'CreateBy'">生成人</div>
+
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="t_dlg"></div>
+    </div>
+</body>
