@@ -1601,6 +1601,7 @@
     <Content Include="Views\PurchasePlan\CreateByW.cshtml">
       <SubType>Code</SubType>
     </Content>
+    <Content Include="Views\User\ChangePassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -215,13 +215,13 @@ namespace KeWeiOMS.Web
             NSession.Flush();
         }
 
-        public static void syn(ISession NSession)
-        {
-            IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>'' and ApiToken<>''").List<AccountType>();
-            foreach (var item in list)
-            {
-                GetMyeBaySelling(item, NSession);
-            }
-        }
+        //public static void syn(ISession NSession)
+        //{
+        //    IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>'' and ApiToken<>''").List<AccountType>();
+        //    foreach (var item in list)
+        //    {
+        //        GetMyeBaySelling(item, NSession);
+        //    }
+        //}
     }
 }

@@ -153,7 +153,30 @@
             $('#mm').menu('hide');
         });
     }
-
+    function changePass() {
+            showdlg('/User/ChangePassword', 'p_dlg', ajaxAdd)
+    }
+    function ajaxAdd() {
+        if ($("#p_form").form('validate')!=true)
+            return;
+        if ($('#newpsd').attr("value") != $('#newpsd2').attr("value"))
+            alert("密码与确认密码不一致！");
+        else {
+            $.ajax({
+                url: '@Url.Action("Change", "User")/',
+                type: 'post',
+                data: "oldpsd=" + $('#oldpsd').attr("value") + "&newpsd=" + $('#newpsd').attr("value"),
+                success: function (result) {
+                    if (result.IsSuccess) {
+                        $('#p_dlg').dialog('close');
+                        alert("操作成功");
+                    } else {
+                        alert(result.ErrorMsg);
+                    }
+                }
+            });
+        }
+    }
 </script>
 <style type="text/css">
     a {
@@ -173,11 +196,13 @@
             <div class="wel">
                 @ViewData["Username"]
                 ,欢迎您的光临！
+           
             </div>
 
 
             <div style="position: absolute; right: 0px; bottom: 0px;">
                 <a href="javascript:void(0);" class="easyui-menubutton" data-options="menu:'#layout_north_pfMenu',iconCls:'icon-ok'">更换皮肤</a> <a href="javascript:void(0);" class="easyui-menubutton" data-options="menu:'#layout_north_kzmbMenu',iconCls:'icon-help'">控制面板</a> <a href="#" id="loginOut" class="easyui-menubutton" data-options="iconCls:'icon-back'">安全退出</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+           
             </div>
             <div id="layout_north_pfMenu" style="width: 120px; display: none;">
                 <div onclick="changeTheme('default');">default</div>
@@ -188,17 +213,17 @@
                 <div onclick="changeTheme('metro-green');">metro-green</div>
                 <div onclick="changeTheme('metro-orange');">metro-orange</div>
                 <div onclick="changeTheme('metro-red');">metro-red</div>
-
             </div>
-
-
+            <div id="layout_north_kzmbMenu" style="width: 120px; display: none;">
+                <div onclick="changePass();">密码修改</div>
+            </div>
         </div>
     </div>
 
     <div region="west" split="true" title="功能菜单" style="width: 170px; padding: 1px; overflow: hidden;">
         @{
             Html.RenderPartial("Nav", FunctionMenu.GetFunctionMenus(KeWeiOMS.NhibernateHelper.NhbHelper.GetCurrentSession()));
-        }
+ }
     </div>
     <div region="center" title="" style="overflow: hidden; padding: 0px;" id="centerArea">
         <div class="easyui-tabs" fit="true" border="false" id="tabs">
@@ -218,6 +243,6 @@
             <div id="mm-exit">退出</div>
         </div>
     </div>
-
+    <div id="p_dlg"></div>  
 </body>
 

@@ -10,11 +10,16 @@
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
-        });
-        $("#txtEndDate").datebox("setValue", getStartDate(-1));
-        $("#txtStartDate").datebox("setValue", getStartDate(7));
-    });
+            });
 
+            $('#aa').combobox({
+                url: '/Account/AccountList/Ebay',
+                valueField: 'id',
+                textField: 'text',
+                width: 150
+            });
+            $('#aa').combobox("setValue", "ALL");
+    });
 
     //新建
     function c_dlg() {
@@ -91,10 +96,13 @@
     }
         function getSearch()
         {
-            search = "StartTime_st&" + $('#txtStartDate').datebox("getValue") + "^StartTime_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($('#aa').combobox("getText") != "ALL")
+            {
+                search += "Account&" + $('#aa').combobox("getText") + "^";
+            }
             return search;
         }
-
         function doSearch() {
             search = getSearch();
             $("#dg").datagrid("load", {
@@ -107,14 +115,16 @@
     }
 
     function syn() {
-        $('#dg').datagrid("loading");
+        $('#dg').datagrid('loading');
         $.ajax({
-            url: '@Url.Action("Syn", "Ebay")',
+            url: '@Url.Action("Syn", "Ebay")/',
+            type: 'post',
+            data: 'id=' +$('#aa').combobox("getText"),
              success: function (result) {
                  if (result.IsSuccess) {
                      $.messager.show({
                          title: '提示',
-                         msg: result.Msg,
+                         msg: result.ErrorMsg,
                          timeout: 0,
                          showType: 'slide'
                      })
@@ -122,7 +132,7 @@
                  else {
                      $.messager.show({
                          title: '提示',
-                         msg: result.Msg,
+                         msg: result.ErrorMsg,
                          timeout: 0,
                          showType: 'slide'
                      })
@@ -171,12 +181,10 @@
                 </tr>
             </thead>
         </table>
-        <div id="toolbar">
-@*            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="syn();">同步</a>*@
-            开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width: 100px" readonly="readonly" />&nbsp;
-                结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width: 100px" />&nbsp;&nbsp;
+        <div id="toolbar">   
+           账户<input id="aa" type="text">
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="syn();">同步</a><a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'ItemId'">编号</div>
