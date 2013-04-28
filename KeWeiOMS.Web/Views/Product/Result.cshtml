@@ -1,0 +1,25 @@
+﻿@model IEnumerable<KeWeiOMS.Web.ResultInfo>
+@{
+    ViewBag.Title = "Result";
+}
+<script type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("GetResult", "Product")',
+            });
+    });
+</script>
+<table id="dg" class="easyui-datagrid">
+    <thead>
+        <tr>
+            <th field="Key" width="100">SKU
+            </th>
+            <th field="Result" width="150">结果
+            </th>
+            <th field="Info" width="200">原因
+            </th>
+            <th field="CreateOn" width="200" formatter="getDate">时间
+            </th>
+        </tr>
+    </thead>
+</table>

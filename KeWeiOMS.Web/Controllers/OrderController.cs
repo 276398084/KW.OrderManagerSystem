@@ -94,6 +94,21 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult Result()
+        {
+            return View();
+        }
+        public JsonResult GetResult()
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            if (Session["Results"] != null)
+            {
+                results = Session["Results"] as List<ResultInfo>;
+            }
+            return Json(new { total = results.Count, rows = results });
+        }
+
         #endregion
 
         #region 订单处理
@@ -261,12 +276,12 @@ namespace KeWeiOMS.Web.Controllers
                     default:
                         break;
                 }
-                return Json(new { IsSuccess = true });
+                Session["Results"]=results;
+                return Json(new { IsSuccess = true,Info = true});
             }
             catch (Exception ex)
             {
-                return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
-
+                return Json(new { IsSuccess = false, ErrorMsg = ex.Message, Info = true });
             }
         }
 
