@@ -14,7 +14,7 @@ Date.prototype.format = function (format) {
         "s+": this.getSeconds(), //second
         "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
         "S": this.getMilliseconds() //millisecond
-    };
+    }
     if (/(y+)/.test(format)) format = format.replace(RegExp.$1,
     (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (var k in o) if (new RegExp("(" + k + ")").test(format))
@@ -28,25 +28,27 @@ function getDate(value) {
     return date.format("yyyy-MM-dd hh:mm:ss");
 }
 
-<<<<<<< HEAD
-function getStartDate(value) {
-    var today = new Date();
-=======
 function getOnlyDate(value) {
     var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
     return date.format("yyyy-MM-dd");
+}
+function getStartDateTime(value, t) {
+    var today = new Date();
+    var enddate;
+    if (t == "d")
+        enddate = getDate(today.setDate(today.getDate() - value).toString());
+    else {
+        enddate = getDate(today.setHours(today.getHours() - value).toString());
+    }
+    return enddate;
 }
 
 function getStartDate(value) {
     var today = new Date();
->>>>>>> kewei/ttt
     var enddate = getOnlyDate(today.setDate(today.getDate() - value).toString());
     return enddate;
 }
-function getOnlyDate(value) {
-    var date = new Date(parseInt(value.replace("/Date(", "").replace(")/", ""), 10));
-    return date.format("yyyy-MM-dd");
-}
+
 
 function getTrue(value) {
     if (value == 1)
@@ -55,39 +57,32 @@ function getTrue(value) {
         return "否";
 }
 
-
 var checks = [["1", "是"], ["0", "否"]];
-<<<<<<< HEAD
-
 var checksall = [["ALL", "ALL"], ["1", "是"], ["0", "否"]];
-
+var checkOrdersAll = [["ALL", "ALL"], ["0", "处理后24小时未配货"], ["1", "配货后12小时未包装"], ["2", "包装后12小时未发货"]];
+var checkPurAll = [["ALL", "ALL"], ["0", "3天未发货"], ["1", "5天未到货"]];
 var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
-
 var checkSex = '[["男"],["女"]]';
-
 var checkPrint = [["ALL", "ALL"], ["1", "未打印"], ["2", "已打印"]];
-=======
 
-var checkSex = '[["男"],["女"]]';
-
-var checkPrint = [["0", "全部"], ["1", "未打印"], ["2", "已打印"]];
->>>>>>> kewei/ttt
 var Packer = 5;
 var Examiner = 7;
 var Pei = 8;
 var Purchaser = 9;
 
-
-
-
-function formPost(form, url, dlg, dg, t) {
+function formPost(form, url, dlg, dg, t,r) {
 
     $('#' + form).form('submit', {
         url: url,
         onSubmit: function () {
             return $(this).form('validate');
         },
+<<<<<<< HEAD
         success: function (msg) {
+=======
+        success: function (msg) {
+
+>>>>>>> kewei/ttt
             var result = $.parseJSON(msg);
             if (result.IsSuccess) {
                 alert("操作成功");
@@ -98,6 +93,21 @@ function formPost(form, url, dlg, dg, t) {
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }
+<<<<<<< HEAD
+                    else {
+                        $('#' + dg).datagrid('reload');
+                    }
+                }
+            } else {
+                if (result.ErrorMsg)
+                    alert("保存失败!");
+                else {
+                    alert("保存失败!" + result.ErrorMsg);
+                }
+            }
+        }
+    });
+=======
                     else {
                         $('#' + dg).datagrid('reload');
                     }
@@ -105,8 +115,12 @@ function formPost(form, url, dlg, dg, t) {
             } else {
                 alert("保存失败!");
             }
+            if (result.Info) {
+                window.open(r);
+            }
         }
     });
+>>>>>>> kewei/ttt
 }
 
 function delData(url, dg, t) {
@@ -114,19 +128,14 @@ function delData(url, dg, t) {
         $.messager.confirm('确认', '确定删除?', function (r) {
             if (r) {
                 $.post(url, function () {
-<<<<<<< HEAD
-                }).success(function (msg) {
-                    var result = $.parseJSON(msg);
-=======
                 }).success(function (data) {
->>>>>>> kewei/ttt
                     var msgstr = "删除成功";
-                        $.messager.show({
-                            title: '提示',
-                            msg: msgstr,
-                            timeout: 3000,
-                            showType: 'slide'
-                        });
+                    $.messager.show({
+                        title: '提示',
+                        msg: msgstr,
+                        timeout: 3000,
+                        showType: 'slide'
+                    });
                     if (t) {
                         $('#' + dg).treegrid('reload');
                     }
@@ -143,6 +152,7 @@ function delData(url, dg, t) {
 }
 
 function showdlg(url, dlg, handle) {
+    $('#' + dlg).html();
     $('#' + dlg).load(url, function () {
         $(this).dialog({
             title: '新建',
@@ -192,6 +202,10 @@ function showSrarch(url, dlg, dg) {
     $('#' + dlg).dialog("open");
 };
 
+function GetPic(v) {
+    return '<img  src=' + v + '  height="64px" width="64px" />';
+}
+
 $.fn.panel.defaults.onBeforeDestroy = function () {
     var frame = $('iframe', this);
     try {
@@ -208,3 +222,4 @@ $.fn.panel.defaults.onBeforeDestroy = function () {
     } catch (e) {
     }
 };
+
