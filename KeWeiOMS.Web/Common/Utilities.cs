@@ -766,6 +766,8 @@ namespace KeWeiOMS.Web
         /// </summary>
         public virtual string Result { get; set; }
 
+
+        public virtual DateTime CreateOn { get; set; }
         /// <summary>
         /// 备注
         /// </summary>

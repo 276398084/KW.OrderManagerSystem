@@ -160,8 +160,7 @@ namespace KeWeiOMS.Web
             {
                 obj.CreateOn = DateTime.Now;
                 obj.ReplayOn = Convert.ToDateTime("2000-01-01");
-                int id = NoExist(obj.MessageId);
-                if (id != 0)
+                if (HasExist(obj.MessageId))
                 {
                     return "该条邮件已同步！";
                 }
@@ -179,23 +178,15 @@ namespace KeWeiOMS.Web
         }
 
 
-        private int NoExist(string MessageId)
+        private bool HasExist(string MessageId)
         {
-
-            int id = 0;
             object obj = NSession.CreateQuery("select count(Id) from EbayMessageType where MessageId='" + MessageId + "'").UniqueResult();
             if (Convert.ToInt32(obj) > 0)
             {
-
-                IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where MessageId='" + MessageId + "'").List<EbayMessageType>();
-                NSession.Clear();
-                foreach (var item in list)
-                {
-                    id = item.Id;
-                }
+                return true;
 
             }
-            return id;
+            return false;
 
         }
 

@@ -132,17 +132,38 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
         }
 
-        public JsonResult Syn()
+        public JsonResult Syn(string id)
         {
             try
             {
-                EBayUtil.syn(NSession);
+                if (id != "ALL")
+                {
+                    IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>''").List<AccountType>();
+                    foreach (var item in list)
+                    {
+                        if (item.AccountName == id)
+                        {
+                            if (!string.IsNullOrEmpty(item.ApiToken))
+                                EBayUtil.GetMyeBaySelling(item, NSession);
+                            else
+                                return Json(new { ErrorMsg = "该账号无 ApiToke！", IsSuccess = false });
+                        }
+                    }
+                }
+                else
+                {
+                    IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay' and AccountName<>'' and ApiToken<>''").List<AccountType>();
+                    foreach (var item in list)
+                    {
+                        EBayUtil.GetMyeBaySelling(item, NSession);
+                    }
+                }
             }
             catch (Exception ee)
             {
                 return Json(new { ErrorMsg = "出错了", IsSuccess = false });
             }
-            return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsSuccess = true, ErrorMsg = "同步成功！" }, JsonRequestBehavior.AllowGet);
         }
 
 

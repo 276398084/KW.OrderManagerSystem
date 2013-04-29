@@ -763,6 +763,7 @@ namespace KeWeiOMS.Web
             r.Key = key;
             r.Info = info;
             r.Result = result;
+            r.CreateOn = DateTime.Now;
             return r;
         }
 

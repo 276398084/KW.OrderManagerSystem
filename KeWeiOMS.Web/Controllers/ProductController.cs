@@ -55,6 +55,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult WarningList(string order, string sort)
         {
@@ -134,55 +135,81 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         [HttpPost]
         public ActionResult ImportProduct(string fileName)
         {
-            DataTable dt = OrderHelper.GetDataTable(fileName);
-            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
-            for (int i = 0; i < dt.Rows.Count; i++)
+            try
             {
-                ProductType p = new ProductType { CreateOn = DateTime.Now };
+                List<ResultInfo> results = new List<ResultInfo>();
+
+                DataTable dt = OrderHelper.GetDataTable(fileName);
+                IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    ProductType p = new ProductType { CreateOn = DateTime.Now };
                 p.SKU = dt.Rows[i]["子SKU"].ToString().Trim();
                 if (IsExist(p.SKU))
                 {
                     continue;
                 }
 
-                p.Status = dt.Rows[i]["销售状态"].ToString();
-                p.ProductName = dt.Rows[i]["名称"].ToString();
-                p.Category = dt.Rows[i]["分类"].ToString();
-                p.Standard = dt.Rows[i]["规格"].ToString();
-                p.Price = Convert.ToDouble(dt.Rows[i]["价格"]);
-                p.Weight = Convert.ToInt16(dt.Rows[i]["重量"]);
-                p.Long = Convert.ToInt16(dt.Rows[i]["长"]);
-                p.Wide = Convert.ToInt16(dt.Rows[i]["宽"]);
-                p.High = Convert.ToInt16(dt.Rows[i]["高"]);
-                p.Location = dt.Rows[i]["库位号"].ToString();
-                p.OldSKU = dt.Rows[i]["SKU"].ToString();
-                p.HasBattery = Convert.ToInt32(dt.Rows[i]["电池"].ToString());
-                p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
-                p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
-                p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
-                p.Enabled = 1;
-                NSession.SaveOrUpdate(p);
-                NSession.Flush();
-                //
-                //在仓库中添加产品库存
-                //
-                foreach (var item in list)
-                {
-                    WarehouseStockType stock = new WarehouseStockType();
-                    stock.Pic = p.SPicUrl;
-                    stock.WId = item.Id;
-                    stock.Warehouse = item.WName;
-                    stock.PId = p.Id;
-                    stock.SKU = p.SKU;
-                    stock.Title = p.ProductName;
-                    stock.Qty = 0;
-                    stock.UpdateOn = DateTime.Now;
-                    NSession.SaveOrUpdate(stock);
-                    NSession.Flush();
-                }
+                    p.Status = dt.Rows[i]["销售状态"].ToString();
+                    p.ProductName = dt.Rows[i]["名称"].ToString();
+                    p.Category = dt.Rows[i]["分类"].ToString();
+                    p.Standard = dt.Rows[i]["规格"].ToString();
+                    p.Price = Convert.ToDouble(dt.Rows[i]["价格"]);
+                    p.Weight = Convert.ToInt16(dt.Rows[i]["重量"]);
+                    p.Long = Convert.ToInt16(dt.Rows[i]["长"]);
+                    p.Wide = Convert.ToInt16(dt.Rows[i]["宽"]);
+                    p.High = Convert.ToInt16(dt.Rows[i]["高"]);
+                    p.Location = dt.Rows[i]["库位号"].ToString();
+                    p.OldSKU = dt.Rows[i]["SKU"].ToString();
+                    p.HasBattery = Convert.ToInt32(dt.Rows[i]["电池"].ToString());
+                    p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
+                    p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
+                    p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
+                    p.Enabled = 1;
+                    if (!HasExsit(p.SKU))
+                    {
+                        NSession.SaveOrUpdate(p);
+                        NSession.Flush();
+                        results.Add(OrderHelper.GetResult(p.SKU, "", "导入成功"));
 
+                        //在仓库中添加产品库存
+                        foreach (var item in list)
+                        {
+                            WarehouseStockType stock = new WarehouseStockType();
+                            stock.Pic = p.SPicUrl;
+                            stock.WId = item.Id;
+                            stock.Warehouse = item.WName;
+                            stock.PId = p.Id;
+                            stock.SKU = p.SKU;
+                            stock.Title = p.ProductName;
+                            stock.Qty = 0;
+                            stock.UpdateOn = DateTime.Now;
+                            NSession.SaveOrUpdate(stock);
+                            NSession.Flush();
+                        }
+                    }
+                    else
+                    {
+                        results.Add(OrderHelper.GetResult(p.SKU, "该产品已存在", "导入失败"));
+                    }
+                }
+                Session["Results"] = results;
+                return Json(new { IsSuccess = true, Info = true });
             }
-            return Json(new { IsSuccess = true });
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = ex.Message, Info = true });
+            }
+        }
+
+        private bool HasExsit(string p)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from ProductType where SKU ='" + p + "' ").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         [HttpPost]

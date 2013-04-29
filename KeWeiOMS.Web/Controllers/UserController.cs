@@ -27,6 +27,36 @@ namespace KeWeiOMS.Web.Controllers
             return View(u);
         }
 
+        public ActionResult ChangePassword()
+        {
+            ViewData["Username"]=CurrentUser.Username;
+            return View(); 
+        }
+
+        public JsonResult Change(string oldpsd,string newpsd)
+        {
+            try
+            {
+                if (oldpsd == CurrentUser.Password)
+                { 
+                    UserType obj = GetById(CurrentUser.Id);
+                    obj.Password = newpsd;
+                    NSession.Update(obj);
+                    NSession.Flush();
+                    Utilities.LoginByUser(obj.Username, obj.Password, NSession);
+                    Utilities.CreateCookies(obj.Username, obj.Password);
+
+                }
+                else
+                    return Json(new { IsSuccess = false, ErrorMsg = "旧密码不正确" });
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true });
+        }
+
         public ActionResult GetCompetence(string id)
         {
             ViewData["uid"] = id;
