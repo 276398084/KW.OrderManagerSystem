@@ -15,7 +15,7 @@
             'onUploadSuccess': function (file, data, response) {
                 eval("data=" + data);
                 $('#fileName').val(data.SaveName);
-                formPost('c_form', '@Url.Action("ImportProduct", "Product")',null, null, null, '@Url.Action("Result", "Product")');
+                formPost('c_form', '@Url.Action("ImportProduct", "Product")',null, null, null, '@Url.Action("Result", "Home")');
             }
         });
     });

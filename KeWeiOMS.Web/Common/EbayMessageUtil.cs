@@ -77,8 +77,7 @@ namespace KeWeiOMS.Web
                     email.Shop = mmet.Question.RecipientID[0];
                     email.CreateOn = DateTime.Now;
                     email.ReplayOn = Convert.ToDateTime("2000-01-01");
-                    int id = NoExist(email.MessageId, NSession);
-                    if (id != 0)
+                    if (HasExist(email.MessageId, NSession))
                     {
 
                     }
@@ -93,22 +92,14 @@ namespace KeWeiOMS.Web
             } while (messages != null && messages.Count == 100);
         }
 
-        private static int NoExist(string MessageId, ISession NSession)
+        private static bool HasExist(string MessageId, ISession NSession)
         {
-            int id = 0;
             object obj = NSession.CreateQuery("select count(Id) from EbayMessageType where MessageId='" + MessageId + "'").UniqueResult();
             if (Convert.ToInt32(obj) > 0)
             {
-
-                IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where MessageId='" + MessageId + "'").List<EbayMessageType>();
-                NSession.Clear();
-                foreach (var item in list)
-                {
-                    id = item.Id;
-                }
-
+                return true;
             }
-            return id;
+            return false;
 
         }
 

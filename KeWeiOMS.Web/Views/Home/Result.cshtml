@@ -5,14 +5,16 @@
 <script type="text/javascript">
     $(function () {
         $('#dg').datagrid({
-            url: '@Url.Action("GetResult", "Product")',
+            rownumbers: true,
+            singleSelect:true,
+            url: '@Url.Action("GetResult", "Home")',
             });
     });
 </script>
 <table id="dg" class="easyui-datagrid">
     <thead>
         <tr>
-            <th field="Key" width="100">SKU
+            <th field="Key" width="100">Key
             </th>
             <th field="Result" width="150">结果
             </th>

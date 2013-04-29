@@ -22,7 +22,7 @@
                 if (type == 1) {
                     formPost('c_Import', '@Url.Action("ImportAmount", "Order")');
                 } else {
-                    formPost('c_Import', '@Url.Action("Import", "Order")',null,null,null,'@Url.Action("Result", "Order")');
+                    formPost('c_Import', '@Url.Action("Import", "Order")',null,null,null,'@Url.Action("Result", "Home")');
                 }
                 $('c_Import').clear();
             }

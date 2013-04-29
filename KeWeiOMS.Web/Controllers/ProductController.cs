@@ -56,20 +56,6 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Result()
-        {
-            return View();
-        }
-        public JsonResult GetResult()
-        {
-            List<ResultInfo> results = new List<ResultInfo>();
-            if (Session["Results"] != null)
-            {
-                results = Session["Results"] as List<ResultInfo>;
-            }
-            return Json(new { total = results.Count, rows = results });
-        }
-
         [HttpPost]
         public ActionResult WarningList(string order, string sort)
         {
@@ -175,26 +161,32 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
                     p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
                     p.Enabled = 1;
-                    NSession.SaveOrUpdate(p);
-                    NSession.Flush();
-                    //
-                    //在仓库中添加产品库存
-                    //
-                    foreach (var item in list)
+                    if (!HasExsit(p.SKU))
                     {
-                        WarehouseStockType stock = new WarehouseStockType();
-                        stock.Pic = p.SPicUrl;
-                        stock.WId = item.Id;
-                        stock.Warehouse = item.WName;
-                        stock.PId = p.Id;
-                        stock.SKU = p.SKU;
-                        stock.Title = p.ProductName;
-                        stock.Qty = 0;
-                        stock.UpdateOn = DateTime.Now;
-                        NSession.SaveOrUpdate(stock);
+                        NSession.SaveOrUpdate(p);
                         NSession.Flush();
+                        results.Add(OrderHelper.GetResult(p.SKU, "", "导入成功"));
+
+                        //在仓库中添加产品库存
+                        foreach (var item in list)
+                        {
+                            WarehouseStockType stock = new WarehouseStockType();
+                            stock.Pic = p.SPicUrl;
+                            stock.WId = item.Id;
+                            stock.Warehouse = item.WName;
+                            stock.PId = p.Id;
+                            stock.SKU = p.SKU;
+                            stock.Title = p.ProductName;
+                            stock.Qty = 0;
+                            stock.UpdateOn = DateTime.Now;
+                            NSession.SaveOrUpdate(stock);
+                            NSession.Flush();
+                        }
                     }
-                    results.Add(OrderHelper.GetResult(p.SKU, "", "导入成功"));
+                    else
+                    {
+                        results.Add(OrderHelper.GetResult(p.SKU, "该产品已存在", "导入失败"));
+                    }
                 }
                 Session["Results"] = results;
                 return Json(new { IsSuccess = true, Info = true });
@@ -203,6 +195,16 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             {
                 return Json(new { IsSuccess = false, ErrorMsg = ex.Message, Info = true });
             }
+        }
+
+        private bool HasExsit(string p)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from ProductType where SKU ='" + p + "' ").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
         }
 
         [HttpPost]
