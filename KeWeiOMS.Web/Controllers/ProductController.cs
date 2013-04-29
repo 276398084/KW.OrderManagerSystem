@@ -139,7 +139,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             for (int i = 0; i < dt.Rows.Count; i++)
             {
                 ProductType p = new ProductType { CreateOn = DateTime.Now };
-                p.SKU = dt.Rows[i]["子SKU"].ToString();
+                p.SKU = dt.Rows[i]["子SKU"].ToString().Trim();
+                if (IsExist(p.SKU))
+                {
+                    continue;
+                }
+
                 p.Status = dt.Rows[i]["销售状态"].ToString();
                 p.ProductName = dt.Rows[i]["名称"].ToString();
                 p.Category = dt.Rows[i]["分类"].ToString();
@@ -589,10 +594,23 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             }
         }
 
-        public JsonResult HasExist(string sku)
+        public  bool IsExist(string sku)
         {
             object count = NSession.CreateQuery("select count(Id) from ProductType where SKU='" + sku + "'").UniqueResult();
             if (Convert.ToInt32(count) > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public JsonResult HasExist(string sku)
+        {
+          
+            if (IsExist(sku))
             {
                 return Json(new { IsSuccess = false });
             }

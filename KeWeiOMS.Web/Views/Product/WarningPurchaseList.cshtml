@@ -2,27 +2,29 @@
 @{
     ViewBag.Title = "预警采购";
 }
-<script type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '/Product/WarningList/'
+<body class="easyui-layout">
+    <script type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '/Product/WarningList/',
+                height:500
+            });
         });
-    });
-    function getImg(v) {
-        return '<img width="128px" height="128px"  src="' + v + '">';
-    }
-    function getAvg(v) {
-        return Math.round(v) + '(' + v + ')';
-    }
+        function getImg(v) {
+            return '<img width="128px" height="128px"  src="' + v + '">';
+        }
+        function getAvg(v) {
+            return Math.round(v) + '(' + v + ')';
+        }
 
-    function showPlan(v, q) {
-        c_dlg(v, q);
-    }
+        function showPlan(v, q) {
+            c_dlg(v, q);
+        }
 
-    //异步新建提交
-    function ajaxAdd() {
-        $('#c_form').form('submit', {
-            url: '@Url.Action("Create", "PurchasePlan")',
+        //异步新建提交
+        function ajaxAdd() {
+            $('#c_form').form('submit', {
+                url: '@Url.Action("Create", "PurchasePlan")',
             onSubmit: function () {
                 return $(this).form('validate');
             },
@@ -100,8 +102,7 @@
             }
         })
     }
-</script>
-<body class="easyui-layout">
+    </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
             toolbar="#toolbar"
@@ -142,8 +143,8 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="update();">刷新</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
-    </div>
-    <div id="c_dlg"></div>
-</body>
 
+        <div id="c_dlg"></div>
+    </div>
+</body>
 

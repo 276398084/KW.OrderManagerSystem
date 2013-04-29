@@ -967,7 +967,7 @@ namespace KeWeiOMS.Web
                 oldValue = " and SKU='" + oldValue + "' ";
             }
 
-            sql = "update OrderProductType set SKU='{0}' where 1=1  {1} {2}";
+            sql = "update OrderProductType set SKU='{0}' where and Id in(select AddressId from OrderType where Status='待处理')  {1} {2}";
             sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
@@ -980,7 +980,7 @@ namespace KeWeiOMS.Web
             string sql = "";
             if (!string.IsNullOrEmpty(ids))
             {
-                ids = "  Id in(" + ids + ")";
+                ids = " and  Id in(" + ids + ")";
 
             }
             if (!string.IsNullOrEmpty(oldValue))
@@ -988,11 +988,11 @@ namespace KeWeiOMS.Web
                 oldValue = " and Country='" + oldValue + "' ";
             }
 
-            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where 1=1 and Id in(select AddressId from OrderType where  {2}  )  {1}";
+            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where 1=1 and Id in(select AddressId from OrderType where Status='待处理'  {2}  )  {1}";
             sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
-            sql = "update OrderType set Country='{0}' where 1=1 and {1} {2}";
+            sql = "update OrderType set Country='{0}' where Status='待处理' {1} {2}";
             sql = string.Format(sql, newValue, oldValue, ids.Replace("OId", "Id"));
             Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
@@ -1013,34 +1013,26 @@ namespace KeWeiOMS.Web
             {
                 if (type == 1)
                     ids += " and  CurrencyCode='" + oldValue + "'  ";
-
                 else
                     ids += " and  LogisticMode='" + oldValue + "'  ";
-
             }
-
-
             if (type == 1)
-                sql = "update OrderType set CurrencyCode='{0}' where 1=1 {1}";
+                sql = "update OrderType set CurrencyCode='{0}' where  Status='待处理' {1}";
             else
-                sql = "update OrderType set LogisticMode='{0}' where 1=1  {1}";
+                sql = "update OrderType set LogisticMode='{0}' where Status='待处理'  {1}";
 
             sql = string.Format(sql, newValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
-
         }
         #endregion
 
-
         public static void SplitProduct(OrderProductType orderProduct, List<ProductComposeType> productComposes, ISession NSession)
         {
-
             int qty = orderProduct.Qty;
             int id = orderProduct.Id;
             foreach (ProductComposeType productComposeType in productComposes)
             {
-
                 orderProduct.SKU = productComposeType.SrcSKU;
                 orderProduct.Qty = productComposeType.SrcQty * qty;
                 orderProduct.Id = 0;
@@ -1156,7 +1148,7 @@ namespace KeWeiOMS.Web
         public static void GetOrderRecord(OrderType order, string recordType, string Content, string CreateBy, ISession NSession)
         {
             GetOrderRecord(order.Id, order.OrderNo, recordType, Content, CreateBy, NSession);
-            
+
         }
 
         public static void SplitProduct(IList<OrderProductType> orders, ISession NSession)

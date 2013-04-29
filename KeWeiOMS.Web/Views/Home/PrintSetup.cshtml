@@ -38,7 +38,9 @@
             url: "/Home/SetPrintData",
             data: "t=" + $("#PrintType").combobox("getValue") + "&m=" + $("#PrintTemp").combobox("getValue") + "&r=" + $("#ReturnAddress").combobox("getValue") + "&d=" + $("#txtData").val(),
             success: function (msg) {
-
+                if (msg.ErrorMsg != "") {
+                    alert(msg.ErrorMsg);
+                }
                 window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));
             }
         });

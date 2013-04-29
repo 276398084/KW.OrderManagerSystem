@@ -34,29 +34,28 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(int id)
+        public ActionResult DoAudit(int o)
         {
-            QuestionOrderType obj = GetById(id);
-            return View(obj);
-        }
-
-        [HttpPost]
-        [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult Edit(QuestionOrderType obj)
-        {
-
-            try
+            QuestionOrderType obj = GetById(o);
+            if (obj.Subjest.IndexOf("重发") != -1)
             {
-                NSession.Update(obj);
-                NSession.Flush();
-            }
-            catch (Exception ee)
-            {
-                return Json(new { errorMsg = "出错了" });
+                OrderType orderType = NSession.Get<OrderType>(obj.OId);
+                if (orderType != null)
+                {
+                    orderType.IsAudit = 1;
+                    orderType.IsError = 0;
+                    orderType.CutOffMemo = "";
+                    NSession.Update(orderType);
+                    NSession.Flush();
+                    obj.Status = 1;
+                    NSession.Update(obj);
+                    NSession.Flush();
+                    OrderHelper.GetOrderRecord(orderType, "重发订单审核！", "" + CurrentUser.Realname + "确认该订单的审核", CurrentUser.Realname, NSession);
+                }
             }
             return Json(new { IsSuccess = "true" });
-
         }
+
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)

@@ -162,7 +162,7 @@ namespace KeWeiOMS.Web.Controllers
             string fileExtension = Path.GetExtension(fileName); // 文件扩展名
             fileName = Path.GetFileNameWithoutExtension(fileName);
             saveName = filePath + Guid.NewGuid().ToString() + fileExtension; // 保存文件名称
-            
+
             fileData.SaveAs(saveName);
         }
         [OutputCache(Location = OutputCacheLocation.None)]
@@ -183,8 +183,17 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult SetPrintData(string m, string r, string d, string t)
         {
+
+
+            IList<OrderType> objectses = NSession.CreateQuery("from OrderType where IsAudit=0 and OrderNo IN('" +
+                                   d.Replace(",", "','") + "')").List<OrderType>();
+            string NotPrint = "";
+            foreach (OrderType c in objectses)
+            {
+                NotPrint += c.OrderNo + " ;";
+            }
             string sql = "";
-            sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.Id,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,
+            sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.Id,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,O.IsSplit,O.IsRepeat,O.IsAudit,
 O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
 OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,P.OldSKU,P.Location,
 R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn,
@@ -193,7 +202,7 @@ left join OrderProducts OP on o.Id=op.OId
 left join OrderAddress OA on o.AddressId=oa.Id
 Left Join Products P ON OP.SKU=P.SKU
 left join ReturnAddress R On r.Id=" + r;
-            sql += " where  O.OrderNo IN('" + d.Replace(",", "','") + "')";
+            sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "')";
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
@@ -233,10 +242,11 @@ left join ReturnAddress R On r.Id=" + r;
 
                 if (list2.Contains(dr["OrderNo"].ToString()))
                 {
-                   
+
                 }
                 else
                 {
+
                     LoggerUtil.GetOrderRecord(Convert.ToInt32(dr["Id"]), dr["OrderNo"].ToString(), "订单打印", CurrentUser.Realname + "订单打印！", CurrentUser, NSession);
                     list2.Add(dr["OrderNo"].ToString());
                 }
@@ -247,7 +257,11 @@ left join ReturnAddress R On r.Id=" + r;
             ds.Tables.Clear();
             ds.Tables.Add(dt);
             Session["data"] = ds.GetXml();
-            return Json(new { IsSuccess = true });
+            if (NotPrint != "")
+            {
+                NotPrint = "有" + objectses.Count + "条订单没有审核，无法发打印，订单号：" + NotPrint;
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = NotPrint });
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]

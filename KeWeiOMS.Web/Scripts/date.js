@@ -78,7 +78,6 @@ function formPost(form, url, dlg, dg, t) {
             return $(this).form('validate');
         },
         success: function (msg) {
-
             var result = $.parseJSON(msg);
             if (result.IsSuccess) {
                 alert("操作成功");
@@ -94,7 +93,11 @@ function formPost(form, url, dlg, dg, t) {
                     }
                 }
             } else {
-                alert("保存失败!");
+                if (result.ErrorMsg)
+                    alert("保存失败!");
+                else {
+                    alert("保存失败!" + result.ErrorMsg);
+                }
             }
         }
     });

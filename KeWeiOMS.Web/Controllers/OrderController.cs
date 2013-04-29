@@ -377,6 +377,17 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+
+                if (obj.OrderExNo.Trim() == "" || !OrderHelper.IsExist(obj.OrderExNo.Trim(), NSession))
+                {
+                    return Json(new { IsSuccess = false, ErrorMsg = "平台订单号为空或者重复" });
+                }
+                object c = NSession.CreateQuery("select count(Id) from OrderType where OrderNo='" + obj.OrderNo + "'").UniqueResult();
+                if (Convert.ToInt32(c) > 0)
+                {
+                    obj.OrderNo = Utilities.GetOrderNo(NSession);
+                }
+
                 obj.AddressInfo.CountryCode = obj.AddressInfo.Country;
                 obj.AddressInfo.Email = obj.BuyerEmail;
                 NSession.Save(obj.AddressInfo);
@@ -621,7 +632,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Clear();
             OrderType obj = GetById(Utilities.ToInt(o));
             obj.IsSplit = 1;
-           // obj.IsRepeat=1
+            // obj.IsRepeat=1
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
@@ -818,7 +829,7 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult ExportOrder2(string ids, string s)
         {
-            string sql = @"select '' as '记录号',  SplitZuO.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发'   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+            string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发'   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
 
             sql += " where  O.Enabled=1 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
@@ -833,7 +844,7 @@ left join Products P On OP.SKU=P.SKU ";
         public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p, string dd)
         {
             StringBuilder sb = new StringBuilder();
-            string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发'  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+            string sql = @"select '' as '记录号',O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发'  from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
             if (string.IsNullOrEmpty(o))
             {
@@ -1098,7 +1109,7 @@ left join Products P On OP.SKU=P.SKU ";
                 return Json(new { IsSuccess = false, Result = html });
 
 
-              
+
 
 
             }
@@ -1112,8 +1123,19 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 OrderType order = orders[0];
                 string html = "";
-               
-                    if (string.IsNullOrEmpty(order.TrackCode2))
+
+                if (string.IsNullOrEmpty(order.TrackCode2))
+                {
+                    order.TrackCode2 = t;
+                    NSession.Update(order);
+                    NSession.Flush();
+                    LoggerUtil.GetOrderRecord(order, "订单速卖通扫描！", "订单速卖通扫描！", CurrentUser, NSession);
+                    html = "订单:" + order.OrderNo + ", 设置成功，追踪号为：" + t;
+                    return Json(new { IsSuccess = true, Result = html });
+                }
+                else
+                {
+                    if (f == 1)
                     {
                         order.TrackCode2 = t;
                         NSession.Update(order);
@@ -1122,22 +1144,11 @@ left join Products P On OP.SKU=P.SKU ";
                         html = "订单:" + order.OrderNo + ", 设置成功，追踪号为：" + t;
                         return Json(new { IsSuccess = true, Result = html });
                     }
-                    else
-                    {
-                        if (f == 1)
-                        {
-                            order.TrackCode2 = t;
-                            NSession.Update(order);
-                            NSession.Flush();
-                            LoggerUtil.GetOrderRecord(order, "订单速卖通扫描！", "订单速卖通扫描！", CurrentUser, NSession);
-                            html = "订单:" + order.OrderNo + ", 设置成功，追踪号为：" + t;
-                            return Json(new { IsSuccess = true, Result = html });
-                        }
 
-                    }
-                    html = "订单:" + order.OrderNo + ", 已经扫描过!";
-                    return Json(new { IsSuccess = false, Result = html });
-                
+                }
+                html = "订单:" + order.OrderNo + ", 已经扫描过!";
+                return Json(new { IsSuccess = false, Result = html });
+
 
 
             }
@@ -1152,18 +1163,18 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpGet]
         public JsonResult AAAA()
         {
-            // AccountType account = NSession.CreateQuery("from AccountType where Id=7").List<AccountType>()[0];
+            AccountType account = NSession.CreateQuery("from AccountType where Id=16").List<AccountType>()[0];
 
-            //  OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
+            OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
 
-            //return Json(new { IsS = 1 });
+            return Json(new { IsS = 1 });
 
-            List<string> list = new List<string>();
+            //List<string> list = new List<string>();
 
-            foreach (string s in list)
-            {
-                Utilities.SetComposeStock(s, NSession);
-            }
+            //foreach (string s in list)
+            //{
+            //    Utilities.SetComposeStock(s, NSession);
+            //}
 
 
 
@@ -1268,7 +1279,7 @@ left join Products P On OP.SKU=P.SKU ";
                         foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                         {
 
-                            object obj = NSession.CreateQuery("select sum(Qty) from WarehouseStockType where SKU='" + item.SKU + "'").UniqueResult();
+                            object obj = NSession.CreateQuery("select count(Id) from SKUCodeType where SKU='" + item.SKU + "' and IsOut=0").UniqueResult();
                             if (obj == null)
                                 obj = 0;
                             html += string.Format("<tr><td align='right'><input type='checkbox'  name='ck_{0}' code='{0}' checked=checked /></td><td>{1}</td><td>{2}</td><td>{4}</td><td>{3}</td></tr>", item.Id, item.SKU, item.Qty, item.Standard, obj);

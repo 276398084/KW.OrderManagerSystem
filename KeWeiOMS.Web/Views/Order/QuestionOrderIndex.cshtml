@@ -49,6 +49,26 @@
             }
         }
 
+        function doAudit(v) {
+            if (confirm("您确定要审核吗？")) {
+                jQuery.ajax({
+                    url: "/QuestionOrder/DoAudit/",
+                    type: "post",
+                    data: "o=" + v,
+                    success: function (sss) {
+                        $('#dg').datagrid("reload");
+                    }
+                });
+            }
+        }
+
+        function GetP(v, r, i) {
+            if (r.Subjest.toString().indexOf("重发") > 0 && r.Status == "0") {
+                return '<a href="javascript:void(0);" onclick="doAudit(' + v + ')">审核</a>';
+            }
+
+        }
+
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -56,7 +76,7 @@
             rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
             <thead>
                 <tr>
-                    <th field="Id" width="100">操作
+                    <th field="Id" width="100" formatter="GetP">操作
                     </th>
                     <th field="OrderNo" width="100">OrderNo
                     </th>
@@ -66,10 +86,8 @@
                     </th>
                     <th field="CreateBy" width="100">CreateBy
                     </th>
-
                     <th field="CreateOn" width="100" formatter="getDate">CreateOn
                     </th>
-
                     <th field="SolveBy" width="100">SolveBy
                     </th>
 
@@ -79,23 +97,17 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" plain="true" onclick="window.open('\order\QuestionScan')">仓库扫描审核</a>
+            <a href="#" class="easyui-linkbutton" plain="true" onclick="window.open('QuestionScan')">仓库扫描审核</a>
 
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
         <div id="mm" style="width: 120px">
-
             <div data-options="name:'OrderNo'">OrderNo</div>
             <div data-options="name:'Subjest'">Subjest</div>
             <div data-options="name:'Status'">Status</div>
             <div data-options="name:'CreateBy'">CreateBy</div>
-
             <div data-options="name:'SolveBy'">SolveBy</div>
-
-
         </div>
-
-
     </div>
 </body>
