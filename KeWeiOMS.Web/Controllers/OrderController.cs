@@ -370,7 +370,8 @@ namespace KeWeiOMS.Web.Controllers
                 default:
                     return Json(new { IsSuccess = false, ErrorMsg = "该平台没有同步功能！" });
             }
-            return Json(new { IsSuccess = true });
+            Session["Results"] = results;
+            return Json(new { IsSuccess = true, Info = true });
         }
 
         [HttpPost]

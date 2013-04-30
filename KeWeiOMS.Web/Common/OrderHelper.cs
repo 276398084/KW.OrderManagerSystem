@@ -311,7 +311,7 @@ namespace KeWeiOMS.Web
                 try
                 {
                     bool isExist = IsExist(foo.GoodsDataWare.ItemNumber, NSession);
-                    if (isExist)
+                    if (!isExist)
                     {
                         OrderType order = new OrderType
                                               {
@@ -351,7 +351,13 @@ namespace KeWeiOMS.Web
                             CreateOrderPruduct(item.ItemID, item.Quantity, item.ItemID, "", 0, item.Url, order.Id,
                                                order.OrderNo, NSession);
                         }
-                        //  results.Add(GetResult(OrderExNo, "", "导入成功"));
+                        results.Add(GetResult(order.OrderNo, "", "导入成功"));
+                    }
+                    else
+                    {
+                        OrderType order = new OrderType();
+                        order.OrderNo = Utilities.GetOrderNo(NSession);
+                        results.Add(GetResult(order.OrderNo, "该订单已存在", "导入失败"));
                     }
                 }
                 catch (Exception ex)
@@ -744,7 +750,7 @@ namespace KeWeiOMS.Web
         {
 
             object obj = NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo).UniqueResult();
-            if (Convert.ToInt32(obj) == 0)
+            if (Convert.ToInt32(obj) >0)
             {
                 return true;
             }

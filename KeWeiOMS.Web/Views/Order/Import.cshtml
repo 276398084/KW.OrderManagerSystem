@@ -125,7 +125,7 @@
     }
 
     function Synchronous() {
-        formPost('c_Synchronous', '@Url.Action("Synchronous", "Order")');
+        formPost('c_Synchronous', '@Url.Action("Synchronous", "Order")',null, null, null, '@Url.Action("Result", "Home")');
         $('c_Synchronous').clear();
     }
  (function () {
