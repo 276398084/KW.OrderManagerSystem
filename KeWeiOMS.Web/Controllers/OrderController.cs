@@ -269,8 +269,8 @@ namespace KeWeiOMS.Web.Controllers
                     default:
                         break;
                 }
-                Session["Results"]=results;
-                return Json(new { IsSuccess = true,Info = true});
+                Session["Results"] = results;
+                return Json(new { IsSuccess = true, Info = true });
             }
             catch (Exception ex)
             {
