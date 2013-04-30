@@ -41,6 +41,10 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult SendDays()
+        {
+            return View();
+        }
 
         [HttpPost]
         public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
@@ -110,6 +114,53 @@ namespace KeWeiOMS.Web.Controllers
                     else
                     {
                         if (item.Amount >= arry[i, 0])
+                        {
+                            count++;
+                        }
+                    }
+                }
+                sum = objs.Count;
+                if (sum != 0)
+                {
+                    if (arry[i, 1] != Convert.ToDouble(0))
+                        leve.Platform = arry[i, 0] + "-" + arry[i, 1];
+                    else
+                        leve.Platform = arry[i, 0] + " 以上";
+                    leve.Account = count;
+                    leve.OCount = Math.Round((Convert.ToDecimal(count) / sum) * 100, 2);
+                    list.Add(leve);
+                }
+            }
+            List<object> footers = new List<object>();
+            footers.Add(new { Account = sum });
+            return Json(new { rows = list, footer = footers, total = list.Count });
+        }
+
+        [HttpPost]
+        public ActionResult SendDays(DateTime st, DateTime et, string a, string p)
+        {
+            int sum = 0;
+            var sqlWhere = SqlWhere(st, et, a, p);
+            List<LeveDays> list = new List<LeveDays>();
+            IList<OrderType> objs = NSession.CreateQuery(string.Format("from OrderType " + sqlWhere + " and Status='已发货'")).List<OrderType>();
+            //定义区间
+            int[,] arry = { { 0, 1}, { 1,3 }, { 3, 5}, { 5, 7 }, { 7,9}, { 9, 11 }, { 11,0 } };
+            for (int i = 0; i < arry.Length / 2; i++)
+            {
+                int count = 0;
+                LeveDays leve = new LeveDays();
+                foreach (var item in objs)
+                {
+                    if (arry[i, 1] !=0)
+                    {
+                        if ((item.ScanningOn - item.CreateOn).Days >= arry[i, 0] && (item.ScanningOn - item.CreateOn).Days < arry[i, 1])
+                        {
+                            count++;
+                        }
+                    }
+                    else
+                    {
+                        if ((item.ScanningOn - item.CreateOn).Days >= arry[i, 0])
                         {
                             count++;
                         }

@@ -136,6 +136,7 @@
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\MenuItem.cs" />
     <Compile Include="Common\Statistics\LeveData.cs" />
+    <Compile Include="Common\Statistics\LeveDays.cs" />
     <Compile Include="Common\Statistics\OrderCount.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
@@ -1608,6 +1609,8 @@
     <Content Include="Views\Order\StopIndex.cshtml" />
     <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
     <Content Include="Views\Order\AliSendScan.cshtml" />
+    <Content Include="Views\Order\SplitNoSend.cshtml" />
+    <Content Include="Views\Statistics\SendDays.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

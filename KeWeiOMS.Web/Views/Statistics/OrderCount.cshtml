@@ -52,7 +52,6 @@
             showFooter: true,
             striped: true
         });
-
         $("#cc").datebox({
             parser: myparser
         });
@@ -74,7 +73,6 @@
 
     });
     function onSelect1() {
-
         $('#dg').datagrid("load", {
             st: $('#cc').combobox("getValue"),
             et: $('#cc2').combobox("getValue"),
@@ -95,7 +93,6 @@
         });
     }
     function changePlatform(n, o) {
-
         $('#aa').combotree({
             url: '/Account/AccountList/' + n,
             valueField: 'id',
@@ -103,7 +100,6 @@
             width: 150
         });
         $('#aa').combotree("setValue", "ALL");
-
     }
     function myparser(s) {
         if (!s) return new Date();
@@ -224,4 +220,4 @@
             </table>
         </td>
     </tr>
-</table>
+  </table>

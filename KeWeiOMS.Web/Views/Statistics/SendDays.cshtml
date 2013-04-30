@@ -1,0 +1,86 @@
+﻿<script>
+
+    $(function () {
+        var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
+
+        $('#dg').datagrid({
+            url: '@Url.Action("SendDays", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            height: 400,
+            width: 370,
+            showFooter: true,
+            striped: true
+        });
+
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(0));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+
+    });
+    function onSelect1() {
+
+        $('#dg').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+    }
+    function changePlatform(n, o) {
+
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+
+    }
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+</script>
+开始<input id="cc" type="text">
+结束<input id="cc2" type="text">
+平台<input id="pp" type="text">
+账户<input id="aa" type="text">
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+
+<table id="dg" class="easyui-datagrid" title="订单发货时间区间分布"
+    rownumbers="true" fitcolumns="true" singleselect="true">
+    <thead>
+        <tr>
+            <th field="Platform" width="180">时间区间（天）
+            </th>
+            <th field="OCount" width="80">比例
+            </th>
+            <th field="Account" width="80">订单数
+            </th>
+        </tr>
+    </thead>
+</table>
