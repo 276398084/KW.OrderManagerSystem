@@ -40,30 +40,38 @@
         $("#txtEndDate").datebox("setValue", getStartDate(-1));
         $("#txtStartDate").datebox("setValue", getStartDate(7));
         $('#tt1').tree({
+            url: '@Url.Action("GetTree", "EbayMessage")',
             state:closed,
             onClick: function (node) {
-                treeOnclick(node.text, node.target);
+                treeOnclick(node.id,node.text, node.target);
             }
         });
     });
 
-    function treeOnclick(text, target) {
-        var te=null;
-        var st = $('#tt1').tree("getRoots");
-        for (i = 0; i < st.length;i++)
+    function treeOnclick(id,text, target) {
+        var root = $('#tt1').tree("getRoot").id;
+        if (id== root) {
+            alert("根目录！")
+        }
+        else
         {
-            if (text == st[i].text)
-            {
-                te="0";
-                search = "&^&^&^$"+text+"~";
+            if ($('#tt1').tree("getParent", target).id!= root) {
+                search = "&^&^&^$" + $('#tt1').tree("getParent", target).text + "~" + text+"~"+id;
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+            else {
+                search = "&^&^&^$" +text+ "~~";
                 $("#dg").datagrid("load", {
                     search: search
                 });
             }
         }
-        if(te==null)
+
+  @*      if(te==null)
         {
-            search = "&^&^&^$" + $('#tt1').tree("getParent", target).text + "~" + text;
+            search = "&^&^&^$" + $('#tt1').tree("getParent", target).text+ "~" + text;
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -79,7 +87,7 @@
             $('#dg').datagrid({
                 url: '@Url.Action("List", "EbayMessage")'
             })
-        }
+        }*@
 
     }
 
@@ -271,65 +279,7 @@
     }
 </script>
 <div data-options="region:'west',split:true,title:'分类'" style="width:150px;padding:10px;">
-        <ul id="tt1" class="easyui-tree" data-options="animate:true">
-            <li data-options="state:'closed'">
-                <span>待处理消息</span>
-                <ul>
-                    <li>
-                        <span>询问物品</span>
-                    </li>
-                    <li>
-                        <span>质量问题</span>
-                    </li>
-                    <li>
-                        <span>退货</span>
-                    </li>
-                </ul>
-
-
-            </li> 
-            <li data-options="state:'closed'">             
-                <span>已处理消息</span>
-                <ul>
-                    <li>
-                        <span>询问物品</span>
-                    </li>
-                    <li>
-                        <span>质量问题</span>
-                    </li>
-                    <li>
-                        <span>退货</span>
-                    </li>
-                </ul>
-            </li>  
-             <li data-options="state:'closed'">             
-                <span >所有消息</span>
-                 <ul>
-                    <li>
-                        <span>询问物品</span>
-                    </li>
-                    <li>
-                        <span>质量问题</span>
-                    </li>
-                    <li>
-                        <span>退货</span>
-                    </li>
-                </ul>
-            </li>  
-            <li data-options="state:'closed'">             
-                <span>未分配消息</span>
-                <ul>
-                    <li>
-                        <span>询问物品</span>
-                    </li>
-                    <li>
-                        <span>质量问题</span>
-                    </li>
-                    <li>
-                        <span>退货</span>
-                    </li>
-                </ul>
-            </li>  
+        <ul id="tt1" class="easyui-tree">
         </ul>
 </div>
 <div region="center">
