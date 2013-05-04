@@ -138,12 +138,12 @@ namespace KeWeiOMS.Web.Controllers
             if (!string.IsNullOrEmpty(where))
             {
                 where += " and ReplayOnlyBy is null) ";
+                where += " or ReplayOnlyBy ='" + CurrentUser.Realname + "')";
             }
             else
             {
-                where = " where (ReplayOnlyBy is null ";
+                where = " where ReplayOnlyBy ='" + CurrentUser.Realname + "'";
             }
-            where += " or ReplayOnlyBy ='" + CurrentUser.Realname + "')";
             if (!string.IsNullOrEmpty(type))
             {
                 string pid = type.Substring(0, type.IndexOf("~"));

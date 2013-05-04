@@ -55,39 +55,25 @@
         }
         else
         {
-            if ($('#tt1').tree("getParent", target).id!= root) {
+            if ($('#tt1').tree("getParent", target).id != root) {
+                if ($('#tt1').tree("getParent", target).text=="未分配消息") {
+                    chec = "1";
+                }
                 search = "&^&^&^$" + $('#tt1').tree("getParent", target).text + "~" + text+"~"+id;
                 $("#dg").datagrid("load", {
                     search: search
                 });
             }
             else {
+                if (text == "未分配消息") {
+                    chec = "1";
+                }
                 search = "&^&^&^$" +text+ "~~";
                 $("#dg").datagrid("load", {
                     search: search
                 });
             }
         }
-
-  @*      if(te==null)
-        {
-            search = "&^&^&^$" + $('#tt1').tree("getParent", target).text+ "~" + text;
-            $("#dg").datagrid("load", {
-                search: search
-            });
-        }
-        chec = null;
-        if (text != "所有消息") {
-            if (text == "未分配消息" || $('#tt1').tree("getParent", target).text == "未分配消息") {
-                chec = "1";
-            }
-        }
-        else {
-            chec = null;
-            $('#dg').datagrid({
-                url: '@Url.Action("List", "EbayMessage")'
-            })
-        }*@
 
     }
 
