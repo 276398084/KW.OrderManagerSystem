@@ -263,6 +263,12 @@ namespace KeWeiOMS.Web.Controllers
             List<object> footers = new List<object>();
             return Json(new { rows = list.OrderByDescending(f => f.Qty), total = list.Count });
         }
+        public ViewResult GetOrder(DateTime st, DateTime et, string a, string p, string ss)
+        {
+             return View();
+        }
+
+
         [HttpPost]
         private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string ss)
         {

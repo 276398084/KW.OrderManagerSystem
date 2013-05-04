@@ -1,18 +1,44 @@
 ﻿@{
     ViewBag.Title = "GetSellCount";
 }
-
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <script>
-
     $(function () {
         var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
         $('#dg').datagrid({
             url: '@Url.Action("SellCount", "Statistics")',
             queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
             showFooter: true,
+            title:"订单数量统计",
             height: 430,
+            nowrap: false,
             width: 1200,
-            striped: true
+            striped: true,
+            view: detailview,
+            detailFormatter: function (index, row) {
+                return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+            },
+            onExpandRow: function (index, row) {
+                $.ajax({
+                    type: 'post',
+                    url: '/Statistics/GetOrder/',
+                    //data: [
+                    //    { st: $('#cc').combobox("getValue") },
+                    //    { et: $('#cc2').combobox("getValue") },
+                    //    { p: $('#pp').combobox("getText") },
+                    //    { a: $('#aa').combobox("getText") },
+                    //    { ss: $('#ss').combobox("getText") }]
+                });
+                $('#ddv-' + index).panel({
+                    border: false,
+                    cache: false,
+                   @* href: '@Url.Action("GetProduct", "SuppliersProduct")' + "/" + row.Id,*@
+                    onLoad: function () {
+                        $('#dg').datagrid('fixDetailRowHeight', index);
+                    }
+                });
+                $('#dg').datagrid('fixDetailRowHeight', index);
+            }
         });
         $("#cc").datebox({
             parser: myparser
@@ -103,8 +129,7 @@ SKU<input id="ss" type="text">
 <table>
     <tr>
         <td>
-            <table id="dg" class="easyui-datagrid" title="订单数量统计"
-                rownumbers="true" singleselect="true">
+            <table id="dg">
                 <thead>
                     <tr>
                         <th field="Title" width="200">标题
