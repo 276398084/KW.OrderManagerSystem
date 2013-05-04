@@ -102,6 +102,10 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult SplitNoSend()
+        {
+            return View();
+        }
         #endregion
 
         #region 订单处理
@@ -1452,6 +1456,33 @@ left join Products P On OP.SKU=P.SKU ";
         public JsonResult UnHandleList(int page, int rows, string sort, string order, string search)
         {
             return List(page, rows, sort, order, search, 1);
+        }
+
+        public JsonResult SplitNoSendList(string sort, string order, string search)
+        {
+            string where = " where Status<>'已发货' and MId<>0 ";
+            string orderby = " order by Id desc";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where Status<>'已发货' and MId<>0 and " + where;
+                }
+            }
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby).List<OrderType>();
+
+            for (int i = 0; i < objList.Count;i++ )
+            {
+                OrderType obj = GetById(objList[i].MId);
+                if (obj.IsSplit != 1)
+                    objList.Remove(objList[i]);
+            }
+            return Json(new { total = objList.Count, rows = objList });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search, int isUn = 0)

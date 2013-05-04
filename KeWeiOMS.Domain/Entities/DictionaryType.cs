@@ -50,5 +50,7 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual int AllowDelete { get; set; }
 
+        public virtual List<DictionaryType> children { get; set; }
+
     }
 }

@@ -138,74 +138,34 @@ namespace KeWeiOMS.Web.Controllers
             if (!string.IsNullOrEmpty(where))
             {
                 where += " and ReplayOnlyBy is null) ";
+                where += " or ReplayOnlyBy ='" + CurrentUser.Realname + "')";
             }
             else
             {
-                where = " where (ReplayOnlyBy is null ";
+                where = " where ReplayOnlyBy ='" + CurrentUser.Realname + "'";
             }
-            where += " or ReplayOnlyBy ='" + CurrentUser.Realname + "')";
             if (!string.IsNullOrEmpty(type))
             {
                 string pid = type.Substring(0, type.IndexOf("~"));
-                string cid = type.Substring(type.IndexOf("~") + 1);
+                string ctext = type.Substring(type.IndexOf("~") + 1, type.LastIndexOf("~") - type.IndexOf("~")-1);
+                string cid = type.Substring(type.LastIndexOf("~") + 1);
                 if (pid == "待处理消息")
                 {
                     where += " and MessageStatus ='未回复'";
-                    if (cid == "询问物品")
-                    {
-                        where += " and Subject like '%sent a question%'";
-
-                    }
-                    if (cid == "质量问题")
-                    {
-                        where += " and MessageStatus =''";
-                    }
-                    if (cid == "退货")
-                    {
-                        where += " and MessageStatus =''";
-                    }
                 }
                 if (pid == "已处理消息")
                 {
                     where += " and MessageStatus ='已回复'";
-                    if (cid == "询问物品")
-                    {
-                        where += " and Subject like '%sent a question%'";
-
-                    }
-                    if (cid == "质量问题")
-                    {
-                        where += " and MessageStatus =''";
-                    }
-                    if (cid == "退货")
-                    {
-                        where += " and MessageStatus =''";
-                    }
                 }
                 if (pid == "所有消息")
-                {
-                    if (cid == "询问物品")
-                    {
-                        where += " and Subject like '%sent a question%'";
-
-                    }
-                    if (cid == "质量问题")
-                    {
-                        where += " and MessageStatus =''";
-                    }
-                    if (cid == "退货")
-                    {
-                        where += " and MessageStatus =''";
-                    }
+                {   
                 }
                 if (pid == "未分配消息")
                 {
-                    where += " and MessageStatus =''";
+                    where = GetUnAssign();
                 }
+                where += " and Subject like '%"+cid+"%'";
             }
-
-
-            Session["ToExcel"] = where + orderby;
             IList<EbayMessageType> objList = NSession.CreateQuery("from EbayMessageType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -213,9 +173,29 @@ namespace KeWeiOMS.Web.Controllers
 
             object count = NSession.CreateQuery("select count(Id) from EbayMessageType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
-
         }
 
+        private string GetUnAssign()
+        {
+            int i = 0;
+            string where = " where ReplayOnlyBy is null ";
+            string name = CurrentUser.Realname;
+            IList<EbayReplayType> ac = NSession.CreateQuery("from EbayReplayType").List<EbayReplayType>();
+            foreach (var item in ac)
+            {
+                if (i ==0)
+                {
+                    where += "and Shop<>'" + item.ReplayAccount + "' ";
+                    i++;
+                }
+                else
+                {
+                    where += "and Shop<>'" + item.ReplayAccount + "' ";
+                }
+                
+            }
+            return where;
+        }
         public JsonResult ToExcel(string search)
         {
             try
@@ -306,8 +286,32 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { Msg = 1 }, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetTree()
+        {
+            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType").List<DictionaryType>();
+            IList<DictionaryType> fristList = objList.Where(p => p.DicCode == "ebay.Type").ToList();
+            List<SystemTree> trees = new List<SystemTree>();
+            SystemTree tree = new SystemTree { id = "0", text = "分类信息" };
+            foreach (DictionaryType item in fristList)
+            {
+                List<DictionaryType> fooList = objList.Where(p => p.DicCode == "Message.Type").ToList();
+                List<SystemTree> tree2 = ConvertToTree(fooList);
+                tree.children.Add(new SystemTree { id = item.DicValue, text = item.FullName, children = tree2 });
+            }
+            trees.Add(tree);
+            return Json(trees);
+        }
 
+        public List<SystemTree> ConvertToTree(List<DictionaryType> fooList)
+        {
+            List<SystemTree> tree = new List<SystemTree>();
+            foreach (DictionaryType item in fooList)
+            {
+                tree.Add(new SystemTree { id = item.DicValue, text = item.FullName});
+            }
+            return tree;
 
+        }
     }
 }
 
