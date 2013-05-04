@@ -56,15 +56,28 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult ToExcel()
+        {
+            var list = GetWarning();
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable(list));
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
+
         [HttpPost]
         public ActionResult WarningList(string order, string sort)
+        {
+            var list = GetWarning();
+            return Json(new { total = list.Count, rows = list.OrderByDescending(x => x.NeedQty).ToList() });
+        }
+
+        private List<PurchaseData> GetWarning()
         {
             List<PurchaseData> list = new List<PurchaseData>();
             IList<WarehouseStockType> stocks = new List<WarehouseStockType>();
             IList<PurchasePlanType> plans = new List<PurchasePlanType>();
             IList<ProductType> products =
                 NSession.CreateQuery(
-                   @" From ProductType p where (
+                    @" From ProductType p where (
 (round((SevenDay/7*0.5+Fifteen/15*0.3+ThirtyDay/30*0.2),0)*5)>(select count(Id) from SKUCodeType where IsOut=0 and SKU= p.SKU)
 Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType where IsOutOfStock=1 and  Status<>'作废订单'))
 )and IsScan=1 and Status not in('滞销','清仓','停产','暂停销售')")
@@ -77,11 +90,16 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
             stocks =
                 NSession.CreateQuery("from WarehouseStockType where SKU in(" + ids.Trim(',') + ")").List<WarehouseStockType>();
-            plans = NSession.CreateQuery("from PurchasePlanType where Status not in('异常','已收到')  and SKU in(" + ids.Trim(',') + ")").List<PurchasePlanType>();
+            plans =
+                NSession.CreateQuery("from PurchasePlanType where Status not in('异常','已收到')  and SKU in(" + ids.Trim(',') + ")")
+                    .List<PurchasePlanType>();
             IList<object[]> SKUCount =
                 NSession.CreateQuery("select SKU,count(Id) from SKUCodeType where IsOut=0 and SKU In (" + ids.Trim(',') +
                                      ") group by SKU").List<object[]>();
-            IList<OrderProductType> orderProducts = NSession.CreateQuery("from OrderProductType where SKU in(" + ids.Trim(',') + ") and IsQue=1 and OId In(select Id from OrderType where IsOutOfStock=1 and Status<>'作废订单')").List<OrderProductType>();
+            IList<OrderProductType> orderProducts =
+                NSession.CreateQuery("from OrderProductType where SKU in(" + ids.Trim(',') +
+                                     ") and IsQue=1 and OId In(select Id from OrderType where IsOutOfStock=1 and Status<>'作废订单')")
+                    .List<OrderProductType>();
             foreach (var p in products)
             {
                 PurchaseData data = new PurchaseData();
@@ -118,18 +136,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
                 if ((data.NowQty + data.BuyQty - data.WarningQty - data.QueQty) < 0)
                 {
-
                     data.NeedQty = Convert.ToInt32(data.AvgQty * p.DayByStock) + data.QueQty - data.NowQty - data.BuyQty;
                     if (data.NeedQty > 0)
                         list.Add(data);
                 }
-
-
-
             }
-            Session["ToExcel"] = list;
-            ;
-            return Json(new { total = list.Count, rows = list.OrderByDescending(x => x.NeedQty).ToList() });
+            return list;
         }
 
         [HttpPost]
@@ -498,8 +510,9 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             try
             {
                 ProductType obj = GetById(id);
-                obj.Enabled = 0;
-                NSession.Update(obj);
+                NSession.Delete(obj);
+                NSession.Flush();
+                NSession.Delete("from WarehouseStockType where SKU='" + obj.SKU + "'");
                 NSession.Flush();
                 LoggerUtil.GetProductRecord(obj, "删除商品", "商品被删除", CurrentUser, NSession);
             }

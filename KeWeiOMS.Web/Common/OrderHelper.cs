@@ -60,7 +60,7 @@ namespace KeWeiOMS.Web
                 }
 
                 bool isExist = IsExist(OrderExNo, NSession);
-                if (isExist)
+                if (!isExist)
                 {
                     OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     try
@@ -156,7 +156,7 @@ namespace KeWeiOMS.Web
                     continue;
                 }
                 bool isExist = IsExist(OrderExNo, NSession);
-                if (isExist)
+                if (!isExist)
                 {
                     OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -215,7 +215,7 @@ namespace KeWeiOMS.Web
                         continue;
                     }
                     bool isExist = IsExist(OrderExNo, NSession);
-                    if (isExist)
+                    if (!isExist)
                     {
                         OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                         order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -264,7 +264,7 @@ namespace KeWeiOMS.Web
                 {
                     string OrderExNo = item["订单编号"].ToString();
                     bool isExist = IsExist(OrderExNo, NSession);
-                    if (isExist)
+                    if (!isExist)
                     {
                         OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                         order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -471,7 +471,7 @@ namespace KeWeiOMS.Web
                     }
                     //查看是不是在订单系统里面存在
                     bool isExist = IsExist(ot.OrderID, NSession);
-                    if (isExist)
+                    if (!isExist)
                     {
                         OrderType order = new OrderType
                                               {
@@ -750,7 +750,7 @@ namespace KeWeiOMS.Web
         {
 
             object obj = NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo).UniqueResult();
-            if (Convert.ToInt32(obj) >0)
+            if (Convert.ToInt32(obj) > 0)
             {
                 return true;
             }

@@ -100,7 +100,6 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
             try
             {
                 WarehouseStockType obj = GetById(id);
@@ -137,7 +136,7 @@ namespace KeWeiOMS.Web.Controllers
             foreach (var objectse in objs)
             {
                 WarehouseStockType warehouse =
-                objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().Trim());
+                objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().ToUpper());
                 if (warehouse != null)
                 {
                     warehouse.UnPeiQty = Convert.ToInt32(objectse[1]);
@@ -145,9 +144,7 @@ namespace KeWeiOMS.Web.Controllers
                     {
                         warehouse.UnPeiQty = warehouse.Qty;
                     }
-
                 }
-
             }
             object count = NSession.CreateQuery("select count(Id) from WarehouseStockType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });

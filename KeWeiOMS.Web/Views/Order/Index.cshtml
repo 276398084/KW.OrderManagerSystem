@@ -12,6 +12,9 @@
                 nowrap: false,
                 pageSize: 20,
                 height: 500,
+                toolbar: '#toolbar',
+                rownumbers: true,
+                pagination: true,
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
                 onDblClickRow: function (i, r) {
@@ -115,11 +118,11 @@
             });
             $('#ErrorType').combobox({
                 url: '@Url.Action("GetDataByCode", "Dictionary")/ErrorType',
-                  valueField: 'FullName',
-                  textField: 'FullName',
-                  panelHeight: 'auto',
-                  width: 300
-              });
+                valueField: 'FullName',
+                textField: 'FullName',
+                panelHeight: 'auto',
+                width: 300
+            });
 
             $('#IsNo').combobox({
                 valueField: 0,
@@ -228,12 +231,12 @@
                 s_ids.push(rows[i]["Id"]);
             }
             if (s_ids.length == 0) {
-                if(i==1) {
-                    
+                if (i == 1) {
+
                 } else {
                     $.messager.alert("请选择一条数据");
                 }
-               
+
                 return s_ids;
             }
             return s_ids;
@@ -607,8 +610,7 @@
 
     </script>
     <div region="center">
-        <table id="dg" class="easyui-datagrid"
-            toolbar="#toolbar" rownumbers="true" pagination="true">
+        <table id="dg">
             <thead>
                 <tr>
                     <th field="Id" width="60" checkbox="true"></th>
@@ -706,7 +708,7 @@
                 </tr>
             </table>
         </div>
-         <div id="dlgError" class="easyui-dialog" title="作废订单" style="width: 400px; height: 250px; padding: 10px" closed="true">
+        <div id="dlgError" class="easyui-dialog" title="作废订单" style="width: 400px; height: 250px; padding: 10px" closed="true">
             <table>
                 <tr>
                     <td>原因:</td>
