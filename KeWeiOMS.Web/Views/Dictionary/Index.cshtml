@@ -7,6 +7,12 @@
     <script language="javascript" type="text/javascript">
         $(function () {
             $('#dg1').datagrid({
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+                fit: true,
                 url: '@Url.Action("List", "Dictionary")/' + ViewData["code"]
             });
         });
@@ -67,9 +73,7 @@
 
     </script>
     <div region="center">
-        <table id="dg1" class="easyui-datagrid"
-            toolbar="#toolbar1"
-            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+        <table id="dg1">
             <thead>
                 <tr>
                     <th field="Id" width="100">主键

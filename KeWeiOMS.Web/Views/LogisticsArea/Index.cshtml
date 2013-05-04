@@ -8,6 +8,12 @@
     $(function () {
         $('#dg').datagrid({
             url: '@Url.Action("GetByLId","LogisticsArea")',
+            toolbar: '#toolbar',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
             columns: [[
                { field: 'AreaName', title: '分区名称', width: 100 },
                {
@@ -105,9 +111,7 @@
    
 </script>
 <div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           fitColumns="true" singleSelect="true" fit="true">  
+<table id="dg">  
 @*        <thead>  
         <tr>
             <th field="Id" width="100">
