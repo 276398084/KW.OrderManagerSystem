@@ -8,6 +8,13 @@
     $(function () {
         $('#dg').datagrid({
             url: '@Url.Action("List","ProductSKU")',
+            nowrap: false,
+            toolbar: '#toolbar',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
