@@ -46,13 +46,13 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
         {
             var sqlWhere = SqlWhere(st, et, a, p);
-            IList<object[]> objs = NSession.CreateQuery(string.Format("select Account,Count(Id),Platform,Sum(Amount) from OrderType {0} group by Account,Platform", sqlWhere)).List<object[]>();
+            IList<object[]> objs = NSession.CreateQuery(string.Format("select Account,Count(Id),Platform,Sum(Amount),Min(CurrencyCode) from OrderType {0} group by Account,Platform", sqlWhere)).List<object[]>();
 
             List<OrderCount> list = new List<OrderCount>();
             int sum = 0;
             foreach (object[] objectse in objs)
             {
-                OrderCount oc = new OrderCount { Account = objectse[0].ToString(), OCount = Convert.ToInt32(objectse[1]), Platform = objectse[2].ToString() };
+                OrderCount oc = new OrderCount { Account = objectse[0].ToString(), OCount = Convert.ToInt32(objectse[1]), Platform = objectse[2].ToString(), TotalAmount = Math.Round(Convert.ToDouble(objectse[3].ToString()), 2), CurrencyCode = objectse[4].ToString() };
                 sum += Convert.ToInt32(objectse[1]);
                 list.Add(oc);
             }
@@ -206,16 +206,16 @@ namespace KeWeiOMS.Web.Controllers
         #region 销售统计
 
         [HttpPost]
-        public ActionResult SellCount(DateTime st, DateTime et, string a, string p,string ss)
+        public ActionResult SellCount(DateTime st, DateTime et, string a, string p, string ss)
         {
-            var list = GetSellCount(st, et, a, p,ss);
+            var list = GetSellCount(st, et, a, p, ss);
             List<object> footers = new List<object>();
             return Json(new { rows = list.OrderByDescending(f => f.Qty), total = list.Count });
         }
         [HttpPost]
-        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p,string ss)
+        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string ss)
         {
-            var sqlWhere = SqlWhere(st, et, a, p,ss);
+            var sqlWhere = SqlWhere(st, et, a, p, ss);
             IList<object[]> objs =
                 NSession.CreateSQLQuery(
                     string.Format(
@@ -258,9 +258,9 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public JsonResult ExportSellCount(DateTime st, DateTime et, string a, string p,string ss)
+        public JsonResult ExportSellCount(DateTime st, DateTime et, string a, string p, string ss)
         {
-            var list = GetSellCount(st, et, a, p,ss);
+            var list = GetSellCount(st, et, a, p, ss);
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable(list));
             return Json(new { IsSuccess = true });
@@ -376,7 +376,7 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         }
 
 
-        private string SqlWhere(DateTime st, DateTime et, string a, string p,string ss="")
+        private string SqlWhere(DateTime st, DateTime et, string a, string p, string ss = "")
         {
             string sqlWhere = " where Status<>'待处理' and IsSplit=0 and IsRepeat=0 and CreateOn between '" + st.ToString("yyyy/MM/dd 00:00:00") + "' and '" +
                               et.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' and";

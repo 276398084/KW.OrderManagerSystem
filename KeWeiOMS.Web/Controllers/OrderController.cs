@@ -380,7 +380,7 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
 
-                if (obj.OrderExNo.Trim() == "" || !OrderHelper.IsExist(obj.OrderExNo.Trim(), NSession))
+                if (obj.OrderExNo.Trim() == "" || OrderHelper.IsExist(obj.OrderExNo.Trim(), NSession))
                 {
                     return Json(new { IsSuccess = false, ErrorMsg = "平台订单号为空或者重复" });
                 }
@@ -823,6 +823,7 @@ namespace KeWeiOMS.Web.Controllers
                                                 ps[0].Qty, orderAddress.Addressee.Replace("\t", " ").Replace(",", " ").Replace("\r", " ").Replace("\n", " "), orderAddress.Street.Replace("\t", " ").Replace(",", " ").Replace("\r", " ").Replace("\n", " "), "",
                                                 orderAddress.City.Replace("\t", " ").Replace(",", " ").Replace("\r", " ").Replace("\n", " "), orderAddress.Province.Replace("\t", " ").Replace(",", " ").Replace("\r", " ").Replace("\n", " "), orderAddress.PostCode,
                                                 orderAddress.Country));
+
                 }
             }
             Session["ExportDown"] = sb.ToString();
@@ -833,9 +834,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             string sql = @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderFees,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发'   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
-
-            sql += " where  O.Enabled=1 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
-
+            sql += " where  O.IsError =0 and O.Enabled=1 and O." + s + " in('" + ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
             DataSet ds = GetOrderExport(sql);
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
@@ -852,16 +851,16 @@ left join Products P On OP.SKU=P.SKU ";
             {
                 if (!string.IsNullOrEmpty(s))
                 {
-                    sql += " where O.Enabled=1 and O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                    sql += " where O.IsError =0 and  O.Enabled=1 and O.Status='" + s + "' and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
                 }
                 else
                 {
-                    sql += " where O.Enabled=1 and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
+                    sql += " where O.IsError =0 and  O.Enabled=1 and O.Account='" + a + "' and  O." + dd + " between '" + st + "' and '" + et + "'";
                 }
             }
             else
             {
-                sql += " where  O.Id in(" + o + ")";
+                sql += " where O.IsError =0 and   O.Id in(" + o + ")";
             }
             DataSet ds = GetOrderExport(sql);
 

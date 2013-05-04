@@ -16,6 +16,16 @@ namespace KeWeiOMS.Web
         public int OCount { get; set; }
 
         /// <summary>
+        /// 货币
+        /// </summary>
+        public string CurrencyCode { get; set; }
+
+        /// <summary>
+        /// 总金额
+        /// </summary>
+        public double TotalAmount { get; set; }
+
+        /// <summary>
         /// 配货订单
         /// </summary>
         public int PCount { get; set; }

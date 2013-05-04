@@ -7,7 +7,9 @@
             queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
             showFooter: true,
             height: 400,
-            width: 400,
+            width: 550,
+            rownumbers: true,
+            singleselect: true,
             striped: true
         });
 
@@ -15,43 +17,23 @@
             url: '@Url.Action("OrderCountryData", "Statistics")',
             queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
             height: 400,
+            rownumbers: true,
+            singleselect: true,
             width: 380,
             showFooter: true,
             striped: true
         });
         $('#dg3').datagrid({
             url: '@Url.Action("OrderLeveData", "Statistics")',
-                    queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
-                    height: 400,
-                    width: 370,
-                    showFooter: true,
-                    striped: true
-        });
-        $('#dg4').datagrid({
-            url: '@Url.Action("OrderCount", "Statistics")',
-            queryParams: { "st": getStartDate(15), "et": getStartDate(-1), "p": "ALL", "a": "ALL" },
-                    showFooter: true,
-                    height: 400,
-                    width: 400,
-                    striped: true
-                });
-
-        $('#dg5').datagrid({
-            url: '@Url.Action("OrderCountryData", "Statistics")',
-            queryParams: { "st": getStartDate(15), "et": getStartDate(-1), "p": "ALL", "a": "ALL" },
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
             height: 400,
-            width: 380,
-            showFooter: true,
-            striped: true
-        });
-        $('#dg6').datagrid({
-            url: '@Url.Action("OrderLeveData", "Statistics")',
-            queryParams: { "st": getStartDate(15), "et": getStartDate(-1), "p": "ALL", "a": "ALL" },
-            height: 400,
+            rownumbers: true,
+            singleselect: true,
             width: 370,
             showFooter: true,
             striped: true
         });
+
 
         $("#cc").datebox({
             parser: myparser
@@ -61,7 +43,7 @@
         });
         $('#cc').datebox("setValue", getStartDate(0));
         $('#cc2').datebox("setValue", getStartDate(0));
-        
+
         $('#pp').combobox({
             url: '/Account/Platform/1',
             valueField: 'id',
@@ -126,23 +108,25 @@
 <table>
     <tr>
         <td>
-            <table id="dg" class="easyui-datagrid" title="订单数量统计"
-                rownumbers="true" singleselect="true">
+            <table id="dg">
                 <thead>
                     <tr>
-                        <th field="Platform" width="80">账户
+                        <th field="Platform" width="80">平台
                         </th>
                         <th field="Account" width="200">账户
                         </th>
                         <th field="OCount" width="80">数量
                         </th>
+                        <th field="CurrencyCode" width="80">货币
+                        </th>
+                        <th field="TotalAmount" width="80">金额
+                        </th>
                     </tr>
                 </thead>
             </table>
         </td>
         <td>
-            <table id="dg2" class="easyui-datagrid" title="订单国家分布"
-                rownumbers="true" fitcolumns="true" singleselect="true">
+            <table id="dg2">
                 <thead>
                     <tr>
                         <th field="Key" width="180">国家
@@ -157,71 +141,20 @@
             </table>
         </td>
         <td>
-            <table id="dg3" class="easyui-datagrid" title="订单金额区间分布"
-                rownumbers="true" fitcolumns="true" singleselect="true">
+            <table id="dg3">
                 <thead>
                     <tr>
                         <th field="Platform" width="180">金额区间
-                </th>
+                        </th>
                         <th field="OCount" width="80">比例
-                </th>
+                        </th>
                         <th field="Account" width="80">订单数
-                </th>
+                        </th>
                     </tr>
                 </thead>
             </table>
         </td>
     </tr>
-</table>
-<table class="easyui-datagrid" title="历史销售记录15天">
 </table>
 <table>
-    <tr>
-        <td>
-            <table id="dg4" class="easyui-datagrid" title="订单数量统计"
-                rownumbers="true" singleselect="true">
-                <thead>
-                    <tr>
-                        <th field="Platform" width="80">账户
-                        </th>
-                        <th field="Account" width="180">账户
-                        </th>
-                        <th field="OCount" width="80">数量
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-        </td>
-        <td>
-            <table id="dg5" class="easyui-datagrid" title="订单国家分布"
-                rownumbers="true" fitcolumns="true" singleselect="true">
-                <thead>
-                    <tr>
-                        <th field="Key" width="180">国家
-                        </th>
-                        <th field="Proportion" width="80">比例
-                        </th>
-                        <th field="Count" width="80">订单数
-                        </th>
-
-                    </tr>
-                </thead>
-            </table>
-        </td>
-        <td>
-            <table id="dg6" class="easyui-datagrid" title="订单金额区间分布"
-                rownumbers="true" fitcolumns="true" singleselect="true">
-                <thead>
-                    <tr>
-                        <th field="Platform" width="180">金额区间
-                </th>
-                        <th field="OCount" width="80">比例
-                </th>
-                        <th field="Account" width="80">订单数
-                </th>
-                    </tr>
-                </thead>
-            </table>
-        </td>
-    </tr>
 </table>
