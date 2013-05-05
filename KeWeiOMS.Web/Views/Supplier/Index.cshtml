@@ -27,7 +27,7 @@
                     border: false,
                     cache: false,
                     href: '@Url.Action("GetProduct", "SuppliersProduct")' + "/" + row.Id,
-                        onLoad: function () {
+                   onLoad: function () {
                             $('#dg').datagrid('fixDetailRowHeight', index);
                         }
                     });

@@ -16,29 +16,80 @@
             striped: true,
             view: detailview,
             detailFormatter: function (index, row) {
+                return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
+            },
+            onExpandRow: function (index, row) {
+                var search =row.SKU+"$" + $('#cc').combobox("getValue") + "$" + $('#cc2').combobox("getValue") + "$" + $('#pp').combobox("getText") + "$" + $('#aa').combobox("getText");
+
+                $('#ddv-' + index).datagrid({
+                    fitColumns: true,
+                    singleSelect: true,
+                    rownumbers: true,
+                    loadMsg: '',
+                    height: 'auto',
+                    url: '@Url.Action("GetOrder", "Statistics")' + "/" + search,
+                        columns: [[
+                                {
+                                    field: 'CreateOn', title: '日期', width: 200, formatter: function (value) {
+                                            return getDate(value);
+                                    }
+                                },
+                                { field: 'OrderNo', title: '订单号', width: 200 },
+                                { field: 'Country', title: '国家', width: 100 },
+                                { field: 'qty', title: '数量', width: 50},
+                                {
+                                    field: 'Amount', title: '金额', width: 100, formatter: function (v, r, i) {
+                                        return  r.CurrencyCode+ "<br>" + v;
+                                    }
+                                },
+                                {
+                                    field: 'BuyerEmail', title: '买家', width: 200, formatter: function (v, r, i) {
+                                        return r.BuyerName + "<br>" + v;
+                                    }
+                                },
+                                {
+                                    field: 'Account', title: '账号', width: 200, formatter: function (v, r, i) {
+                                        return r.Platform + "<br>" + v;
+                                    }
+                                },
+                                {
+                                    field: 'LogisticMode', title: '物流方式', width: 200, formatter: function (v, r, i) {
+                                        return  v+ "<br>" + r.TrackCode;
+                                    }
+                                }
+                        ]],
+                        onResize: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        },
+                        onLoadSuccess: function () {
+                            setTimeout(function () {
+                                $('#dg').datagrid('fixDetailRowHeight', index);
+                            }, 0);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
+
+  @*            detailFormatter: function (index, row) {
                 return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
             },
             onExpandRow: function (index, row) {
-                $.ajax({
+                              $.ajax({
                     type: 'post',
-                    url: '/Statistics/GetOrder/',
-                    //data: [
-                    //    { st: $('#cc').combobox("getValue") },
-                    //    { et: $('#cc2').combobox("getValue") },
-                    //    { p: $('#pp').combobox("getText") },
-                    //    { a: $('#aa').combobox("getText") },
-                    //    { ss: $('#ss').combobox("getText") }]
-                });
+                    url: '@Url.Action("GetOrder", "SuppliersProduct")/',
+                    data: "st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue") + "&p=" + $('#pp').combobox("getText") + "&a=" + $('#aa').combobox("getText") + "ss=" + $('#ss').combobox("getText")
+                })
+                var search ="st=" + $('#cc').combobox("getValue") + "$et=" + $('#cc2').combobox("getValue") + "$p=" + $('#pp').combobox("getText") + "$a=" + $('#aa').combobox("getText") + "$ss=" + $('#ss').combobox("getText");
                 $('#ddv-' + index).panel({
                     border: false,
                     cache: false,
-                   @* href: '@Url.Action("GetProduct", "SuppliersProduct")' + "/" + row.Id,*@
+                    href: '@Url.Action("GetOrder", "Statistics")/'+encodeURIComponent(search),
                     onLoad: function () {
                         $('#dg').datagrid('fixDetailRowHeight', index);
                     }
                 });
                 $('#dg').datagrid('fixDetailRowHeight', index);
-            }
+            }*@
         });
         $("#cc").datebox({
             parser: myparser

@@ -243,5 +243,6 @@ namespace KeWeiOMS.Domain
 
         public virtual string rows { get; set; }
 
+        public virtual int qty { get; set; }
     }
 }
