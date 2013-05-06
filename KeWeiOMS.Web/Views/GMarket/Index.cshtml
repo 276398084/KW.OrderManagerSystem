@@ -8,6 +8,12 @@
     $(function () {
         $('#dg').datagrid({
             url: '@Url.Action("List","GMarket")',
+            toolbar: '#toolbar',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
             pageNumber: 1,
             nowrap: false,
             pageSize: 20,
@@ -106,9 +112,7 @@
      }
 </script>
 <div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+<table id="dg">  
         <thead>  
         <tr>
             <th field="ItemId" width="100" sortable="true">

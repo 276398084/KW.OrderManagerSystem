@@ -7,6 +7,12 @@
         $(function () {
             $('#dg').datagrid({
                 url: '@Url.Action("List", "Email")',
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+                fit: true,
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100],
@@ -109,9 +115,7 @@
 
     </script>
     <div region="center">
-        <table id="dg" class="easyui-datagrid"
-            toolbar="#toolbar"
-            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+        <table id="dg">
             <thead>
                 <tr>
                     @* <th field="Id" width="100">

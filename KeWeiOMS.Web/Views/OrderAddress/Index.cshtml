@@ -8,6 +8,13 @@
     $(function () {
         $('#dg').datagrid({
             url: '@Url.Action("List","OrderAddress")',
+            nowrap: false,
+            toolbar: '#toolbar',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
@@ -43,7 +50,6 @@
             if (id != undefined) {
                 var url = '@Url.Action("Delete", "OrderAddress")/' + id;
                 delData(url, 'dg');
-
             }
         }
 
@@ -68,9 +74,7 @@
    
 </script>
 <div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+<table id="dg">  
         <thead>  
         <tr>
             <th field="Id" width="100">

@@ -8,6 +8,12 @@
     $(function () {
         $('#dg').datagrid({
             url: '@Url.Action("List","NewGuide")',
+            toolbar: '#toolbar',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100],
@@ -134,12 +140,9 @@
    
 </script>
 <div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-
-		</thead>
+        <table id="dg">  
+            <thead>  
+		    </thead>
 		</table>
         <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  

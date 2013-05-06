@@ -6,6 +6,12 @@
     <script language="javascript" type="text/javascript">
         $(function () {
             $('#dg').treegrid({
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+                fit: true,
                 url: '@Url.Action("ALLList", "Module")',
                 idField: 'Id',
                 treeField: 'FullName'
@@ -68,9 +74,7 @@
         }
     </script>
     <div region="center">
-        <table id="dg" class="easyui-datagrid"
-            toolbar="#toolbar"
-            rownumbers="true" fitcolumns="true" singleselect="true" fit="true">
+        <table id="dg">
             <thead>
                 <tr>
                     <th field="FullName" width="100">名称

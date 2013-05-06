@@ -8,6 +8,13 @@
     $(function () {
         $('#dg').datagrid({
             url: '@Url.Action("List","Supplier")',
+            nowrap: false,
+            toolbar: '#toolbar',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: true,
+            pagination: true,
+            fit: true,
             pageNumber: 1,
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100],
@@ -20,7 +27,7 @@
                     border: false,
                     cache: false,
                     href: '@Url.Action("GetProduct", "SuppliersProduct")' + "/" + row.Id,
-                        onLoad: function () {
+                   onLoad: function () {
                             $('#dg').datagrid('fixDetailRowHeight', index);
                         }
                     });
@@ -114,9 +121,7 @@
     }
 </script>
 <div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+<table id="dg">  
         <thead>  
         <tr>
 @*         <th field="Id" width="100">

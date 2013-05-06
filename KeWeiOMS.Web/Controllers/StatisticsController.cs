@@ -263,6 +263,59 @@ namespace KeWeiOMS.Web.Controllers
             List<object> footers = new List<object>();
             return Json(new { rows = list.OrderByDescending(f => f.Qty), total = list.Count });
         }
+        public JsonResult GetOrder(string id)
+        {
+            string s = sub(id);
+            id = subid(id);
+            DateTime st =Convert.ToDateTime(sub(id));
+            id = subid(id);
+            DateTime et =Convert.ToDateTime(sub(id));
+            id = subid(id);
+            string p = sub(id);
+            id = subid(id);
+            string a = id;
+            IList<OrderProductType> objlist = NSession.CreateQuery("from OrderProductType where SKU='"+s+"'").List<OrderProductType>();
+            IList<OrderType> orderlist = new List<OrderType>();
+            foreach (var item in objlist)
+            {
+                IList<OrderType> order = NSession.CreateQuery("from OrderType where Id='"+item.OId+"' and CreateOn >='"+st+"' and CreateOn <'"+et.AddDays(1)+"'"+pa(p,a)).List<OrderType>();
+                if(order.Count!=0)
+                {
+                    order[0].qty = item.Qty;
+                   orderlist.Add(order[0]);
+                }
+            }
+            return Json(orderlist, JsonRequestBehavior.AllowGet);
+        }
+
+        private string pa(string p, string a)
+        {
+            string str = "";
+            if (p != "ALL")
+            { 
+            str+=" and Platform='"+p+"'";
+            }
+            if (a != "ALL")
+            {
+                str += " and Account='" + a + "'";
+            }
+            return str;
+        }
+
+
+
+        private string subid(string id)
+        {
+            string str = id.Substring(id.IndexOf("$")+1);
+            return str;
+        }
+
+        private string sub(string id)
+        {
+           string str = id.Substring(0,id.IndexOf("$"));
+           return str;
+        }
+
         [HttpPost]
         private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string ss)
         {
