@@ -973,8 +973,7 @@ namespace KeWeiOMS.Web
             {
                 oldValue = " and SKU='" + oldValue + "' ";
             }
-
-            sql = "update OrderProductType set SKU='{0}' where and Id in(select AddressId from OrderType where Status='待处理')  {1} {2}";
+            sql = "update OrderProductType set SKU='{0}' where Id in(select Id from OrderType where Status='待处理')  {1} {2}";
             sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;

@@ -70,7 +70,7 @@ var Examiner = 7;
 var Pei = 8;
 var Purchaser = 9;
 
-function formPost(form, url, dlg, dg, t,r) {
+function formPost(form, url, dlg, dg, t, r) {
 
     $('#' + form).form('submit', {
         url: url,
@@ -94,9 +94,9 @@ function formPost(form, url, dlg, dg, t,r) {
                 }
             } else {
                 if (result.ErrorMsg)
-                    alert("保存失败!");
-                else {
                     alert("保存失败!" + result.ErrorMsg);
+                else {
+                    alert("保存失败!");
                 }
             }
             if (result.Info) {

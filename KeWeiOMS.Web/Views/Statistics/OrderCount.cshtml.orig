@@ -1,0 +1,164 @@
+﻿<script>
+
+    $(function () {
+        var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
+        $('#dg').datagrid({
+            url: '@Url.Action("OrderCount", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            showFooter: true,
+            height: 400,
+            width: 550,
+            rownumbers: true,
+            singleselect: true,
+            striped: true
+        });
+
+        $('#dg2').datagrid({
+            url: '@Url.Action("OrderCountryData", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            height: 400,
+            rownumbers: true,
+            singleselect: true,
+            width: 380,
+            showFooter: true,
+            striped: true
+        });
+        $('#dg3').datagrid({
+            url: '@Url.Action("OrderLeveData", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            height: 400,
+            rownumbers: true,
+            singleselect: true,
+            width: 370,
+            showFooter: true,
+            striped: true
+        });
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> kewei/ttt
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(0));
+        $('#cc2').datebox("setValue", getStartDate(0));
+
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+
+    });
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+        $('#dg2').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+        $('#dg3').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+    }
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+    }
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+</script>
+开始<input id="cc" type="text">
+结束<input id="cc2" type="text">
+平台<input id="pp" type="text">
+账户<input id="aa" type="text">
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+<table>
+    <tr>
+        <td>
+            <table id="dg">
+                <thead>
+                    <tr>
+                        <th field="Platform" width="80">平台
+                        </th>
+                        <th field="Account" width="200">账户
+                        </th>
+                        <th field="OCount" width="80">数量
+                        </th>
+                        <th field="CurrencyCode" width="80">货币
+                        </th>
+                        <th field="TotalAmount" width="80">金额
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+        <td>
+            <table id="dg2">
+                <thead>
+                    <tr>
+                        <th field="Key" width="180">国家
+                        </th>
+                        <th field="Proportion" width="80">比例
+                        </th>
+                        <th field="Count" width="80">订单数
+                        </th>
+
+                    </tr>
+                </thead>
+            </table>
+        </td>
+        <td>
+            <table id="dg3">
+                <thead>
+                    <tr>
+                        <th field="Platform" width="180">金额区间
+                        </th>
+                        <th field="OCount" width="80">比例
+                        </th>
+                        <th field="Account" width="80">订单数
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+    </tr>
+<<<<<<< HEAD
+</table>
+<table>
+</table>
+=======
+  </table>
+>>>>>>> kewei/ttt
