@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "PackScore";
+}
+
+<script>
+    $(function () {
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        var today = new Date();
+        var st = getOnlyDate(new Date(today.setMonth(today.getMonth() - 1)).setDate(1).toString());
+        var et = getOnlyDate(new Date().setDate(0).toString());
+        $('#cc').datebox("setValue",st);
+        $('#cc2').datebox("setValue",et);
+        $('#dg').datagrid({
+            title: "计件分数",
+            rownumbers: true,
+            singleselect: true,
+            url: '@Url.Action("GetScore", "Statistics")',
+            queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
+            showFooter: true,
+            width: 1200,
+            striped: true
+            });
+        onSelect1();
+    });
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function onSelect1() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GetColumns", "Statistics")',
+            data: "st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue"),
+            success: function (data) {
+                var arr = new Array();
+                arr[0] = data.columns;
+                var options = $("#dg").datagrid("options");//取出当前datagrid的配置 
+                options.columns = arr; //添加服务器端返回的columns配置信息
+                //添加查询参数  
+                $("#dg").datagrid(options);
+                $('#dg').datagrid("load", {
+                    st: $('#cc').combobox("getValue"),
+                    et: $('#cc2').combobox("getValue")
+                });
+            }
+        });
+    }
+
+</script>
+开始<input id="cc" type="text">
+结束<input id="cc2" type="text">
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+<table id="dg">
+    <thead>
+        <tr>
+        </tr>
+    </thead>
+</table>

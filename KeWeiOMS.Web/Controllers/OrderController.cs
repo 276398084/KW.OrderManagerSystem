@@ -1433,14 +1433,24 @@ left join Products P On OP.SKU=P.SKU ";
                     order.Status = OrderStatusEnum.待发货.ToString();
                     NSession.Update(order);
                     NSession.Flush();
-
+                    IList<OrderProductType> orderproduct = NSession.CreateQuery("from OrderProductType where OId='" + order.Id+ "'").List<OrderProductType>();
+                    int PackCoefficient=0;
+                    foreach(var item in orderproduct)
+                    {
+                        IList<ProductType> product = NSession.CreateQuery("from ProductType where SKU='"+item.SKU+"'").List<ProductType>();
+                        if (product[0].PackCoefficient > PackCoefficient)
+                        {
+                            PackCoefficient = product[0].PackCoefficient;
+                        }
+                    }
                     OrderPackRecordType orderPackRecord = new OrderPackRecordType
                     {
                         OId = order.Id,
                         OrderNo = order.OrderNo,
                         PackBy = p,
                         PackOn = DateTime.Now,
-                        ScanBy = CurrentUser.Realname
+                        ScanBy = CurrentUser.Realname,
+                        PackCoefficient = PackCoefficient
                     };
                     NSession.Save(orderPackRecord);
                     NSession.Flush();
