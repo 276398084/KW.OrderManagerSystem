@@ -149,7 +149,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 包装系数
         /// </summary>
-        public virtual int PackCoefficient { get; set; }
+        public virtual double PackCoefficient { get; set; }
 
         /// <summary>
         /// 电子

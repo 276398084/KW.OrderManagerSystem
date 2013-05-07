@@ -723,8 +723,6 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
                 for (int i = 0; i < objectses.Count; i++)
                 {
                     sum += Convert.ToInt32(objectses[i][j]);
-
-
                 }
                 jsonBuilder2.Append(sum.ToString());
                 jsonBuilder2.Append("\",");
@@ -742,9 +740,9 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             IList<object[]> objectses = NSession.CreateSQLQuery("select PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
             foreach (var item in objectses)
             {
-                sores.Add(new OrderPackRecordType { PackBy = item[0].ToString(), PackCoefficient =Convert.ToInt32(item[1]) });
+                sores.Add(new OrderPackRecordType { By = item[0].ToString(),Coe =Convert.ToDecimal(Convert.ToDouble(item[1]).ToString("f1"))});
             }
-            return Json(sores.OrderByDescending(p=>p.PackCoefficient), JsonRequestBehavior.AllowGet);
+            return Json(sores.OrderByDescending(p=>p.Coe), JsonRequestBehavior.AllowGet);
         }
 
     }

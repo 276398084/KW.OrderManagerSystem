@@ -58,12 +58,22 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 包装系数
         /// </summary>
-        public virtual int PackCoefficient { get; set; }
+        public virtual double PackCoefficient { get; set; }
 
         /// <summary>
         /// 包装系数
         /// </summary>
         public virtual string SKU { get; set; }
 
+
+        /// <summary>
+        /// 包装时间
+        /// </summary>
+        public virtual string By { get; set; }
+
+        /// <summary>
+        /// 包装系数
+        /// </summary>
+        public virtual decimal Coe { get; set; }
     }
 }

@@ -1168,9 +1168,12 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpGet]
         public JsonResult AAAA()
         {
-            AccountType account = NSession.CreateQuery("from AccountType where Id=16").List<AccountType>()[0];
 
-            OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
+            TimeJi();
+
+            //AccountType account = NSession.CreateQuery("from AccountType where Id=16").List<AccountType>()[0];
+
+            // OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
 
             return Json(new { IsS = 1 });
 
@@ -1419,7 +1422,47 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
+        public void TimeJi()
+        {
+            List<ProductType> ProductList = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
+            List<OrderPackRecordType> orders = NSession.CreateQuery("from OrderPackRecordType where PackOn>'2013-04-01' and PackOn < '2013-05-01'").List<OrderPackRecordType>().ToList();
 
+            using (ITransaction tran = NSession.BeginTransaction())
+            {
+                foreach (OrderPackRecordType item in orders)
+                {
+                    double coe = 0;
+                    List<OrderProductType> OrderProducts = NSession.CreateQuery("from OrderProductType where OrderNo='" + item.OrderNo + "'").List<OrderProductType>().ToList();
+                    if (OrderProducts.Count == 0)
+                    {
+                        item.PackCoefficient = 3;
+                    }
+                    else
+                    {
+                        foreach (var product in OrderProducts)
+                        {
+                            List<ProductType> Products = ProductList.Where(p => p.SKU.ToString().ToUpper() == product.SKU.ToString().ToUpper()).ToList();
+                            if (Products.Count != 0)
+                            {
+                                if (Products[0].PackCoefficient > coe)
+                                {
+                                    coe = Products[0].PackCoefficient;
+                                }
+                            }
+                            else
+                            {
+                                coe = 1;
+                            }
+                        }
+                        item.PackCoefficient = coe;
+                    }
+                    NSession.Update(item);
+
+                }
+                tran.Commit();
+            }
+
+        }
 
         public JsonResult OutStockByJi(string p, string o)
         {
@@ -1433,37 +1476,53 @@ left join Products P On OP.SKU=P.SKU ";
                     order.Status = OrderStatusEnum.待发货.ToString();
                     NSession.Update(order);
                     NSession.Flush();
-                    IList<OrderProductType> orderproduct = NSession.CreateQuery("from OrderProductType where OId='" + order.Id+ "'").List<OrderProductType>();
-                    int PackCoefficient=0;
-                    string sku = "";
-                    foreach(var item in orderproduct)
-                    {
-                        IList<ProductType> product = NSession.CreateQuery("from ProductType where SKU='"+item.SKU+"'").List<ProductType>();
-                        if (product[0].PackCoefficient > PackCoefficient)
-                        {
-                            PackCoefficient = product[0].PackCoefficient;
-                            sku = product[0].SKU;
-                        }
-                    }
-                    OrderPackRecordType orderPackRecord = new OrderPackRecordType
-                    {
-                        OId = order.Id,
-                        OrderNo = order.OrderNo,
-                        PackBy = p,
-                        PackOn = DateTime.Now,
-                        ScanBy = CurrentUser.Realname,
-                        PackCoefficient = PackCoefficient,
-                        SKU=sku
-                    };
-                    NSession.Save(orderPackRecord);
-                    NSession.Flush();
+                    SaveRecord(order, p);
                     string html = "订单： " + order.OrderNo + "计件成功！包装人：" + p;
                     return Json(new { IsSuccess = true, Result = html });
                 }
                 return Json(new { IsSuccess = false, Result = " 无法出库！ 当前状态为：" + order.Status + "，需要订单状态为“待发货”方可扫描！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
+        }
+        public void SaveRecord(OrderType order, string p)
+        {
+            IList<OrderProductType> orderproduct = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>();
+            double PackCoefficient = 0;
+            string sku = "";
+            if (orderproduct.Count == 0)
+            {
+                PackCoefficient = 3;
+            }
+            foreach (var item in orderproduct)
+            {
+                IList<ProductType> product = NSession.CreateQuery("from ProductType where SKU='" + item.SKU + "'").List<ProductType>();
+                if (product.Count != 0)
+                {
+                    if (product[0].PackCoefficient > PackCoefficient)
+                    {
+                        PackCoefficient = product[0].PackCoefficient;
+                        sku = product[0].SKU;
+                    }
+                }
+                else
+                {
+                    PackCoefficient = 1;
+                }
 
+            }
+
+            OrderPackRecordType orderPackRecord = new OrderPackRecordType
+            {
+                OId = order.Id,
+                OrderNo = order.OrderNo,
+                PackBy = p,
+                PackOn = DateTime.Now,
+                ScanBy = CurrentUser.Realname,
+                PackCoefficient = PackCoefficient,
+                SKU = sku
+            };
+            NSession.Save(orderPackRecord);
+            NSession.Flush();
         }
 
         public JsonResult UnHandleList(int page, int rows, string sort, string order, string search)
@@ -1489,7 +1548,7 @@ left join Products P On OP.SKU=P.SKU ";
             }
             IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby).List<OrderType>();
 
-            for (int i = 0; i < objList.Count;i++ )
+            for (int i = 0; i < objList.Count; i++)
             {
                 OrderType obj = GetById(objList[i].MId);
                 if (obj.IsSplit != 1)
