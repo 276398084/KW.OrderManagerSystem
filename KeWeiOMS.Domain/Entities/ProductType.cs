@@ -39,7 +39,7 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String OldSKU { get; set; }
 
-      
+
 
         /// <summary>
         /// 类别
@@ -70,6 +70,11 @@ namespace KeWeiOMS.Domain
         /// 重量
         /// </summary>
         public virtual int Weight { get; set; }
+
+        /// <summary>
+        /// 重量
+        /// </summary>
+        public virtual int TotalWeight { get; set; }
 
         /// <summary>
         /// 长

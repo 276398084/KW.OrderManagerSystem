@@ -70,26 +70,6 @@
                     $('#dg').datagrid('fixDetailRowHeight', index);
                 }
 
-  @*            detailFormatter: function (index, row) {
-                return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
-            },
-            onExpandRow: function (index, row) {
-                              $.ajax({
-                    type: 'post',
-                    url: '@Url.Action("GetOrder", "SuppliersProduct")/',
-                    data: "st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue") + "&p=" + $('#pp').combobox("getText") + "&a=" + $('#aa').combobox("getText") + "ss=" + $('#ss').combobox("getText")
-                })
-                var search ="st=" + $('#cc').combobox("getValue") + "$et=" + $('#cc2').combobox("getValue") + "$p=" + $('#pp').combobox("getText") + "$a=" + $('#aa').combobox("getText") + "$ss=" + $('#ss').combobox("getText");
-                $('#ddv-' + index).panel({
-                    border: false,
-                    cache: false,
-                    href: '@Url.Action("GetOrder", "Statistics")/'+encodeURIComponent(search),
-                    onLoad: function () {
-                        $('#dg').datagrid('fixDetailRowHeight', index);
-                    }
-                });
-                $('#dg').datagrid('fixDetailRowHeight', index);
-            }*@
         });
         $("#cc").datebox({
             parser: myparser
@@ -187,8 +167,7 @@ SKU<input id="ss" type="text">
                         </th>
                         <th field="SKU" width="150">SKU
                         </th>
-                        <th field="PicUrl" width="100" formatter="GetPic">图片
-                        </th>
+                   
                         <th field="Category" width="190">分类
                         </th>
                         <th field="Qty" width="100">数量

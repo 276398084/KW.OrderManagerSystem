@@ -116,7 +116,6 @@ namespace KeWeiOMS.Web
                             NSession.Flush();
                             CreateOrderPruduct(mc3.Groups["sku"].Value, Utilities.ToInt(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo, NSession);
                         }
-
                     }
                     catch (Exception ex)
                     {

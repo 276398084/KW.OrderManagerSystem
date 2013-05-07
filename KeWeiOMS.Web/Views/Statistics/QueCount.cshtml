@@ -8,13 +8,31 @@
             url: '@Url.Action("QueData", "Statistics")'
 
         });
-
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
     });
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+    }
 
     function doSearch() {
         $('#dg').datagrid("load", {
-            s: $('#cc').val()
-
+            s: $('#cc').val(),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
         });
     }
 
@@ -48,6 +66,8 @@
     </thead>
 </table>
 <div id="toolbar">
+    平台<input id="pp" type="text">
+    账户<input id="aa" type="text">
     SKU<input type="text" id="cc" />
     <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="doSearch();">查询</a>
     <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="ExportOrder();">导出</a>

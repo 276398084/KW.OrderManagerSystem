@@ -290,7 +290,6 @@
                     @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.CreateOn)
 
-
                     @Html.HiddenFor(model => model.CreateBy)
                     @Html.HiddenFor(model => model.SPicUrl)
                     @Html.HiddenFor(model => model.PicUrl)
@@ -355,6 +354,7 @@
                         @Html.TextBoxFor(model => model.Standard, new { @id = "e_Standard" })
                     </td>
                 </tr>
+
                 <tr>
                     <td>
                         @Html.LabelFor(model => model.Weight, "重量:")
@@ -440,6 +440,14 @@
                     </td>
                     <td>
                         @Html.TextBoxFor(model => model.Packer, new { @id = "e_Packer" })
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.LabelFor(model => model.TotalWeight, "加上包装的重量:")
+                    </td>
+                    <td colspan="5">
+                        @Html.TextBoxFor(model => model.TotalWeight, new { @id = "e_TotalWeight", @class = "easyui-validatebox", @required = "true" })
                     </td>
                 </tr>
             </table>

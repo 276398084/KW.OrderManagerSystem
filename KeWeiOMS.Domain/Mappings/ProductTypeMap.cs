@@ -38,6 +38,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.Standard).Length(100);
             Map(x => x.Status).Length(10);
             Map(x => x.Weight);
+            Map(x => x.TotalWeight);
+
             Map(x => x.Long);
             Map(x => x.Wide);
             Map(x => x.High);

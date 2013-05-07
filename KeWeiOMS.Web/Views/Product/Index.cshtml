@@ -70,7 +70,7 @@
             }
 
             //编辑框
-        function e_dlg() {
+            function e_dlg() {
                 var id = getselectedRow();
                 if (id != undefined) {
                     window.open('@Url.Action("Edit", "Product")/' + getselectedRow());
@@ -82,19 +82,19 @@
                 var postUrl = "/Order/ExportDown/1";
                 $.ajax({
                     url: '@Url.Action("Export", "Product")/',
-                type: 'post',
-                data: 'search=' + encodeURIComponent(search),
-                success: function (result) {
-                    $.messager.show({
-                        title: '提示',
-                        msg: result.ErrorMsg,
-                        timeout: 0,
-                        showType: 'slide'
-                    });
-                    location.href = postUrl;
-                    $('#dg').datagrid('reload');
-                }
-            });
+                    type: 'post',
+                    data: 'search=' + encodeURIComponent(search),
+                    success: function (result) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                        location.href = postUrl;
+                        $('#dg').datagrid('reload');
+                    }
+                });
             }
             //删除
             function del() {
@@ -205,6 +205,8 @@
                     <th field="Price" width="60" sortable="true">Price
                     </th>
                     <th field="Weight" width="60" sortable="true">重量
+                    </th>
+                    <th field="TotalWeight" width="60" sortable="true">总重
                     </th>
                     <th field="SevenDay" width="100" formatter="getSale">
                     7/15/30

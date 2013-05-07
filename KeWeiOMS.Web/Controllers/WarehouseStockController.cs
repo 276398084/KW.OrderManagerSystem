@@ -62,7 +62,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Export(string o)
         {
             StringBuilder sb = new StringBuilder();
-            string sql = "select  Warehouse,SKU,Qty,(select count(1) from SkuCode where SKU =WarehouseStock.SKU) as '未配货',Title from WarehouseStock";
+            string sql = "select  Warehouse,SKU,Qty,(select count(1) from SkuCode where SKU =WarehouseStock.SKU and IsOut=0) as '未配货',Title from WarehouseStock";
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
