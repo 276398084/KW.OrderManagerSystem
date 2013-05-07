@@ -18,14 +18,13 @@
         $('#dg').datagrid({
             title: "计件分数",
             rownumbers: true,
-            singleselect: true,
+            singleSelect: true,
             url: '@Url.Action("GetScore", "Statistics")',
             queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
             showFooter: true,
-            width: 1200,
+            width: 1000,
             striped: true
             });
-        onSelect1();
     });
     function myparser(s) {
         if (!s) return new Date();
@@ -40,23 +39,11 @@
         }
     }
     function onSelect1() {
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("GetColumns", "Statistics")',
-            data: "st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue"),
-            success: function (data) {
-                var arr = new Array();
-                arr[0] = data.columns;
-                var options = $("#dg").datagrid("options");//取出当前datagrid的配置 
-                options.columns = arr; //添加服务器端返回的columns配置信息
-                //添加查询参数  
-                $("#dg").datagrid(options);
-                $('#dg').datagrid("load", {
-                    st: $('#cc').combobox("getValue"),
-                    et: $('#cc2').combobox("getValue")
-                });
-            }
-        });
+
+            $('#dg').datagrid("load", {
+                st: $('#cc').combobox("getValue"),
+                et: $('#cc2').combobox("getValue")
+            });
     }
 
 </script>
@@ -66,6 +53,10 @@
 <table id="dg">
     <thead>
         <tr>
+            <th  field="PackBy" width="200">工作人员
+            </th>
+            <th field="PackCoefficient" width="150">得分
+             </th>
         </tr>
     </thead>
 </table>

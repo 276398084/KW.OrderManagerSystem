@@ -736,67 +736,15 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             string json = "{\"total\":" + objectses.Count + ",\"rows\":" + jsonBuilder.ToString() + ",\"footer\":" + jsonBuilder2.ToString() + "}";
             return json;
         }
-        public string GetScore(DateTime st, DateTime et)
+        public JsonResult GetScore(DateTime st, DateTime et)
         {
-            List<string> strData = new List<string>();
-            StringBuilder sb = new StringBuilder();
-            strData.Add("人员");
-            sb.Append("select [PackBy] as '扫描人',");
-            DateTime date = st;
-            while (date <= et)
+            IList<OrderPackRecordType> sores = new List<OrderPackRecordType>();
+            IList<object[]> objectses = NSession.CreateSQLQuery("select PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
+            foreach (var item in objectses)
             {
-                string week = GetWeek("zh", date);
-                strData.Add(date.ToString("MMdd"));
-
-                sb.Append("SUM(case  when convert(varchar(10),[PackOn],120)='" + date.ToString("yyyy-MM-dd") + "' then  rcount else 0 end  ) as '" + date.ToString("MM.dd") + "(" + week + ")' ,");
-                date = date.AddDays(1);
+                sores.Add(new OrderPackRecordType { PackBy = item[0].ToString(), PackCoefficient =Convert.ToInt32(item[1]) });
             }
-            sb = sb.Remove(sb.Length - 1, 1);
-            sb.Append("from  (select [PackBy] ,convert(varchar(10),[PackOn],120) [PackOn] ,SUM(PackCoefficient) as 'rcount'  from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy] ,convert(varchar(10),[PackOn],120)) as tbl1  group by [PackBy]");
-            IList<object[]> objectses = NSession.CreateSQLQuery(sb.ToString()).List<object[]>();
-            StringBuilder jsonBuilder = new StringBuilder();
-            jsonBuilder.Append("[");//转换成多个model的形式
-            for (int i = 0; i < objectses.Count; i++)
-            {
-                jsonBuilder.Append("{");
-                for (int j = 0; j < strData.Count; j++)
-                {
-                    jsonBuilder.Append("\"");
-                    jsonBuilder.Append(strData[j]);
-                    jsonBuilder.Append("\":\"");
-                    jsonBuilder.Append(objectses[i][j]);
-                    jsonBuilder.Append("\",");
-                }
-                jsonBuilder.Remove(jsonBuilder.Length - 1, 1);
-                jsonBuilder.Append("},");
-            }
-            jsonBuilder.Remove(jsonBuilder.Length - 1, 1);
-            jsonBuilder.Append("]");
-            StringBuilder jsonBuilder2 = new StringBuilder();
-
-            jsonBuilder2.Append("[{");
-            for (int j = 1; j < strData.Count; j++)
-            {
-                int sum = 0;
-
-                jsonBuilder2.Append("\"");
-                jsonBuilder2.Append(strData[j]);
-                jsonBuilder2.Append("\":\"");
-                for (int i = 0; i < objectses.Count; i++)
-                {
-                    sum += Convert.ToInt32(objectses[i][j]);
-
-
-                }
-                jsonBuilder2.Append(sum.ToString());
-                jsonBuilder2.Append("\",");
-
-
-            }
-            jsonBuilder2.Remove(jsonBuilder2.Length - 1, 1);
-            jsonBuilder2.Append("}]");
-            string json = "{\"total\":" + objectses.Count + ",\"rows\":" + jsonBuilder.ToString() + ",\"footer\":" + jsonBuilder2.ToString() + "}";
-            return json;
+            return Json(sores.OrderByDescending(p=>p.PackCoefficient), JsonRequestBehavior.AllowGet);
         }
 
     }
