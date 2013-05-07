@@ -46,6 +46,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult PackScore()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
         {
@@ -679,7 +684,6 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         [HttpPost]
         public String JiCount(DateTime st, DateTime et)
         {
-
             List<string> strData = new List<string>();
             StringBuilder sb = new StringBuilder();
             strData.Add("人员");
@@ -740,7 +744,16 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             string json = "{\"total\":" + objectses.Count + ",\"rows\":" + jsonBuilder.ToString() + ",\"footer\":" + jsonBuilder2.ToString() + "}";
             return json;
         }
-
+        public JsonResult GetScore(DateTime st, DateTime et)
+        {
+            IList<OrderPackRecordType> sores = new List<OrderPackRecordType>();
+            IList<object[]> objectses = NSession.CreateSQLQuery("select PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
+            foreach (var item in objectses)
+            {
+                sores.Add(new OrderPackRecordType { PackBy = item[0].ToString(), PackCoefficient =Convert.ToInt32(item[1]) });
+            }
+            return Json(sores.OrderByDescending(p=>p.PackCoefficient), JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

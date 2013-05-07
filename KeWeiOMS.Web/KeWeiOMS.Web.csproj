@@ -1612,6 +1612,7 @@
     <Content Include="Views\Order\SplitNoSend.cshtml" />
     <Content Include="Views\Statistics\SendDays.cshtml" />
     <Content Include="Views\Statistics\GetOrder.cshtml" />
+    <Content Include="Views\Statistics\PackScore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

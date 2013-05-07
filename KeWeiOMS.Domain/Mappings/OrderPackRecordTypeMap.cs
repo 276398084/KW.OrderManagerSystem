@@ -35,6 +35,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.PackBy).Length(50);
             Map(x => x.ScanBy).Length(50);
             Map(x => x.PackOn);
+            Map(x => x.PackCoefficient);
+            Map(x => x.SKU);
         }
     }
 }
