@@ -45,17 +45,30 @@
                 et: $('#cc2').combobox("getValue")
             });
     }
-
+    function ExportOut() {
+        $('#dg').datagrid("loading");
+        var postUrl = "/Order/ExportDown/1";
+        jQuery.ajax({
+            url: "/Statistics/ExportSore",
+            type: "post",
+            data:"st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue"),
+            success: function (sss) {
+                location.href = postUrl;
+                $('#dg').datagrid("reload");
+            }
+        });
+    }
 </script>
 开始<input id="cc" type="text">
 结束<input id="cc2" type="text">
 <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ExportOut();">导出</a>
 <table id="dg">
     <thead>
         <tr>
-            <th  field="By" width="200">工作人员
+            <th  field="PackBy" width="200">工作人员
             </th>
-            <th field="Coe" width="150">得分
+            <th field="PackSores" width="150">得分
              </th>
         </tr>
     </thead>
