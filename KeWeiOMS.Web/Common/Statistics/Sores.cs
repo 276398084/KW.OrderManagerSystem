@@ -16,5 +16,15 @@ namespace KeWeiOMS.Web
         /// 包装系数
         /// </summary>
         public virtual decimal PackSores { get; set; }
+
+        /// <summary>
+        /// 总数
+        /// </summary>
+        public virtual decimal Qcount { get; set; }
+
+        /// <summary>
+        /// 平均系数
+        /// </summary>
+        public virtual decimal Avg { get; set; }
     }
 }
