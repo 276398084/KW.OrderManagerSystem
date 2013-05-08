@@ -107,6 +107,7 @@
     <Compile Include="Entities\RoleType.cs" />
     <Compile Include="Entities\SerialNumberType.cs" />
     <Compile Include="Entities\SKUCodeType.cs" />
+    <Compile Include="Entities\SoresAddType.cs" />
     <Compile Include="Entities\StockInType.cs" />
     <Compile Include="Entities\StockOutType.cs" />
     <Compile Include="Entities\SuppliersProductType.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Mappings\RoleTypeMap.cs" />
     <Compile Include="Mappings\SerialNumberTypeMap.cs" />
     <Compile Include="Mappings\SKUCodeTypeMap.cs" />
+    <Compile Include="Mappings\SoresAddTypeMap.cs" />
     <Compile Include="Mappings\StockInTypeMap.cs" />
     <Compile Include="Mappings\StockOutTypeMap.cs" />
     <Compile Include="Mappings\SuppliersProductTypeMap.cs" />

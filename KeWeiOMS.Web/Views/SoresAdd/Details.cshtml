@@ -1,0 +1,63 @@
+﻿@model KeWeiOMS.Domain.SoresAddType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.SoresAddType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.SoresAddType</legend>
+    <div class="display-label">主键</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">人员</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.User)
+    </div>
+
+    <div class="display-label">分数</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Sore)
+    </div>
+
+    <div class="display-label">小时</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Hours)
+    </div>
+
+    <div class="display-label">类型</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WorkType)
+    </div>
+
+    <div class="display-label">日期时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.WorkDate)
+    </div>
+
+    <div class="display-label">创建人</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">创建时间</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

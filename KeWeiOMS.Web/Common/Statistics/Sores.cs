@@ -13,7 +13,7 @@ namespace KeWeiOMS.Web
         public virtual string PackBy { get; set; }
 
         /// <summary>
-        /// 包装系数
+        /// 包装分数
         /// </summary>
         public virtual decimal PackSores { get; set; }
 
@@ -26,5 +26,15 @@ namespace KeWeiOMS.Web
         /// 平均系数
         /// </summary>
         public virtual decimal Avg { get; set; }
+
+        /// <summary>
+        /// 补分
+        /// </summary>
+        public virtual decimal Sore { get; set; }
+
+        /// <summary>
+        /// 总得分
+        /// </summary>
+        public virtual decimal TotalSores { get; set; }
     }
 }
