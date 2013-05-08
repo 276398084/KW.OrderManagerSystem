@@ -145,6 +145,7 @@
     <Compile Include="Common\Statistics\ProportionData.cs" />
     <Compile Include="Common\Statistics\PurchaseData.cs" />
     <Compile Include="Common\Statistics\QueCount.cs" />
+    <Compile Include="Common\Statistics\Sores.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\AccountController.cs" />
