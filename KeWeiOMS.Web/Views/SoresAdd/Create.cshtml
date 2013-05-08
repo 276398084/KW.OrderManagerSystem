@@ -1,0 +1,95 @@
+﻿@model KeWeiOMS.Domain.SoresAddType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_WorkDate').datebox({
+            required:true,
+            width: 150
+        });
+        $('#c_Worker').combobox({
+            url: '/User/QList2/',
+            valueField: 'Realname',
+            textField: 'Realname',
+            editable: false,
+            required: true,
+            width: 150
+        });
+        $('#c_Sore').numberbox({
+            required: true,
+            min: 0,
+            precision: 1
+        });
+        $('#c_Hours').numberbox({
+            required: true,
+            min: 0,
+            precision: 1
+        });
+        $('#c_WorkType').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/SoreAddType',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            required: true,
+            width: 150
+        });
+    });
+</script>
+
+@using (Html.BeginForm("Create", "SoresAdd", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.WorkDate,"日期时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WorkDate,new{@id="c_WorkDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Worker,"人员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Worker,new{@id="c_Worker"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Sore,"分数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Sore,new{@id="c_Sore"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Hours,"小时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Hours,new{@id="c_Hours"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WorkType,"类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WorkType,new{@id="c_WorkType"})
+		</td>
+	</tr>
+
+
+
+</table>
+</fieldset>
+}

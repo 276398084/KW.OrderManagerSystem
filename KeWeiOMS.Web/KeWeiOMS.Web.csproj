@@ -202,6 +202,7 @@
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
+    <Compile Include="Controllers\SoresAddController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Controllers\StockInController.cs" />
     <Compile Include="Controllers\StockOutController.cs" />
@@ -1614,6 +1615,11 @@
     <Content Include="Views\Statistics\SendDays.cshtml" />
     <Content Include="Views\Statistics\GetOrder.cshtml" />
     <Content Include="Views\Statistics\PackScore.cshtml" />
+    <Content Include="Views\SoresAdd\Create.cshtml" />
+    <Content Include="Views\SoresAdd\Delete.cshtml" />
+    <Content Include="Views\SoresAdd\Details.cshtml" />
+    <Content Include="Views\SoresAdd\Edit.cshtml" />
+    <Content Include="Views\SoresAdd\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

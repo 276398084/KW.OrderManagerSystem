@@ -1,0 +1,110 @@
+﻿@model KeWeiOMS.Domain.SoresAddType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+        $('#e_WorkDate').datebox({
+            required: true,
+            width: 150
+        });
+        $('#e_Worker').combobox({
+            url: '/User/QList2/',
+            valueField: 'Realname',
+            textField: 'Realname',
+            editable:false,
+            required: true,
+            width: 150
+        });
+        $('#e_Sore').numberbox({
+            required: true,
+            min: 0,
+            precision: 1
+        });
+        $('#e_Hours').numberbox({
+            required: true,
+            min: 0,
+            precision: 1
+        });
+        $('#e_WorkType').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/SoreAddType',
+            valueField: 'FullName',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            required: true,
+            width: 150
+        });
+    });
+</script>
+@using (Html.BeginForm("Edit", "SoresAdd", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td style ="display:none">
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+    
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WorkDate,"日期时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WorkDate,new{@id="e_WorkDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Worker,"人员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Worker,new{@id="e_Worker"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Sore,"分数:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Sore,new{@id="e_Sore"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Hours,"小时:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Hours,new{@id="e_Hours"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.WorkType,"类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.WorkType,new{@id="e_WorkType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td style="display:none">
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+</table>
+</fieldset>
+}

@@ -761,8 +761,12 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
            IList<object[]> objectses = NSession.CreateSQLQuery("select COUNT(Id) as Qcount, PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
             foreach (var item in objectses)
             {
+                object soreadd = NSession.CreateQuery("select SUM(Sore) from SoresAddType where Worker='" + item[1].ToString() + "' and WorkDate between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'").UniqueResult();
                 decimal avg=Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1")))/Convert.ToDecimal(item[0]);
-                sores.Add(new Sores { PackBy = item[1].ToString(), PackSores =Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1"))),Qcount=Convert.ToDecimal(item[0]),Avg=Convert.ToDecimal(avg.ToString("f1"))});
+                decimal packsores=Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1")));
+                decimal sore = Convert.ToDecimal(soreadd);
+                decimal totalsore = sore + packsores;
+                sores.Add(new Sores { PackBy = item[1].ToString(), PackSores = packsores, Qcount = Convert.ToDecimal(item[0]), Avg = Convert.ToDecimal(avg.ToString("f1")),Sore=sore,TotalSores=totalsore });
             }
             return sores;
         }
