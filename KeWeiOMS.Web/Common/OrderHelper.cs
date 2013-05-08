@@ -135,7 +135,7 @@ namespace KeWeiOMS.Web
 
         }
 
-        public static List<ResultInfo> ImportByAmazon(AccountType account, string fileName, ISession NSession)
+        public static List<ResultInfo> ImportByAmazon(AccountType account, string fileName,  ISession NSession)
         {
 
             List<ResultInfo> results = new List<ResultInfo>();
