@@ -753,15 +753,20 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         public JsonResult GetScore(DateTime st, DateTime et)
         {
             IList<Sores> sores = SoreList(st,et);
-            return Json(sores.OrderByDescending(p=>p.PackSores), JsonRequestBehavior.AllowGet);
+            IList<object[]> obj = NSession.CreateQuery("select COUNT(Id),SUM(PackCoefficient) from OrderPackRecordType where PackOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'").List<object[]>();
+            List<object> footers = new List<object>();
+            decimal Count = Convert.ToDecimal(obj[0][0]);
+            decimal Avg = Convert.ToDecimal(obj[0][1]) / Count;
+            footers.Add(new { PackBy = "总数：" + Count, PackSores = "平均：" + Avg.ToString("f1") });
+            return Json(new { rows = sores.OrderByDescending(p => p.PackSores), footer = footers});
         }
         public IList<Sores> SoreList(DateTime st, DateTime et)
         {
            IList<Sores> sores = new List<Sores>();
-            IList<object[]> objectses = NSession.CreateSQLQuery("select PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
+           IList<object[]> objectses = NSession.CreateSQLQuery("select COUNT(Id) as Qcount, PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
             foreach (var item in objectses)
             {
-                sores.Add(new Sores { PackBy = item[0].ToString(), PackSores =Convert.ToDecimal((Convert.ToDouble(item[1]).ToString("f1"))) });
+                sores.Add(new Sores { PackBy = item[1].ToString(), PackSores =Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1"))) });
             }
             return sores;
         }
