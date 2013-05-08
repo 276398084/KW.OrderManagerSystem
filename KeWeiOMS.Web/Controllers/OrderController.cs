@@ -1009,10 +1009,8 @@ left join Products P On OP.SKU=P.SKU ";
         {
             try
             {
-
                 NSession.Delete(" from OrderType where Id in(" + o + ")");
                 NSession.Flush();
-
             }
             catch (Exception ee)
             {
