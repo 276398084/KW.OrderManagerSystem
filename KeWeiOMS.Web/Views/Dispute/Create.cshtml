@@ -77,40 +77,9 @@
         $('#c_DisputeCategory').combobox("setValue", "未收到");
         $('#c_SolveOn').datebox({
             disabled: true
-        });
-
+        }); 
+        $('#c_OrderNo').combogrid("setValue",'@ViewData["oid"]');
     });
-    
-    function Solution(st) {
-        if (st == 1) {
-            $('#c_Solution').combobox({
-                disabled: false
-            });
-            $('#c_SolveBy').combobox({
-                disabled: false
-            });
-            $('#c_SolveOn').datebox({
-                disabled: false
-            });
-            $("#c_RefundAmount").attr({
-                disabled: false
-            });
-        }
-        else {
-            $('#c_Solution').combobox({
-                disabled: true
-            });
-            $('#c_SolveBy').combobox({
-                disabled: true
-            });
-            $('#c_SolveOn').datebox({
-                disabled: true
-            });
-            $("#c_RefundAmount").attr({
-                disabled: true
-            });
-        }
-    }
         function detail(OrderNo) {
             $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
                 if (json) {
@@ -128,8 +97,20 @@
             })
             $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
                 if (json) {
-                    $('#c_Qty').attr("value", json[0].Qty);
-                    $('#c_SKU').attr("value", json[0].SKU);
+                    var qty ="";
+                    var sku ="";
+                    for (i = 0; i < json.length; i++)
+                    {
+                        if (sku != "")
+                        {
+                            qty += ","
+                            sku += ","
+                        }
+                        qty += json[i].Qty;
+                        sku += json[i].SKU+" ";
+                    }
+                    $('#c_Qty').attr("value",qty);
+                    $('#c_SKU').attr("value",sku);
                 }
             })
     
@@ -155,15 +136,16 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>		
+        <td>
+            @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="c_OrderExNo"})
 		</td>
 	</tr>
     <tr>
-		<td>
-            @Html.LabelFor(model => model.Account,"账户:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Account,new{@id="c_Account"})
-		</td>
+
 	</tr>
 	<tr>
 		<td>
@@ -171,11 +153,13 @@
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.Platform,new{@id="c_Platform"})
-		</td>		<td>
-            @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
+		</td>	
+        
+        <td>
+            @Html.LabelFor(model => model.Account,"账户:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.OrderExNo,new{@id="c_OrderExNo"})
+            @Html.TextBoxFor(model => model.Account,new{@id="c_Account"})
 		</td>
 	</tr>
 
@@ -247,15 +231,6 @@
 		</td>
 	</tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.DisputeOn,"纠纷时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.DisputeOn,new{@id="c_DisputeOn"})
-		</td>
-	</tr>
-
         <tr>
 		<td>
             @Html.LabelFor(model => model.DisputeCategory,"纠纷分类:")
@@ -264,57 +239,6 @@
             @Html.TextBoxFor(model => model.DisputeCategory,new{@id="c_DisputeCategory"})
 		</td>
 	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Status,"状态:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Status,new{@id="c_Status", onblur="Solution()"})
-		</td>
-	</tr>
-
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Solution,"解决方式:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Solution,new{@id="c_Solution"})
-		</td>		
-        <td>
-            @Html.LabelFor(model => model.SolveOn,"解决时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SolveOn,new{@id="c_SolveOn"})
-		</td>
-	</tr>
-
-    <tr>
-		<td>
-            @Html.LabelFor(model => model.RefundAmount,"退款金额:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.RefundAmount,new{@id="c_RefundAmount"})
-		</td>		
-        <td>
-            @Html.LabelFor(model => model.SolveBy,"解决人:")
-		</td>
-		<td >
-            @Html.TextBoxFor(model => model.SolveBy,new{@id="c_SolveBy"})
-		</td>
-	</tr>
-
-@*	<tr>
-		<td>
-            @Html.LabelFor(model => model.CreateBy,"添加人:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.CreateBy,new{@id="c_CreateBy"})
-		</td>
-	</tr>*@
-
-	
-
 
 </table>
 </fieldset>

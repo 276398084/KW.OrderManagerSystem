@@ -80,5 +80,25 @@ namespace KeWeiOMS.Web
             NSession.Save(obj);
             NSession.Flush();
         }
+
+        //纠纷日志
+        public static void GetDisputeRecord(DisputeType obj, string recordType, string Content, UserType CurrentUser, ISession NSession)
+        {
+            GetDisputeRecord(obj.Id,recordType, Content, CurrentUser, NSession);
+        }
+
+        private static void GetDisputeRecord(int OId,string recordType, string Content, UserType CurrentUser, ISession NSession)
+        {
+            DisputesRecordType obj = new DisputesRecordType();
+            obj.DId = OId;
+            obj.DealType = recordType;
+            obj.Content = Content;
+            obj.CreateBy = CurrentUser.Realname;
+            obj.CreateOn = DateTime.Now;
+            NSession.Save(obj);
+            NSession.Flush();
+        }
+
     }
+
 }

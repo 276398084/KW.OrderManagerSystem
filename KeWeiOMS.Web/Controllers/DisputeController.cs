@@ -17,8 +17,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Create()
+        public ActionResult Create(string id="")
         {
+            if (id !="")
+            {
+                ViewData["oid"] = id;
+            }
             return View();
         }
 
@@ -27,14 +31,14 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                if (obj.SolveOn < Convert.ToDateTime("2000-01-01"))
-                { 
-                    obj.SolveOn=Convert.ToDateTime("2000-01-01");
-                }
+                obj.SolveOn=Convert.ToDateTime("2000-01-01");
+                obj.DisputeOn = DateTime.Now; 
+                obj.Status = 0;
                 obj.CreateOn = DateTime.Now;
                 obj.CreateBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                LoggerUtil.GetDisputeRecord(obj, "发生纠纷"," 创建纠纷信息", CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -68,6 +72,7 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["OrderNo"] = obj.OrderNo;
             ViewData["SKU"] = obj.SKU;
             ViewData["LogisticsMode"] = obj.LogisticsMode;
+            obj.Status = 1;
             return View(obj);
         }
 
@@ -75,11 +80,15 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(DisputeType obj)
         {
-           
+          
             try
             {
+                DisputeType obj2= GetById(obj.Id);
+                NSession.Clear();
+                string str = Utilities.GetObjEditString(obj2,obj);
                 NSession.Update(obj);
                 NSession.Flush();
+                LoggerUtil.GetDisputeRecord(obj, "处理纠纷",str, CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -128,6 +137,12 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<OrderProductType> obj = NSession.CreateQuery("from OrderProductType where OrderNo=:OrderNo").SetString("OrderNo", id).List<OrderProductType>();
             return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetRecord(int id)
+        {
+            IList<DisputesRecordType> list = NSession.CreateQuery("from DisputesRecordType where DId='"+id+"'").List<DisputesRecordType>();
+            return Json(new {rows = list });
         }
 
     }

@@ -57,6 +57,7 @@
     <Compile Include="Entities\CurrencyType.cs" />
     <Compile Include="Entities\DictionaryClassType.cs" />
     <Compile Include="Entities\DictionaryType.cs" />
+    <Compile Include="Entities\DisputesRecordType.cs" />
     <Compile Include="Entities\DisputeType.cs" />
     <Compile Include="Entities\EbayMessageReType.cs" />
     <Compile Include="Entities\EbayMessageType.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Mappings\CurrencyTypeMap.cs" />
     <Compile Include="Mappings\DictionaryClasTypeMap.cs" />
     <Compile Include="Mappings\DictionaryTypeMap.cs" />
+    <Compile Include="Mappings\DisputesRecordTypeMap.cs" />
     <Compile Include="Mappings\DisputeTypeMap.cs" />
     <Compile Include="Mappings\EbayMessageReTypeMap.cs" />
     <Compile Include="Mappings\EbayMessageTypeMap.cs" />

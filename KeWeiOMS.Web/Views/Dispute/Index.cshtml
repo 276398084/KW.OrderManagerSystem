@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Index";
 }
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
 <script language="javascript" type="text/javascript">
     $(function () {
@@ -20,9 +21,9 @@
             columns: [[
                        {
                            field: 'Id', width: 100, formatter: function (v, r, i) {
-                               if (r.Status != '1')
+                               if (r.Status != '2')
                                    return '<a href="javascript:void(0);" onclick="Deal(' + v + ')">解决</a>';
-                               return '';
+                               return '已解决';
                            }
                        },
                         { field: 'OrderNo', title: '订单号', width: 100, sortable: true },
@@ -44,7 +45,8 @@
                             field: 'Status', title: '状态', width: 100, sortable: true,
                             formatter: function (value) {
                                 if (value == 0) { return "未解决" }
-                                if (value == 1) { return "已解决" }
+                                if (value == 0) { return "解决中" }
+                                if (value == 2) { return "已解决" }
                             }
                         },
                         { field: 'Solution', title: '处理方式', width: 100, sortable: true },
@@ -59,7 +61,41 @@
                             formatter: function (v, r, i) {
                                 return '创建时间:' + getDate(v) + "<br>" + '下单时间:' + getDate(r.GenerateOn) + "<br>" + '发货时间:' + getDate(r.SendOn) + "<br>" + '纠纷时间:' + getDate(r.DisputeOn) + "<br>" + '解决时间:' + getDate(r.SolveOn) + "<br>";
                             }
-                        }]]
+                        }]],
+            view: detailview,
+            detailFormatter: function (index, row) {
+                return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
+            },
+            onExpandRow: function (index, row) {
+                $('#ddv-' + index).datagrid({
+                    fitColumns: true,
+                    singleSelect: true,
+                    rownumbers: true,
+                    loadMsg: '',
+                    height: 'auto',
+                    url: '@Url.Action("GetRecord", "Dispute")/'+row.Id,
+                    columns: [[
+
+                            { field: 'DealType', title: '操作类型', width: 100 },
+                            { field: 'Content', title: '操作内容', width: 400 },
+                            {field: 'CreateBy', title: '处理人', width: 100 },
+                            {
+                                field: 'CreateOn', title: '处理时间', width: 200, formatter: function (value) {
+                                    return getDate(value);
+                                }
+                            }
+                    ]],
+                    onResize: function () {
+                        $('#dg').datagrid('fixDetailRowHeight', index);
+                    },
+                    onLoadSuccess: function () {
+                        setTimeout(function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }, 0);
+                    }
+                });
+                $('#dg').datagrid('fixDetailRowHeight', index);
+            }
         });
 
     });
@@ -223,8 +259,8 @@
 		</table>
         <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+@*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>*@
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
           @*  <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>*@
         </div> 
