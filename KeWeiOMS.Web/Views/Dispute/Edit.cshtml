@@ -4,25 +4,24 @@
 }
 <script type="text/javascript">
     $(function () {
-        $('#e_OrderNo').combogrid({
-            required: true,
-            panelWidth: 410,
-            mode: 'remote',
-            idField: 'OrderNo',
-            textField: 'OrderNo',
-            onChange: function (OrderNo) {
-                detail(OrderNo)
-            },
-            url: '/Order/ListQ',
-            fit: true,
-            columns: [[
-                { field: 'OrderNo', title: '订单号', width: 100 },
-                { field: 'Platform', title: '平台', width: 100 },
-                { field: 'BuyerName', title: '购买者', width: 100 },
-               { field: 'BuyerEmail', title: '购买邮箱', width: 100 }
-            ]]
-
-        })
+        //$('#e_OrderNo').combogrid({
+        //    required: true,
+        //    panelWidth: 410,
+        //    mode: 'remote',
+        //    idField: 'OrderNo',
+        //    textField: 'OrderNo',
+        //    onChange: function (OrderNo) {
+        //        detail(OrderNo)
+        //    },
+        //    url: '/Order/ListQ',
+        //    fit: true,
+        //    columns: [[
+        //        { field: 'OrderNo', title: '订单号', width: 100 },
+        //        { field: 'Platform', title: '平台', width: 100 },
+        //        { field: 'BuyerName', title: '购买者', width: 100 },
+        //       { field: 'BuyerEmail', title: '购买邮箱', width: 100 }
+        //    ]]
+        //})
 
         $('#e_Status').combobox({
             valueField: 'id',
@@ -40,8 +39,8 @@
                     textField: 'FullName',
                     panelHeight: 'auto'
                 });
-        $('#e_GenerateOn').datebox();
-        $('#e_SendOn').datebox();
+        //$('#e_GenerateOn').datebox();
+        //$('#e_SendOn').datebox();
         $('#e_DisputeOn').datebox({
             required: true
         });
@@ -111,14 +110,12 @@
                 $("#e_CurrencyCode").attr("value", json[0].CurrencyCode);
                 $("#e_TrackCode").attr("value", json[0].TrackCode);
                 $("#e_LogisticsMode").attr("value", json[0].LogisticMode);
-
             }
         })
         $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
             if (json) {
                 $('#e_Qty').attr("value", json[0].Qty);
                 $('#e_SKU').attr("value", json[0].SKU);
-
             }
         })
     }
@@ -144,7 +141,7 @@
             @Html.LabelFor(model => model.OrderNo,"订单号:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo",@readonly="readonly"})
 		</td>
 	</tr>
     <tr>
@@ -152,7 +149,7 @@
             @Html.LabelFor(model => model.Account,"账户:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Account,new{@id="e_Account"})
+            @Html.TextBoxFor(model => model.Account,new{@id="e_Account",@readonly="readonly"})
 		</td>
 	</tr>
 	<tr>
@@ -160,12 +157,12 @@
             @Html.LabelFor(model => model.Platform,"平台:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform"})
+            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform",@readonly="readonly"})
 		</td>		<td>
             @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo"})
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo",@readonly="readonly"})
 		</td>
 	</tr>
     <tr>
@@ -178,13 +175,13 @@
             @Html.LabelFor(model => model.SKU,"商品SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU",@readonly="readonly"})
 		</td>
             		<td>
             @Html.LabelFor(model => model.GenerateOn,"下单时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.GenerateOn,new{@id="e_GenerateOn"})
+            @Html.TextBoxFor(model => model.GenerateOn,new{@id="e_GenerateOn",@readonly="readonly"})
 		</td>
 	</tr>
     <tr>
@@ -192,13 +189,13 @@
             @Html.LabelFor(model => model.Qty,"Qty:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
+            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty",@readonly="readonly"})
 		</td>
         	<td>
             @Html.LabelFor(model => model.SendOn,"发货时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn"})
+            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn",@readonly="readonly"})
 		</td>
 	</tr>
     	<tr>        
@@ -206,13 +203,13 @@
             @Html.LabelFor(model => model.CurrencyCode,"货币:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="e_CurrencyCode"})
+            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="e_CurrencyCode",@readonly="readonly"})
 		</td>
 		<td>
             @Html.LabelFor(model => model.Amount,"金额:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount"})
+            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount",@readonly="readonly"})
 		</td>		
 
 	</tr>
@@ -222,13 +219,13 @@
             @Html.LabelFor(model => model.LogisticsMode,"物流方式:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode"})
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode",@readonly="readonly"})
 		</td>		
             <td>
             @Html.LabelFor(model => model.TrackCode,"追踪码:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.TrackCode,new{@id="e_TrackCode"})
+            @Html.TextBoxFor(model => model.TrackCode,new{@id="e_TrackCode",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -237,7 +234,7 @@
             @Html.LabelFor(model => model.DisputeOn,"纠纷时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.DisputeOn,new{@id="e_DisputeOn"})
+            @Html.TextBoxFor(model => model.DisputeOn,new{@id="e_DisputeOn",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -246,7 +243,7 @@
             @Html.LabelFor(model => model.DisputeCategory,"纠纷分类:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.DisputeCategory,new{@id="e_DisputeCategory"})
+            @Html.TextBoxFor(model => model.DisputeCategory,new{@id="e_DisputeCategory",@readonly="readonly"})
 		</td>
 	</tr>
 

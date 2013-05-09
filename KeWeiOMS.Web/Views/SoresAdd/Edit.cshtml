@@ -25,17 +25,29 @@
         $('#e_Hours').numberbox({
             required: true,
             min: 0,
+            onChange: function (value) {
+                Calculate();
+            },
             precision: 1
         });
         $('#e_WorkType').combobox({
             url: '@Url.Action("GetDataByCode", "Dictionary")/SoreAddType',
-            valueField: 'FullName',
+            valueField: 'DicValue',
             textField: 'FullName',
             panelHeight: 'auto',
+            onChange: function (value) {
+                Calculate();
+            },
             required: true,
             width: 150
         });
     });
+    function Calculate() {
+        var type = $('#e_WorkType').combobox("getValue");
+        var hours = $('#e_Hours').numberbox("getValue");
+        var sore = type * hours;
+        $('#e_Sore').numberbox("setValue", sore);
+    }
 </script>
 @using (Html.BeginForm("Edit", "SoresAdd", FormMethod.Post, new { id = "e_form" }))
 {
@@ -66,12 +78,13 @@
 		</td>
 	</tr>
 
-	<tr>
+
+    	<tr>
 		<td>
-            @Html.LabelFor(model => model.Sore,"分数:")
+            @Html.LabelFor(model => model.WorkType,"类型:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Sore,new{@id="e_Sore"})
+            @Html.TextBoxFor(model => model.WorkType,new{@id="e_WorkType"})
 		</td>
 	</tr>
 
@@ -84,14 +97,15 @@
 		</td>
 	</tr>
 
-	<tr>
+    <tr>
 		<td>
-            @Html.LabelFor(model => model.WorkType,"类型:")
+            @Html.LabelFor(model => model.Sore,"分数:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.WorkType,new{@id="e_WorkType"})
+            @Html.TextBoxFor(model => model.Sore,new{@id="e_Sore"})
 		</td>
 	</tr>
+
 
 	<tr>
 		<td style="display:none">
