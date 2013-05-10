@@ -33,7 +33,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 obj.SolveOn=Convert.ToDateTime("2000-01-01");
                 obj.DisputeOn = DateTime.Now; 
-                obj.Status = 0;
+                obj.Status ="未解决";
                 obj.CreateOn = DateTime.Now;
                 obj.CreateBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
@@ -72,7 +72,7 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["OrderNo"] = obj.OrderNo;
             ViewData["SKU"] = obj.SKU;
             ViewData["LogisticsMode"] = obj.LogisticsMode;
-            obj.Status = 1;
+            obj.Status = "解决中";
             return View(obj);
         }
 
@@ -86,6 +86,8 @@ namespace KeWeiOMS.Web.Controllers
                 DisputeType obj2= GetById(obj.Id);
                 NSession.Clear();
                 string str = Utilities.GetObjEditString(obj2,obj);
+                obj.SolveOn = DateTime.Now;
+                obj.SolveBy = CurrentUser.Realname;
                 NSession.Update(obj);
                 NSession.Flush();
                 LoggerUtil.GetDisputeRecord(obj, "处理纠纷",str, CurrentUser, NSession);
@@ -144,7 +146,21 @@ namespace KeWeiOMS.Web.Controllers
             IList<DisputesRecordType> list = NSession.CreateQuery("from DisputesRecordType where DId='"+id+"'").List<DisputesRecordType>();
             return Json(new {rows = list });
         }
+        public JsonResult ToExcel(string search)
+        {
+            try
+            {
+                List<DisputeType> objList = NSession.CreateQuery("from DisputeType " + Utilities.SqlWhere(search))
+                    .List<DisputeType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
 
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
     }
 }
 

@@ -108,7 +108,7 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 状态
         /// </summary>
-        public virtual int Status { get; set; }
+        public virtual string Status { get; set; }
 
         /// <summary>
         /// 纠纷分类

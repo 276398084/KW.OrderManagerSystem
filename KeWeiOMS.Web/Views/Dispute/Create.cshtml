@@ -27,17 +27,6 @@
             ]]
         });
 
-        $('#c_Status').combobox({
-            valueField: 'id',
-            textField: 'text',
-            panelHeight: 'auto',
-            onChange: function (st) {
-                Solution(st)
-            },
-            editable: false,
-            data: [{ id: 0, text: "未解决" }, { id: 1, text: "已解决" }]
-        });
-
         $('#c_GenerateOn').datebox({
             required: true
         });

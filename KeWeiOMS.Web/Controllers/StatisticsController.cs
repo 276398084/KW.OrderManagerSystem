@@ -51,6 +51,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult DisputeCount()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
         {
@@ -769,6 +774,38 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
                 sores.Add(new Sores { PackBy = item[1].ToString(), PackSores = packsores, Qcount = Convert.ToDecimal(item[0]), Avg = Convert.ToDecimal(avg.ToString("f1")),Sore=sore,TotalSores=totalsore });
             }
             return sores;
+        }
+        [HttpPost]
+        public ActionResult DisputeCount(DateTime st, DateTime et)
+        {
+            IList<DisputeCount> sores = new List<DisputeCount>();
+            IList<object[]> objectses = NSession.CreateQuery("select Count(Id),DisputeCategory from DisputeType where CreateOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by DisputeCategory").List<object[]>();
+            foreach (var item in objectses)
+            {
+
+              string dtype = item[1].ToString();  
+               decimal count = Convert.ToDecimal(item[0]);
+                sores.Add(new DisputeCount { DType =dtype,Count=count});
+            }
+            return Json(new { rows = sores.OrderByDescending(p => p.Count) });
+        }
+
+        [HttpPost]
+        public ActionResult DisputeTypeCount(DateTime st, DateTime et)
+        {
+            IList<DisputeCount> sores = new List<DisputeCount>();
+            IList<object[]> objectses = NSession.CreateQuery("select count(Id),Solution  from DisputeType where CreateOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by Solution").List<object[]>();
+            foreach (var item in objectses)
+            {
+                string dtype = "未开始处理";
+                if (item[1] != null)
+                {
+                    dtype = item[1].ToString();
+                }
+                decimal count = Convert.ToDecimal(item[0]);
+                sores.Add(new DisputeCount { DType = dtype, Count = count });
+            }
+            return Json(new { rows = sores.OrderByDescending(p => p.Count) });
         }
 
     }

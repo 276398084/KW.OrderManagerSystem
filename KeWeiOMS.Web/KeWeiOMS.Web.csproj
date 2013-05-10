@@ -135,6 +135,7 @@
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Statistics\DisputeCount.cs" />
     <Compile Include="Common\Statistics\LeveData.cs" />
     <Compile Include="Common\Statistics\LeveDays.cs" />
     <Compile Include="Common\Statistics\OrderCount.cs" />
@@ -1620,6 +1621,7 @@
     <Content Include="Views\SoresAdd\Details.cshtml" />
     <Content Include="Views\SoresAdd\Edit.cshtml" />
     <Content Include="Views\SoresAdd\Index.cshtml" />
+    <Content Include="Views\Statistics\DisputeCount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
