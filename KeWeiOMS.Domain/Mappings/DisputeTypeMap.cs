@@ -51,6 +51,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.RefundAmount);
             Map(x => x.CreateBy).Length(50);
             Map(x => x.SolveBy).Length(50);
+            Map(x => x.LogisticMessage).Length(50);
         }
     }
 }

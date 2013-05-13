@@ -85,11 +85,15 @@ namespace KeWeiOMS.Web.Controllers
             {
                 DisputeType obj2= GetById(obj.Id);
                 NSession.Clear();
-                string str = Utilities.GetObjEditString(obj2,obj);
-                obj.SolveOn = DateTime.Now;
                 obj.SolveBy = CurrentUser.Realname;
+                obj.SolveOn = DateTime.Now;
+                string str = Utilities.GetObjEditString(obj2,obj);
                 NSession.Update(obj);
                 NSession.Flush();
+                if (obj.Status == "已解决" && obj.RefundAmount!=0)
+                {
+                    SaveAmount(obj.Id,obj.OrderNo,obj.RefundAmount);
+                }
                 LoggerUtil.GetDisputeRecord(obj, "处理纠纷",str, CurrentUser, NSession);
             }
             catch (Exception ee)
@@ -98,6 +102,12 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true  });
            
+        }
+        public void SaveAmount(int id,string orderno,double amount)
+        {
+            RefundAmountType obj = new RefundAmountType {DId=id,OrderNo=orderno,Amount=amount };
+            NSession.Save(obj);
+            NSession.Flush();
         }
 
         [HttpPost, ActionName("Delete")]

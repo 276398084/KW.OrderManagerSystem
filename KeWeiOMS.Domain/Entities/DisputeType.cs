@@ -135,5 +135,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String SolveBy { get; set; }
 
+       /// <summary>
+        /// 物流信息
+        /// </summary>
+        public virtual String LogisticMessage { get; set; }
+        
     }
 }

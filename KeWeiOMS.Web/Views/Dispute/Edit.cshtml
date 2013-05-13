@@ -36,6 +36,13 @@
             panelHeight: 'auto',
             editable: true,
         });
+        $('#e_LogisticMessage').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/LogisticMessageType',
+                    valueField: 'DicValue',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    width: 150
+                });
     });
 </script>
 @using (Html.BeginForm("Edit", "Dispute", FormMethod.Post, new { id = "e_form" }))
@@ -171,6 +178,12 @@
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="e_Status", onblur="Solution()"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.LogisticMessage,"物流状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticMessage,new{@id="e_LogisticMessage"})
+		</td>		
 	</tr>
 
 	<tr>
