@@ -33,6 +33,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.DId);
             Map(x => x.OrderNo).Length(255);
             Map(x => x.Amount);
+            Map(x=>x.CreateBy);
+            Map(x => x.CreateOn);
         }
     }
 }

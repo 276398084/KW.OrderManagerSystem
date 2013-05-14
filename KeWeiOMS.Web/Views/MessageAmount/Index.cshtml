@@ -1,0 +1,195 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.MessageAmountType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","MessageAmount")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","MessageAmount")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit","MessageAmount")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "MessageAmount")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "MessageAmount")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "MessageAmount")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+     function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+      }
+    function ShowAdvanced() {
+    showSrarch('@Url.Action("Search", "MessageAmount")', 's_dlg', 'dg');
+      }		
+
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="OrderNo" width="100">
+                订单号
+            </th>
+
+            <th field="OrderExNo2" width="100">
+                平台订单号
+            </th>
+
+            <th field="Platform" width="100">
+                平台
+            </th>
+
+            <th field="Account" width="100">
+                账户
+            </th>
+
+            <th field="GenerateOn" width="100">
+                下单时间
+            </th>
+
+            <th field="SendOn" width="100">
+                发货时间
+            </th>
+
+            <th field="Amount" width="100">
+                金额
+            </th>
+
+            <th field="CurrencyCode" width="100">
+                货币
+            </th>
+
+            <th field="SKU" width="100">
+                商品SKU
+            </th>
+
+            <th field="Qty" width="100">
+                Qty
+            </th>
+
+            <th field="LogisticsMode" width="100">
+                物流方式
+            </th>
+
+            <th field="Status" width="100">
+                状态
+            </th>
+
+            <th field="Solution" width="100">
+                解决方式
+            </th>
+
+            <th field="RefundAmount" width="100">
+                退款金额
+            </th>
+
+            <th field="CreateBy" width="100">
+                添加人
+            </th>
+
+            <th field="CreateOn" width="100">
+                创建时间
+            </th>
+
+            <th field="SolveBy" width="100">
+                解决人
+            </th>
+
+            <th field="SloveOn" width="100">
+                解决时间
+            </th>
+
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div> 
+		<div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单号</div>
+            <div data-options="name:'OrderExNo2'">平台订单号</div>
+            <div data-options="name:'Platform'">平台</div>
+            <div data-options="name:'Account'">账户</div>
+            <div data-options="name:'GenerateOn'">下单时间</div>
+            <div data-options="name:'SendOn'">发货时间</div>
+            <div data-options="name:'Amount'">金额</div>
+            <div data-options="name:'CurrencyCode'">货币</div>
+            <div data-options="name:'SKU'">商品SKU</div>
+            <div data-options="name:'Qty'">Qty</div>
+            <div data-options="name:'LogisticsMode'">物流方式</div>
+            <div data-options="name:'Status'">状态</div>
+            <div data-options="name:'Solution'">解决方式</div>
+            <div data-options="name:'RefundAmount'">退款金额</div>
+            <div data-options="name:'CreateBy'">添加人</div>
+            <div data-options="name:'CreateOn'">创建时间</div>
+            <div data-options="name:'SolveBy'">解决人</div>
+            <div data-options="name:'SloveOn'">解决时间</div>
+
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

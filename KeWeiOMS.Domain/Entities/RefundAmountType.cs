@@ -45,5 +45,15 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual double Amount { get; set; }
 
+
+        /// <summary>
+        /// 创建人
+        /// </summary>
+        public virtual String CreateBy { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public virtual DateTime CreateOn { get; set; }
     }
 }

@@ -105,7 +105,7 @@ namespace KeWeiOMS.Web.Controllers
         }
         public void SaveAmount(int id,string orderno,double amount)
         {
-            RefundAmountType obj = new RefundAmountType {DId=id,OrderNo=orderno,Amount=amount };
+            RefundAmountType obj = new RefundAmountType {DId=id,OrderNo=orderno,Amount=amount,CreateBy=CurrentUser.Realname,CreateOn=DateTime.Now};
             NSession.Save(obj);
             NSession.Flush();
         }

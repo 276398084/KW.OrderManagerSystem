@@ -73,6 +73,7 @@
     <Compile Include="Entities\LogisticsModeType.cs" />
     <Compile Include="Entities\LogisticsType.cs" />
     <Compile Include="Entities\MachineType.cs" />
+    <Compile Include="Entities\MessageAmountType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
     <Compile Include="Entities\NewGuideType.cs" />
     <Compile Include="Entities\NoStockLinkType.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Mappings\LogisticsModeTypeMap.cs" />
     <Compile Include="Mappings\LogisticTypeMap.cs" />
     <Compile Include="Mappings\MachineTypeMap.cs" />
+    <Compile Include="Mappings\MessageAmountTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
     <Compile Include="Mappings\NewGuideTypeMap.cs" />
     <Compile Include="Mappings\NoStockLinkTypeMap.cs" />
