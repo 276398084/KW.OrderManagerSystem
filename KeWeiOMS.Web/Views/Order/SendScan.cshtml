@@ -157,7 +157,6 @@
     }
 
     function getOrder(str) {
-
         jQuery.ajax({
             url: "/Order/GetOrderBySend/",
             type: "post",
@@ -186,7 +185,10 @@
         });
     }
     function OutStock(str) {
-
+        if (str.length < 13) {
+            ShowMessage("挂号" + str + "长度不足，请重新输入", "等待扫描", false);
+            return;
+        }
         var l = $("#ll").combogrid("getValue");
         var s = $("#ww").combobox("getValue");
         if (!$("#ckQ").attr("checked")) {

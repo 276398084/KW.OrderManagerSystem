@@ -78,7 +78,8 @@ function formPost(form, url, dlg, dg, t, r) {
             return $(this).form('validate');
         },
         success: function (msg) {
-            var result = $.parseJSON(msg);
+            var result = eval('(' + msg + ')');
+           // var result = $.parseJSON(msg);
             if (result.IsSuccess) {
                 alert("操作成功");
                 if (dlg) {

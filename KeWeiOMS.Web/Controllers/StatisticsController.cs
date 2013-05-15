@@ -324,6 +324,14 @@ namespace KeWeiOMS.Web.Controllers
         private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string ss)
         {
             var sqlWhere = SqlWhere(st, et, a, p, ss);
+            if(sqlWhere.Length>3)
+            {
+                sqlWhere += " and SKU is not null ";
+            }
+            else
+            {
+                sqlWhere = " where SKU is not null ";
+            }
             IList<object[]> objs =
                 NSession.CreateSQLQuery(
                     string.Format(

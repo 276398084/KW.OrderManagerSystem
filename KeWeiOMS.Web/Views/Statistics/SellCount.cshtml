@@ -1,6 +1,8 @@
 ﻿@{
     ViewBag.Title = "GetSellCount";
+
 }
+
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <script>
     $(function () {
@@ -9,17 +11,18 @@
             url: '@Url.Action("SellCount", "Statistics")',
             queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
             showFooter: true,
-            title:"订单数量统计",
+            title: "订单数量统计",
             height: 430,
             nowrap: false,
             width: 1200,
+            rownumbers: true,
             striped: true,
             view: detailview,
             detailFormatter: function (index, row) {
                 return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
             },
             onExpandRow: function (index, row) {
-                var search =row.SKU+"$" + $('#cc').combobox("getValue") + "$" + $('#cc2').combobox("getValue") + "$" + $('#pp').combobox("getText") + "$" + $('#aa').combobox("getText");
+                var search = row.SKU + "$" + $('#cc').combobox("getValue") + "$" + $('#cc2').combobox("getValue") + "$" + $('#pp').combobox("getText") + "$" + $('#aa').combobox("getText");
 
                 $('#ddv-' + index).datagrid({
                     fitColumns: true,
@@ -28,47 +31,47 @@
                     loadMsg: '',
                     height: 'auto',
                     url: '@Url.Action("GetOrder", "Statistics")' + "/" + search,
-                        columns: [[
-                                {
-                                    field: 'CreateOn', title: '日期', width: 200, formatter: function (value) {
-                                            return getDate(value);
-                                    }
-                                },
-                                { field: 'OrderNo', title: '订单号', width: 200 },
-                                { field: 'Country', title: '国家', width: 100 },
-                                { field: 'qty', title: '数量', width: 50},
-                                {
-                                    field: 'Amount', title: '金额', width: 100, formatter: function (v, r, i) {
-                                        return  r.CurrencyCode+ "<br>" + v;
-                                    }
-                                },
-                                {
-                                    field: 'BuyerEmail', title: '买家', width: 200, formatter: function (v, r, i) {
-                                        return r.BuyerName + "<br>" + v;
-                                    }
-                                },
-                                {
-                                    field: 'Account', title: '账号', width: 200, formatter: function (v, r, i) {
-                                        return r.Platform + "<br>" + v;
-                                    }
-                                },
-                                {
-                                    field: 'LogisticMode', title: '物流方式', width: 200, formatter: function (v, r, i) {
-                                        return  v+ "<br>" + r.TrackCode;
-                                    }
+                    columns: [[
+                            {
+                                field: 'CreateOn', title: '日期', width: 200, formatter: function (value) {
+                                    return getDate(value);
                                 }
-                        ]],
-                        onResize: function () {
+                            },
+                            { field: 'OrderNo', title: '订单号', width: 200 },
+                            { field: 'Country', title: '国家', width: 100 },
+                            { field: 'qty', title: '数量', width: 50 },
+                            {
+                                field: 'Amount', title: '金额', width: 100, formatter: function (v, r, i) {
+                                    return r.CurrencyCode + "<br>" + v;
+                                }
+                            },
+                            {
+                                field: 'BuyerEmail', title: '买家', width: 200, formatter: function (v, r, i) {
+                                    return r.BuyerName + "<br>" + v;
+                                }
+                            },
+                            {
+                                field: 'Account', title: '账号', width: 200, formatter: function (v, r, i) {
+                                    return r.Platform + "<br>" + v;
+                                }
+                            },
+                            {
+                                field: 'LogisticMode', title: '物流方式', width: 200, formatter: function (v, r, i) {
+                                    return v + "<br>" + r.TrackCode;
+                                }
+                            }
+                    ]],
+                    onResize: function () {
+                        $('#dg').datagrid('fixDetailRowHeight', index);
+                    },
+                    onLoadSuccess: function () {
+                        setTimeout(function () {
                             $('#dg').datagrid('fixDetailRowHeight', index);
-                        },
-                        onLoadSuccess: function () {
-                            setTimeout(function () {
-                                $('#dg').datagrid('fixDetailRowHeight', index);
-                            }, 0);
-                        }
-                    });
-                    $('#dg').datagrid('fixDetailRowHeight', index);
-                }
+                        }, 0);
+                    }
+                });
+                $('#dg').datagrid('fixDetailRowHeight', index);
+            }
 
         });
         $("#cc").datebox({
@@ -89,28 +92,16 @@
         });
         $('#pp').combobox("setValue", "ALL");
 
-        $('#ss').combogrid({
-            panelWidth: 430,
-            mode: 'remote',
-            idField: 'SKU',
-            textField: 'SKU',
-            url: '/Product/ListQ',
-            fit: true,
-            columns: [[
-                { field: 'SKU', title: 'SKU', width: 100 },
-                { field: 'ProductName', title: 'Title', width: 200 },
-                { field: 'Standard', title: '规格', width: 100 }
-            ]]
-        });
-        $('#ss').combogrid("setValue", "ALL");
+
+
     });
     function onSelect1() {
         $('#dg').datagrid("load", {
             st: $('#cc').combobox("getValue"),
             et: $('#cc2').combobox("getValue"),
             p: $('#pp').combobox("getText"),
-            a: $('#aa').combobox("getText"),
-            ss: $('#ss').combobox("getText")
+            a: $('#aa').combobox("getText")
+
         });
     }
     function changePlatform(n, o) {
@@ -142,7 +133,7 @@
         jQuery.ajax({
             url: "/Statistics/ExportSellCount",
             type: "post",
-            data: "a=" + $('#aa').combobox("getText") + "&p=" + $('#pp').combobox("getText") + "&st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue") + "&ss=" + $('#ss').combogrid("getText"),
+            data: "a=" + $('#aa').combobox("getText") + "&p=" + $('#pp').combobox("getText") + "&st=" + $('#cc').combobox("getValue") + "&et=" + $('#cc2').combobox("getValue") + "&ss=" + $('#ss').val(),
             success: function (sss) {
                 location.href = postUrl;
                 $('#dg').datagrid("reload");
@@ -167,7 +158,6 @@ SKU<input id="ss" type="text">
                         </th>
                         <th field="SKU" width="150">SKU
                         </th>
-                   
                         <th field="Category" width="190">分类
                         </th>
                         <th field="Qty" width="100">数量
@@ -182,7 +172,6 @@ SKU<input id="ss" type="text">
                 </thead>
             </table>
         </td>
-
     </tr>
 </table>
 

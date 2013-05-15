@@ -101,7 +101,7 @@ namespace KeWeiOMS.Web
                             System.Text.RegularExpressions.Regex r4 = new System.Text.RegularExpressions.Regex(@"\(产品属性:(?<ppp>.*)\n", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r5 = new System.Text.RegularExpressions.Regex(@"\(产品数量:(?<quantity>\d+)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r3 = new System.Text.RegularExpressions.Regex(@"\(商家编码:(?<sku>.*)\)", System.Text.RegularExpressions.RegexOptions.None);
-                            // System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"\(物流等级&买家选择物流:(?<wuliu>.+)\)", System.Text.RegularExpressions.RegexOptions.None);
+                            //System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"\(物流等级&买家选择物流:(?<wuliu>.+)\)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Match mc2 = r2.Match(Str);
                             System.Text.RegularExpressions.Match mc3 = r3.Match(Str);
                             System.Text.RegularExpressions.Match mc4 = r4.Match(Str);
@@ -135,7 +135,7 @@ namespace KeWeiOMS.Web
 
         }
 
-        public static List<ResultInfo> ImportByAmazon(AccountType account, string fileName,  ISession NSession)
+        public static List<ResultInfo> ImportByAmazon(AccountType account, string fileName, ISession NSession)
         {
 
             List<ResultInfo> results = new List<ResultInfo>();
@@ -779,7 +779,7 @@ namespace KeWeiOMS.Web
         #endregion
 
         #region 订单验证
-        public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession)
+        public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession) 
         {
 
             bool resultValue = true;

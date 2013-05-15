@@ -141,5 +141,11 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String Platform { get; set; }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual DateTime CreateOn { get; set; }
+
     }
 }
