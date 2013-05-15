@@ -116,6 +116,11 @@ namespace KeWeiOMS.Domain
         public virtual String DisputeCategory { get; set; }
 
         /// <summary>
+        /// 纠纷原因
+        /// </summary>
+        public virtual String DisputesType{ get; set; }
+
+        /// <summary>
         /// 解决方式
         /// </summary>
         public virtual String Solution { get; set; }
@@ -139,6 +144,21 @@ namespace KeWeiOMS.Domain
         /// 物流信息
         /// </summary>
         public virtual String LogisticMessage { get; set; }
+
+        /// <summary>
+        /// 退款方式
+        /// </summary>
+        public virtual String AmountType { get; set; }
+
+        /// <summary>
+        /// 账号
+        /// </summary>
+        public virtual String EmailAccount { get; set; }
+
+        /// <summary>
+        /// 交易号
+        /// </summary>
+        public virtual String TransactionNo { get; set; }
         
     }
 }

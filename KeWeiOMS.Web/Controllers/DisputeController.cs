@@ -31,6 +31,9 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                object count = NSession.CreateQuery("select Count(Id) from DisputeType where OrderNo='" + obj.OrderNo + "'").UniqueResult();
+                if (Convert.ToInt32(count) > 0)
+                    return Json(new { IsSuccess = false, ErrorMsg = "该订单已经存在纠纷列表中" });
                 obj.SolveOn=Convert.ToDateTime("2000-01-01");
                 obj.DisputeOn = DateTime.Now; 
                 obj.Status ="未解决";

@@ -64,10 +64,17 @@
                     panelHeight: 'auto'
         });
         $('#c_DisputeCategory').combobox("setValue", "未收到");
+        $('#c_DisputesType').combobox({
+                    valueField: 'id',
+                    textField: 'text',
+                    panelHeight: 'auto',
+                    data: [{ id: "纠纷", text: "纠纷" }, { id: "邮件记事", text: "邮件记事" }]
+                });
+        $('#c_DisputesType').combobox("setValue", "纠纷");
         $('#c_SolveOn').datebox({
             disabled: true
         }); 
-        $('#c_OrderNo').combogrid("setValue",'@ViewData["oid"]');
+        $('#c_OrderNo').combogrid("setValue", '@ViewData["oid"]');
     });
         function detail(OrderNo) {
             $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
@@ -110,15 +117,6 @@
 {
 <fieldset>
 <table class="editForm">
-@*	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
-		</td>
-	</tr>*@
-
 	<tr>
 		<td>
             @Html.LabelFor(model => model.OrderNo,"订单号:")
@@ -220,9 +218,15 @@
 		</td>
 	</tr>
 
-        <tr>
+     <tr>
+         <td>
+            @Html.LabelFor(model => model.DisputesType,"纠纷类型:")
+		</td>
 		<td>
-            @Html.LabelFor(model => model.DisputeCategory,"纠纷分类:")
+            @Html.TextBoxFor(model => model.DisputesType,new{@id="c_DisputesType"})
+		</td>
+		<td>
+            @Html.LabelFor(model => model.DisputeCategory,"纠纷原因:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.DisputeCategory,new{@id="c_DisputeCategory"})

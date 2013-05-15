@@ -7,6 +7,13 @@
 <body class="easyui-layout">
 <script language="javascript" type="text/javascript">
     $(function () {
+        $('#type').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            data: [{ id: "ALL", text: "ALL" }, { id: "纠纷", text: "纠纷" }, { id: "邮件记事", text: "邮件记事" }]
+        });
+        $('#type').combobox("setValue", "ALL");
         $('#dg').datagrid({
             url: '@Url.Action("List","Dispute")',
             toolbar: '#toolbar',
@@ -21,32 +28,39 @@
             columns: [[
                        {
                            field: 'Id', width: 100, formatter: function (v, r, i) {
-                               if (r.Status != '已解决')
+                               var html=""
+                               if (r.Status != '已解决') {
                                    if (r.Status != '解决中')
-                                       return '<a href="javascript:void(0);" onclick="Deal(' + v + ')"><font color="#FF0000">解决</font></a>';
+                                       html = '<a href="javascript:void(0);" onclick="Deal(' + v + ')"><font color="#FF0000">解决</font></a>';
                                    else
-                                       return '<a href="javascript:void(0);" onclick="Deal(' + v + ')">解决</a>';
+                                       html = '<a href="javascript:void(0);" onclick="Deal(' + v + ')">解决</a>';
+                                   if (r.DisputesType != '纠纷') {
+                                       html += '&nbsp&nbsp&nbsp&nbsp<a href="javascript:void(0);" onclick="todispute(' + v + ')">转为纠纷</a>';
+                                   }
+                                   return html;
+                               }
                                return '已解决';
                            }
                        },
-                        { field: 'OrderNo', title: '订单号', width: 100, sortable: true },
+                       { field: 'DisputesType', title: '类型', width: 60, sortable: true },
+                        { field: 'OrderNo', title: '订单号', width: 80, sortable: true },
                         {
-                            field: 'Platform', title: '平台', width: 100, sortable: true,
+                            field: 'Platform', title: '平台', width: 120, sortable: true,
                             formatter: function (v, r, i) {
-                                return "平台：" + v + "<br>" + '平台单号:' + r.OrderExNo + "<br>" + '账户:' + r.Account;
+                                return "平台：" + v + "<br>" + '账户:' + r.Account+ "<br>" + '平台单号:' + r.OrderExNo ;
                             }
                         },
-                        { field: 'DisputeCategory', title: '纠纷类型', width: 100, sortable: true },
-                        { field: 'SKU', title: '商品编号', width: 100, sortable: true },
+                        { field: 'DisputeCategory', title: '纠纷原因', width: 60, sortable: true },
+                        { field: 'SKU', title: '商品编号', width: 60, sortable: true },
                         {
-                            field: 'LogisticsMode', title: '物流方式', width: 100, sortable: true,
+                            field: 'LogisticsMode', title: '物流方式', width: 120, sortable: true,
                             formatter: function (v, r, i) {
                                 return "物流方式：" + v + "<br>" + '追踪码:' + r.TrackCode;
                             }
                         },
-                        {field: 'Status', title: '状态', width: 100, sortable: true },
-                        { field: 'Solution', title: '处理方式', width: 100, sortable: true },
-                        { field: 'LogisticMessage', title:'物流信息',width: 100, sortable: true },
+                        {field: 'Status', title: '状态', width: 60, sortable: true },
+                        { field: 'Solution', title: '处理方式', width: 60, sortable: true },
+                        { field: 'LogisticMessage', title:'物流信息',width: 60, sortable: true },
                         {
                             field: 'CreateBy', title: '管理人员', width: 100, sortable: true,
                             formatter: function (v, r, i) {
@@ -102,21 +116,21 @@
         });
         $('#cc').datebox("setValue", getStartDate(7));
         $('#cc2').datebox("setValue", getStartDate(-1));
-        $('#pp').combobox({
+        $('#reason').combobox({
             url: '@Url.Action("GetDisputeClass","Dictionary")',
                     valueField: 'FullName',
                     textField: 'FullName',
                     panelHeight: 'auto'
         });
-        $('#pp').combobox("setValue", "ALL");
-        $('#aa').combobox({
+        $('#reason').combobox("setValue", "ALL");
+        $('#status').combobox({
             valueField: 'id',
             textField: 'text',
             panelHeight: 'auto',
             editable: false,
             data: [{ id: "未解决", text: "未解决" }, { id: "解决中", text: "解决中" }, { id: "已解决", text: "已解决" }]
         });
-        $('#aa').combobox("setValue","ALL");
+        $('#status').combobox("setValue", "ALL");
         $('#case').combobox({
             valueField: 'id',
             textField: 'text',
@@ -137,7 +151,16 @@
                 });
             }
         });
-        $('#case').combobox("setValue",0);
+        $('#case').combobox("setValue", 0);
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
     });
     function myparser(s) {
         if (!s) return new Date();
@@ -212,13 +235,25 @@
      }
      function getSearch() {
          var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-         var p= $('#pp').combobox("getText");
+         var r = $('#reason').combobox("getText");
+         if (r != "ALL" && r != "") {
+             search += "DisputeCategory&"+ r + "^";
+         }
+         var s = $('#status').combobox("getText");
+         if (s != "ALL" && s != "") {
+             search += "Status&" + s + "^";
+         }
+         var p = $('#pp').combobox("getText");
          if (p != "ALL" && p != "") {
-             search += "DisputeCategory&"+ p + "^";
+             search += "Platform&" + p + "^";
          }
          var a = $('#aa').combobox("getText");
          if (a != "ALL" && a != "") {
-             search += "Status&" + a + "^";
+             search += "Account&" + a + "^";
+         }
+         var t = $('#type').combobox("getText");
+         if (t != "ALL" && t != "") {
+             search += "DisputesType&" + t + "^";
          }
          return search;
      }
@@ -249,6 +284,20 @@
                      showdlg(url, 'e_dlg', ajaxEdit)
 
      }
+    function todispute(value) {
+@*        $.ajax({
+            url : '@Url.Action("ToDispute","Dispute")/' + value
+        })*@
+    }
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+    }
 </script>
 <div region="center">
 <table id="dg">  
@@ -263,11 +312,14 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             开始<input id="cc" type="text">
             结束<input id="cc2" type="text">
-            纠纷类型<input id="pp" type="text">
-            纠纷状态<input id="aa" type="text">
+            平台<input type="text" id="pp" />
+            账户<input type="text" id="aa" />
+            纠纷分类<input id="type" type="text">
+            纠纷原因<input id="reason" type="text"> <br />
+            纠纷状态<input id="status" type="text">           
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
-            <br />
+
            纠纷情况<input id="case" type="text">
         </div> 
 		<div id="mm" style="width: 120px">
@@ -280,6 +332,5 @@
         </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
-
 </div>
 </body>

@@ -153,6 +153,20 @@
             @Html.TextBoxFor(model => model.SendOn,new{@id="c_SendOn"})
 		</td>
 	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.SKU,"商品SKU:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
+		</td>
+        <td>
+            @Html.LabelFor(model => model.Qty,"Qty:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
+		</td>
+	</tr>
 
 	<tr>	
         <td>
@@ -168,21 +182,6 @@
             @Html.TextBoxFor(model => model.Amount,new{@id="c_Amount"})
 		</td>
 	</tr>
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.SKU,"商品SKU:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="c_SKU"})
-		</td>
-        <td>
-            @Html.LabelFor(model => model.Qty,"Qty:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Qty,new{@id="c_Qty"})
-		</td>
-	</tr>
-
 	<tr>
 		<td>
             @Html.LabelFor(model => model.LogisticsMode,"物流方式:")
