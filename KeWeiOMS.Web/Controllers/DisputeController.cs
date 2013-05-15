@@ -17,8 +17,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
-        public ActionResult Create()
+        public ActionResult Create(string id="")
         {
+            if (id !="")
+            {
+                ViewData["oid"] = id;
+            }
             return View();
         }
 
@@ -27,14 +31,14 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                if (obj.SolveOn < Convert.ToDateTime("2000-01-01"))
-                { 
-                    obj.SolveOn=Convert.ToDateTime("2000-01-01");
-                }
+                obj.SolveOn=Convert.ToDateTime("2000-01-01");
+                obj.DisputeOn = DateTime.Now; 
+                obj.Status ="未解决";
                 obj.CreateOn = DateTime.Now;
                 obj.CreateBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                LoggerUtil.GetDisputeRecord(obj, "发生纠纷"," 创建纠纷信息", CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -68,6 +72,7 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["OrderNo"] = obj.OrderNo;
             ViewData["SKU"] = obj.SKU;
             ViewData["LogisticsMode"] = obj.LogisticsMode;
+            obj.Status = "解决中";
             return View(obj);
         }
 
@@ -75,11 +80,21 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(DisputeType obj)
         {
-           
+          
             try
             {
+                DisputeType obj2= GetById(obj.Id);
+                NSession.Clear();
+                obj.SolveBy = CurrentUser.Realname;
+                obj.SolveOn = DateTime.Now;
+                string str = Utilities.GetObjEditString(obj2,obj);
                 NSession.Update(obj);
                 NSession.Flush();
+                if (obj.Status == "已解决" && obj.RefundAmount!=0)
+                {
+                    SaveAmount(obj.Id,obj.OrderNo,obj.RefundAmount);
+                }
+                LoggerUtil.GetDisputeRecord(obj, "处理纠纷",str, CurrentUser, NSession);
             }
             catch (Exception ee)
             {
@@ -87,6 +102,12 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true  });
            
+        }
+        public void SaveAmount(int id,string orderno,double amount)
+        {
+            RefundAmountType obj = new RefundAmountType {DId=id,OrderNo=orderno,Amount=amount,CreateBy=CurrentUser.Realname,CreateOn=DateTime.Now};
+            NSession.Save(obj);
+            NSession.Flush();
         }
 
         [HttpPost, ActionName("Delete")]
@@ -130,6 +151,26 @@ namespace KeWeiOMS.Web.Controllers
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetRecord(int id)
+        {
+            IList<DisputesRecordType> list = NSession.CreateQuery("from DisputesRecordType where DId='"+id+"'").List<DisputesRecordType>();
+            return Json(new {rows = list });
+        }
+        public JsonResult ToExcel(string search)
+        {
+            try
+            {
+                List<DisputeType> objList = NSession.CreateQuery("from DisputeType " + Utilities.SqlWhere(search))
+                    .List<DisputeType>().ToList();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
+
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
     }
 }
 

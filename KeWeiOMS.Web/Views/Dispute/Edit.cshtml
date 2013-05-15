@@ -4,48 +4,20 @@
 }
 <script type="text/javascript">
     $(function () {
-        $('#e_OrderNo').combogrid({
-            required: true,
-            panelWidth: 410,
-            mode: 'remote',
-            idField: 'OrderNo',
-            textField: 'OrderNo',
-            onChange: function (OrderNo) {
-                detail(OrderNo)
-            },
-            url: '/Order/ListQ',
-            fit: true,
-            columns: [[
-                { field: 'OrderNo', title: '订单号', width: 100 },
-                { field: 'Platform', title: '平台', width: 100 },
-                { field: 'BuyerName', title: '购买者', width: 100 },
-               { field: 'BuyerEmail', title: '购买邮箱', width: 100 }
-            ]]
-
-        })
-
         $('#e_Status').combobox({
             valueField: 'id',
             textField: 'text',
             panelHeight: 'auto',
-            onChange: function (st) {
-                Solution(st)
-            },
             editable: false,
-            data: [{ id: 0, text: "未解决" }, { id: 1, text: "已解决" }]
+            data: [{ id: "解决中", text: "解决中" }, { id: "已解决", text: "已解决" }]
         });
         $('#e_DisputeCategory').combobox({
             url: '@Url.Action("GetDisputeClass","Dictionary")',
                     valueField: 'FullName',
                     textField: 'FullName',
-                    panelHeight: 'auto'
+                    panelHeight: 'auto',
+                    disabled: true
                 });
-        $('#e_GenerateOn').datebox();
-        $('#e_SendOn').datebox();
-        $('#e_DisputeOn').datebox({
-            required: true
-        });
-        $('#e_SolveOn').datebox({ disabled: true });
         $('#e_SolveBy').combobox({
             url: '@Url.Action("ListQ","User")',
                     panelHeight: 100,
@@ -56,7 +28,6 @@
                     disabled: true
                 });
         $("#e_RefundAmount").attr({
-            disabled: true
         });
         $('#e_Solution').combobox({
             url: '@Url.Action("GetDisputeSolution","Dictionary")',
@@ -64,64 +35,15 @@
             textField: 'FullName',
             panelHeight: 'auto',
             editable: true,
-            disabled: true
         });
-        Solution($('#e_Status').combobox("getValue"));
+        $('#e_LogisticMessage').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/LogisticMessageType',
+                    valueField: 'DicValue',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    width: 150
+                });
     });
-
-    function Solution(st) {
-        if (st == 1) {
-            $('#e_Solution').combobox({
-                disabled: false
-            });
-            $('#e_SolveBy').combobox({
-                disabled: false
-            });
-            $('#e_SolveOn').datebox({
-                disabled: false
-            });
-            $("#e_RefundAmount").attr({
-                disabled: false
-            });
-        }
-        else {
-            $('#e_Solution').combobox({
-                disabled: true
-            });
-            $('#e_SolveBy').combobox({
-                disabled: true
-            });
-            $('#e_SolveOn').datebox({
-                disabled: true
-            });
-            $("#e_RefundAmount").attr({
-                disabled: true
-            });
-            }
-        }
-    function detail(OrderNo) {
-        $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
-            if (json) {
-                $("#e_Account").attr("value", json[0].Account);
-                $("#e_Platform").attr("value", json[0].Platform);
-                $("#e_OrderExNo").attr("value", json[0].OrderExNo);
-                $("#e_GenerateOn").datebox("setValue", getDate(json[0].GenerateOn));
-                $("#e_SendOn").datebox("setValue", getDate(json[0].ScanningOn));
-                $("#e_Amount").attr("value", json[0].Amount);
-                $("#e_CurrencyCode").attr("value", json[0].CurrencyCode);
-                $("#e_TrackCode").attr("value", json[0].TrackCode);
-                $("#e_LogisticsMode").attr("value", json[0].LogisticMode);
-
-            }
-        })
-        $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
-            if (json) {
-                $('#e_Qty').attr("value", json[0].Qty);
-                $('#e_SKU').attr("value", json[0].SKU);
-
-            }
-        })
-    }
 </script>
 @using (Html.BeginForm("Edit", "Dispute", FormMethod.Post, new { id = "e_form" }))
 {
@@ -144,28 +66,27 @@
             @Html.LabelFor(model => model.OrderNo,"订单号:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo",@readonly="readonly"})
+		</td>
+        <td>
+            @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo",@readonly="readonly"})
 		</td>
 	</tr>
-    <tr>
+    <tr>		
+        <td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform",@readonly="readonly"})
+		</td>	
 		<td>
             @Html.LabelFor(model => model.Account,"账户:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Account,new{@id="e_Account"})
-		</td>
-	</tr>
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Platform,"平台:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform"})
-		</td>		<td>
-            @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo"})
+            @Html.TextBoxFor(model => model.Account,new{@id="e_Account",@readonly="readonly"})
 		</td>
 	</tr>
     <tr>
@@ -178,13 +99,13 @@
             @Html.LabelFor(model => model.SKU,"商品SKU:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU"})
+            @Html.TextBoxFor(model => model.SKU,new{@id="e_SKU",@readonly="readonly"})
 		</td>
             		<td>
             @Html.LabelFor(model => model.GenerateOn,"下单时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.GenerateOn,new{@id="e_GenerateOn"})
+            @Html.TextBoxFor(model => model.GenerateOn,new{@id="e_GenerateOn",@readonly="readonly"})
 		</td>
 	</tr>
     <tr>
@@ -192,13 +113,13 @@
             @Html.LabelFor(model => model.Qty,"Qty:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty"})
+            @Html.TextBoxFor(model => model.Qty,new{@id="e_Qty",@readonly="readonly"})
 		</td>
         	<td>
             @Html.LabelFor(model => model.SendOn,"发货时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn"})
+            @Html.TextBoxFor(model => model.SendOn,new{@id="e_SendOn",@readonly="readonly"})
 		</td>
 	</tr>
     	<tr>        
@@ -206,13 +127,13 @@
             @Html.LabelFor(model => model.CurrencyCode,"货币:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="e_CurrencyCode"})
+            @Html.TextBoxFor(model => model.CurrencyCode,new{@id="e_CurrencyCode",@readonly="readonly"})
 		</td>
 		<td>
             @Html.LabelFor(model => model.Amount,"金额:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount"})
+            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount",@readonly="readonly"})
 		</td>		
 
 	</tr>
@@ -222,13 +143,13 @@
             @Html.LabelFor(model => model.LogisticsMode,"物流方式:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode"})
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode",@readonly="readonly"})
 		</td>		
             <td>
             @Html.LabelFor(model => model.TrackCode,"追踪码:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.TrackCode,new{@id="e_TrackCode"})
+            @Html.TextBoxFor(model => model.TrackCode,new{@id="e_TrackCode",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -237,7 +158,7 @@
             @Html.LabelFor(model => model.DisputeOn,"纠纷时间:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.DisputeOn,new{@id="e_DisputeOn"})
+            @Html.TextBoxFor(model => model.DisputeOn,new{@id="e_DisputeOn",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -246,7 +167,7 @@
             @Html.LabelFor(model => model.DisputeCategory,"纠纷分类:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.DisputeCategory,new{@id="e_DisputeCategory"})
+            @Html.TextBoxFor(model => model.DisputeCategory,new{@id="e_DisputeCategory",@readonly="readonly"})
 		</td>
 	</tr>
 
@@ -257,6 +178,12 @@
 		<td>
             @Html.TextBoxFor(model => model.Status,new{@id="e_Status", onblur="Solution()"})
 		</td>
+        <td>
+            @Html.LabelFor(model => model.LogisticMessage,"物流状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticMessage,new{@id="e_LogisticMessage"})
+		</td>		
 	</tr>
 
 	<tr>
@@ -266,26 +193,14 @@
 		<td>
             @Html.TextBoxFor(model => model.Solution,new{@id="e_Solution"})
 		</td>		
-        <td>
-            @Html.LabelFor(model => model.SolveOn,"解决时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SolveOn,new{@id="e_SolveOn"})
-		</td>
-	</tr>
-
-    <tr>
 		<td>
             @Html.LabelFor(model => model.RefundAmount,"退款金额:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.RefundAmount,new{@id="e_RefundAmount"})
 		</td>		
-        <td>
-            @Html.LabelFor(model => model.SolveBy,"解决人:")
-		</td>
-		<td >
-            @Html.TextBoxFor(model => model.SolveBy,new{@id="e_SolveBy"})
+        <td style="display:none">
+            @Html.TextBoxFor(model => model.SolveOn,new{@id="e_SolveOn"})
 		</td>
 	</tr>
 

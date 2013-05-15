@@ -57,6 +57,7 @@
     <Compile Include="Entities\CurrencyType.cs" />
     <Compile Include="Entities\DictionaryClassType.cs" />
     <Compile Include="Entities\DictionaryType.cs" />
+    <Compile Include="Entities\DisputesRecordType.cs" />
     <Compile Include="Entities\DisputeType.cs" />
     <Compile Include="Entities\EbayMessageReType.cs" />
     <Compile Include="Entities\EbayMessageType.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Entities\LogisticsModeType.cs" />
     <Compile Include="Entities\LogisticsType.cs" />
     <Compile Include="Entities\MachineType.cs" />
+    <Compile Include="Entities\MessageAmountType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
     <Compile Include="Entities\NewGuideType.cs" />
     <Compile Include="Entities\NoStockLinkType.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="Entities\PurchasePlanType.cs" />
     <Compile Include="Entities\PurchaseTroubleType.cs" />
     <Compile Include="Entities\QuestionOrderType.cs" />
+    <Compile Include="Entities\RefundAmountType.cs" />
     <Compile Include="Entities\ReturnAddresType.cs" />
     <Compile Include="Entities\RoleType.cs" />
     <Compile Include="Entities\SerialNumberType.cs" />
@@ -125,6 +128,7 @@
     <Compile Include="Mappings\CurrencyTypeMap.cs" />
     <Compile Include="Mappings\DictionaryClasTypeMap.cs" />
     <Compile Include="Mappings\DictionaryTypeMap.cs" />
+    <Compile Include="Mappings\DisputesRecordTypeMap.cs" />
     <Compile Include="Mappings\DisputeTypeMap.cs" />
     <Compile Include="Mappings\EbayMessageReTypeMap.cs" />
     <Compile Include="Mappings\EbayMessageTypeMap.cs" />
@@ -140,6 +144,7 @@
     <Compile Include="Mappings\LogisticsModeTypeMap.cs" />
     <Compile Include="Mappings\LogisticTypeMap.cs" />
     <Compile Include="Mappings\MachineTypeMap.cs" />
+    <Compile Include="Mappings\MessageAmountTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
     <Compile Include="Mappings\NewGuideTypeMap.cs" />
     <Compile Include="Mappings\NoStockLinkTypeMap.cs" />
@@ -171,6 +176,7 @@
     <Compile Include="Mappings\PurchasePlanTypeMap.cs" />
     <Compile Include="Mappings\PurchaseTroubleTypeMap.cs" />
     <Compile Include="Mappings\QuestionOrderTypeMap.cs" />
+    <Compile Include="Mappings\RefundAmountTypeMap.cs" />
     <Compile Include="Mappings\ReturnAddresTypeMap.cs" />
     <Compile Include="Mappings\RoleTypeMap.cs" />
     <Compile Include="Mappings\SerialNumberTypeMap.cs" />

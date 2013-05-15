@@ -134,7 +134,6 @@
                     if (record[0] == "ALL")
                         return;
                     var search = "";
-
                     var a = $('#Account').combobox("getText");
                     if (a != "ALL" && a != "") {
                         search += "Account_es&" + a + "^";
@@ -409,6 +408,22 @@
             }
         }
 
+        function dispute() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('OrderNo')) {
+                    var id = row['OrderNo'];
+                    if (id != undefined) {
+                        var url_str = '@Url.Action("Create","Dispute")/' + id;
+                        showdlg(url_str, 'c_dlg', disputeAdd)
+                    }
+                }
+            }
+        }
+        function disputeAdd() {
+            formPost('c_form', '@Url.Action("Create", "Dispute")', 'c_dlg', 'dg');
+                }
+
         function reSend() {
             var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要重新发货吗？一共是" + s_ids.length + "条订单", function (r) {
@@ -649,6 +664,7 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_ReQue()">缺货订单修正</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="o_SplitZu()">分割组合产品</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#l_dlg').dialog('open');">拦截</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="dispute()">发生纠纷</a>
             <br />
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />

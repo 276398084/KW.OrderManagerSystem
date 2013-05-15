@@ -9,8 +9,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// DisputeType
-    /// 纠纷表
+    /// MessageAmountType
+    /// 邮件记事表
     /// 
     /// 修改纪录
     /// 
@@ -23,7 +23,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class DisputeType
+    public class MessageAmountType
     {
         /// <summary>
         /// 主键
@@ -51,11 +51,6 @@ namespace KeWeiOMS.Domain
         public virtual String Account { get; set; }
 
         /// <summary>
-        /// 创建时间
-        /// </summary>
-        public virtual DateTime CreateOn { get; set; }
-
-        /// <summary>
         /// 下单时间
         /// </summary>
         public virtual DateTime GenerateOn { get; set; }
@@ -64,16 +59,6 @@ namespace KeWeiOMS.Domain
         /// 发货时间
         /// </summary>
         public virtual DateTime SendOn { get; set; }
-
-        /// <summary>
-        /// 纠纷时间
-        /// </summary>
-        public virtual DateTime DisputeOn { get; set; }
-
-        /// <summary>
-        /// 解决时间
-        /// </summary>
-        public virtual DateTime SolveOn { get; set; }
 
         /// <summary>
         /// 金额
@@ -101,19 +86,9 @@ namespace KeWeiOMS.Domain
         public virtual String LogisticsMode { get; set; }
 
         /// <summary>
-        /// 追踪码
-        /// </summary>
-        public virtual String TrackCode{ get; set; }
-
-        /// <summary>
         /// 状态
         /// </summary>
-        public virtual string Status { get; set; }
-
-        /// <summary>
-        /// 纠纷分类
-        /// </summary>
-        public virtual String DisputeCategory { get; set; }
+        public virtual int Status { get; set; }
 
         /// <summary>
         /// 解决方式
@@ -131,14 +106,19 @@ namespace KeWeiOMS.Domain
         public virtual String CreateBy { get; set; }
 
         /// <summary>
+        /// 创建时间
+        /// </summary>
+        public virtual DateTime CreateOn { get; set; }
+
+        /// <summary>
         /// 解决人
         /// </summary>
         public virtual String SolveBy { get; set; }
 
-       /// <summary>
-        /// 物流信息
+        /// <summary>
+        /// 解决时间
         /// </summary>
-        public virtual String LogisticMessage { get; set; }
-        
+        public virtual DateTime SloveOn { get; set; }
+
     }
 }

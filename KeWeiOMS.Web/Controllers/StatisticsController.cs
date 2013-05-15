@@ -51,6 +51,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult DisputeCount()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
         {
@@ -777,6 +782,63 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
                 sores.Add(new Sores { PackBy = item[1].ToString(), PackSores = packsores, Qcount = Convert.ToDecimal(item[0]), Avg = Convert.ToDecimal(avg.ToString("f1")),Sore=sore,TotalSores=totalsore });
             }
             return sores;
+        }
+        [HttpPost]
+        public ActionResult DisputeCount(DateTime st, DateTime et, string p, string a)
+        {
+            IList<DisputeCount> sores = new List<DisputeCount>();
+            string where = Where(st, et, p, a);
+            IList<object[]> objectses = NSession.CreateQuery("select Count(Id),DisputeCategory from DisputeType " + where + " group by DisputeCategory").List<object[]>();
+            foreach (var item in objectses)
+            {
+
+              string dtype = item[1].ToString();  
+               decimal count = Convert.ToDecimal(item[0]);
+                sores.Add(new DisputeCount { DType =dtype,Count=count});
+            }
+            return Json(new { rows = sores.OrderByDescending(x => x.Count) });
+        }
+
+        [HttpPost]
+        public ActionResult DisputeTypeCount(DateTime st, DateTime et,string p,string a)
+        {
+            IList<DisputeCount> sores = new List<DisputeCount>();
+            string where =Where(st,et,p,a);
+            IList<object[]> objectses = NSession.CreateQuery("select count(Id),Solution  from DisputeType "+where+" group by Solution").List<object[]>();
+            foreach (var item in objectses)
+            {
+                string dtype = "未开始处理";
+                if (item[1] != null)
+                {
+                    dtype = item[1].ToString();
+                }
+                decimal count = Convert.ToDecimal(item[0]);
+                sores.Add(new DisputeCount { DType = dtype, Count = count });
+            }
+            return Json(new { rows = sores.OrderByDescending(x => x.Count) });
+        }
+        public ActionResult AmountCount(DateTime st, DateTime et, string p, string a)
+        {
+            IList<DisputeCount> sores = new List<DisputeCount>();
+            string where = Where(st, et, p, a);
+            object obj = NSession.CreateQuery("select SUM(RefundAmount)  from DisputeType " + where).UniqueResult();
+            Decimal count =Convert.ToDecimal(obj);
+            sores.Add(new DisputeCount {Count = count });
+            return Json(new {rows = sores});
+        }
+
+        public string Where(DateTime st, DateTime et, string p, string a)
+        { 
+          string where="where CreateOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'";
+            if(p!="ALL")
+            {
+                where += " and Platform='" + p + "'";
+            }
+            if (a!= "ALL")
+            {
+                where += " and Account='" + a + "'";
+            }
+          return where;
         }
 
     }

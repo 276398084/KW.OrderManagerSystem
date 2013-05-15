@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Index";
 }
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
 <script language="javascript" type="text/javascript">
     $(function () {
@@ -18,44 +19,138 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100],
             columns: [[
-    { field: 'OrderNo', title: '订单号', width: 100, sortable: true },
-    {
-        field: 'Platform', title: '平台', width: 100, sortable: true,
-        formatter: function (v, r, i) {
-            return "平台：" + v + "<br>" + '平台单号:' + r.OrderExNo + "<br>" + '账户:' + r.Account;
-        }
-    },
-    { field: 'DisputeCategory', title: '纠纷类型', width: 100, sortable: true },
-    { field: 'SKU', title: '商品编号', width: 100, sortable: true },
-    {
-        field: 'LogisticsMode', title: '物流方式', width: 100, sortable: true,
-        formatter: function (v, r, i) {
-            return "物流方式：" + v + "<br>" + '追踪码:' + r.TrackCode;
-        }
-    },
-    {
-        field: 'Status', title: '状态', width: 100, sortable: true,
-        formatter: function (value) {
-            if (value == 0) { return "未解决" }
-            if (value == 1) { return "已解决" }
-        }
-    },
-    { field: 'Solution', title: '处理方式', width: 100, sortable: true },
-    {
-        field: 'CreateBy', title: '管理人员', width: 100, sortable: true,
-        formatter: function (v, r, i) {
-            return "添加人：" + v + "<br>" + '解决人:' + r.SolveBy;
-        }
-    },
-    {
-        field: 'CreateOn', title: '时间', width: 100, sortable: true,
-        formatter: function (v, r, i) {
-            return '创建时间:' + getDate(v) + "<br>" + '下单时间:' + getDate(r.GenerateOn) + "<br>" + '发货时间:' + getDate(r.SendOn) + "<br>" + '纠纷时间:' + getDate(r.DisputeOn) + "<br>" + '解决时间:' + getDate(r.SolveOn) + "<br>";
-        }
-    }]]
-        });
+                       {
+                           field: 'Id', width: 100, formatter: function (v, r, i) {
+                               if (r.Status != '已解决')
+                                   if (r.Status != '解决中')
+                                       return '<a href="javascript:void(0);" onclick="Deal(' + v + ')"><font color="#FF0000">解决</font></a>';
+                                   else
+                                       return '<a href="javascript:void(0);" onclick="Deal(' + v + ')">解决</a>';
+                               return '已解决';
+                           }
+                       },
+                        { field: 'OrderNo', title: '订单号', width: 100, sortable: true },
+                        {
+                            field: 'Platform', title: '平台', width: 100, sortable: true,
+                            formatter: function (v, r, i) {
+                                return "平台：" + v + "<br>" + '平台单号:' + r.OrderExNo + "<br>" + '账户:' + r.Account;
+                            }
+                        },
+                        { field: 'DisputeCategory', title: '纠纷类型', width: 100, sortable: true },
+                        { field: 'SKU', title: '商品编号', width: 100, sortable: true },
+                        {
+                            field: 'LogisticsMode', title: '物流方式', width: 100, sortable: true,
+                            formatter: function (v, r, i) {
+                                return "物流方式：" + v + "<br>" + '追踪码:' + r.TrackCode;
+                            }
+                        },
+                        {field: 'Status', title: '状态', width: 100, sortable: true },
+                        { field: 'Solution', title: '处理方式', width: 100, sortable: true },
+                        { field: 'LogisticMessage', title:'物流信息',width: 100, sortable: true },
+                        {
+                            field: 'CreateBy', title: '管理人员', width: 100, sortable: true,
+                            formatter: function (v, r, i) {
+                                return "添加人：" + v + "<br>" + '解决人:' + r.SolveBy;
+                            }
+                        },
+                        {
+                            field: 'CreateOn', title: '时间', width: 100, sortable: true,
+                            formatter: function (v, r, i) {
+                                return '创建时间:' + getDate(v) + "<br>" + '下单时间:' + getDate(r.GenerateOn) + "<br>" + '发货时间:' + getDate(r.SendOn) + "<br>" + '纠纷时间:' + getDate(r.DisputeOn) + "<br>" + '解决时间:' + getDate(r.SolveOn) + "<br>";
+                            }
+                        }]],
+            view: detailview,
+            detailFormatter: function (index, row) {
+                return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
+            },
+            onExpandRow: function (index, row) {
+                $('#ddv-' + index).datagrid({
+                    fitColumns: true,
+                    singleSelect: true,
+                    rownumbers: true,
+                    loadMsg: '',
+                    height: 'auto',
+                    url: '@Url.Action("GetRecord", "Dispute")/'+row.Id,
+                    columns: [[
 
+                            { field: 'DealType', title: '操作类型', width: 100 },
+                            { field: 'Content', title: '操作内容', width: 400 },
+                            {field: 'CreateBy', title: '处理人', width: 100 },
+                            {
+                                field: 'CreateOn', title: '处理时间', width: 200, formatter: function (value) {
+                                    return getDate(value);
+                                }
+                            }
+                    ]],
+                    onResize: function () {
+                        $('#dg').datagrid('fixDetailRowHeight', index);
+                    },
+                    onLoadSuccess: function () {
+                        setTimeout(function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }, 0);
+                    }
+                });
+                $('#dg').datagrid('fixDetailRowHeight', index);
+            }
+        });
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(7));
+        $('#cc2').datebox("setValue", getStartDate(-1));
+        $('#pp').combobox({
+            url: '@Url.Action("GetDisputeClass","Dictionary")',
+                    valueField: 'FullName',
+                    textField: 'FullName',
+                    panelHeight: 'auto'
+        });
+        $('#pp').combobox("setValue", "ALL");
+        $('#aa').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            editable: false,
+            data: [{ id: "未解决", text: "未解决" }, { id: "解决中", text: "解决中" }, { id: "已解决", text: "已解决" }]
+        });
+        $('#aa').combobox("setValue","ALL");
+        $('#case').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            editable: false,
+            data: [{ id: 0, text: "ALL" }, { id: 1, text: "创建12小时未回复" }, { id: 2, text: "处理三天未解决" }],
+            onChange: function (record) {
+                if (record==0)
+                    return;
+                var search ="";
+                if (record== 1)
+                    search += "Status_es&未解决^CreateOn_et&" + getStartDateTime(12, "m") + "^";
+                if (record== 2)
+                    search += "Status_es&解决中^SolveOn_et&" + getStartDateTime(3, "d") + "^";
+
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+        });
+        $('#case').combobox("setValue",0);
     });
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
 
 
 	//新建
@@ -65,13 +160,13 @@
         }
 
     //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
+ @*    function e_dlg() {
+       var id = getselectedRow();
         var url = '@Url.Action("Edit","Dispute")/' + id;
             if (id != undefined) {
                 showdlg(url, 'e_dlg', ajaxEdit)
             }
-        }
+        }*@
 
         //异步新建提交
         function ajaxAdd() {
@@ -110,111 +205,70 @@
         return (undefined);
     }
      function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         var search = getSearch();
                 $("#dg").datagrid("load", {
                     search: search
                 });
-      }
+     }
+     function getSearch() {
+         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         var p= $('#pp').combobox("getText");
+         if (p != "ALL" && p != "") {
+             search += "DisputeCategory&"+ p + "^";
+         }
+         var a = $('#aa').combobox("getText");
+         if (a != "ALL" && a != "") {
+             search += "Status&" + a + "^";
+         }
+         return search;
+     }
 
+     function toExcel() {
+         search = getSearch();
+         $('#dg').datagrid('loading');
+         var postUrl = "/Order/ExportDown/1";
+         $.ajax({
+             url: '@Url.Action("ToExcel", "Dispute")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        });
+    }
+
+     function Deal(value) {
+         var url = '@Url.Action("Edit","Dispute")/' + value;
+                     showdlg(url, 'e_dlg', ajaxEdit)
+
+     }
 </script>
 <div region="center">
 <table id="dg">  
         <thead>  
         <tr>
-@*            <th field="Id" width="100">
-                主键
-            </th>
-
-            <th field="OrderNo" width="100" sortable="true">
-                订单号
-            </th>
-
-            <th field="OrderExNo" width="100" sortable="true">
-                平台订单号
-            </th>
-
-            <th field="Platform" width="100" sortable="true">
-                平台
-            </th>
-
-            <th field="Account" width="100" sortable="true">
-                账户
-            </th>
-
-            <th field="CreateOn" width="100" sortable="true">
-                创建时间
-            </th>
-
-            <th field="GenerateOn" width="100" sortable="true">
-                下单时间
-            </th>
-
-            <th field="SendOn" width="100" sortable="true">
-                发货时间
-            </th>
-
-            <th field="DisputeOn" width="100" sortable="true">
-                纠纷时间
-            </th>
-
-            <th field="SolveOn" width="100" sortable="true">
-                解决时间
-            </th>
-
-            <th field="Amount" width="100" sortable="true">
-                金额
-            </th>
-
-            <th field="CurrencyCode" width="100" sortable="true">
-                货币
-            </th>
-
-            <th field="SKU" width="100" sortable="true">
-                商品SKU
-            </th>
-
-            <th field="Qty" width="100" sortable="true">
-                Qty
-            </th>
-
-            <th field="LogisticsMode" width="100" sortable="true">
-                物流方式
-            </th>
-
-            <th field="Status" width="100" sortable="true">
-                状态
-            </th>
-
-            <th field="DisputeCategory" width="100" sortable="true">
-                纠纷分类
-            </th>
-
-            <th field="Solution" width="100" sortable="true">
-                解决方式
-            </th>
-
-            <th field="RefundAmount" width="100" sortable="true">
-                退款金额
-            </th>
-
-            <th field="CreateBy" width="100" sortable="true">
-                添加人
-            </th>
-
-            <th field="SolveBy" width="100" sortable="true">
-                解决人
-            </th>*@
-
-
     	</tr>
 		</thead>
 		</table>
         <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+@*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>*@
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            开始<input id="cc" type="text">
+            结束<input id="cc2" type="text">
+            纠纷类型<input id="pp" type="text">
+            纠纷状态<input id="aa" type="text">
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-          @*  <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>*@
+           <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+            <br />
+           纠纷情况<input id="case" type="text">
         </div> 
 		<div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单号</div>

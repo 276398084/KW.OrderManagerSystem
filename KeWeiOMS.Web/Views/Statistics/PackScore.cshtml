@@ -1,7 +1,6 @@
 ﻿@{
     ViewBag.Title = "PackScore";
 }
-
 <script>
     $(function () {
         $("#cc").datebox({
@@ -25,6 +24,7 @@
             queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
             showFooter: true,
             width: 1000,
+            height: 430,
             striped: true
             });
     });
@@ -65,21 +65,27 @@
 结束<input id="cc2" type="text">
 <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
 <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="ExportOut();">导出</a>
-<table id="dg">
-    <thead>
-        <tr>
-            <th  field="PackBy" width="100">工作人员
-            </th>
-            <th field="PackSores" width="150">得分
-             </th>
-            <th  field="Qcount" width="150">包裹总数
-            </th>
-            <th field="Avg" width="150">平均分
-             </th>
-            <th  field="Sore" width="150">补分
-            </th>
-            <th field="TotalSores" width="150">总得分
-           </th>
-        </tr>
-    </thead>
+<table>
+    <tr>
+        <td>
+            <table id="dg">
+                <thead>
+                    <tr>
+                        <th field="PackBy" width="100">工作人员
+                        </th>
+                        <th field="PackSores" width="150">得分
+                        </th>
+                        <th field="Qcount" width="150">包裹总数
+                        </th>
+                        <th field="Avg" width="150">平均分
+                        </th>
+                        <th field="Sore" width="150">补分
+                        </th>
+                        <th field="TotalSores" width="150">总得分
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+    </tr>
 </table>

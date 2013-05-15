@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "DisputeCount";
+}
+<script>
+    $(function () {
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(30));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        $('#dg').datagrid({
+            url: '@Url.Action("DisputeCount", "Statistics")',
+            queryParams: { "st": $('#cc').datebox("getValue"), "et": $('#cc2').datebox("getValue"), "p": "ALL", "a": "ALL" },
+            showFooter: true,
+            height: 400,
+            width:300,
+            rownumbers: true,
+            singleselect: true,
+            striped: true
+        });
+        $('#dg2').datagrid({
+            url: '@Url.Action("DisputeTypeCount", "Statistics")',
+            queryParams: { "st": $('#cc').datebox("getValue"), "et": $('#cc2').datebox("getValue"), "p": "ALL", "a": "ALL" },
+            height: 400,
+            rownumbers: true,
+            singleselect: true,
+            width: 300,
+            showFooter: true,
+            striped: true
+        });
+        $('#dg3').datagrid({
+            url: '@Url.Action("AmountCount", "Statistics")',
+                    queryParams: { "st": $('#cc').datebox("getValue"), "et": $('#cc2').datebox("getValue"), "p": "ALL", "a": "ALL" },
+                    height: 400,
+                    rownumbers: true,
+                    singleselect: true,
+                    width: 300,
+                    showFooter: true,
+                    striped: true
+                });
+
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+    });
+
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+        $('#dg2').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+        $('#dg3').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText")
+        });
+    }
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+    }
+</script>
+开始<input id="cc" type="text">
+结束<input id="cc2" type="text">
+平台<input id="pp" type="text">
+账户<input id="aa" type="text">
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+<table>
+    <tr>
+        <td>
+            <table id="dg">
+                <thead>
+                    <tr>
+                        <th field="DType" width="150">纠纷类型
+                        </th>
+                        <th field="Count" width="120">数量
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+        <td>
+            <table id="dg2">
+                <thead>
+                    <tr>
+                        <th field="DType" width="150">处理方式
+                        </th>
+                        <th field="Count" width="120">数量
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+          <td>
+            <table id="dg3">
+                <thead>
+                    <tr>
+                        <th field="Count" width="120">退款总金额
+                        </th>
+                    </tr>
+            </table>
+        </td>
+    </tr>
+</table>

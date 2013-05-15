@@ -10,8 +10,8 @@ namespace KeWeiOMS.Domain
 {
 
     /// <summary>
-    /// DisputeTypeMap
-    /// 纠纷表
+    /// MessageAmountTypeMap
+    /// 邮件记事表
     /// 
     /// 修改纪录
     /// 
@@ -24,34 +24,30 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class DisputeTypeMap : ClassMap<DisputeType> 
+    public class MessageAmountTypeMap : ClassMap<MessageAmountType> 
     {
-        public DisputeTypeMap()
+        public MessageAmountTypeMap()
         {
-            Table("Disputes");
+            Table("MessageAmount");
             Id(x => x.Id);
             Map(x => x.OrderNo).Length(40);
             Map(x => x.OrderExNo).Length(50);
             Map(x => x.Platform).Length(50);
             Map(x => x.Account).Length(50);
-            Map(x => x.CreateOn);
             Map(x => x.GenerateOn);
             Map(x => x.SendOn);
-            Map(x => x.DisputeOn);
-            Map(x => x.SolveOn);
             Map(x => x.Amount);
             Map(x => x.CurrencyCode).Length(50);
             Map(x => x.SKU).Length(50);
             Map(x => x.Qty);
             Map(x => x.LogisticsMode).Length(50);
-            Map(x => x.TrackCode).Length(50);
             Map(x => x.Status);
-            Map(x => x.DisputeCategory).Length(50);
             Map(x => x.Solution).Length(50);
             Map(x => x.RefundAmount);
             Map(x => x.CreateBy).Length(50);
+            Map(x => x.CreateOn);
             Map(x => x.SolveBy).Length(50);
-            Map(x => x.LogisticMessage).Length(50);
+            Map(x => x.SloveOn);
         }
     }
 }

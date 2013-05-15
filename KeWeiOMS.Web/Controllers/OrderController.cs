@@ -1423,7 +1423,7 @@ left join Products P On OP.SKU=P.SKU ";
         public void TimeJi()
         {
             List<ProductType> ProductList = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
-            List<OrderPackRecordType> orders = NSession.CreateQuery("from OrderPackRecordType where PackOn>'2013-04-01' and PackOn < '2013-05-01'").List<OrderPackRecordType>().ToList();
+            List<OrderPackRecordType> orders = NSession.CreateQuery("from OrderPackRecordType where PackOn>'2013-05-07 16:02:16.000' and PackOn < '2013-05-08 12:42:29.000'").List<OrderPackRecordType>().ToList();
 
             using (ITransaction tran = NSession.BeginTransaction())
             {
