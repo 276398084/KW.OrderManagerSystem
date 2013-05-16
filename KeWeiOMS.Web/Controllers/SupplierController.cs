@@ -29,14 +29,15 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                int id=(int)NSession.Save(obj);
-                 List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
-                foreach (var item in list)
-                {
-                    item.SId =id;
-                    NSession.Save(item);
-                }
+                List<SuppliersProductType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SuppliersProductType>>(obj.rows);  
+                NSession.Save(obj);
                 NSession.Flush();
+                foreach (SuppliersProductType product in list1)
+                {
+                    product.SId = obj.Id;
+                    NSession.Save(product);
+                    NSession.Flush();
+                }
             }
             catch (Exception ee)
             {
@@ -68,42 +69,28 @@ namespace KeWeiOMS.Web.Controllers
         {
             SupplierType obj = GetById(id);
             ViewData["SuppliewsId"]=id;
-            IList<SuppliersProductType> list = NSession.CreateQuery("from SuppliersProductType where SId=:id")
-                .SetInt32("id",id)
-                .List<SuppliersProductType>();
-            //List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
-            //if (list == null)
-            //    list = new List<SuppliersProductType>();
-            //foreach (var item in objlist)
-            //{
-            //    list.Add(item);
-            //}
-            Session["SupplierProducts"] = list;
             return View(obj);
         }
 
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult EditE(SupplierType obj)
+        public ActionResult Edit(SupplierType obj)
         {
            
             try
             {
+                List<SuppliersProductType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SuppliersProductType>>(obj.rows);
                 NSession.Update(obj);
-                int id =obj.Id;
-                IList<SuppliersProductType> li = NSession.CreateQuery("from SuppliersProductType where SId=:id")
-                .SetInt32("id",id).List<SuppliersProductType>();
-                foreach (var item in li)
-                {
-                    NSession.Delete(item);
-                }
-                List<SuppliersProductType> list = Session["SupplierProducts"] as List<SuppliersProductType>;
-                foreach (var item in list)
-                {
-                    item.SId = id;
-                    NSession.Save(item);
-                }
                 NSession.Flush();
+                NSession.Delete("from SuppliersProductType where SId='" + obj.Id + "'");
+                NSession.Flush();
+                NSession.Clear();
+                foreach (SuppliersProductType product in list1)
+                {
+                    product.SId = obj.Id;
+                    NSession.Save(product);
+                    NSession.Flush();
+                }
             }
             catch (Exception ee)
             {
@@ -121,12 +108,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 SupplierType obj = GetById(id);
                 NSession.Delete(obj);
-                IList<SuppliersProductType> li = NSession.CreateQuery("from SuppliersProductType where SId=:id")
-.SetInt32("id", id).List<SuppliersProductType>();
-                foreach (var item in li)
-                {
-                    NSession.Delete(item);
-                }
+                NSession.Delete("from SuppliersProductType where SId='" + obj.Id + "'");
                 NSession.Flush();
             }
             catch (Exception ee)

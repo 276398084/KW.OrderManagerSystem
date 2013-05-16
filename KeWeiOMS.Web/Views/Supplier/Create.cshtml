@@ -7,125 +7,78 @@
         $("#c_SuppliersName").validatebox({
             required: true,
         });
-        $('#dg_product').datagrid({
-            width: 700,
+        $('#dg_zu').datagrid({
+            width: 600,
             toolbar: [{
                 id: 'btnadd',
                 text: '添加',
                 iconCls: 'icon-add',
                 handler: function () {
-                    $('#btnsave').linkbutton('enable');
                     addp();
                 }
-            },
-            {
-                id: 'btnsave',
-                text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-                    btnsave();
-                }
-            }
-            ,{
+            }, {
                 id: 'btndel',
                 text: '删除',
                 iconCls: 'icon-add',
                 handler: function () {
-                    s_del();
+                    if (editIndex == undefined) {
+                        return;
+                    }
+                    $('#dg_zu').datagrid('cancelEdit', editIndex)
+                            .datagrid('deleteRow', editIndex);
+                    editIndex = undefined;
+                }
+            }, {
+                id: 'btnsave',
+                text: '保存',
+                iconCls: 'icon-save',
+                handler: function () {
+                    accept();
                 }
             }],
-            frozenColumns: [[
-            { field: 'ck', checkbox: true }
-            ]],
             onClickRow: onClickRow
         });
     })
-        var editIndex = undefined;
-        function endEditing() {
-            if (editIndex == undefined) { return true }
-            if ($('#dg_product').datagrid('validateRow', editIndex)) {
-                $('#dg_product').datagrid('endEdit', editIndex);
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) {
+            return true;
+        }
+        if ($('#dg_zu').datagrid('validateRow', editIndex)) {
+            $('#dg_zu').datagrid('endEdit', editIndex);
 
-                $.post("/SuppliersProduct/Save/", $('#dg_product').datagrid("getRows")[editIndex], function (rsp) {
-                    if (rsp.IsSuccess) {
-                        $.messager.show("提示", "提交成功！");
-                    }
-                }, "JSON").error(function () {
-                    $.messager.show("提示", "提交错误了！");
-                });
+            editIndex = undefined;
 
-                editIndex = undefined;
+            return true;
 
-                return true;
-
+        } else {
+            return false;
+        }
+    }
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dg_zu').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
             } else {
-                return false;
+                $('#dg_zu').datagrid('selectRow', editIndex);
             }
         }
-
-        function onClickRow(index) {
-            if (editIndex != index) {
-                if (endEditing()) {
-                    $('#dg_product').datagrid('selectRow', index)
-                            .datagrid('beginEdit', index);
-                    editIndex = index;
-                } else {
-                    $('#dg_product').datagrid('selectRow', editIndex);
-                }
-            }
+    }
+    function addp() {
+        if (endEditing()) {
+            $('#dg_zu').datagrid('appendRow', { Qty: 1, Price: 0 });
+            editIndex = $('#dg_zu').datagrid('getRows').length - 1;
+            $('#dg_zu').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
         }
-
-        function addp() {
-            if (endEditing()) {
-                $('#dg_product').datagrid('appendRow', {});
-                editIndex = $('#dg_product').datagrid('getRows').length - 1;
-                $('#dg_product').datagrid('selectRow', editIndex)
-                        .datagrid('beginEdit', editIndex);
-            }
+    }
+    function accept() {
+        if (endEditing()) {
+            $('#dg_zu').datagrid('acceptChanges');
         }
-        function btnsave()
-        {
-            if (endEditing()) {
-                $('#dg_product').datagrid('acceptChanges');
-            }
-        }
-
-        function s_del() {
-            var rows = $('#dg_product').datagrid('getSelections');
-                $.ajax({
-                    url: '/SuppliersProduct/DelProduct/' + rows[0].SKU,
-                });
-            var row = $('#dg_product').datagrid('getSelected');
-            var index = $('#dg_product').datagrid('getRowIndex', row);
-            $('#dg_product').datagrid('deleteRow', index);
-
-        }
-        function accept() {
-            if (endEditing()) {
-                $('#dg_product').datagrid('acceptChanges');
-            }
-        }
-
-        function addSupliersProduct() {
-            $('#c_form').form('submit', {
-                url: '@Url.Action("Create", "Supplier")',
-                onSubmit: function () {
-                    return $(this).form('validate');
-                },
-                success: function (msg) {
-                    var result = $.parseJSON(msg);
-                    if (result.IsSuccess) {
-                        alert("操作成功");
-                        $('#dlg').dialog('close');
-                        $('#dg').datagrid('reload');
-                    } else {
-                        alert("保存失败!");
-                    }
-                }
-            });
-        }
-
-   
+    }
 </script>
 @using (Html.BeginForm("Create", "Supplier", FormMethod.Post, new { id = "c_form" }))
 {
@@ -140,9 +93,10 @@
             @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
 		</td>
 	</tr>*@
-
+    
 	<tr>
 		<td>
+            <input type="hidden" id="rows" name="rows" />
             @Html.LabelFor(model => model.SuppliersName,"供应商:")
 		</td>
 		<td>
@@ -203,16 +157,14 @@
             @Html.TextBoxFor(model => model.Memo,new{@id="c_Memo"})
 		</td>
 	</tr>
-
-
 </table>
 </fieldset>
 <fieldset>
         <legend>产品信息</legend>
-        <table id="dg_product" class="easyui-datagrid" rownumbers="true" singleselect="true">
+        <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true">
             <thead>
                 <tr>
-                    <th field="SKU" width="200" data-options="editor:'text'">
+                    <th field="SKU" width="80" data-options="editor:'text'">
                         SKU
                     </th>
 

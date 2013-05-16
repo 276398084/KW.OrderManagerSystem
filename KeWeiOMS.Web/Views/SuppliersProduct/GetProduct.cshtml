@@ -8,11 +8,9 @@
     @foreach (var p in Model)
     {
         <tr>
-            <td>
-            <img /></td>
             <td>SKU:@p.SKU</td>
             <td>价格:@p.Price</td>
-            <td>网站: @p.Web</td>
+            <td>网站: <a href="http://@p.Web" target="_blank">@p.Web</a></td>
         </tr>
     }
 </table>

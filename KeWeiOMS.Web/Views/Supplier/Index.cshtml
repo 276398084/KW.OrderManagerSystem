@@ -55,10 +55,18 @@
 
     //异步新建提交
     function ajaxAdd() {
+        if (endEditing()) {
+            $('#dg_zu').datagrid('acceptChanges');
+        }
+        $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
         formPost('c_form', '@Url.Action("Create", "Supplier")', 'c_dlg', 'dg');
         }
         //异步修改提交
-        function ajaxEdit() {
+    function ajaxEdit() {
+        if (endEditing1()) {
+            $('#dg_zu1').datagrid('acceptChanges');
+        }
+        $("#rows").val(JSON.stringify($('#dg_zu1').datagrid("getRows")));
             formPost('e_form', '@Url.Action("Edit", "Supplier")', 'e_dlg', 'dg');
         }
         //删除
@@ -67,18 +75,17 @@
             if (id != undefined) {
                 var url = '@Url.Action("Delete", "Supplier")/' + id;
                 delData(url, 'dg');
-
             }
         }
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
             }
-        }
         $.messager.show({
             title: '提示',
             msg: '请选择行',
@@ -124,10 +131,6 @@
 <table id="dg">  
         <thead>  
         <tr>
-@*         <th field="Id" width="100">
-                主键
-            </th>*@
-
             <th field="SuppliersName" width="100" sortable="true">
                 供应商
             </th>
