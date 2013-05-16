@@ -65,5 +65,7 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String Memo { get; set; }
 
+        public virtual string rows { get; set; }
+
     }
 }

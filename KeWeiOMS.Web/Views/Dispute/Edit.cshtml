@@ -42,7 +42,20 @@
                     textField: 'FullName',
                     panelHeight: 'auto',
                     width: 150
-                });
+        });
+        $('#e_DisputesType').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            disabled: true,
+            data: [{ id: "纠纷", text: "纠纷" }, { id: "邮件记事", text: "邮件记事" }]
+        });
+        $('#e_AmountType').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            data: [{ id: "平台退款", text: "平台退款" }, { id: "PayPal退款", text: "PayPal退款" }]
+        });
     });
 </script>
 @using (Html.BeginForm("Edit", "Dispute", FormMethod.Post, new { id = "e_form" }))
@@ -163,8 +176,14 @@
 	</tr>
 
         <tr>
+         <td>
+            @Html.LabelFor(model => model.DisputesType,"纠纷类型:")
+		</td>
 		<td>
-            @Html.LabelFor(model => model.DisputeCategory,"纠纷分类:")
+            @Html.TextBoxFor(model => model.DisputesType,new{@id="e_DisputesType",@readonly="readonly"})
+		</td>
+		<td>
+            @Html.LabelFor(model => model.DisputeCategory,"纠纷原因:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.DisputeCategory,new{@id="e_DisputeCategory",@readonly="readonly"})
@@ -193,17 +212,38 @@
 		<td>
             @Html.TextBoxFor(model => model.Solution,new{@id="e_Solution"})
 		</td>		
+        <td style="display:none">
+            @Html.TextBoxFor(model => model.SolveOn,new{@id="e_SolveOn"})
+		</td>
+	</tr>
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.AmountType,"退款方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AmountType,new{@id="e_AmountType"})
+		</td>		
 		<td>
             @Html.LabelFor(model => model.RefundAmount,"退款金额:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.RefundAmount,new{@id="e_RefundAmount"})
-		</td>		
-        <td style="display:none">
-            @Html.TextBoxFor(model => model.SolveOn,new{@id="e_SolveOn"})
 		</td>
 	</tr>
-
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.EmailAccount,"账号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EmailAccount,new{@id="e_EmailAccount"})
+		</td>		
+		<td>
+            @Html.LabelFor(model => model.TransactionNo,"交易号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TransactionNo,new{@id="e_TransactionNo"})
+		</td>
+	</tr>
 </table>
 </fieldset>
 }

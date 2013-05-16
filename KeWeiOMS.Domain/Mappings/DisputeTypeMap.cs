@@ -47,11 +47,15 @@ namespace KeWeiOMS.Domain
             Map(x => x.TrackCode).Length(50);
             Map(x => x.Status);
             Map(x => x.DisputeCategory).Length(50);
+            Map(x => x.DisputesType).Length(50);
             Map(x => x.Solution).Length(50);
             Map(x => x.RefundAmount);
             Map(x => x.CreateBy).Length(50);
             Map(x => x.SolveBy).Length(50);
             Map(x => x.LogisticMessage).Length(50);
+            Map(x => x.AmountType).Length(50);
+            Map(x => x.EmailAccount).Length(50);
+            Map(x => x.TransactionNo).Length(50);
         }
     }
 }
