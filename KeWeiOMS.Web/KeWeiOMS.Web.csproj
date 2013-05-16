@@ -1609,7 +1609,6 @@
     <Content Include="Views\User\ChangePassword.cshtml" />
     <Content Include="Views\Product\ImportProduct.cshtml" />
     <Content Include="Views\Home\Result.cshtml" />
-    <Content Include="Views\Product\副本 Index.cshtml" />
     <Content Include="Views\Order\StopIndex.cshtml" />
     <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
     <Content Include="Views\Order\AliSendScan.cshtml" />

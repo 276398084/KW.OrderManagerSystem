@@ -29,6 +29,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult Copy(int id)
+        {
+            ProductType obj = GetById(id);
+            return View("Create", obj);
+        }
+
         public ViewResult Details(int id)
         {
             ProductType obj = GetById(id);
@@ -248,12 +254,15 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 string filePath = Server.MapPath("~");
                 obj.CreateOn = DateTime.Now;
                 string pic = obj.PicUrl;
+                if (!string.IsNullOrEmpty(pic))
+                {
+                    obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
+                    obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
 
-                obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
-                obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
-                obj.IsScan = 1;
-                Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
-                Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
+                    Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
+                    Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
+                }
+               
                 List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
                 if (list1.Count > 0)
                     obj.IsZu = 1;

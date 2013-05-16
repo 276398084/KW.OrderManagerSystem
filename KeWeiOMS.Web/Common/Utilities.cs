@@ -198,9 +198,16 @@ namespace KeWeiOMS.Web
 
         public static void DrawImageRectRect(string rawImgPath, string newImgPath, int width, int height)
         {
+            try
+            {
+                System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
+                DrawImageRectRect(imageFrom, newImgPath, width, height);
+            }
+            catch (Exception)
+            {
 
-            System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
-            DrawImageRectRect(imageFrom, newImgPath, width, height);
+            }
+
         }
         #endregion
 

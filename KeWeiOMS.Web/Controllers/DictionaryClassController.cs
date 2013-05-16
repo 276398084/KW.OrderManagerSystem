@@ -34,7 +34,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -69,6 +69,11 @@ namespace KeWeiOMS.Web.Controllers
 
             try
             {
+   
+                DictionaryClassType c = GetById(obj.Id);
+                NSession.CreateSQLQuery("update Dictionarys set DicCode='" + obj.Code + "' where DicCode='" + c.Code + "' ")
+                  .UniqueResult();
+                NSession.Clear();
                 NSession.Update(obj);
                 NSession.Flush();
             }
@@ -76,7 +81,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -94,19 +99,19 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
-        public JsonResult List(int page, int rows,string sort,string order,string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string orderby = Utilities.OrdeerBy(sort, order);
             string where = Utilities.SqlWhere(search);
-            IList<DictionaryClassType> objList = NSession.CreateQuery("from DictionaryClassType"+where +orderby)
+            IList<DictionaryClassType> objList = NSession.CreateQuery("from DictionaryClassType" + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<DictionaryClassType>();
-            object count = NSession.CreateQuery("select count(Id) from DictionaryClassType"+where).UniqueResult();
-            return Json(new { total =count, rows = objList });
+            object count = NSession.CreateQuery("select count(Id) from DictionaryClassType" + where).UniqueResult();
+            return Json(new { total = count, rows = objList });
         }
 
     }

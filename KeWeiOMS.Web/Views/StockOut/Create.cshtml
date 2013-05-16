@@ -24,7 +24,7 @@
         });
         $('#c_WId').combogrid("setValue", 1);
         $('#c_OutType').combobox({
-            url: '@Url.Action("GetDataByCode", "Dictionary")/Stock.OutType',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/StockOutType',
             valueField: 'FullName',
             textField: 'FullName',
             panelHeight: 'auto',
@@ -73,7 +73,7 @@
                     @Html.LabelFor(model => model.SKU, "SKU:")
                 </td>
                 <td colspan="3">
-                    <input id="c_SKU" name="SKU" onkeydown="return txt_keydown(event);" style="font-size:50px; background-image: none; width: 511px" />
+                    <input id="c_SKU" name="SKU" onkeydown="return txt_keydown(event);" style="font-size: 50px; background-image: none; width: 511px" />
                 </td>
             </tr>
             <tr>

@@ -116,8 +116,8 @@ namespace KeWeiOMS.Web.Controllers
                 IList<PurchasePlanType> plans = NSession.CreateQuery("from PurchasePlanType where PlanNo=:p and SKU=:p2").SetString("p", obj.PlanNo).SetString("p2", obj.SKU).SetMaxResults(1).List<PurchasePlanType>();
                 PurchasePlanType plan = plans[0];
                 IList<SKUCodeType> list =
-                     NSession.CreateQuery("from SKUCodeType where SKU=:p1 and PlanNo=:p2 order by Id").SetString("p1", obj.SKU).
-                         SetString("p2", obj.PlanNo).SetMaxResults(obj.RealQty).List<SKUCodeType>();
+                     NSession.CreateQuery("from SKUCodeType where SKU=:p1 and PlanNo=:p2 and Code >=:p3 order by Id").SetString("p1", obj.SKU).
+                         SetString("p2", obj.PlanNo).SetInt32("p3", obj.SKUCode).SetMaxResults(obj.RealQty).List<SKUCodeType>();
                 DataTable dt = new DataTable();
                 dt.Columns.Add("sku");
                 dt.Columns.Add("name");
