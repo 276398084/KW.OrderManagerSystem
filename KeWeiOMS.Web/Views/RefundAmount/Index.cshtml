@@ -1,0 +1,167 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.RefundAmountType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $('#dg').datagrid({
+            url: '@Url.Action("List","RefundAmount")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+	//新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","RefundAmount")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit","RefundAmount")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "RefundAmount")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "RefundAmount")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "RefundAmount")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+     function doSearch() {
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+      }
+     function plat(v, r, i) {
+         return "平台：" + v + "<br>" + '账户:' + r.Account+ "<br>" + '平台单号:' + r.OrderExNo ;
+     }
+     function audit(v, r, i) {
+         return "审核人：" +r.AuditBy  + "<br>" + '审核时间:' +getDate(v) ;
+     }
+     function create(v, r, i) {
+         return "创建人：" +  r.CreateBy + "<br>" + '创建时间:' +getDate(v);
+     }
+     function deal(v, r, i)
+     {
+         return '<a href="javascript:void(0);" onclick="toDeal(' + v + ')">审核通过</a>';
+     }
+     function toDeal(v)
+     {
+         alert(v);
+     }
+</script>
+<div region="center">
+<table id="dg" class="easyui-datagrid" 
+           toolbar="#toolbar"  
+           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+        <thead>  
+        <tr>
+            <th field="Id" width="50" formatter="deal">
+                操作
+            </th>
+
+            <th field="OrderNo" width="100">
+                订单号
+            </th>
+
+            <th field="Platform" width="200" formatter="plat">
+                平台
+            </th>
+
+            <th field="AmountType" width="60">
+                退款方式
+            </th>
+
+            <th field="Amount" width="50">
+                退款金额
+            </th>
+
+            <th field="EmailAccount" width="100">
+                买家账户
+            </th>
+
+            <th field="TransactionNo" width="100">
+                交易单号
+            </th>
+
+            <th field="Status" width="100">
+                审核状态
+            </th>
+
+            <th field="AuditOn" width="100" formatter="audit">
+                审核
+            </th>
+
+            <th field="CreateOn" width="100" formatter="create">
+                创建
+            </th>
+
+    	</tr>
+		</thead>
+		</table>
+        <div id="toolbar">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div> 
+		<div id="mm" style="width: 120px">   
+            <div data-options="name:'OrderNo'">订单号</div>
+            <div data-options="name:'OrderExNo'">平台订单号</div>
+            <div data-options="name:'Amount'">退款金额</div>
+            <div data-options="name:'Platform'">平台</div>
+            <div data-options="name:'Account'">帐号</div>
+            <div data-options="name:'AmountType'">退款方式</div>
+            <div data-options="name:'EmailAccount'">买家账户</div>
+            <div data-options="name:'TransactionNo'">单号</div>
+            <div data-options="name:'AuditBy'">审核人</div>
+            <div data-options="name:'CreateBy'">创建人</div>
+
+        </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+
+</div>
+</body>

@@ -31,16 +31,6 @@
             showFooter: true,
             striped: true
         });
-        $('#dg3').datagrid({
-            url: '@Url.Action("AmountCount", "Statistics")',
-                    queryParams: { "st": $('#cc').datebox("getValue"), "et": $('#cc2').datebox("getValue"), "p": "ALL", "a": "ALL" },
-                    height: 400,
-                    rownumbers: true,
-                    singleselect: true,
-                    width: 300,
-                    showFooter: true,
-                    striped: true
-                });
 
         $('#pp').combobox({
             url: '/Account/Platform/1',
@@ -73,12 +63,6 @@
             a: $('#aa').combobox("getText")
         });
         $('#dg2').datagrid("load", {
-            st: $('#cc').combobox("getValue"),
-            et: $('#cc2').combobox("getValue"),
-            p: $('#pp').combobox("getText"),
-            a: $('#aa').combobox("getText")
-        });
-        $('#dg3').datagrid("load", {
             st: $('#cc').combobox("getValue"),
             et: $('#cc2').combobox("getValue"),
             p: $('#pp').combobox("getText"),
@@ -124,15 +108,6 @@
                         </th>
                     </tr>
                 </thead>
-            </table>
-        </td>
-          <td>
-            <table id="dg3">
-                <thead>
-                    <tr>
-                        <th field="Count" width="120">退款总金额
-                        </th>
-                    </tr>
             </table>
         </td>
     </tr>

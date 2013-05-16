@@ -1,0 +1,170 @@
+﻿@model KeWeiOMS.Domain.RefundAmountType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	        $('#e_AuditBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#e_AuditOn').datebox();
+
+
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "RefundAmount", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.DId,"纠纷Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.DId,new{@id="e_DId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="e_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderExNo,"平台订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Amount,"退款金额:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Amount,new{@id="e_Amount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Account,"帐号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Account,new{@id="e_Account"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AmountType,"退款方式:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AmountType,new{@id="e_AmountType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.EmailAccount,"买家账户:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EmailAccount,new{@id="e_EmailAccount"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TransactionNo,"单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TransactionNo,new{@id="e_TransactionNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Status,"审核状态:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Status,new{@id="e_Status"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AuditBy,"审核人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AuditBy,new{@id="e_AuditBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AuditOn,"审核时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AuditOn,new{@id="e_AuditOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"创建人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

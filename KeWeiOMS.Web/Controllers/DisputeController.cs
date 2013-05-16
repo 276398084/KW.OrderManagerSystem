@@ -95,7 +95,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Flush();
                 if (obj.Status == "已解决" && obj.RefundAmount!=0)
                 {
-                    SaveAmount(obj.Id,obj.OrderNo,obj.RefundAmount);
+                    SaveAmount(obj);
                 }
                 LoggerUtil.GetDisputeRecord(obj, "处理纠纷",str, CurrentUser, NSession);
             }
@@ -106,10 +106,25 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true  });
            
         }
-        public void SaveAmount(int id,string orderno,double amount)
+        public void SaveAmount(DisputeType obj)
         {
-            RefundAmountType obj = new RefundAmountType {DId=id,OrderNo=orderno,Amount=amount,CreateBy=CurrentUser.Realname,CreateOn=DateTime.Now};
-            NSession.Save(obj);
+            RefundAmountType amount = new RefundAmountType
+            {
+                DId = obj.Id,
+                OrderNo = obj.OrderNo,
+                OrderExNo = obj.OrderExNo,
+                Platform = obj.Platform,
+                Account = obj.Account,
+                Amount = obj.Amount,
+                CreateBy = CurrentUser.Realname,
+                CreateOn = DateTime.Now,
+                EmailAccount=obj.EmailAccount,
+                TransactionNo=obj.TransactionNo,
+                Status="未审核",
+                AmountType=obj.AmountType,
+                AuditOn=Convert.ToDateTime("2000-01-01")
+            };
+            NSession.Save(amount);
             NSession.Flush();
         }
 
