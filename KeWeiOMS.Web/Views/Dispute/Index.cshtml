@@ -285,9 +285,20 @@
 
      }
     function todispute(value) {
-@*        $.ajax({
-            url : '@Url.Action("ToDispute","Dispute")/' + value
-        })*@
+       $.ajax({
+           url: '@Url.Action("ToDispute","Dispute")/' + value,
+           success: function (result) {
+               if (result) {
+                   if (result.IsSuccess) {
+                       alert("操作成功");
+                       $('#dg').datagrid('reload');
+                   }
+                   else {
+                       alert("操作成功" + result.ErrorMsg);
+                   }
+               }
+           }
+        })
     }
     function changePlatform(n, o) {
         $('#aa').combotree({

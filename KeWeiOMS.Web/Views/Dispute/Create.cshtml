@@ -21,12 +21,32 @@
             fit: true,
             columns: [[
                 { field: 'OrderNo', title: '订单号', width: 100 },
+                { field: 'OrderExNo', title: '平台订单号', width: 100 },
                 { field: 'Platform', title: '平台', width: 100 },
                 { field: 'BuyerName', title: '购买者', width: 100 },
                { field: 'BuyerEmail', title: '购买邮箱', width: 100 }
             ]]
         });
-
+        $('#c_OrderExNo').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'OrderExNo',
+            textField: 'OrderExNo',
+            onChange: function (OrderNo) {
+                detail(OrderNo,true);
+            },
+            required: true,
+            url: '/Order/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'OrderExNo', title: '平台订单号', width: 100 },
+                { field: 'OrderNo', title: '订单号', width: 100 },
+                { field: 'Platform', title: '平台', width: 100 },
+                { field: 'BuyerName', title: '购买者', width: 100 },
+               { field: 'BuyerEmail', title: '购买邮箱', width: 100 }
+            ]]
+        });
         $('#c_GenerateOn').datebox({
             required: true
         });
@@ -76,40 +96,43 @@
         }); 
         $('#c_OrderNo').combogrid("setValue", '@ViewData["oid"]');
     });
-        function detail(OrderNo) {
+        function detail(OrderNo,p) {
             $.getJSON('@Url.Action("SearchOrder","Dispute")/' + OrderNo, function (json) {
                 if (json) {
+                    if(p)
+                    {
+                        $("#c_OrderNo").combogrid("setValue", json[0].OrderNo);
+                    }
+                    else
+                    {
+                        $("#c_OrderExNo").combogrid("setValue", json[0].OrderExNo);
+                    }
                     $("#c_Account").attr("value", json[0].Account);
                     $("#c_Platform").attr("value", json[0].Platform);
-                    $("#c_OrderExNo").attr("value", json[0].OrderExNo);
                     $("#c_GenerateOn").datebox("setValue", getDate(json[0].GenerateOn));
                     $("#c_SendOn").datebox("setValue", getDate(json[0].ScanningOn));
                     $("#c_Amount").attr("value", json[0].Amount);
                     $("#c_CurrencyCode").attr("value", json[0].CurrencyCode);
                     $("#c_TrackCode").attr("value", json[0].TrackCode);
                     $("#c_LogisticsMode").attr("value", json[0].LogisticMode);
-
-                }
-            })
-            $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + OrderNo, function (json) {
-                if (json) {
-                    var qty ="";
-                    var sku ="";
-                    for (i = 0; i < json.length; i++)
-                    {
-                        if (sku != "")
-                        {
-                            qty += ","
-                            sku += ","
+                    $.getJSON('@Url.Action("SearchOrderP","Dispute")/' + json[0].Id, function (json) {
+                        if (json) {
+                            var qty = "";
+                            var sku = "";
+                            for (i = 0; i < json.length; i++) {
+                                if (sku != "") {
+                                    qty += ","
+                                    sku += ","
+                                }
+                                qty += json[i].Qty;
+                                sku += json[i].SKU + " ";
+                            }
+                            $('#c_Qty').attr("value", qty);
+                            $('#c_SKU').attr("value", sku);
                         }
-                        qty += json[i].Qty;
-                        sku += json[i].SKU+" ";
-                    }
-                    $('#c_Qty').attr("value",qty);
-                    $('#c_SKU').attr("value",sku);
+                    })
                 }
             })
-    
     }
 </script>
 

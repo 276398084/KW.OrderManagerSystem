@@ -145,12 +145,12 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult SearchOrder(string id)
         {
-            IList<OrderType> obj = NSession.CreateQuery("from OrderType where OrderNo=:OrderNo").SetString("OrderNo", id).List<OrderType>();
+            IList<OrderType> obj = NSession.CreateQuery("from OrderType where OrderNo=:OrderNo or OrderExNo=:OrderNo").SetString("OrderNo", id).List<OrderType>();
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
         public JsonResult SearchOrderP(string id)
         {
-            IList<OrderProductType> obj = NSession.CreateQuery("from OrderProductType where OrderNo=:OrderNo").SetString("OrderNo", id).List<OrderProductType>();
+            IList<OrderProductType> obj = NSession.CreateQuery("from OrderProductType where OId=:oid").SetString("oid", id).List<OrderProductType>();
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
@@ -173,6 +173,21 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
+        public JsonResult ToDispute(int id)
+        {
+            try
+            {
+                DisputeType obj = GetById(id);
+                obj.DisputesType = "纠纷";
+                NSession.Update(obj);
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" },JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "转换成功" },JsonRequestBehavior.AllowGet);
         }
     }
 }
