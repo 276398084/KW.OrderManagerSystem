@@ -173,7 +173,6 @@
     <Compile Include="Controllers\LogisticsFreightController.cs" />
     <Compile Include="Controllers\LogisticsModeController.cs" />
     <Compile Include="Controllers\MachineController.cs" />
-    <Compile Include="Controllers\MessageAmountController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NewGuideController.cs" />
     <Compile Include="Controllers\NoStockController.cs" />
@@ -1623,11 +1622,6 @@
     <Content Include="Views\SoresAdd\Edit.cshtml" />
     <Content Include="Views\SoresAdd\Index.cshtml" />
     <Content Include="Views\Statistics\DisputeCount.cshtml" />
-    <Content Include="Views\MessageAmount\Create.cshtml" />
-    <Content Include="Views\MessageAmount\Delete.cshtml" />
-    <Content Include="Views\MessageAmount\Details.cshtml" />
-    <Content Include="Views\MessageAmount\Edit.cshtml" />
-    <Content Include="Views\MessageAmount\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
