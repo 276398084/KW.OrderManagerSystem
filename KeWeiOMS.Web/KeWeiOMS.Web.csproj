@@ -135,6 +135,7 @@
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Statistics\AmountCount.cs" />
     <Compile Include="Common\Statistics\DisputeCount.cs" />
     <Compile Include="Common\Statistics\LeveData.cs" />
     <Compile Include="Common\Statistics\LeveDays.cs" />
@@ -200,6 +201,7 @@
     <Compile Include="Controllers\PurchasePlanController.cs" />
     <Compile Include="Controllers\PurchaseTroubleController.cs" />
     <Compile Include="Controllers\QuestionOrderController.cs" />
+    <Compile Include="Controllers\RefundAmountController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
@@ -1621,6 +1623,12 @@
     <Content Include="Views\SoresAdd\Edit.cshtml" />
     <Content Include="Views\SoresAdd\Index.cshtml" />
     <Content Include="Views\Statistics\DisputeCount.cshtml" />
+    <Content Include="Views\RefundAmount\Create.cshtml" />
+    <Content Include="Views\RefundAmount\Delete.cshtml" />
+    <Content Include="Views\RefundAmount\Details.cshtml" />
+    <Content Include="Views\RefundAmount\Edit.cshtml" />
+    <Content Include="Views\RefundAmount\Index.cshtml" />
+    <Content Include="Views\Statistics\RefundAmountCount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
