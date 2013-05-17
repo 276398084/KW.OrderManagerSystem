@@ -33,6 +33,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.AccountId);
             Map(x => x.AccountName).Length(50);
             Map(x => x.Email).Length(200);
+            Map(x => x.MessageType);
+            Map(x => x.EmailPassword);
         }
     }
 }
