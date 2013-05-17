@@ -290,7 +290,7 @@ namespace KeWeiOMS.Web.Controllers
             IList<OrderType> order = NSession.CreateQuery("from OrderType where Enabled=1 and Id in(select OId  from OrderProductType where SKU='" + s + "') and CreateOn >='" + st + "' and CreateOn <'" + et.AddDays(1) + "'" + pa(p, a)).List<OrderType>();
             //if (order.Count != 0)
             //{
-                
+
             //    //order[0].Qty = item.Qty;
             //    orderlist = order;
             //}
@@ -331,7 +331,7 @@ namespace KeWeiOMS.Web.Controllers
         private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string s)
         {
             var sqlWhere = SqlWhere(st, et, a, p, s);
-            if(sqlWhere.Length>3)
+            if (sqlWhere.Length > 3)
             {
                 sqlWhere += " and SKU is not null ";
             }
@@ -384,7 +384,7 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult ExportSellCount(DateTime st, DateTime et, string a, string p, string ss)
         {
             var list = GetSellCount(st, et, a, p, ss);
-            // 设置编码和附件格式 
+            //设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable(list));
             return Json(new { IsSuccess = true });
         }
@@ -767,21 +767,21 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         }
         public JsonResult GetScore(DateTime st, DateTime et)
         {
-            IList<Sores> sores = SoreList(st,et);
-            return Json(new { rows = sores.OrderByDescending(p => p.PackSores)});
+            IList<Sores> sores = SoreList(st, et);
+            return Json(new { rows = sores.OrderByDescending(p => p.PackSores) });
         }
         public IList<Sores> SoreList(DateTime st, DateTime et)
         {
-           IList<Sores> sores = new List<Sores>();
-           IList<object[]> objectses = NSession.CreateSQLQuery("select COUNT(Id) as Qcount, PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
+            IList<Sores> sores = new List<Sores>();
+            IList<object[]> objectses = NSession.CreateSQLQuery("select COUNT(Id) as Qcount, PackBy as PackBy,SUM(PackCoefficient) as PackCoefficient from OrderPackRecord where [PackOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PackBy]").List<object[]>();
             foreach (var item in objectses)
             {
                 object soreadd = NSession.CreateQuery("select SUM(Sore) from SoresAddType where Worker='" + item[1].ToString() + "' and WorkDate between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'").UniqueResult();
-                decimal avg=Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1")))/Convert.ToDecimal(item[0]);
-                decimal packsores=Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1")));
+                decimal avg = Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1"))) / Convert.ToDecimal(item[0]);
+                decimal packsores = Convert.ToDecimal((Convert.ToDouble(item[2]).ToString("f1")));
                 decimal sore = Convert.ToDecimal(soreadd);
                 decimal totalsore = sore + packsores;
-                sores.Add(new Sores { PackBy = item[1].ToString(), PackSores = packsores, Qcount = Convert.ToDecimal(item[0]), Avg = Convert.ToDecimal(avg.ToString("f1")),Sore=sore,TotalSores=totalsore });
+                sores.Add(new Sores { PackBy = item[1].ToString(), PackSores = packsores, Qcount = Convert.ToDecimal(item[0]), Avg = Convert.ToDecimal(avg.ToString("f1")), Sore = sore, TotalSores = totalsore });
             }
             return sores;
         }
@@ -794,19 +794,19 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             foreach (var item in objectses)
             {
 
-              string dtype = item[1].ToString();  
-               decimal count = Convert.ToDecimal(item[0]);
-                sores.Add(new DisputeCount { DType =dtype,Count=count});
+                string dtype = item[1].ToString();
+                decimal count = Convert.ToDecimal(item[0]);
+                sores.Add(new DisputeCount { DType = dtype, Count = count });
             }
             return Json(new { rows = sores.OrderByDescending(x => x.Count) });
         }
 
         [HttpPost]
-        public ActionResult DisputeTypeCount(DateTime st, DateTime et,string p,string a)
+        public ActionResult DisputeTypeCount(DateTime st, DateTime et, string p, string a)
         {
             IList<DisputeCount> sores = new List<DisputeCount>();
-            string where =Where(st,et,p,a);
-            IList<object[]> objectses = NSession.CreateQuery("select count(Id),Solution  from DisputeType "+where+" group by Solution").List<object[]>();
+            string where = Where(st, et, p, a);
+            IList<object[]> objectses = NSession.CreateQuery("select count(Id),Solution  from DisputeType " + where + " group by Solution").List<object[]>();
             foreach (var item in objectses)
             {
                 string dtype = "未开始处理";
@@ -824,23 +824,23 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             IList<DisputeCount> sores = new List<DisputeCount>();
             string where = Where(st, et, p, a);
             object obj = NSession.CreateQuery("select SUM(RefundAmount)  from DisputeType " + where).UniqueResult();
-            Decimal count =Convert.ToDecimal(obj);
-            sores.Add(new DisputeCount {Count = count });
-            return Json(new {rows = sores});
+            Decimal count = Convert.ToDecimal(obj);
+            sores.Add(new DisputeCount { Count = count });
+            return Json(new { rows = sores });
         }
 
         public string Where(DateTime st, DateTime et, string p, string a)
-        { 
-          string where="where CreateOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'";
-            if(p!="ALL")
+        {
+            string where = "where CreateOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'";
+            if (p != "ALL")
             {
                 where += " and Platform='" + p + "'";
             }
-            if (a!= "ALL")
+            if (a != "ALL")
             {
                 where += " and Account='" + a + "'";
             }
-          return where;
+            return where;
         }
 
     }

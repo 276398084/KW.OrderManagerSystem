@@ -208,12 +208,15 @@ namespace KeWeiOMS.Web
                     if (item.Count < 10)//判断列数
                         continue;
                     string OrderExNo = item["Cart no."];
+                    double price = Convert.ToDouble(item["Settle Price"].Replace(",", ""));
                     if (listOrder.ContainsKey(OrderExNo))
                     {
                         CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", listOrder[OrderExNo], OrderExNo, NSession);
+                        NSession.CreateSQLQuery("update orders set Amount=Amount+" + price + " where Id=" +
+                                                listOrder[OrderExNo]).UniqueResult();
                         continue;
                     }
-                    bool isExist = IsExist(OrderExNo, NSession);
+                    bool isExist = IsExist(OrderExNo, NSession, account.AccountName);
                     if (!isExist)
                     {
                         OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
@@ -745,10 +748,21 @@ namespace KeWeiOMS.Web
         #endregion
 
         #region 是否存在订单 public static bool IsExist(string OrderExNo)
-        public static bool IsExist(string OrderExNo, ISession NSession)
+        public static bool IsExist(string OrderExNo, ISession NSession, string Account = null)
         {
-
-            object obj = NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo).UniqueResult();
+            object obj = 0;
+            if (string.IsNullOrEmpty(Account))
+            {
+                obj =
+                   NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo)
+                       .UniqueResult();
+            }
+            else
+            {
+                obj =
+                     NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p and Account=:p2").SetString("p", OrderExNo).SetString("p2", Account)
+                         .UniqueResult();
+            }
             if (Convert.ToInt32(obj) > 0)
             {
                 return true;
@@ -779,7 +793,7 @@ namespace KeWeiOMS.Web
         #endregion
 
         #region 订单验证
-        public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession) 
+        public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession)
         {
 
             bool resultValue = true;
