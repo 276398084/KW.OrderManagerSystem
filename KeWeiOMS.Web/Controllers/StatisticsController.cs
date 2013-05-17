@@ -56,6 +56,10 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult RefundAmountCount()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
         {
@@ -811,12 +815,17 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         }
         public ActionResult AmountCount(DateTime st, DateTime et, string p, string a)
         {
-            IList<DisputeCount> sores = new List<DisputeCount>();
+            IList<AmountCount> sores = new List<AmountCount>();
             string where = Where(st, et, p, a);
-            object obj = NSession.CreateQuery("select SUM(RefundAmount)  from DisputeType " + where).UniqueResult();
-            Decimal count =Convert.ToDecimal(obj);
-            sores.Add(new DisputeCount {Count = count });
-            return Json(new {rows = sores});
+            IList<object[]> obj = NSession.CreateQuery("select Account,Count(Account),sum(Amount) from RefundAmountType " + where+" group by Account").List<object[]>();
+            foreach (var item in obj)
+            {
+                string account = item[0].ToString();
+                int count =Convert.ToInt32(item[1]);
+                decimal qcount = Convert.ToDecimal(item[2]);
+                sores.Add(new AmountCount { Account = account, Count = count ,Qcount=qcount});
+            }
+            return Json(new { rows = sores.OrderByDescending(x => x.Count) });
         }
 
         public string Where(DateTime st, DateTime et, string p, string a)
@@ -832,6 +841,8 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             }
           return where;
         }
+
+
 
     }
 }

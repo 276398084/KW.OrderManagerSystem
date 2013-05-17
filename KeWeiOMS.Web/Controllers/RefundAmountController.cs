@@ -122,6 +122,30 @@ namespace KeWeiOMS.Web.Controllers
             object count = NSession.CreateQuery("select count(Id) from RefundAmountType " + where ).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
+        public JsonResult ToDeal(int id,string audit="")
+        {
+            try
+            {
+                RefundAmountType obj = GetById(id);
+                if (audit != "n")
+                {
+                    obj.Status = "审核通过";
+                }
+                else
+                {
+                    obj.Status = "审核未通过";
+                }
+                obj.AuditBy = CurrentUser.Realname;
+                obj.AuditOn = DateTime.Now;
+                NSession.Update(obj);
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" }, JsonRequestBehavior.AllowGet);
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "审核成功" }, JsonRequestBehavior.AllowGet);
+        }
 
     }
 }

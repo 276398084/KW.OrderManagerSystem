@@ -135,6 +135,7 @@
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Statistics\AmountCount.cs" />
     <Compile Include="Common\Statistics\DisputeCount.cs" />
     <Compile Include="Common\Statistics\LeveData.cs" />
     <Compile Include="Common\Statistics\LeveDays.cs" />
@@ -1628,6 +1629,7 @@
     <Content Include="Views\RefundAmount\Details.cshtml" />
     <Content Include="Views\RefundAmount\Edit.cshtml" />
     <Content Include="Views\RefundAmount\Index.cshtml" />
+    <Content Include="Views\Statistics\RefundAmountCount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

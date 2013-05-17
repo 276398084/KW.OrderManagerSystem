@@ -12,9 +12,36 @@
             pageSize: 20,
             pageList: [20, 40, 60, 80, 100]
         });
-
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(7));
+        $('#cc2').datebox("setValue", getStartDate(-1));
     });
-
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
 
 	//新建
         function c_dlg() {
@@ -69,11 +96,23 @@
         return (undefined);
     }
      function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+                var search = getSearch();
                 $("#dg").datagrid("load", {
                     search: search
                 });
-      }
+     }
+     function getSearch() {
+         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         var p = $('#pp').combobox("getText");
+         if (p != "ALL" && p != "") {
+             search += "Platform&" + p + "^";
+         }
+         var a = $('#aa').combobox("getText");
+         if (a != "ALL" && a != "") {
+             search += "Account&" + a + "^";
+         }
+         return search;
+     }
      function plat(v, r, i) {
          return "平台：" + v + "<br>" + '账户:' + r.Account+ "<br>" + '平台单号:' + r.OrderExNo ;
      }
@@ -85,12 +124,52 @@
      }
      function deal(v, r, i)
      {
-         return '<a href="javascript:void(0);" onclick="toDeal(' + v + ')">审核通过</a>';
+         if (r.Status == "未审核")
+             return '<a href="javascript:void(0);" onclick="toDeal(' + v + ')">审核</a>';
+        if (r.Status == "审核通过")
+                 return "审核通过";
+        if (r.Status == "审核未通过")
+                 return '<font color="#FF0000">审核未通过</font>';
      }
-     function toDeal(v)
-     {
-         alert(v);
+     function toDeal(value) {
+         $.messager.confirm('审核',"是否通过审核？",function (r) {
+             if (r) {
+                 audit(value,'y');
+             }
+             else {
+                 audit(value,'n');
+             }
+         },$.extend($.messager.defaults,{
+         ok: "通过",
+         cancel: "不通过"
+     }))
      }
+     function audit(value,yn) {
+         $.ajax({
+             url: '@Url.Action("ToDeal", "RefundAmount")/' + value,
+             data: "audit=" + yn,
+             success: function (result) {
+                 if (result) {
+                     if (result.IsSuccess) {
+                         alert("操作成功");
+                         $('#dg').datagrid('reload');
+                     }
+                     else {
+                         alert("操作成功" + result.ErrorMsg);
+                     }
+                 }
+             }
+         })
+     }
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+    }
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -98,7 +177,7 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="50" formatter="deal">
+            <th field="Id" width="60" formatter="deal">
                 操作
             </th>
 
@@ -137,14 +216,17 @@
             <th field="CreateOn" width="100" formatter="create">
                 创建
             </th>
-
     	</tr>
 		</thead>
 		</table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+@*     <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+       <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>    *@
+            开始<input id="cc" type="text">
+            结束<input id="cc2" type="text">
+            平台<input type="text" id="pp" />
+            账户<input type="text" id="aa" />
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div> 
 		<div id="mm" style="width: 120px">   
@@ -158,10 +240,8 @@
             <div data-options="name:'TransactionNo'">单号</div>
             <div data-options="name:'AuditBy'">审核人</div>
             <div data-options="name:'CreateBy'">创建人</div>
-
         </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
-
 </div>
 </body>
