@@ -1,0 +1,74 @@
+﻿@model KeWeiOMS.Domain.EmailMessageType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_RserverDate').datebox();
+
+
+        $('#c_CreateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "EmailMessage", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageId,"邮件编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageId,new{@id="c_MessageId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderExNo,"订单编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="c_OrderExNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RserverDate,"接收时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RserverDate,new{@id="c_RserverDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}
