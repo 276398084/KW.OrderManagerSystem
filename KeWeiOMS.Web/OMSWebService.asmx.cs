@@ -305,6 +305,26 @@ namespace KeWeiOMS.Web
                 }
                 NSession.Save(obj);
                 NSession.Flush();
+                IList<OrderType> orders = NSession.CreateQuery("from OrderType where OrderExNo='"+obj.OrderExNo+"'").List<OrderType>();
+                foreach(OrderType order in orders)
+                {
+                    order.IsLiu = 1;
+                    order.BuyerMemo=obj.RserverDate+" 买家留言<br>"+order.SellerMemo;
+                    NSession.Update(order);
+                    NSession.Flush();
+                    NSession.Clear();
+
+                    OrderRecordType orderRecord = new OrderRecordType();
+                    orderRecord.OId = order.Id;
+                    orderRecord.OrderNo =order.OrderNo;
+                    orderRecord.RecordType = "买家留言";
+                    orderRecord.CreateBy ="系统自动";
+                    orderRecord.Content = "买家留言";
+                    orderRecord.CreateOn = DateTime.Now;
+                    NSession.Save(orderRecord);
+                    NSession.Flush();
+                    NSession.Clear();
+                }
                 return "保存成功";
             }
             catch (Exception e)
