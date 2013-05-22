@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "库存总利润";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("StockList", "OrderAmount")',
+                nowrap: false,
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                showFooter: true
+            });
+        });
+
+
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ExportOrder() {
+            $('#dg').datagrid("loading");
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/OrderAmount/ExportStockList",
+                type: "post",
+              
+                success: function (sss) {
+                    location.href = postUrl;
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="SKU" width="100" sortable="true">SKU
+                    </th>
+                    <th field="Title" width="300">名称
+                    </th>
+                    <th field="Qty" width="120" sortable="true">总数量
+                    </th>
+               
+                    <th field="Price" width="100" sortable="true">价格
+                    </th>
+                    <th field="TotalPrice" width="150" sortable="true">总价格
+                    </th>
+                    
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+
+            
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ExportOrder();">导出</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">SKU</div>
+        
+        </div>
+       
+
+
+    </div>
+</body>

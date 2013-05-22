@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,9 +18,24 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ViewResult StockIndex()
+        {
+            return View();
+        }
+        public ViewResult FreightIndex()
+        {
+            return View();
+        }
+
 
         [HttpGet]
         public ActionResult GetOrders(string Id)
+        {
+            ViewData["Id"] = Id;
+            return View();
+        }
+        [HttpGet]
+        public ActionResult GetFreights(string Id)
         {
             ViewData["Id"] = Id;
             return View();
@@ -29,6 +46,123 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["Id"] = Id;
             return View();
         }
+
+
+        public ActionResult StockList(int page, int rows, string sort, string order, string search)
+        {
+            string where = "";
+            string orderby = Utilities.OrdeerBy(sort, order);
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where " + where;
+                }
+            }
+            IList<object[]> objList = NSession.CreateSQLQuery("select SKU,OldSKU,ProductName as Title,Price,(select COUNT(1) from SKUCode where IsOut=0 and SKU=P.SKU ) as Qty,(Price*(select COUNT(1) from SKUCode where IsOut=0 and SKU=P.SKU )) as TotalPrice from Products P " + where + " " + orderby)
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows)
+                .List<object[]>();
+            List<ProductData> list = new List<ProductData>();
+            foreach (object[] objectse in objList)
+            {
+                ProductData pd = new ProductData();
+                pd.SKU = objectse[0].ToString();
+                pd.Title = objectse[2].ToString();
+                pd.Price = Convert.ToDouble(objectse[3]);
+                pd.Qty = Convert.ToInt32(objectse[4]);
+                pd.TotalPrice = Math.Round(Convert.ToDouble(objectse[5]), 2);
+
+                list.Add(pd);
+            }
+            object count = NSession.CreateQuery("select count(Id) from ProductType " + where).UniqueResult();
+            object total = NSession.CreateSQLQuery("select SUM(qty) from (select (Price*(select COUNT(1) from SKUCode where IsOut=0 and SKU=P.SKU)) as Qty from Products P " + where + ") as t").UniqueResult();
+            List<object> footers = new List<object>();
+            footers.Add(new { TotalPrice = Math.Round(Convert.ToDouble(total), 2), SKU = "合计：" });
+            return Json(new { total = count, rows = list, footer = footers });
+        }
+
+        public ActionResult ExportStockList()
+        {
+            string sql =
+                "select SKU,OldSKU,ProductName as Title,Price,(select COUNT(1) from SKUCode where IsOut=0 and SKU=P.SKU ) as Qty,(Price*(select COUNT(1) from SKUCode where IsOut=0 and SKU=P.SKU )) as TotalPrice from Products P";
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
+        }
+        [HttpPost]
+        public ActionResult GetFreightList(int page, int rows, string sort, string order, string search)
+        {
+
+            string where = "";
+            string orderby = " order by Id desc";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                where = Utilities.Resolve(search);
+                if (where.Length > 0)
+                {
+                    where = " where Enabled=1 and  Status <> '待处理' and " + where;
+                }
+            }
+            if (where.Length == 0)
+            {
+                where = " where Enabled=1 and  Status <> '待处理'";
+            }
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
+                .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows)
+                .List<OrderType>();
+
+
+            List<OrderData> os = new List<OrderData>();
+            foreach (var o in objList)
+            {
+                AddToOrderData(o, os);
+            }
+            return Json(new { total = os.Count, rows = os });
+        }
+
+        private static void AddToOrderData(OrderType order, List<OrderData> os)
+        {
+            OrderData o = new OrderData();
+
+            if (order != null)
+            {
+                o.OrderNo = order.OrderNo;
+                o.OrderExNo = order.OrderExNo;
+                o.TrackCode = order.TrackCode;
+                o.Weight = order.Weight;
+                o.RMB = order.RMB;
+                o.Country = order.Country;
+                o.CurrencyCode = order.CurrencyCode;
+                o.LogisticMode = order.LogisticMode;
+                o.OrderAmount = order.Amount;
+
+                o.Status = order.Status;
+                if (order.IsRepeat == 1)
+                    o.OrderType = "重发";
+                if (order.IsSplit == 1)
+                    o.OrderType += "拆包";
+                o.Country = order.Country;
+                o.SendOn = order.ScanningOn;
+                o.Freight = order.Freight;
+                o.Account = order.Account;
+                o.Platform = order.Platform;
+            }
+            os.Add(o);
+        }
+
+
         /// <summary>
         /// 订单表
         /// </summary>
@@ -43,31 +177,9 @@ namespace KeWeiOMS.Web.Controllers
             foreach (var orderAmountType in amountlist)
             {
                 OrderType order = orderList.Find(x => x.Id == orderAmountType.OId);
-                OrderData o = new OrderData(); ;
-                o.TotalCost = orderAmountType.TotalCosts;
-
-                if (order != null)
-                {
-                    o.OrderNo = order.OrderNo;
-                    o.OrderExNo = order.OrderExNo;
-                    o.RMB = order.RMB;
-                    o.CurrencyCode = order.CurrencyCode;
-                    o.LogisticMode = order.LogisticMode;
-                    o.OrderAmount = order.Amount;
-                    o.Status = order.Status;
-                    if (order.IsRepeat == 1)
-                        o.OrderType = "重发";
-                    if (order.IsSplit == 1)
-                        o.OrderType += "拆包";
-                    o.Country = order.Country;
-                    o.SendOn = order.ScanningOn;
-                    o.Freight = order.Freight;
-
-                }
-                os.Add(o);
+                AddToOrderData(order, os);
+                os[os.Count - 1].TotalCost = orderAmountType.TotalCosts;
             }
-
-
             return Json(new { total = os.Count, rows = os });
 
         }
@@ -220,13 +332,12 @@ namespace KeWeiOMS.Web.Controllers
         {
             string where = "";
             string orderby = Utilities.OrdeerBy(sort, order);
-
             if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
-                    where = " where IsSplit=0 and IsRepeat=0 and" + where;
+                    where = " where IsSplit=0 and IsRepeat=0 and " + where;
                 }
                 else
                 {

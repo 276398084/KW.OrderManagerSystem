@@ -45,5 +45,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String CountryCode { get; set; }
 
+        /// <summary>
+        /// 区域
+        /// </summary>
+        public virtual String AreaName { get; set; }
+
     }
 }

@@ -1,23 +1,58 @@
 ﻿@{
     Layout = null;
 }
-<table id="dg2" class="easyui-datagrid"
-    rownumbers="true" singleselect="true" pagination="true">
+<script type="text/javascript">
+    $(function () {
+        $('#dg2').datagrid({
+            url: '@Url.Action("GetOrderList", "OrderAmount")/@ViewData["Id"]',
+            width: 900
+        });
+    });
+    function getStatus(v, r, i) {
+        if (r.Status == "已发货" || r.Status == "已完成")
+            return "已发货";
+        else {
+            return "未发货";
+        }
+    }
+    function getScanningOn(v, r, i) {
+        if (r.Status == "已发货" || r.Status == "已完成")
+            return v;
+        else {
+            return "";
+        }
+    }
+    function getFreightType(v, r, i) {
+        if (r.IsSplit == 1)
+            return "拆包";
+        if (r.IsRepeat == 1) {
+            return "重发";
+        }
+        return "正常";
+    }
+</script>
+<table id="dg2" style="height: 400px;">
     <thead>
         <tr>
-            <th field="OrderNo" width="100">编号
+            <th field="Id" width="100" formatter="getFreightType">运费类型
             </th>
-            <th field="OrderNo" width="100">追踪码
+            <th field="OrderNo" width="100">订单号
             </th>
-            <th field="OrderNo" width="100">重量
+            <th field="OrderExNo" width="100">平台订单号
             </th>
-            <th field="OrderNo" width="100">发货方式
+            <th field="Country" width="100">追踪码
             </th>
-            <th field="OrderNo" width="100">运费
+            <th field="TrackCode" width="100">追踪码
             </th>
-            <th field="OrderNo" width="100">发货状态
+            <th field="Weight" width="100">重量
             </th>
-            <th field="OrderNo" width="100">发货时间
+            <th field="LogisticMode" width="100">发货方式
+            </th>
+            <th field="Freight" width="100">运费
+            </th>
+            <th field="Status" width="100" formatter="getStatus">发货状态
+            </th>
+            <th field="SendOn" width="100" formatter="getScanningOn">发货时间
             </th>
         </tr>
     </thead>

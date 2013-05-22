@@ -1629,6 +1629,8 @@
     <Content Include="Views\RefundAmount\Edit.cshtml" />
     <Content Include="Views\RefundAmount\Index.cshtml" />
     <Content Include="Views\Statistics\RefundAmountCount.cshtml" />
+    <Content Include="Views\OrderAmount\StockIndex.cshtml" />
+    <Content Include="Views\OrderAmount\FreightIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

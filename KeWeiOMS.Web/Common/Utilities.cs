@@ -17,7 +17,7 @@ using NHibernate;
 
 namespace KeWeiOMS.Web
 {
-    public class Utilities
+    public static class Utilities
     {
         public const string OrderNo = "OrderNo";
         public const string UserNo = "UserNo";
@@ -690,6 +690,22 @@ namespace KeWeiOMS.Web
             return false;
         }
 
+        public static String ToDBC(String input)
+        {
+            char[] c = input.ToCharArray();
+            for (int i = 0; i < c.Length; i++)
+            {
+                if (c[i] == 12288)
+                {
+                    c[i] = (char)32;
+                    continue;
+                }
+                if (c[i] > 65280 && c[i] < 65375)
+                    c[i] = (char)(c[i] - 65248);
+            }
+            return new String(c);
+        }
+
         public static int ToInt(string str)
         {
             try
@@ -727,6 +743,22 @@ namespace KeWeiOMS.Web
             catch (Exception)
             {
                 return 0;
+            }
+
+        }
+
+       
+        public static  string ToStr(this object obj)
+        {
+            try
+            {
+                if (obj is DBNull || obj == null)
+                    return "";
+                return obj.ToString();
+            }
+            catch (Exception)
+            {
+                return "";
             }
 
         }

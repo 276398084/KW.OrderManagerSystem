@@ -141,6 +141,7 @@ function showdlg(url, dlg, handle) {
         $(this).dialog({
             title: '新建',
             modal: true,
+            rownumbers:true,
             loadingMessage: '正在加载...',
             buttons: [{
                 text: '提交',

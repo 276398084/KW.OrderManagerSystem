@@ -35,7 +35,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -95,7 +95,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows)
@@ -112,20 +112,34 @@ namespace KeWeiOMS.Web.Controllers
         public ViewResult SetCountry(int id)
         {
             Session["cid"] = id;
+            ViewData["Id"] = id;
             return View();
         }
         [HttpPost]
-        public JsonResult GetUnCountryByAreaCode(string sort,string order)
+        public JsonResult GetUnCountryByAreaCode(string sort, string order, int id)
         {
             string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = "order by " + sort + " " + order;
             }
-            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id not in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)"+orderby)
-              .SetInt32("cid", int.Parse(Session["cid"].ToString()))
-              .List<CountryType>();
-            return Json(new { total = list.Count, rows = list });
+            IList<object[]> list = NSession.CreateSQLQuery("select Id,CCountry,ECountry,CountryCode,(select AreaName from LogisticsArea where ID=(select top 1 AreaCode from LogisticsAreaCountry la where c.Id= la.CountryCode and la.AreaCode in (select ID from LogisticsArea where LId =(select LId from LogisticsArea where LogisticsArea.Id=:cid)))) as AreaNane from Country c where c.Id not in (select CountryCode from LogisticsAreaCountry where AreaCode=:cid)" + orderby)
+              .SetInt32("cid", id)
+              .List<object[]>();
+            List<CountryType> l = new List<CountryType>();
+
+            foreach (object[] foo in list)
+            {
+                CountryType c = new CountryType();
+                c.Id = Utilities.ToInt(foo[0]);
+                c.CCountry = foo[1].ToStr();
+                c.ECountry = foo[2].ToStr();
+                c.CountryCode = foo[3].ToStr();
+                c.AreaName = foo[4].ToStr();
+                l.Add(c);
+            }
+
+            return Json(new { total = l.Count, rows = l });
 
         }
         [HttpPost]
@@ -142,22 +156,25 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = list.Count, rows = list });
         }
 
-        public void DelAreaCountry(int id)
-        {   
-            LogisticsAreaCountryType logc = new LogisticsAreaCountryType { CountryCode = id.ToString(), AreaCode = int.Parse(Session["cid"].ToString()) };
+        public void DelAreaCountry(string id, int tid)
+        {
+            LogisticsAreaCountryType logc = new LogisticsAreaCountryType { CountryCode = id.ToString(), AreaCode = tid };
             IList<LogisticsAreaCountryType> list = NSession.CreateCriteria(typeof(LogisticsAreaCountryType))
                 .Add(Example.Create(logc))
                 .List<LogisticsAreaCountryType>();
-            foreach(LogisticsAreaCountryType item in  list)
+            foreach (LogisticsAreaCountryType item in list)
             {
                 NSession.Delete(item);
                 NSession.Flush();
             }
         }
-        public void AddAreaCountry(int id)
+        public void AddAreaCountry(string id, int tid)
         {
-            int tid = int.Parse(Session["cid"].ToString());
-            LogisticsAreaCountryType logcountry = new LogisticsAreaCountryType { CountryCode = id.ToString(), AreaCode = tid };
+            NSession.Delete("from LogisticsAreaCountryType where  CountryCode=" + id +
+                            " and AreaCode in (select Id from LogisticsAreaType where LId =(select LId from LogisticsAreaType where Id=" +
+                            tid + "))");
+            NSession.Flush();
+            LogisticsAreaCountryType logcountry = new LogisticsAreaCountryType { CountryCode = id, AreaCode = tid };
             NSession.Save(logcountry);
         }
     }

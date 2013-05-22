@@ -562,7 +562,6 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         [HttpPost]
         public ActionResult GetColumns(DateTime st, DateTime et)
         {
-
             List<object> cols = new List<object>();
             cols.Add(new { field = "人员", title = "人员", width = "150" });
             DateTime date = st;

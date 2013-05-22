@@ -18,77 +18,121 @@
                 pageSize: 20,
                 pageList: [20, 40, 60, 80, 100]
             });
+            $('#pp').combobox({
+                url: '/Account/Platform/1',
+                valueField: 'id',
+                textField: 'text',
+                width: 100,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
+            $('#pp').combobox("setValue", "ALL");
+            $('#loss').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+
+            $('#status').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: [["ALL", "ALL"], ["0", "已处理"], ["1", "部分发货"], ["2", "已发货"]],
+                width: 100
+            });
         });
 
-
+        function changePlatform(n, o) {
+            $('#aa').combotree({
+                url: '/Account/AccountList/' + n,
+                valueField: 'id',
+                textField: 'text',
+                width: 150
+            });
+            $('#aa').combotree("setValue", "ALL");
+        }
         //新建
         function c_dlg(i, id) {
             //0订单 1产品 2运费
             var url_str = "";
             if (i == 0) {
                 url_str = '@Url.Action("GetOrders", "OrderAmount")/' + id;
+                showdlg(url_str, 'c_dlg', function () {
+                    $('#c_dlg').dialog('close');
+                });
             } else if (i == 1) {
                 url_str = '@Url.Action("GetProducts", "OrderAmount")/' + id;
+                showdlg(url_str, 'c_dlg', function () {
+                    $('#d_dlg').dialog('close');
+                });
             } else if (i == 2) {
                 url_str = '@Url.Action("GetFreights", "OrderAmount")/' + id;
-            }
-
-    showdlg(url_str, 'c_dlg', function () {
-        $('#c_dlg').dialog('close');
-    });
-}
-
-//删除
-function del() {
-    var id = getselectedRow();
-    if (id != undefined) {
-
-        var url = '@Url.Action("Delete", "OrderAmount")/' + id;
-                alert(1);
-                delData(url, 'dg');
-
-            }
-        }
-
-        //获取选中行
-        function getselectedRow() {
-            var row = $('#dg').datagrid('getSelected');
-            if (row != undefined) {
-                if (row.hasOwnProperty('Id')) {
-                    var id = row['Id'];
-                    return id;
+                    showdlg(url_str, 'e_dlg', function () {
+                        $('#e_dlg').dialog('close');
+                    });
                 }
+    }
+
+    //删除
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
+
+            var url = '@Url.Action("Delete", "OrderAmount")/' + id;
+           
+            delData(url, 'dg');
+
+        }
+    }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
             }
-            $.messager.show({
-                title: '提示',
-                msg: '请选择行',
-                timeout: 3000,
-                showType: 'slide'
-            });
-            return (undefined);
         }
-        function doSearch() {
-            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-            $("#dg").datagrid("load", {
-                search: search
-            });
-        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+    function doSearch() {
+        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
 
-        function getAmount(v, r, i) {
-            return r.CurrencyCode + ":" + v;
-        }
+    function getAmount(v, r, i) {
+        return r.CurrencyCode + ":" + v;
+    }
 
-        function getFreights(v, r, i) {
-            return '<a href="javascript:void(0)" onclick="c_dlg(2,' + r.OId + ')">' + v + '</a>';
-        }
+    function getFreights(v, r, i) {
+        return '<a href="javascript:void(0)" onclick="c_dlg(2,' + r.OId + ')">' + v + '</a>';
+    }
 
-        function getOrders(v, r, i) {
-            return '<a href="javascript:void(0)" onclick="c_dlg(0,' + r.OId + ')">' + v + '</a>';
-        }
+    function getOrders(v, r, i) {
+        return '<a href="javascript:void(0)" onclick="c_dlg(0,' + r.OId + ')">' + v + '</a>';
+    }
 
-        function getProducts(v, r, i) {
-            return '<a href="javascript:void(0)" onclick="c_dlg(1,' + r.OId + ')">' + v + '</a>';
-        }
+    function getProducts(v, r, i) {
+        return '<a href="javascript:void(0)" onclick="c_dlg(1,' + r.OId + ')">' + v + '</a>';
+    }
+
+    function getFees(v, r, i) {
+        var html = "";
+        html += "手续费:" + r.Fee + "<br\>";
+        html += "交易费:" + r.TransactionFees + "<br\>";
+        html += "其他费:" + r.OtherFees + "<br\>";
+    }
     </script>
     <div region="center">
         <table id="dg">
@@ -97,10 +141,6 @@ function del() {
                     <th field="OrderNo" width="100">编号
                     </th>
                     <th field="OrderExNo" width="100">订单号
-                    </th>
-                    <th field="AgainCount" width="30" formatter="getOrders">重
-                    </th>
-                    <th field="SplitCount" width="30" formatter="getOrders">拆
                     </th>
                     <th field="OrderAmount" width="100" formatter="getAmount">金额
                     </th>
@@ -112,11 +152,7 @@ function del() {
                     </th>
                     <th field="TotalCosts" width="100" formatter="getProducts">成本
                     </th>
-                    <th field="Fee" width="100">手续费
-                    </th>
-                    <th field="TransactionFees" width="100">交易费
-                    </th>
-                    <th field="OtherFees" width="100">OtherFee
+                    <th field="Fee" width="100" formatter="getFees">手续费
                     </th>
                     <th field="Status" width="100">状态
                     </th>
@@ -126,19 +162,23 @@ function del() {
             </thead>
         </table>
         <div id="toolbar">
-
-            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
-            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">待定</a>
+            <br`/>
+           平台:<input id="pp" type="text"/>
+            账户:<input id="aa" type="text"/>
+            状态:<input id="status" type="text"/>
+            亏损:<input id="loss" type="text"/>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'" ></input>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>
             <div data-options="name:'OrderExNo'">订单号</div>
             <div data-options="name:'CurrencyCode'">货币</div>
-            <div data-options="name:'ExchangeRate'">汇率</div>
+            
         </div>
         <div id="c_dlg"></div>
-
+        <div id="d_dlg"></div>
+        <div id="e_dlg"></div>
 
     </div>
 </body>

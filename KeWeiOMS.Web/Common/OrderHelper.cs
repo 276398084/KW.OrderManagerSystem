@@ -863,8 +863,6 @@ namespace KeWeiOMS.Web
                 order.IsAudit = 1;
                 SaveAmount(order, currencys, NSession);
             }
-
-
             NSession.Clear();
             NSession.SaveOrUpdate(order);
             NSession.Flush();
@@ -894,7 +892,13 @@ namespace KeWeiOMS.Web
                     {
                         orderAmount.Status = "部分发货";
                     }
+                    else
+                    {
+                        orderAmount.Status = "已发货";
+                    }
                 }
+                orderAmount.Profit = order.RMB - orderAmount.TotalCosts - orderAmount.OtherFees - orderAmount.Fee -
+                              orderAmount.TransactionFees - orderAmount.TotalFreight;
             }
             else
             {
@@ -1095,7 +1099,7 @@ namespace KeWeiOMS.Web
         public static decimal GetFreight(double weight, string logisticMode, String countryCode, ISession NSession)
         {
 
-            IList<CountryType> c = NSession.CreateQuery("from CountryType").List<CountryType>();
+            IList<CountryType> c = NSession.CreateQuery("from CountryType where CCountry=:p1 or ECountry=:p1").SetString("p1", countryCode).List<CountryType>();
             if (c.Count > 0)
                 return GetFreight(weight, logisticMode, c[0].Id, NSession);
             else

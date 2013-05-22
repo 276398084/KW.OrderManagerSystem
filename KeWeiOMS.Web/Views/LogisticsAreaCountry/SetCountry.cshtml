@@ -4,12 +4,14 @@
 }
 
 <script type="text/javascript">
-
+    var tid = '@ViewData["Id"]';
     $(function () {
+      
         $('#countryTo').datagrid({
             url: '/LogisticsAreaCountry/GetCountryByAreaCode',
             title: '已选择的国家',
             width: 350,
+            queryParams:{"id":tid},
             singleSelect: true,
             height: 400,
             columns: [[
@@ -20,30 +22,33 @@
             onSelect: function (rowindex, rowData) {
                 if (rowindex == undefined) { return }
                 $('#countryForm').datagrid('appendRow', rowData);
-                removeCountry(rowData.Id)
+                removeCountry(rowData.Id);
                 $('#countryTo').datagrid('deleteRow', rowindex);
                 $('#countryTo').datagrid('deleteRow', unselectRow);
-
             }
         });
 
         $('#countryForm').datagrid({
             url: '/LogisticsAreaCountry/GetUnCountryByAreaCode',
-            title: '未选择的国家',
-            width: 350,
+            title: '其他国家',
+            queryParams: { "id": tid },
+            width: 430,
             singleSelect: true,
             height: 400,
             columns: [[
                { field: 'CCountry', title: '中文', width: 100, sortable: "true" },
                { field: 'ECountry', title: '英文', width: 120, sortable: "true" },
-               { field: 'CountryCode', title: '代码', width: 100, sortable: "true" }
+               { field: 'CountryCode', title: '代码', width: 100, sortable: "true" },
+               { field: 'AreaName', title: '区域', width: 100 }
             ]],
             onSelect: function (rowindex, rowData) {
-                if (rowindex == undefined) { return }
+                if (rowindex == undefined) {
+                    return;
+                }
                 $('#countryTo').datagrid('appendRow', rowData);
-                addCountry(rowData.Id)
+                addCountry(rowData.Id);
                 $('#countryForm').datagrid('deleteRow', rowindex);
-                $('#countryForm').datagrid('deleteRow', unselectRow);                
+                $('#countryForm').datagrid('deleteRow', unselectRow);
             }
         });
         $('#dlgCountry').dialog('open').dialog('setTitle', '国家设置');
@@ -51,12 +56,17 @@
     });
     function addCountry(c) {
         $.ajax({
-            url: '/LogisticsAreaCountry/AddAreaCountry/' + c
+            type: 'post',
+            data:"id="+c+"&tid="+tid,
+            url: '/LogisticsAreaCountry/AddAreaCountry/'
+
         });
     }
- function removeCountry(c) {
+    function removeCountry(c) {
         $.ajax({
-            url: '/LogisticsAreaCountry/DelAreaCountry/' + c
+            type: 'post',
+            data:"id="+c+"&tid="+tid,
+            url: '/LogisticsAreaCountry/DelAreaCountry/'
         });
     }
 
@@ -64,8 +74,8 @@
 
 @using (Html.BeginForm("SetCountry", "LogisticsMode", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-    
+    <fieldset>
+
         <table border="0">
             <tr>
                 <td>
@@ -80,5 +90,5 @@
             </tr>
         </table>
 
-</fieldset>
+    </fieldset>
 }

@@ -1166,9 +1166,13 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpGet]
         public JsonResult AAAA()
         {
-
-            TimeJi();
-
+            OrderType order = GetById(3727978);
+            order.Freight = Convert.ToDouble(OrderHelper.GetFreight(order.Weight, order.LogisticMode, order.Country, NSession));
+            NSession.SaveOrUpdate(order);
+            NSession.Flush();
+            OrderHelper.SaveAmount(order,NSession);
+           // TimeJi();
+            
             //AccountType account = NSession.CreateQuery("from AccountType where Id=16").List<AccountType>()[0];
 
             // OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);

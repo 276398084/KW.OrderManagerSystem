@@ -13,6 +13,7 @@ namespace KeWeiOMS.Web
 
         public string OrderExNo { get; set; }
 
+
         public string OrderType { get; set; }
 
         public double OrderAmount { get; set; }
@@ -23,6 +24,8 @@ namespace KeWeiOMS.Web
 
         public double RMB { get; set; }
 
+        public double Weight { get; set; }
+
         public string TrackCode { get; set; }
 
         public string LogisticMode { get; set; }
@@ -32,6 +35,10 @@ namespace KeWeiOMS.Web
         public string Country { get; set; }
 
         public DateTime SendOn { get; set; }
+
+        public string Platform { get; set; }
+
+        public string Account { get; set; }
 
         public string Remark { get; set; }
     }

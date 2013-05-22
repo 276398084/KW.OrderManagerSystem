@@ -24,7 +24,7 @@
             @Html.LabelFor(model => model.CCountry,"国家中文:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.CCountry,new{@id="c_CCountry" ,@required = "true"})
+            @Html.TextBoxFor(model => model.CCountry,new{@id="c_CCountry" , @class = "easyui-validatebox",@required = "true"})
 		</td>
 	</tr>
 
@@ -33,7 +33,7 @@
             @Html.LabelFor(model => model.ECountry,"国家英文:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.ECountry,new{@id="c_ECountry",@required = "true"})
+            @Html.TextBoxFor(model => model.ECountry,new{@id="c_ECountry", @class = "easyui-validatebox",@required = "true"})
 		</td>
 	</tr>
 
@@ -42,7 +42,7 @@
             @Html.LabelFor(model => model.CountryCode,"国家代码:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.CountryCode,new{@id="c_CountryCode",@required = "true"})
+            @Html.TextBoxFor(model => model.CountryCode,new{@id="c_CountryCode", @class = "easyui-validatebox",@required = "true"})
 		</td>
 	</tr>
 
