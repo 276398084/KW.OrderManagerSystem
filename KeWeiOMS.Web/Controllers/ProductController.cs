@@ -495,6 +495,8 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                                                  CurrentUser, NSession);
                 if (s == "停产")
                 {
+                    int count = 0;
+                    string orderid = "";
                     List<OrderType> orderTypes =
                         NSession.CreateQuery(
                             "from OrderType where Id in(select OId from OrderProductType where SKU='" + productType.SKU + "') and Status='已处理' and Enabled=1")
@@ -505,9 +507,14 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                         NSession.Update(orderType);
                         NSession.Flush();
                         LoggerUtil.GetOrderRecord(orderType, "订单产品属性修改",
-                                                  "产品：" + productType.SKU + "状态修改为“" + s + "”，同时订单属性设置为停售订单",
-                                                  CurrentUser, NSession);
+                                                  "产品：" + productType.SKU + "状态修改为“" + s + "”，同时订单属性设置为停售订单", CurrentUser, NSession);
+                        orderid += orderType.OrderNo+"  ";
+                        count++;
                     }
+                    PlacardType placard = new PlacardType {CardType="产品",Title=productType.SKU+" 停产" ,Content="相关"+count+"条订单编号： "+orderid,CreateBy="系统自动",CreateOn=DateTime.Now,IsTop=1 };
+                    NSession.Save(placard);
+                    NSession.Flush();
+
                 }
             }
             return Json(new { IsSuccess = true });
