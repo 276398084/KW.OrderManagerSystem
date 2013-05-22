@@ -1,0 +1,70 @@
+﻿@model KeWeiOMS.Domain.EmailMessageType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_RserverDate').datebox();
+
+
+        $('#e_CreateOn').datebox();
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "EmailMessage", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageId,"邮件编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageId,new{@id="e_MessageId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderExNo,"订单编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderExNo,new{@id="e_OrderExNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RserverDate,"接收时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RserverDate,new{@id="e_RserverDate"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

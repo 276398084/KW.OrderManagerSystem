@@ -27,6 +27,16 @@
 		</td>
 	</tr>
 
+    	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageType,"消息类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageType,new{@id="c_MessageType"})
+		</td>
+	</tr>
+
+
 	<tr>
 		<td>
             @Html.LabelFor(model => model.AccountName,"账户名:")
@@ -45,6 +55,14 @@
 		</td>
 	</tr>
 
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.EmailPassword,"邮箱密码:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.EmailPassword,new{@id="c_EmailPassword"})
+		</td>
+	</tr>
 
 </table>
 </fieldset>

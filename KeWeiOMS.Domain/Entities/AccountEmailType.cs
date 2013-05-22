@@ -38,12 +38,24 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 账户名
         /// </summary>
+        public virtual String MessageType { get; set; }
+
+
+        /// <summary>
+        /// 账户名
+        /// </summary>
         public virtual String AccountName { get; set; }
 
         /// <summary>
         /// 邮箱名称
         /// </summary>
         public virtual String Email { get; set; }
+
+
+        /// <summary>
+        /// 邮箱名称
+        /// </summary>
+        public virtual String EmailPassword { get; set; }
 
     }
 }

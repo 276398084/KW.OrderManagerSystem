@@ -277,6 +277,71 @@ namespace KeWeiOMS.Web
             }
 
         }
+
+        [WebMethod]
+        public List<AccountEmailType> EmailAccount()
+        {
+            List<AccountEmailType> account = new List<AccountEmailType>();
+            ArrayList arry = new ArrayList();
+            try
+            {
+                account = NSession.CreateQuery("from AccountEmailType").List<AccountEmailType>().ToList();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return account;
+        }
+
+        [WebMethod]
+        public string EmailMessageSyn(EmailMessageType obj)
+        {
+            try
+            {
+                if (Exit(obj.MessageId))
+                {
+                    return "该留言已存在";
+                }
+                NSession.Save(obj);
+                NSession.Flush();
+                IList<OrderType> orders = NSession.CreateQuery("from OrderType where OrderExNo='"+obj.OrderExNo+"'").List<OrderType>();
+                foreach(OrderType order in orders)
+                {
+                    order.IsLiu = 1;
+                    order.BuyerMemo=obj.RserverDate+" 买家留言<br>"+order.SellerMemo;
+                    NSession.Update(order);
+                    NSession.Flush();
+                    NSession.Clear();
+
+                    OrderRecordType orderRecord = new OrderRecordType();
+                    orderRecord.OId = order.Id;
+                    orderRecord.OrderNo =order.OrderNo;
+                    orderRecord.RecordType = "买家留言";
+                    orderRecord.CreateBy ="系统自动";
+                    orderRecord.Content = "买家留言";
+                    orderRecord.CreateOn = DateTime.Now;
+                    NSession.Save(orderRecord);
+                    NSession.Flush();
+                    NSession.Clear();
+                }
+                return "保存成功";
+            }
+            catch (Exception e)
+            {
+                return "保存出错";
+            }
+
+        }
+        private bool Exit(string msgid)
+        {
+            object obj = NSession.CreateQuery("select Count(Id) from EmailMessageType where MessageId='" + msgid + "'").UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
+        }
         
     }
 }

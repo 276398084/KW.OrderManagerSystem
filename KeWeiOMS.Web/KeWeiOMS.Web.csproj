@@ -164,6 +164,7 @@
     <Compile Include="Controllers\EbayMessageReController.cs" />
     <Compile Include="Controllers\EbayReplayController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\EmailMessageController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\GMarketController.cs" />
@@ -1631,6 +1632,11 @@
     <Content Include="Views\Statistics\RefundAmountCount.cshtml" />
     <Content Include="Views\OrderAmount\StockIndex.cshtml" />
     <Content Include="Views\OrderAmount\FreightIndex.cshtml" />
+    <Content Include="Views\EmailMessage\Create.cshtml" />
+    <Content Include="Views\EmailMessage\Delete.cshtml" />
+    <Content Include="Views\EmailMessage\Details.cshtml" />
+    <Content Include="Views\EmailMessage\Edit.cshtml" />
+    <Content Include="Views\EmailMessage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
