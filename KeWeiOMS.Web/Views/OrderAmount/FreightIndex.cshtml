@@ -4,7 +4,7 @@
 <script type="text/javascript">
 
     $(function () {
-        alert('2');
+      
         $("#cc").datebox({
             parser: myparser
         });
@@ -94,39 +94,88 @@
     }
     function getScanningOn(v, r, i) {
         if (r.Status == "已发货" || r.Status == "已完成")
-            return v;
+            return getDate(v);
         else {
             return "";
         }
     }
 
-    function getFreightType(v, r, i) {
-        if (r.IsSplit == 1)
-            return "拆包";
-        if (r.IsRepeat == 1) {
-            return "重发";
-        }
-        return "正常";
-    }
-    function doSearch() {
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        var u = $('#IsError').combobox("getValue");
+    function  getSearch() {
+       var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var u = $('#pp').combobox("getValue");
         if (u != "ALL" && u != "" && u != "0") {
+            search += "Platform_es&" + u + "^";
+        }
+        u = $('#aa').combobox("getText");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "Account_es&" + u + "^";
+        }
+        u = $('#status').combobox("getValue");
+        if (u != "ALL" && u != "") {
             if (u == "1") {
-                search += "IsError_si&1^";
+                search += "Status_ds&已发货^";
             } else {
-                search += "IsError_ei&0^";
+                search += "Status_un&已发货^";
             }
         }
+        u = $('#cc').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += "CreateOn_st&" + u + "^";
+        }
+
+        u = $('#cc2').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += "CreateOn_et&" + u + "^";
+        }
+
+        u = $('#ltype').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            if (u == "1") {
+                search += "IsRepeat_si&1^";
+            } else {
+                search += "IsRepeat_ei&0^";
+            }
+        }
+
+        u = $('#lmode').combogrid("getValue");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "LogisticMode_ds&" + u + "^";
+        }
+        return search;
+    }
+
+    function doSearch() {
+
+        var search = getSearch();
         $("#dg").datagrid("load", {
             search: search
+        });
+    }
+
+    function resetFreight() {
+        $('#dg').datagrid("loading");
+        var search = getSearch();
+        $.messager.prompt('重置运费', '折扣', function (r) {
+            if (r.length>0) {
+                jQuery.ajax({
+                    url: "/OrderAmount/ResetFreight",
+                    type: "post",
+                    data: 'search=' +encodeURIComponent(search) + "&z=" + r,
+                    success: function (sss) {
+                        $('#dg').datagrid("reload");
+                    }
+                });
+            } else {
+                alert("请输入折扣");
+                return false;
+            }
         });
     }
 </script>
 <table id="dg">
     <thead>
         <tr>
-            <th field="Id" width="100" formatter="getFreightType">运费类型
+            <th field="OrderType" width="100">运费类型
             </th>
             <th field="OrderNo" width="100">订单号
             </th>
@@ -150,7 +199,7 @@
     </thead>
 </table>
 <div id="toolbar">
-    <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="alert('1')">重置运费</a>
+    <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="resetFreight()">重置运费</a>
     <br />
     平台:<input id="pp" type="text" />
     账户:<input id="aa" type="text" />
@@ -165,4 +214,5 @@
     <div data-options="name:'OrderNo'">订单编号</div>
     <div data-options="name:'OrderExNo'">追踪码</div>
 </div>
+<div id="c_dlg"></div>
 

@@ -156,7 +156,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             try
             {
                 List<ResultInfo> results = new List<ResultInfo>();
-
                 DataTable dt = OrderHelper.GetDataTable(fileName);
                 IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -167,7 +166,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     {
                         continue;
                     }
-
                     p.Status = dt.Rows[i]["销售状态"].ToString();
                     p.ProductName = dt.Rows[i]["名称"].ToString();
                     p.Category = dt.Rows[i]["分类"].ToString();

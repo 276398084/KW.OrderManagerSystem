@@ -135,7 +135,10 @@
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Statistics\AmountCount.cs" />
+    <Compile Include="Common\Statistics\DisputeCount.cs" />
     <Compile Include="Common\Statistics\LeveData.cs" />
+    <Compile Include="Common\Statistics\LeveDays.cs" />
     <Compile Include="Common\Statistics\OrderCount.cs" />
     <Compile Include="Common\OrderHelper.cs" />
     <Compile Include="Common\easyui\RadioButtonListHelper.cs" />
@@ -144,6 +147,7 @@
     <Compile Include="Common\Statistics\ProportionData.cs" />
     <Compile Include="Common\Statistics\PurchaseData.cs" />
     <Compile Include="Common\Statistics\QueCount.cs" />
+    <Compile Include="Common\Statistics\Sores.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -160,6 +164,7 @@
     <Compile Include="Controllers\EbayMessageReController.cs" />
     <Compile Include="Controllers\EbayReplayController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\EmailMessageController.cs" />
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\GMarketController.cs" />
@@ -197,9 +202,11 @@
     <Compile Include="Controllers\PurchasePlanController.cs" />
     <Compile Include="Controllers\PurchaseTroubleController.cs" />
     <Compile Include="Controllers\QuestionOrderController.cs" />
+    <Compile Include="Controllers\RefundAmountController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
+    <Compile Include="Controllers\SoresAddController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
     <Compile Include="Controllers\StockInController.cs" />
     <Compile Include="Controllers\StockOutController.cs" />
@@ -1601,15 +1608,37 @@
     <Content Include="Views\PurchasePlan\CreateByW.cshtml">
       <SubType>Code</SubType>
     </Content>
-<<<<<<< HEAD
-    <Content Include="Views\Product\副本 Index.cshtml" />
-    <Content Include="Views\Order\StopIndex.cshtml" />
-    <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
-    <Content Include="Views\Order\AliSendScan.cshtml" />
-=======
     <Content Include="Views\User\ChangePassword.cshtml" />
     <Content Include="Views\Product\ImportProduct.cshtml" />
     <Content Include="Views\Home\Result.cshtml" />
+    <Content Include="Views\Order\StopIndex.cshtml" />
+    <Content Include="Views\Order\QuestionOrderIndex.cshtml" />
+    <Content Include="Views\Order\AliSendScan.cshtml" />
+    <Content Include="Views\Order\SplitNoSend.cshtml" />
+    <Content Include="Views\Statistics\SendDays.cshtml" />
+    <Content Include="Views\Statistics\GetOrder.cshtml" />
+    <Content Include="Views\Statistics\PackScore.cshtml" />
+    <Content Include="Views\SoresAdd\Create.cshtml" />
+    <Content Include="Views\SoresAdd\Delete.cshtml" />
+    <Content Include="Views\SoresAdd\Details.cshtml" />
+    <Content Include="Views\SoresAdd\Edit.cshtml" />
+    <Content Include="Views\SoresAdd\Index.cshtml" />
+    <Content Include="Views\Statistics\DisputeCount.cshtml" />
+    <Content Include="Views\RefundAmount\Create.cshtml" />
+    <Content Include="Views\RefundAmount\Delete.cshtml" />
+    <Content Include="Views\RefundAmount\Details.cshtml" />
+    <Content Include="Views\RefundAmount\Edit.cshtml" />
+    <Content Include="Views\RefundAmount\Index.cshtml" />
+    <Content Include="Views\Statistics\RefundAmountCount.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\OrderAmount\StockIndex.cshtml" />
+    <Content Include="Views\OrderAmount\FreightIndex.cshtml" />
+=======
+    <Content Include="Views\EmailMessage\Create.cshtml" />
+    <Content Include="Views\EmailMessage\Delete.cshtml" />
+    <Content Include="Views\EmailMessage\Details.cshtml" />
+    <Content Include="Views\EmailMessage\Edit.cshtml" />
+    <Content Include="Views\EmailMessage\Index.cshtml" />
 >>>>>>> kewei/ttt
   </ItemGroup>
   <ItemGroup>

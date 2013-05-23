@@ -414,7 +414,7 @@
                 if (row.hasOwnProperty('OrderNo')) {
                     var id = row['OrderNo'];
                     if (id != undefined) {
-                        var url_str = '@Url.Action("Create","Dispute")/' + id;
+                        var url_str = '@Url.Action("Create", "Dispute")/' + id;
                         showdlg(url_str, 'c_dlg', disputeAdd)
                     }
                 }
@@ -422,7 +422,7 @@
         }
         function disputeAdd() {
             formPost('c_form', '@Url.Action("Create", "Dispute")', 'c_dlg', 'dg');
-                }
+        }
 
         function reSend() {
             var s_ids = getselectedRows(0);

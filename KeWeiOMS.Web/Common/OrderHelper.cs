@@ -796,9 +796,10 @@ namespace KeWeiOMS.Web
         public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession)
         {
 
-            bool resultValue = true;
-            order.ErrorInfo = "";
 
+            bool resultValue = true;
+
+            order.ErrorInfo = "";
             if (order.Country != null)
             {
                 if (
@@ -847,33 +848,47 @@ namespace KeWeiOMS.Web
                     order.ErrorInfo += "SKU不符";
                     break;
                 }
-                item.SKU = item.SKU.Trim();
-                NSession.SaveOrUpdate(item);
-                NSession.Flush();
-                if (products.FindIndex(p => p.SKU.Trim().ToUpper() == item.SKU.Trim().ToUpper()) == -1)
+
+                ProductType product = products.Find(p => p.SKU.Trim().ToUpper() == item.SKU.Trim().ToUpper());
+                if (product == null)
                 {
                     resultValue = false;
                     order.ErrorInfo += "SKU不符";
                     break;
                 }
+                else
+                {
+                    if (product.Status == "停产")
+                    {
+                        order.IsStop = 1;
+                    }
+                }
+
             }
 
             if (resultValue)
             {
                 order.IsAudit = 1;
                 SaveAmount(order, currencys, NSession);
+
             }
             NSession.Clear();
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             if (order.ErrorInfo == "")
+            {
                 order.ErrorInfo = "验证成功！";
+                if (order.IsStop == 1)
+                {
+                    LoggerUtil.GetOrderRecord(order, "验证订单", "订单中有停产产品，自动设为停产订单", NSession);
+                }
+            }
             LoggerUtil.GetOrderRecord(order, "验证订单", order.ErrorInfo, NSession);
+
             return resultValue;
         }
         public static void UpdateAmount(OrderType order, ISession NSession)
         {
-
             OrderAmountType orderAmount = NSession.CreateQuery("from OrderAmountType where OId=" + order.Id).SetMaxResults(1).List<OrderAmountType>()[0];
             if (order.Status != "已发货")
             {
@@ -917,6 +932,8 @@ namespace KeWeiOMS.Web
 
         public static void SaveAmount(OrderType order, List<CurrencyType> currencys, ISession NSession)
         {
+            NSession.Delete("from OrderAmountType where OId=" + order.Id);
+            NSession.Flush();
             CurrencyType currency = currencys.Find(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper());
             order.Status = OrderStatusEnum.已处理.ToString();
             order.RMB = Convert.ToDouble(currency.CurrencyValue) * order.Amount;
@@ -1096,29 +1113,28 @@ namespace KeWeiOMS.Web
                 return string.Empty;
             }
         }
-        public static decimal GetFreight(double weight, string logisticMode, String countryCode, ISession NSession)
+        public static decimal GetFreight(double weight, string logisticMode, String countryCode, ISession NSession, decimal discount = 0)
         {
 
             IList<CountryType> c = NSession.CreateQuery("from CountryType where CCountry=:p1 or ECountry=:p1").SetString("p1", countryCode).List<CountryType>();
             if (c.Count > 0)
-                return GetFreight(weight, logisticMode, c[0].Id, NSession);
+                return GetFreight(weight, logisticMode, c[0].Id, NSession, discount);
             else
             {
                 return -1;//-1为国家错误
             }
 
         }
-
-
-        public static decimal GetFreight(double weight, string logisticMode, int country, ISession NSession)
+        public static decimal GetFreight(double weight, string logisticMode, int country, ISession NSession, decimal discount = 0)
         {
 
-            decimal discount = 0;
+
             decimal ReturnFreight = 0;
             IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='" + logisticMode + "'").List<LogisticsModeType>();
             foreach (var item in logmode)
             {
-                discount = decimal.Parse(item.Discount.ToString());
+                if (discount == 0)
+                    discount = decimal.Parse(item.Discount.ToString());
                 IList<LogisticsAreaType> areas = NSession.CreateQuery("from LogisticsAreaType where LId='" + item.ParentID + "'").List<LogisticsAreaType>();
                 List<LogisticsAreaCountryType> AreaCountrys = NSession.CreateQuery("from LogisticsAreaCountryType where CountryCode='" + country + "' ").List<LogisticsAreaCountryType>().ToList();
                 foreach (var foo in areas)

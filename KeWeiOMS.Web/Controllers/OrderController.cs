@@ -637,8 +637,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             NSession.Clear();
             OrderType obj = GetById(Utilities.ToInt(o));
-            obj.IsSplit = 1;
-            // obj.IsRepeat=1
+            obj.IsSplit = 0;
+
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
@@ -647,8 +647,12 @@ namespace KeWeiOMS.Web.Controllers
             obj.Amount = 0;
             obj.IsPrint = 0;
             obj.RMB = 0;
+            obj.TrackCode = "";
+            obj.Freight = 0;
+            obj.Weight = 0;
             obj.OrderNo = Utilities.GetOrderNo(NSession);
-            obj.MId = Utilities.ToInt(o);
+            if (obj.MId == 0)
+                obj.MId = obj.Id;
             NSession.Save(obj);
             NSession.Flush();
             OrderHelper.SaveAmount(obj, NSession);
@@ -675,7 +679,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             NSession.Clear();
             OrderType obj = GetById(Utilities.ToInt(o));
-            obj.IsRepeat = 1;
+            obj.IsRepeat = 0;
             NSession.Update(obj);
             NSession.Flush();
             List<OrderProductType> ps = Newtonsoft.Json.JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
@@ -684,9 +688,11 @@ namespace KeWeiOMS.Web.Controllers
             obj.IsPrint = 0;
             obj.IsRepeat = 1;
             obj.TrackCode = "";
+            obj.Freight = 0;
             obj.Weight = 0;
             obj.CreateOn = DateTime.Now;
-            obj.MId = obj.Id;
+            if (obj.MId == 0)
+                obj.MId = obj.Id;
             obj.RMB = 0;
             obj.Status = OrderStatusEnum.已处理.ToString();
             obj.IsOutOfStock = 0;
@@ -799,7 +805,6 @@ namespace KeWeiOMS.Web.Controllers
                         subjest = "拦截-重置产品入库";
                     }
                     SetQuestionOrder(subjest, orderType);
-
                     LoggerUtil.GetOrderRecord(orderType, "拦截订单！", "将订单拦截，原因：" + t + " " + d, CurrentUser, NSession);
                 }
 
@@ -1170,9 +1175,9 @@ left join Products P On OP.SKU=P.SKU ";
             order.Freight = Convert.ToDouble(OrderHelper.GetFreight(order.Weight, order.LogisticMode, order.Country, NSession));
             NSession.SaveOrUpdate(order);
             NSession.Flush();
-            OrderHelper.SaveAmount(order,NSession);
-           // TimeJi();
-            
+            OrderHelper.SaveAmount(order, NSession);
+            // TimeJi();
+
             //AccountType account = NSession.CreateQuery("from AccountType where Id=16").List<AccountType>()[0];
 
             // OrderHelper.APIByEbayFee(account, DateTime.Now.AddDays(-27), DateTime.Now.AddDays(1), NSession);
@@ -1631,26 +1636,20 @@ select SKU,SUM(Qty) as Qty,(select isnull(SUM(Qty),0) from WarehouseStock where 
 
         public JsonResult Connect(int id)
         {
-            List<OrderType> objlist = new List<OrderType>();
+            IList<OrderType> objlist = new List<OrderType>();
             OrderType obj = GetById(id);
             if (obj.MId != 0)
             {
-                objlist = MidGetOrder(obj.MId);
+                objlist = NSession.CreateQuery("from OrderType where (Id=:p1 or MId=:p1) and Id <> :p2").SetInt32("p1", obj.MId).SetInt32("p2", obj.Id).List<OrderType>();
+            }
+            else
+            {
+                objlist = NSession.CreateQuery("from OrderType where (Id=:p1 or MId=:p1) and Id <> :p1").SetInt32("p1", obj.Id).List<OrderType>();
             }
             return Json(objlist);
         }
 
-        List<OrderType> arry = new List<OrderType>();
-        public List<OrderType> MidGetOrder(int mid)
-        {
-            OrderType obj = GetById(mid);
-            arry.Add(obj);
-            if (obj.MId != 0)
-            {
-                MidGetOrder(obj.MId);
-            }
-            return arry;
-        }
+
 
     }
 }

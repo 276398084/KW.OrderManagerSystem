@@ -28,6 +28,7 @@ namespace KeWeiOMS.Web
         public const string End_Int = "_ei";
         public const string End_String = "_es";
         public const string DDL_String = "_ds";
+        public const string DDL_UnString = "_un";
         public const string CookieName = "KeWeiOMS_User";
         public const string BPicPath = "/ProductImg/BPic/";
         public const string SPicPath = "/ProductImg/SPic/";
@@ -299,6 +300,11 @@ namespace KeWeiOMS.Web
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(DDL_String)) //需要查询的列名
                     {
                         where += item.Key.Remove(item.Key.IndexOf(DDL_String)) + " = '" + item.Value + "'";
+                        continue;
+                    }
+                    if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(DDL_UnString)) //需要查询的列名
+                    {
+                        where += item.Key.Remove(item.Key.IndexOf(DDL_String)) + " <> '" + item.Value + "'";
                         continue;
                     }
                     where += item.Key + " like '%" + item.Value + "%'";
@@ -747,8 +753,8 @@ namespace KeWeiOMS.Web
 
         }
 
-       
-        public static  string ToStr(this object obj)
+
+        public static string ToStr(this object obj)
         {
             try
             {
