@@ -103,9 +103,9 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true  });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+		public JsonResult List(int page, int rows, string search)
         {
-            string orderby = Utilities.OrdeerBy(sort, order);
+            string orderby = " order by CurrentDate desc ";
             string where = Utilities.SqlWhere(search);
             IList<AttendType> objList = NSession.CreateQuery("from AttendType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
@@ -113,7 +113,7 @@ namespace KeWeiOMS.Web.Controllers
                 .List<AttendType>();
             
             object count = NSession.CreateQuery("select count(Id) from AttendType " + where ).UniqueResult();
-            return Json(new { total = count, rows = objList });
+            return Json(new { total = count, rows = objList.OrderByDescending(p=>p.CurrentDate) });
         }
 
        //首页显示   ListToday
@@ -128,29 +128,42 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         //签到操作
-        public JsonResult AttendOn(int id)
+        public JsonResult AttendOn(int id,string code="")
         {
             string ip = GetIP();
+            DateTime AttentTime = DateTime.Now;
+            int userid=CurrentUser.Id;
+            string usercode= CurrentUser.Code;
+            string realname=CurrentUser.Realname;
+            if(code!="")
+            {
+                IList<UserType> users = NSession.CreateQuery("from UserType where Code='"+code+"'").List<UserType>();
+                if (users.Count > 0)
+                {
+                    userid = users[0].Id;
+                    usercode = users[0].Code;
+                    realname = users[0].Realname;
+                }
+                else
+                {
+                    return Json(new { Msg = code+" 编号不存在！" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            AttendType obj = new AttendType() { CurrentDate = AttentTime.Date, UserId = userid, UserCode = usercode, RealName = realname };
             try
             {
-                AttendType obj = new AttendType() { CurrentDate = DateTime.Now.Date, UserId = CurrentUser.Id, UserCode = CurrentUser.Code, RealName = CurrentUser.Realname };
-                IList<AttendType> list = NSession.CreateQuery("from AttendType").List<AttendType>();
+
+                IList<AttendType> list = NSession.CreateQuery("from AttendType where UserId='" + obj.UserId + "' and CurrentDate='"+obj.CurrentDate+"'").List<AttendType>();
                 if (IsOK(ip))
                 {
-                    foreach (var item in list)
-                    {
-                        if (item.UserId == obj.UserId)
-                        {
-                            IList<AttendType> objList = NSession.CreateQuery("from AttendType " + " where UserId=\'" + CurrentUser.Id + "\'  order by CurrentDate desc ")
+                            IList<AttendType> objList = NSession.CreateQuery("from AttendType " + " where UserId=\'" + obj.UserId + "\'  order by CurrentDate desc ")
                             .List<AttendType>();
                             NoAttend(objList[0].CurrentDate);
-                            if (item.CurrentDate == obj.CurrentDate)
-                            {
-                                obj = item;
+                            if (list.Count > 0)
+                            { 
+                             obj = list[0];
                             }
-                        }
-                    }
-                    obj.IP = ip;
+                           obj.IP = ip;
                 }
                 else
                     return Json(new { Msg = "请使用公司网络打卡！" }, JsonRequestBehavior.AllowGet);
@@ -159,8 +172,8 @@ namespace KeWeiOMS.Web.Controllers
                     {
                         case 0:
                             if (string.IsNullOrEmpty(obj.AMStart)) 
-                            { 
-                                obj.AMStart = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); 
+                            {
+                                obj.AMStart = AttentTime.ToString("yyyy-MM-dd HH:mm:ss"); 
                             }
                             else
                                 return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
@@ -168,7 +181,7 @@ namespace KeWeiOMS.Web.Controllers
                         case 1:
                             if (string.IsNullOrEmpty(obj.AMEnd))
                             {
-                                obj.AMEnd = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                                obj.AMEnd = AttentTime.ToString("yyyy-MM-dd HH:mm:ss");
                             }
                             else
                                 return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
@@ -176,7 +189,7 @@ namespace KeWeiOMS.Web.Controllers
                         case 2:
                             if (string.IsNullOrEmpty(obj.PMStart))
                             {
-                                obj.PMStart = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                                obj.PMStart = AttentTime.ToString("yyyy-MM-dd HH:mm:ss");
                             }
                             else
                                 return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
@@ -184,7 +197,7 @@ namespace KeWeiOMS.Web.Controllers
                         case 3:
                             if (string.IsNullOrEmpty(obj.PMEnd))
                             {
-                                obj.PMEnd = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                                obj.PMEnd = AttentTime.ToString("yyyy-MM-dd HH:mm:ss");
                             }
                             else 
                                 return Json(new { Msg = "请不要重复打卡！" }, JsonRequestBehavior.AllowGet);
@@ -197,7 +210,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { Msg = "出错了" },JsonRequestBehavior.AllowGet);
             }
-            return Json(new { Msg = "签到成功" }, JsonRequestBehavior.AllowGet);
+            return Json(new { Msg = obj.RealName + " 签到成功:" + AttentTime.ToString("yyyy-MM-dd HH:mm:ss") }, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -208,6 +221,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 AttendType obj = new AttendType() { CurrentDate = DateTime.Now.Date.AddDays(-i), UserId = CurrentUser.Id, UserCode = CurrentUser.Code, RealName = CurrentUser.Realname };
                 NSession.Save(obj);
+                NSession.Flush();
             }
         }
 
