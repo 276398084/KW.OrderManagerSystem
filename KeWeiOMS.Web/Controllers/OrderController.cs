@@ -1429,46 +1429,53 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
-        public void TimeJi()
+        public JsonResult TimeJi(DateTime st,DateTime et)
         {
-            List<ProductType> ProductList = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
-            List<OrderPackRecordType> orders = NSession.CreateQuery("from OrderPackRecordType where PackOn>'2013-05-07 16:02:16.000' and PackOn < '2013-05-08 12:42:29.000'").List<OrderPackRecordType>().ToList();
-
-            using (ITransaction tran = NSession.BeginTransaction())
+            try
             {
-                foreach (OrderPackRecordType item in orders)
+                List<ProductType> ProductList = NSession.CreateQuery("from ProductType").List<ProductType>().ToList();
+                List<OrderPackRecordType> orders = NSession.CreateQuery("from OrderPackRecordType where PackOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'").List<OrderPackRecordType>().ToList();
+
+                using (ITransaction tran = NSession.BeginTransaction())
                 {
-                    double coe = 0;
-                    List<OrderProductType> OrderProducts = NSession.CreateQuery("from OrderProductType where OrderNo='" + item.OrderNo + "'").List<OrderProductType>().ToList();
-                    if (OrderProducts.Count == 0)
+                    foreach (OrderPackRecordType item in orders)
                     {
-                        item.PackCoefficient = 3;
-                    }
-                    else
-                    {
-                        foreach (var product in OrderProducts)
+                        double coe = 0;
+                        List<OrderProductType> OrderProducts = NSession.CreateQuery("from OrderProductType where OrderNo='" + item.OrderNo + "'").List<OrderProductType>().ToList();
+                        if (OrderProducts.Count == 0)
                         {
-                            List<ProductType> Products = ProductList.Where(p => p.SKU.ToString().ToUpper() == product.SKU.ToString().ToUpper()).ToList();
-                            if (Products.Count != 0)
+                            item.PackCoefficient =1;
+                        }
+                        else
+                        {
+                            foreach (var product in OrderProducts)
                             {
-                                if (Products[0].PackCoefficient > coe)
+                                List<ProductType> Products = ProductList.Where(p => p.SKU.ToString().ToUpper() == product.SKU.ToString().ToUpper()).ToList();
+                                if (Products.Count != 0)
                                 {
-                                    coe = Products[0].PackCoefficient;
+                                    if (Products[0].PackCoefficient > coe)
+                                    {
+                                        coe = Products[0].PackCoefficient;
+                                    }
+                                }
+                                else
+                                {
+                                    coe = 0;
                                 }
                             }
-                            else
-                            {
-                                coe = 1;
-                            }
+                            item.PackCoefficient = coe;
                         }
-                        item.PackCoefficient = coe;
+                        NSession.Update(item);
+
                     }
-                    NSession.Update(item);
-
+                    tran.Commit();
                 }
-                tran.Commit();
             }
-
+            catch(Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult OutStockByJi(string p, string o)

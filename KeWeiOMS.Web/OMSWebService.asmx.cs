@@ -184,10 +184,8 @@ namespace KeWeiOMS.Web
             if (Convert.ToInt32(obj) > 0)
             {
                 return true;
-
             }
             return false;
-
         }
 
         [WebMethod]

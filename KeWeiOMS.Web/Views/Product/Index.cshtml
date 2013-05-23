@@ -164,7 +164,18 @@
                     });
                 }
             }
-
+            function kuai(v) {
+                if (v == 1) {
+                    name = "Weight_ei";
+                }
+                if (v == 2) {
+                    name = "Price_ei";
+                }
+                var search = name + "&0^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
     </script>
     <div region="center">
         <table id="dg" >
@@ -218,7 +229,10 @@
             类别：<input id="SearchCategory" />
             状态：<input id="SearchStatus" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-splitbutton" data-options="menu:'#mm1',iconCls:'icon-edit'">修改产品状态</a>
+            <a href="#" class="easyui-splitbutton" data-options="menu:'#mm1',iconCls:'icon-edit'">修改产品状态</a><br/>
+            快捷查询：
+            <img src='/Content/images/Display.gif'> <a href="#"  onclick="kuai(1)">重量为0</a>
+            <img src='/Content/images/Display.gif'><a href="#"  onclick="kuai(2)">价格为0</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'SKU'">SKU</div>

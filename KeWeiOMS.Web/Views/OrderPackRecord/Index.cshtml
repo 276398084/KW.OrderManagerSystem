@@ -107,6 +107,24 @@
                     search: search
             });
         }
+        function syncoe() {
+            $('#dg').datagrid('loading');
+            $.ajax({
+                url: '@Url.Action("TimeJi","Order")',
+                type:'post',
+                data: { st: $('#txtStartDate').datebox("getValue"), et: $('#txtEndDate').datebox("getValue") },
+                success: function (result) { 
+                    if (result.IsSuccess) {
+                        alert("更新成功");
+                        $('#dg').datagrid('reload');
+                    }
+                    else {
+                        alert("更新出错");
+                        $('#dg').datagrid('reload');
+                    }
+                }
+            })
+        }
 
     </script>
     <div region="center">
@@ -131,24 +149,23 @@
                     <th field="PackOn" width="100" formatter="getDate">包装时间
                     </th>
 
-
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+@*            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>*@
                             开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width:100px" readonly="readonly"  />&nbsp;
                 结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width:100px"/>&nbsp;&nbsp;
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-reload" plain="true" onclick="syncoe();">更新系数</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单</div>
             <div data-options="name:'PackBy'">包装人</div>
             <div data-options="name:'ScanBy'">扫描人</div>
-
         </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>

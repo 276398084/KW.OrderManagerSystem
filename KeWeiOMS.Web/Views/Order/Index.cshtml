@@ -622,7 +622,28 @@
             });
 
         }
-
+        function kuai(v) {
+            if (v == 1)
+            {
+                name = "IsPrint";
+            }
+            if (v == 2) {
+                name = "IsMerger";
+            }
+            if (v == 3) {
+                name = "IsSplit";
+            }
+            if (v == 4) {
+                name = "IsOutOfStock";
+            }
+            if (v == 5) {
+                name = "IsRepeat";
+            }
+            var search =name+ "&1^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
     </script>
     <div region="center">
         <table id="dg">
@@ -679,7 +700,13 @@
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            异常订单选择:<input type="text" id="IsNo" />
+            异常订单选择:<input type="text" id="IsNo" /><br/>
+            快捷查询：
+            <img src='/Content/imgs/Print.gif'> <a href="#"  onclick="kuai(1)">打印</a>
+            <img src='/Content/imgs/Merger.gif'><a href="#"  onclick="kuai(2)">合并</a>
+            <img src='/Content/imgs/Split.gif'><a href="#"  onclick="kuai(3)">拆分</a>
+            <img src='/Content/imgs/OutOfStock.gif'><a href="#"  onclick="kuai(4)">缺货</a>
+            <img src='/Content/imgs/Repeat.gif'><a href="#" onclick="kuai(5)">重发</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>
