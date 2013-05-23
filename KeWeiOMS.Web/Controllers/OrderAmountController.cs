@@ -83,6 +83,25 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = list, footer = footers });
         }
 
+        public ActionResult ResetFreight(string search, decimal z)
+        {
+            string orderby;
+            var where = GetWhere(null, null, search, out @orderby);
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
+
+                .List<OrderType>();
+            foreach (OrderType orderType in objList)
+            {
+                orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession, z));
+                NSession.SaveOrUpdate(orderType);
+                NSession.Flush();
+                OrderHelper.SaveAmount(orderType, NSession);
+                break;
+                
+            }
+            return Json(new { IsSuccess = true });
+        }
+
         public ActionResult ExportStockList()
         {
             string sql =
@@ -99,25 +118,8 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult GetFreightList(int page, int rows, string sort, string order, string search)
         {
-
-            string where = "";
-            string orderby = " order by Id desc";
-            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
-            {
-                orderby = " order by " + sort + " " + order;
-            }
-            if (!string.IsNullOrEmpty(search))
-            {
-                where = Utilities.Resolve(search);
-                if (where.Length > 0)
-                {
-                    where = " where Enabled=1 and  Status <> '待处理' and " + where;
-                }
-            }
-            if (where.Length == 0)
-            {
-                where = " where Enabled=1 and  Status <> '待处理'";
-            }
+            string orderby;
+            var where = GetWhere(sort, order, search, out @orderby);
             IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
@@ -129,7 +131,31 @@ namespace KeWeiOMS.Web.Controllers
             {
                 AddToOrderData(o, os);
             }
-            return Json(new { total = os.Count, rows = os });
+            object count = NSession.CreateQuery("select count(Id) from OrderType " + where).UniqueResult();
+            return Json(new { total = count, rows = os });
+        }
+
+        private static string GetWhere(string sort, string order, string search, out string @orderby)
+        {
+            string where = "";
+            @orderby = " order by Id desc";
+            if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            {
+                @orderby = " order by " + sort + " " + order;
+            }
+            if (!string.IsNullOrEmpty(search))
+            {
+                @where = Utilities.Resolve(search);
+                if (@where.Length > 0)
+                {
+                    @where = " where Enabled=1 and  Status <> '待处理' and " + @where;
+                }
+            }
+            if (@where.Length == 0)
+            {
+                @where = " where Enabled=1 and  Status <> '待处理'";
+            }
+            return @where;
         }
 
         private static void AddToOrderData(OrderType order, List<OrderData> os)
@@ -149,6 +175,7 @@ namespace KeWeiOMS.Web.Controllers
                 o.OrderAmount = order.Amount;
 
                 o.Status = order.Status;
+                o.OrderType = "正常";
                 if (order.IsRepeat == 1)
                     o.OrderType = "重发";
                 if (order.IsSplit == 1)
@@ -179,7 +206,7 @@ namespace KeWeiOMS.Web.Controllers
                 OrderType order = orderList.Find(x => x.Id == orderAmountType.OId);
                 AddToOrderData(order, os);
                 os[os.Count - 1].TotalCost = orderAmountType.TotalCosts;
-            }
+            } 
             return Json(new { total = os.Count, rows = os });
 
         }
