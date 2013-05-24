@@ -29,7 +29,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                List<SuppliersProductType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SuppliersProductType>>(obj.rows);  
+                List<SuppliersProductType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SuppliersProductType>>(obj.rows);
                 NSession.Save(obj);
                 NSession.Flush();
                 foreach (SuppliersProductType product in list1)
@@ -43,7 +43,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  SupplierType GetById(int Id)
+        public SupplierType GetById(int Id)
         {
             SupplierType obj = NSession.Get<SupplierType>(Id);
             if (obj == null)
@@ -68,7 +68,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(int id)
         {
             SupplierType obj = GetById(id);
-            ViewData["SuppliewsId"]=id;
+            ViewData["SuppliewsId"] = id;
             return View(obj);
         }
 
@@ -76,7 +76,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(SupplierType obj)
         {
-           
+
             try
             {
                 List<SuppliersProductType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SuppliersProductType>>(obj.rows);
@@ -96,14 +96,14 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
-           
+            return Json(new { IsSuccess = true });
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 SupplierType obj = GetById(id);
@@ -115,19 +115,26 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
         {
+
             string orderby = Utilities.OrdeerBy(sort, order);
-            string where = Utilities.SqlWhere(search);
-            IList<SupplierType> objList = NSession.CreateQuery("from SupplierType"+where+orderby)
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
-                .List<SupplierType>();
-			
-            object count = NSession.CreateQuery("select count(Id) from SupplierType "+where).UniqueResult();
+            string where = "";
+            if (!string.IsNullOrEmpty(search) && search.Substring(0,search.IndexOf("&")) == "SKU_ds")
+            {
+                  where += "where Id in (select SId from SuppliersProductType "+Utilities.SqlWhere(search)+ ")";
+            }
+            else
+                where = Utilities.SqlWhere(search);
+            IList<SupplierType> objList = NSession.CreateQuery("from SupplierType " + where + orderby)
+                 .SetFirstResult(rows * (page - 1))
+                 .SetMaxResults(rows)
+                 .List<SupplierType>();
+
+            object count = NSession.CreateQuery("select count(Id) from SupplierType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
@@ -156,6 +163,11 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
+        public JsonResult QList()
+        {
+            IList<SupplierType> list = NSession.CreateQuery("from SupplierType").List<SupplierType>();
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
     }
 }
