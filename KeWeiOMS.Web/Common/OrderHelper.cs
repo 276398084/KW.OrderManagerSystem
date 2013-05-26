@@ -889,39 +889,40 @@ namespace KeWeiOMS.Web
         }
         public static void UpdateAmount(OrderType order, ISession NSession)
         {
-            OrderAmountType orderAmount = NSession.CreateQuery("from OrderAmountType where OId=" + order.Id).SetMaxResults(1).List<OrderAmountType>()[0];
-            if (order.Status != "已发货")
+            OrderAmountType orderAmount = null;
+            if (order.MId > 0)
             {
-                orderAmount.TotalFreight += order.Freight;
-                if (order.IsSplit == 0 && order.IsRepeat == 0)
-                {
-                    orderAmount.Status = order.Status;
-                }
-                else
-                {
-                    object obj =
-                        NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" +
-                                             order.MId + " or MId=" + order.Id + " or Id=" + order.MId + ")").
-                            UniqueResult();
-                    if (Convert.ToInt32(obj) > 0)
-                    {
-                        orderAmount.Status = "部分发货";
-                    }
-                    else
-                    {
-                        orderAmount.Status = "已发货";
-                    }
-                }
-                orderAmount.Profit = order.RMB - orderAmount.TotalCosts - orderAmount.OtherFees - orderAmount.Fee -
-                              orderAmount.TransactionFees - orderAmount.TotalFreight;
+                IList<OrderAmountType> l =
+                    NSession.CreateQuery("from OrderAmountType where OId=" + order.MId).SetMaxResults(1).List
+                        <OrderAmountType>();
+                if (l.Count > 0)
+                    orderAmount = l[0];
             }
             else
             {
-                orderAmount.Status = order.Status;
+                IList<OrderAmountType> l = NSession.CreateQuery("from OrderAmountType where OId=" + order.Id).SetMaxResults(1).List<OrderAmountType>();
+                if (l.Count > 0)
+                    orderAmount = l[0];
+            }
+            if (orderAmount != null)
+            {
+                orderAmount.TotalFreight += order.Freight;
+                object obj =
+                       NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" + order.Id + " or Id=" + order.MId + ")").
+                           UniqueResult();
+                if (Convert.ToInt32(obj) > 0)
+                {
+                    orderAmount.Status = "部分发货";
+                }
+                else
+                {
+                    orderAmount.Status = "已发货";
+                }
+                orderAmount.Profit = Math.Round(orderAmount.Profit - order.Freight);
+                NSession.Update(orderAmount);
+                NSession.Flush();
             }
 
-            NSession.Update(orderAmount);
-            NSession.Flush();
         }
 
         public static void SaveAmount(OrderType order, ISession NSession)
@@ -935,8 +936,10 @@ namespace KeWeiOMS.Web
             NSession.Delete("from OrderAmountType where OId=" + order.Id);
             NSession.Flush();
             CurrencyType currency = currencys.Find(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper());
-            order.Status = OrderStatusEnum.已处理.ToString();
-            order.RMB = Convert.ToDouble(currency.CurrencyValue) * order.Amount;
+
+            if (order.Status == "待处理")
+                order.Status = OrderStatusEnum.已处理.ToString();
+            order.RMB = Math.Round(Convert.ToDouble(currency.CurrencyValue) * order.Amount, 4);
             OrderAmountType orderAmount = new OrderAmountType();
             orderAmount.Account = order.Account;
             orderAmount.OrderNo = order.OrderNo;
@@ -953,14 +956,23 @@ namespace KeWeiOMS.Web
                 UniqueResult();
             orderAmount.TotalCosts = Convert.ToDouble(obj);
 
-            IList<AccountFeeType> list = NSession.CreateQuery(string.Format("from AccountFeeType where AccountId in (select Id from AccountType where AccountName='{0}' ) and AmountBegin>={1} and AmountEnd<{1} ", order.Account, order.Amount)).List<AccountFeeType>();
+            IList<AccountFeeType> list = NSession.CreateQuery(string.Format("from AccountFeeType where AccountId in (select Id from AccountType where AccountName='{0}' ) and AmountBegin<={1} and AmountEnd>{1} ", order.Account, order.Amount)).List<AccountFeeType>();
 
             foreach (var feeType in list)
             {
+
                 object d = new DataTable().Compute(feeType.FeeFormula.Replace("T", order.Amount.ToString()), "");
                 if (feeType.FeeName == "交易费")
                 {
-                    orderAmount.TransactionFees = Convert.ToDouble(d);
+                    if (order.OrderFees > 0)
+                    {
+                        orderAmount.TransactionFees = order.OrderFees;
+                    }
+                    else
+                    {
+                        orderAmount.TransactionFees = Convert.ToDouble(d);
+                    }
+
                 }
                 if (feeType.FeeName == "手续费")
                 {
@@ -976,8 +988,8 @@ namespace KeWeiOMS.Web
             orderAmount.Platform = order.Platform;
             orderAmount.Country = order.Country;
             orderAmount.RMB = order.RMB;
-            orderAmount.Profit = order.RMB - orderAmount.TotalCosts - orderAmount.OtherFees - orderAmount.Fee -
-                                 orderAmount.TransactionFees;
+            orderAmount.Profit = Math.Round(order.RMB - orderAmount.TotalCosts - orderAmount.OtherFees * Convert.ToDouble(currency.CurrencyValue) - orderAmount.Fee * Convert.ToDouble(currency.CurrencyValue) -
+                                 orderAmount.TransactionFees * Convert.ToDouble(currency.CurrencyValue), 5);
             NSession.Save(orderAmount);
             NSession.Flush();
             if (orderAmount.IsRepeat == 1 && orderAmount.MId != 0)

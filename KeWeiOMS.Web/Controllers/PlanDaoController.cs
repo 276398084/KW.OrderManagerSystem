@@ -41,6 +41,7 @@ namespace KeWeiOMS.Web.Controllers
                     {
                         obj.PlanId = plan[0].Id;
                         obj.PlanNo = plan[0].PlanNo;
+                        obj.Price =Math.Round(plan[0].Price + plan[0].Freight/plan[0].Qty,4);
                         obj.DaoOn = DateTime.Now;
                         obj.SendOn = DateTime.Now;
                         obj.IsAudit = 0;
@@ -76,7 +77,7 @@ namespace KeWeiOMS.Web.Controllers
                     //obj.DaoOn = DateTime.Now;
                     obj.IsAudit = 1;
                     obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo, NSession);
-
+                  
                     NSession.SaveOrUpdate(obj);
                     NSession.Flush();
                     Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo, NSession, true);

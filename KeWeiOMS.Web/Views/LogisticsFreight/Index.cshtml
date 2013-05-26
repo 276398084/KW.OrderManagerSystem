@@ -25,7 +25,7 @@
 	//新建
         function c_dlg() {
             var url_str = '@Url.Action("Create","LogisticsFreight")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
+            showdlg(url_str, 'c_dlg', ajaxAdd);
         }
 
         //编辑框
@@ -33,7 +33,7 @@
             var url = '@Url.Action("Edit","LogisticsFreight")/' + id;
             if (id != undefined) {
                 var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
+                showdlg(url, 'e_dlg', ajaxEdit);
             }
         }
 

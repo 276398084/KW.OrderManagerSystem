@@ -1171,11 +1171,29 @@ left join Products P On OP.SKU=P.SKU ";
         [HttpGet]
         public JsonResult AAAA()
         {
-            OrderType order = GetById(3727978);
-            order.Freight = Convert.ToDouble(OrderHelper.GetFreight(order.Weight, order.LogisticMode, order.Country, NSession));
-            NSession.SaveOrUpdate(order);
-            NSession.Flush();
-            OrderHelper.SaveAmount(order, NSession);
+            //OrderType order = GetById(3727978);
+            //order.Freight = Convert.ToDouble(OrderHelper.GetFreight(order.Weight, order.LogisticMode, order.Country, NSession));
+            //NSession.SaveOrUpdate(order);
+            //NSession.Flush();
+            //OrderHelper.SaveAmount(order, NSession);
+
+
+
+
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where CreateOn >'2013-05-01'")
+//                 IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where OrderNo in(            '200122307',
+//'200122885',
+//'200122886')")
+               .List<OrderType>();
+            foreach (OrderType orderType in objList)
+            {
+                orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
+                NSession.SaveOrUpdate(orderType);
+                NSession.Flush();
+                OrderHelper.SaveAmount(orderType, NSession);
+                
+
+            }
             // TimeJi();
 
             //AccountType account = NSession.CreateQuery("from AccountType where Id=16").List<AccountType>()[0];
@@ -1429,7 +1447,7 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
-        public JsonResult TimeJi(DateTime st,DateTime et)
+        public JsonResult TimeJi(DateTime st, DateTime et)
         {
             try
             {
@@ -1444,7 +1462,7 @@ left join Products P On OP.SKU=P.SKU ";
                         List<OrderProductType> OrderProducts = NSession.CreateQuery("from OrderProductType where OrderNo='" + item.OrderNo + "'").List<OrderProductType>().ToList();
                         if (OrderProducts.Count == 0)
                         {
-                            item.PackCoefficient =1;
+                            item.PackCoefficient = 1;
                         }
                         else
                         {
@@ -1471,7 +1489,7 @@ left join Products P On OP.SKU=P.SKU ";
                     tran.Commit();
                 }
             }
-            catch(Exception ee)
+            catch (Exception ee)
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }

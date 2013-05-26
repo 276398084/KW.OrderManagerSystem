@@ -660,7 +660,7 @@ namespace KeWeiOMS.Web
                 NSession.SaveOrUpdate(ws);
                 NSession.Flush();
                 SetComposeStock(sku, NSession);
-                if (price != 0)
+                if (price > 0)
                 {
                     IList<ProductType> foo =
                         NSession.CreateQuery(" from ProductType where  SKU=:p2").
@@ -671,11 +671,9 @@ namespace KeWeiOMS.Web
                         p.Price = price;
                         NSession.SaveOrUpdate(p);
                         NSession.Flush();
-
                     }
                 }
                 StockInType stockInType = new StockInType();
-
                 stockInType.IsAudit = 0;
                 if (isAudit)
                     stockInType.IsAudit = 1;

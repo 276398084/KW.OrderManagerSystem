@@ -17,7 +17,7 @@
                 pageSize: 20,
                 pageList: [20, 40, 60, 80, 100]
             });
-            $('#s_dlg').hide();
+            
         });
 
         //新建
@@ -53,118 +53,49 @@
         }
 
 
-            //获取选中行
-            function getselectedRow() {
-                var row = $('#dg').datagrid('getSelected');
-                if (row != undefined) {
-                    if (row.hasOwnProperty('Id')) {
-                        var id = row['Id'];
-                        return id;
-                    }
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
                 }
-                $.messager.show({
-                    title: '提示',
-                    msg: '请选择行',
-                    timeout: 3000,
-                    showType: 'slide'
-                });
-                return (undefined);
             }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
 
-            function ShowOp(v, r, i) {
-                return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showData("' + v + '")\'>查看明细</a>';
-            }
-            var code;
+        function ShowOp(v, r, i) {
+            return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showData("' + v + '")\'>查看明细</a>';
+        }
+        var code;
 
-            function showData(v) {
-                $('#s_dlg').show();
-                code = v;
-                $('#s_dlg').dialog({
-                    title: '字典明细',
+        function showData(v) {
+            var url_str = '/AccountFee/Index/' + v;
+            $('#s_dlg').load(url_str, function () {
+                $(this).dialog({
+                    title: '运费设置',
+                    iconCls: 'icon-save',
+                    modal: true,
+                    width: 800,
                     height: 400,
-                    width: 600,
-                    loadingMessage: '正在加载...'
-                }).dialog('open');
-                $('#dg2').datagrid({
-                    url: '@Url.Action("List", "AccountFee")/',
-                    queryParams: { code: v },
-                    onClickRow: onClickRow
+                    loadingMessage: '正在加载...',
                 });
-                $('#s_dlg').dialog('open');
-            }
+            }).dialog('open');
+        }
 
-            var editIndex = undefined;
-            function endEditing() {
-                if (editIndex == undefined) {
-                    return true;
-                }
-                var iscon = true;
-                if ($('#dg2').datagrid('validateRow', editIndex)) {
-                    $('#dg2').datagrid('endEdit', editIndex);
-                    $.post("/AccountFee/Save/", $('#dg2').datagrid("getRows")[editIndex], function (rsp) {
-                        if (rsp.IsSuccess) {
-                            alert('');
-                            $.messager.alert("提示", "提交成功！");
-                        } else {
-                            $.messager.alert("提示", rsp.Result);
-                            iscon = false;
-                        }
-                    }, "JSON").error(function () {
-                        $.messager.alert("提示", "提交错误了！");
-                    });
-                    if (iscon) {
-                        editIndex = undefined;
-                        $('#dg2').datagrid("reload");
-                        return true;
-                    }
-                } else {
-                    return false;
-                }
-            }
-
-            function onClickRow(index) {
-                if (editIndex != index) {
-                    if (endEditing()) {
-                        $('#dg2').datagrid('selectRow', index)
-                                .datagrid('beginEdit', index);
-                        editIndex = index;
-                    } else {
-                        $('#dg2').datagrid('selectRow', editIndex);
-                    }
-                }
-            }
-
-            function s_add() {
-                if (endEditing()) {
-                    $('#dg2').datagrid('appendRow', { AccountId: code });
-                    editIndex = $('#dg2').datagrid('getRows').length - 1;
-                    $('#dg2').datagrid('selectRow', editIndex)
-                            .datagrid('beginEdit', editIndex);
-                }
-            }
-
-            function s_del() {
-                var ids = [];
-                var rows = $('#dg2').datagrid('getSelections');
-                for (var i = 0; i < rows.length; i++) {
-                    $.ajax({
-                        url: '/AccountFee/Delete/' + rows[i].Id,
-                    });
-                }
-                $('#dg2').datagrid("reload");
-            }
-
-            function accept() {
-                if (endEditing()) {
-                    $('#dg2').datagrid('acceptChanges');
-                }
-            }
-            function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                $("#dg").datagrid("load", {
-                    search: search
-                });
-            }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
     </script>
     <div region="center">
         <table id="dg">
@@ -206,44 +137,6 @@
         </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
-        <div id="s_dlg">
-            <table id="dg2" class="easyui-datagrid"
-                toolbar="#toolbar2"
-                rownumbers="true" fitcolumns="true" singleselect="true">
-                <thead>
-                    <tr>
-                        <th field="Id" width="100" data-options="hidden:true">操作
-                        </th>
-                        <th field="AccountId" width="100" data-options="hidden:true">操作
-                        </th>
-                        <th field="AmountBegin" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额开始
-                        </th>
-
-                        <th field="AmountEnd" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额结束
-                        </th>
-
-                        <th field="FeeFormula" width="100" data-options="editor:'text'">公式
-                        </th>
-
-                        <th field="FeeName" width="100" data-options="editor:{  
-                            type:'combobox',  
-                            options:{  
-                                valueField: 'id',
-                                textField: 'text',
-                                panelHeight: 'auto',
-                                required: true,
-                                data: [{ id: '手续费', text: '手续费' }, { id: '交易费', text: '交易费' }, { id: '其他费', text: '其他费' }]
-                            }  
-                        }">费用名称
-                        </th>
-                    </tr>
-                </thead>
-            </table>
-            <div id="toolbar2">
-                <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="s_add();">新建</a>
-                <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="s_del();">删除</a>
-                <a href="#" class="easyui-linkbutton" iconcls="icon-save" plain="true" onclick="accept();">保存</a>
-            </div>
-        </div>
+        <div id="s_dlg"></div>
     </div>
 </body>
