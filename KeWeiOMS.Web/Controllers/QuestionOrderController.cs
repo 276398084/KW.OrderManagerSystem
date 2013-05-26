@@ -56,6 +56,23 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
+        public ActionResult DoNo(int o)
+        {
+            QuestionOrderType obj = GetById(o);
+                OrderType orderType = NSession.Get<OrderType>(obj.OId);
+                if (orderType != null)
+                {
+                    orderType.Enabled = 0;
+                    NSession.Update(orderType);
+                    NSession.Flush();
+                    obj.Status = 2;
+                    NSession.Update(obj);
+                    NSession.Flush();
+                    OrderHelper.GetOrderRecord(orderType, "拒绝问题订单", "" + CurrentUser.Realname + "将订单设为隐藏！", CurrentUser.Realname, NSession);
+                }
+            return Json(new { IsSuccess = "true" });
+        }
+
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)

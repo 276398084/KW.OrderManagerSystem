@@ -28,7 +28,12 @@
             data: [{ id: "已采购", text: "已采购" }, { id: "已发货", text: "已发货" }, { id: "部分收到", text: "部分收到" }, { id: "已收到", text: "已收到" }, { id: "异常", text: "异常" }]
         });
         $('#c_Status').combobox("setValue", "已采购");
-
+        $('#c_Suppliers').combobox({
+            url: '@Url.Action("QList", "Supplier")',
+            valueField: 'SuppliersName',
+            textField: 'SuppliersName',
+            panelHeight: '200'
+          });
 
         $('#c_SKU').combogrid({
             required: true,

@@ -11,6 +11,20 @@
                 pageSize: 20,
                 pageList: [20, 40, 60, 80, 100]
             });
+            $('#Status').combobox({
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                data: [{ id: "ALL", text: "ALL" }, { id:0, text: "未处理" }, { id: 1, text: "已处理" }, { id:2, text: "已拒绝" }]
+            });
+            $('#Status').combobox("setValue", "ALL");
+            $('#Subject').combobox({
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                data: [{ id: "ALL", text: "ALL" }, { id: "拦截", text: "拦截" }, { id: "订单重发", text: "订单重发" }, { id: "作废订单-重置包裹入库", text: "作废订单-重置包裹入库" }, { id: "拦截-重置产品入库", text: "拦截-重置产品入库" }]
+            });
+            $('#Subject').combobox("setValue", "ALL");
         });
 
 
@@ -34,6 +48,14 @@
         }
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            var ss = $('#Status').combobox("getValue");
+            if (ss != "ALL" && ss != "") {
+                search += "Status_ds&" + ss + "^";
+            }
+            var su= $('#Subject').combobox("getText");
+            if (su != "ALL" && su !="") {
+                search += "Subjest_ds&" + su + "^";
+            }
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -46,6 +68,9 @@
             }
             if (v == "1") {
                 return "已处理";
+            }
+            if (v == "2") {
+                return "已拒绝";
             }
         }
 
@@ -61,12 +86,28 @@
                 });
             }
         }
-
+        function doNo(v) {
+            if (confirm("您确定要拒绝吗？")) {
+                jQuery.ajax({
+                    url: "/QuestionOrder/DoNo/",
+                    type: "post",
+                    data: "o=" + v,
+                    success: function (sss) {
+                        $('#dg').datagrid("reload");
+                    }
+                });
+            }
+        }
         function GetP(v, r, i) {
+            var html = "";
+            if (r.Status == "0") {
+                html += '<a href="javascript:void(0);" onclick="doNo(' + v + ')">拒绝</a>&nbsp&nbsp';
+            }
             if (r.Subjest.toString().indexOf("重发") > 0 && r.Status == "0") {
-                return '<a href="javascript:void(0);" onclick="doAudit(' + v + ')">审核</a>';
+                html+= '<a href="javascript:void(0);" onclick="doAudit(' + v + ')">审核</a>';
             }
 
+            return html;
         }
 
     </script>
@@ -78,36 +119,35 @@
                 <tr>
                     <th field="Id" width="100" formatter="GetP">操作
                     </th>
-                    <th field="OrderNo" width="100">OrderNo
+                    <th field="OrderNo" width="100">订单号
                     </th>
-                    <th field="Subjest" width="200">Subjest
+                    <th field="Subjest" width="200">标题
                     </th>
-                    <th field="Status" width="100" formatter="getStatus">Status
+                    <th field="Status" width="100" formatter="getStatus">状态
                     </th>
-                    <th field="CreateBy" width="100">CreateBy
+                    <th field="CreateBy" width="100">创建人
                     </th>
-                    <th field="CreateOn" width="100" formatter="getDate">CreateOn
+                    <th field="CreateOn" width="100" formatter="getDate">创建时间
                     </th>
-                    <th field="SolveBy" width="100">SolveBy
+                    <th field="SolveBy" width="100">解决人
                     </th>
-
-                    <th field="SolveOn" width="100" formatter="getDate">SolveOn
+                    <th field="SolveOn" width="100" formatter="getDate">解决时间
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" plain="true" onclick="window.open('QuestionScan')">仓库扫描审核</a>
-
+            标题:<input type="text" id="Subject" />
+            状态：<input type="text" id="Status" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div>
         <div id="mm" style="width: 120px">
-            <div data-options="name:'OrderNo'">OrderNo</div>
-            <div data-options="name:'Subjest'">Subjest</div>
-            <div data-options="name:'Status'">Status</div>
-            <div data-options="name:'CreateBy'">CreateBy</div>
-            <div data-options="name:'SolveBy'">SolveBy</div>
+            <div data-options="name:'OrderNo'">订单号</div>
+            <div data-options="name:'Subjest'">标题</div>
+            <div data-options="name:'Status'">状态</div>
+            <div data-options="name:'CreateBy'">创建人</div>
+            <div data-options="name:'SolveBy'">解决人</div>
         </div>
     </div>
 </body>

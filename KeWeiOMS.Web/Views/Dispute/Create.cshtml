@@ -81,9 +81,10 @@
              url: '@Url.Action("GetDisputeClass","Dictionary")',
                     valueField: 'FullName',
                     textField: 'FullName',
-                    panelHeight: 'auto'
+                    panelHeight: '200',
+                     panelWidth: '200'
         });
-        $('#c_DisputeCategory').combobox("setValue", "未收到");
+        $('#c_DisputeCategory').combobox("setValue", "物流部-未收到");
         $('#c_DisputesType').combobox({
                     valueField: 'id',
                     textField: 'text',
