@@ -223,7 +223,7 @@
             return (undefined);
         }
 
-        function getselectedRows(i) {
+        function getselectedRows(i,b) {
             var s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
@@ -233,7 +233,12 @@
                 if (i == 1) {
 
                 } else {
-                    $.messager.alert("请选择一条数据");
+                    if(b) {
+                        
+                    } else {
+                        $.messager.alert("请选择一条数据");
+                    }
+                   
                 }
 
                 return s_ids;
@@ -455,9 +460,13 @@
             });
         }
 
+        function stopLoad() {
+            $('#dg').datagrid("reload");
+        }
+
         function exportOrder() {
             $('#dg').datagrid("loading");
-            var s_ids = getselectedRows(1);
+            var s_ids = getselectedRows(1,0);
             var search = "";
             if (s_ids.length == 0) {
 
@@ -465,36 +474,37 @@
                 if (e != "ALL" && e != "" && e != "0") {
                     search += "&st=" + e + "";
                 } else {
-                    alert("请选择开始时间！"); return;
+                    alert("请选择开始时间！");
+                    stopLoad();return;
                 }
                 var f = $('#CreateOn_et').combobox("getValue");
                 if (f != "ALL" && f != "" && f != "0") {
                     search += "&et=" + f + "";
                 } else {
-                    alert("请选择结束时间！"); return;
+                    alert("请选择结束时间！"); stopLoad(); return;
                 }
                 var c = $('#OrderStatus').combobox("getText");
                 if (c != "") {
                     if (c != "ALL")
                         search += "&s=" + c + "";
                 } else {
-                    alert("请选择订单状态！"); return;
+                    alert("请选择订单状态！"); stopLoad(); return;
                 }
                 var a = $('#Account').combobox("getText");
                 if (a != "ALL" && a != "") {
                     search += "&a=" + a + "";
                 } else {
-                    alert("请选择账户！"); return;
+                    alert("请选择账户！"); stopLoad(); return;
                 }
                 var b = $('#Platform').combobox("getText");
                 if (b != "ALL" && b != "") {
                     search += "&p=" + b + "";
                 } else {
-                    alert("请选择平台！");
+                    alert("请选择平台！"); stopLoad(); return;
                 }
                 if (search.length == 0) {
                     alert("不选订单，也选个时间啊！");
-                    return;
+                    stopLoad(); return;
                 }
 
             }

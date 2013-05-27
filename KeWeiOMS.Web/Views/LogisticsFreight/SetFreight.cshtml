@@ -6,40 +6,42 @@
 
 <script type="text/javascript">
 
-    $(function () {
+    $(function() {
         $('#dgFeright').datagrid({
             url: '/LogisticsFreight/GetFreight',
             title: '运费设置',
             width: 800,
             height: 400,
             frozenColumns: [[
-    { field: 'ck', checkbox: true }
+                { field: 'ck', checkbox: true }
             ]],
             columns: [[
-               { field: 'Id', title: 'Id', width: 0, hidden: true, editor: 'numberbox' },
-               { field: 'AreaCode', title: 'AreaCode', width: 0, hidden: true, editor: 'numberbox', },
-               { field: 'BeginWeight', title: '开始', width: 80, editor: 'numberbox' },
-               { field: 'EndWeight', title: '结束', width: 80, editor: 'numberbox' },
-               { field: 'FristWeight', title: '首重', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
-               { field: 'IncrementWeight', title: '续重', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
-               { field: 'FristFreight', title: '起步费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
-               { field: 'IncrementFreight', title: '续费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
-               { field: 'EveryFee', title: '每克费用', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
-               { field: 'ProcessingFee', title: '处理费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
-               {
-                   field: 'IsDiscountALL', title: '全部打折', width: 80, editor: { type: 'checkbox', options: { on: '1', off: '' } },
-                   formatter: function (value) {
-                       if (value == "1")
-                           return "是";
-                       else
-                           return "否";
-                   }
-               }
+                { field: 'Id', title: 'Id', width: 0, hidden: true, editor: 'numberbox' },
+                { field: 'AreaCode', title: 'AreaCode', width: 0, hidden: true, editor: 'numberbox', },
+                { field: 'BeginWeight', title: '开始', width: 80, editor: 'numberbox' },
+                { field: 'EndWeight', title: '结束', width: 80, editor: 'numberbox' },
+                { field: 'FristWeight', title: '首重', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+                { field: 'IncrementWeight', title: '续重', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+                { field: 'FristFreight', title: '起步费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+                { field: 'IncrementFreight', title: '续费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+                { field: 'EveryFee', title: '每克费用', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+                { field: 'ProcessingFee', title: '处理费', width: 80, editor: { type: 'numberbox', options: { precision: 5 } } },
+                {
+                    field: 'IsDiscountALL',
+                    title: '全部打折',
+                    width: 80,
+                    editor: { type: 'checkbox', options: { on: '1', off: '' } },
+                    formatter: function(value) {
+                        if (value == "1")
+                            return "是";
+                        else
+                            return "否";
+                    }
+                }
             ]],
             onClickRow: onClickRow
-    
         });
-    })
+    });
 
     var editIndex = undefined;
     function endEditing() {

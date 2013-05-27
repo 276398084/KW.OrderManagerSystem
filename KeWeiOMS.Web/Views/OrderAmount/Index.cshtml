@@ -5,6 +5,12 @@
 <body class="easyui-layout">
     <script language="javascript" type="text/javascript">
         $(function () {
+            $("#cc").datebox({
+                parser: myparser
+            });
+            $("#cc2").datebox({
+                parser: myparser
+            });
             $('#dg').datagrid({
                 url: '@Url.Action("List", "OrderAmount")',
                 nowrap: false,
@@ -43,6 +49,19 @@
                 width: 100
             });
         });
+        
+        function myparser(s) {
+            if (!s) return new Date();
+            var ss = s.split('-');
+            var y = parseInt(ss[0], 10);
+            var m = parseInt(ss[1], 10);
+            var d = parseInt(ss[2], 10);
+            if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                return new Date(y, m - 1, d);
+            } else {
+                return new Date();
+            }
+        }
 
         function changePlatform(n, o) {
             $('#aa').combotree({
@@ -104,8 +123,46 @@
         });
         return (undefined);
     }
+
+    function getSearch() {
+        var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var u = $('#pp').combobox("getValue");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "Platform_es&" + u + "^";
+        }
+        u = $('#aa').combobox("getText");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "Account_es&" + u + "^";
+        }
+        u = $('#status').combobox("getText");
+        if (u != "ALL" && u != "") {
+         
+            search += "Status_ds&" + u + "^";
+           
+        }
+        u = $('#cc').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += "CreateOn_st&" + u + "^";
+        }
+
+        u = $('#cc2').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += "CreateOn_et&" + u + "^";
+        }
+
+        u = $('#loss').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            if(u==1)
+                search += "Profit_si&0^";
+            else
+                search += "Profit_ei&0.00001^";
+        }
+
+
+        return search;
+    }
     function doSearch() {
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var search = getSearch();
         $("#dg").datagrid("load", {
             search: search
         });
@@ -132,6 +189,13 @@
         html += "手续费:" + r.Fee + "<br\>";
         html += "交易费:" + r.TransactionFees + "<br\>";
         html += "其他费:" + r.OtherFees + "<br\>";
+        return html;
+    }
+    function getAccount(v, r, i) {
+        var html = "";
+        html += "" + r.Account + "<br\>";
+        html += "" + r.Platform + "";
+        return html;
     }
     </script>
     <div region="center">
@@ -142,13 +206,15 @@
                     </th>
                     <th field="OrderExNo" width="100">订单号
                     </th>
+                    <th field="Account" width="100" formatter="getAccount">账户/平台
+                    </th>
                     <th field="OrderAmount" width="100" formatter="getAmount">金额
                     </th>
-                    <th field="ExchangeRate" width="100">汇率
+                    <th field="ExchangeRate" width="80">汇率
                     </th>
                     <th field="RMB" width="100">RMB
                     </th>
-                    <th field="TotalFreight" width="100" formatter="getFreights">运费
+                    <th field="TotalFreight" width="80" formatter="getFreights">运费
                     </th>
                     <th field="TotalCosts" width="100" formatter="getProducts">成本
                     </th>
@@ -168,6 +234,8 @@
             账户:<input id="aa" type="text"/>
             状态:<input id="status" type="text"/>
             亏损:<input id="loss" type="text"/>
+             开始:<input id="cc" type="text" />
+    结束:<input id="cc2" type="text" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'" ></input>
         </div>
         <div id="mm" style="width: 120px">

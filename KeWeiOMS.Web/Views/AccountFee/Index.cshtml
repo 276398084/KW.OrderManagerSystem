@@ -1,125 +1,124 @@
 ﻿
 @model IEnumerable<KeWeiOMS.Domain.AccountFeeType>
-@{
-    ViewBag.Title = "Index";
-}
-<body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","AccountFee")',
-            toolbar: '#toolbar',
-            rownumbers: true,
-            fitColumns: true,
-            singleSelect: true,
-            pagination: true,
-            fit: true,
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
-        });
 
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    var v = @ViewData["Id"];
+    $(function() {
+        $('#dgFeright').datagrid({
+            url: '@Url.Action("List", "AccountFee")/',
+            queryParams: { code: v },
+            title: '账户费用',
+            width: 800,
+            height: 400,
+            onClickRow: onClickRow
+        });
     });
 
+    var editIndex = undefined;
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dgFeright').datagrid('validateRow', editIndex)) {
 
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","AccountFee")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
-        }
+            $('#dgFeright').datagrid('endEdit', editIndex);
+            $.post("/AccountFee/Save/", $('#dgFeright').datagrid("getRows")[editIndex], function (rsp) {
+                if (rsp.IsSuccess) {
+                  
+                    $.messager.alert("提示", "提交成功！");
+                } else {
+                    $.messager.alert("提示", rsp.Result);
+                    iscon = false;
+                }
+            }, "JSON").error(function () {
+                $.messager.alert("提示", "提交错误了！");
+            });
 
-        //编辑框
-        function e_dlg() {
-            var url = '@Url.Action("Edit","AccountFee")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit);
-            }
-        }
+            editIndex = undefined;
+            $('#dlgFreight').dialog('reload');
+            return true;
 
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "AccountFee")', 'c_dlg', 'dg');
+        } else {
+            return false;
         }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "AccountFee")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-
-                var url = '@Url.Action("Delete", "AccountFee")/' + id;
-            
-                delData(url, 'dg');
-
-            }
-        }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
-            }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
     }
-   
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dgFeright').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dgFeright').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+    function append() {
+        if (endEditing()) {
+            $('#dgFeright').datagrid('appendRow', { AccountId: v });
+            editIndex = $('#dgFeright').datagrid('getRows').length - 1;
+            $('#dgFeright').datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+        }
+    }
+    function remove() {
+        var ids = [];
+        var rows = $('#dgFeright').datagrid('getSelections');
+        for (var i = 0; i < rows.length; i++) {
+       
+            $.ajax({
+                type:'post',
+                data:"id="+rows[i].Id,
+                url: '/AccountFee/Delete'
+            });
+        }
+        $('#dgFeright').datagrid("reload");
+    }
+    function accept() {
+        if (endEditing()) {
+         
+            $('#dgFeright').datagrid('acceptChanges');
+        }
+    }
 </script>
-<div region="center">
-<table id="dg">  
-        <thead>  
-        <tr>
-            <th field="Id" width="100">
-                主键标识
-            </th>
+        <div id="dlgFreight" class="easyui-dialog" title="添加费用" data-options="iconCls:'icon-save'" style="width: 800px; height: 400px; padding: 10px" closed="true">
+        <div>
+            <table id="dgFeright" toolbar="#tbFreight">
+                <thead>
+                    <tr>
+                        <th field="Id" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field="AccountId" width="100" data-options="hidden:true">操作
+                        </th>
+                        <th field="AmountBegin" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额开始
+                        </th>
 
-            <th field="AccountId" width="100">
-                账户ID
-            </th>
+                        <th field="AmountEnd" width="100" data-options="editor:{type:'numberbox',options:{precision:1}}">总金额结束
+                        </th>
 
-            <th field="AccountName" width="100">
-                账户名称
-            </th>
+                        <th field="FeeFormula" width="100" data-options="editor:'text'">公式
+                        </th>
 
-            <th field="AmountBegin" width="100">
-                总金额开始
-            </th>
-
-            <th field="AmountEnd" width="100">
-                总金额结束
-            </th>
-
-            <th field="FeeFormula" width="100">
-                公式
-            </th>
-
-            <th field="FeeName" width="100">
-                费用名称
-            </th>
-
-
-    	</tr>
-		</thead>
-		</table>
-        <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        </div> 
-        
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
-
-</div>
-</body>
+                        <th field="FeeName" width="100" data-options="editor:{  
+                            type:'combobox',  
+                            options:{  
+                                valueField: 'id',
+                                textField: 'text',
+                                panelHeight: 'auto',
+                                required: true,
+                                data: [{ id: '手续费', text: '手续费' }, { id: '交易费', text: '交易费' }, { id: '其他费', text: '其他费' }]
+                            }  
+                        }">费用名称
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+        <div id="tbFreight">
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">添加</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="remove()">删除</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
+    </div>

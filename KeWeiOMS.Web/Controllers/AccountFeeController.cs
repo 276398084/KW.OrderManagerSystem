@@ -12,8 +12,9 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class AccountFeeController : BaseController
     {
-        public ViewResult Index()
+        public ViewResult Index(int id)
         {
+            ViewData["Id"] = id;
             return View();
         }
 
