@@ -924,6 +924,8 @@ namespace KeWeiOMS.Web
             }
         }
 
+        }
+
         public static void SaveAmount(OrderType order, ISession NSession)
         {
             List<CurrencyType> currencys = NSession.CreateQuery("from CurrencyType").List<CurrencyType>().ToList();
