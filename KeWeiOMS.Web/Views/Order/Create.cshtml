@@ -142,7 +142,7 @@
             onChange: changeCountry
         });
         $('#c_Platform').combobox({
-            url: '/Account/Platform',
+            url: '/Home/Platform',
             valueField: 'id',
             textField: 'text',
             required: true,
@@ -157,7 +157,7 @@
 
     function changePlatform(n, o) {
         $('#c_Account').combotree({
-            url: '/Account/AccountList/' + n,
+            url: '/Home/AccountList/' + n,
             valueField: 'id',
             textField: 'text',
             required: true,

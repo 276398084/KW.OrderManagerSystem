@@ -12,12 +12,12 @@
             data: [{ id: "解决中", text: "解决中" }, { id: "已解决", text: "已解决" }]
         });
         $('#e_DisputeCategory').combobox({
-            url: '@Url.Action("GetDisputeClass","Dictionary")',
-                    valueField: 'FullName',
-                    textField: 'FullName',
-                    panelHeight: 'auto',
-                    disabled: true
-                });
+            url: '@Url.Action("GetDataByCode", "Dictionary")/DisputeClass',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 200,
+            width: 150
+        });
         $('#e_SolveBy').combobox({
             url: '@Url.Action("ListQ","User")',
                     panelHeight: 100,
@@ -30,11 +30,11 @@
         $("#e_RefundAmount").attr({
         });
         $('#e_Solution').combobox({
-            url: '@Url.Action("GetDisputeSolution","Dictionary")',
-            valueField: 'FullName',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/DisputeSolution',
+            valueField: 'DicValue',
             textField: 'FullName',
-            panelHeight: 'auto',
-            editable: true,
+            panelHeight: 200,
+            width: 150
         });
         $('#e_LogisticMessage').combobox({
             url: '@Url.Action("GetDataByCode", "Dictionary")/LogisticMessageType',

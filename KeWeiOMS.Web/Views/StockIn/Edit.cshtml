@@ -43,13 +43,13 @@
         })
         $('#e_SKU').combogrid("setText", '@ViewData["sku"]');
         $('#e_InType').combobox({
-            url: '@Url.Action("GetIntType","Dictionary")',
-            valueField: 'FullName',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/StockIntType',
+            valueField: 'DicValue',
             textField: 'FullName',
             panelHeight: 'auto',
-            editable: true,
-            required: true
+            width: 150
         });
+   
         $('#e_Price').numberbox({
             precision: 2,
             required: true,

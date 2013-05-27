@@ -37,15 +37,13 @@
                 { field: 'Standard', title: '规格', width: 100 }
             ]]
         });
-
         $('#c_InType').combobox({
-            url: '@Url.Action("GetIntType", "Dictionary")',
-            valueField: 'FullName',
-            textField: 'FullName',
-            panelHeight: 'auto',
-            editable: true,
-            required: true
-        });
+            url: '@Url.Action("GetDataByCode", "Dictionary")/StockIntType',
+                    valueField: 'DicValue',
+                    textField: 'FullName',
+                    panelHeight: 'auto',
+                    width: 150
+                });
         $('#c_InType').combobox("setValue", "采购到货");
         $('#c_Price').numberbox({
             precision: 2,

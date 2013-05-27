@@ -117,11 +117,12 @@
         $('#cc').datebox("setValue", getStartDate(7));
         $('#cc2').datebox("setValue", getStartDate(-1));
         $('#reason').combobox({
-            url: '@Url.Action("GetDisputeClass","Dictionary")',
-                    valueField: 'FullName',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/DisputeClass',
+                    valueField: 'DicValue',
                     textField: 'FullName',
-                    panelHeight: 'auto'
-        });
+                    panelHeight: 200,
+                    width: 150
+                });
         $('#reason').combobox("setValue", "ALL");
         $('#status').combobox({
             valueField: 'id',
@@ -153,7 +154,7 @@
         });
         $('#case').combobox("setValue", 0);
         $('#pp').combobox({
-            url: '/Account/Platform/1',
+            url: '/Home/Platform/1',
             valueField: 'id',
             textField: 'text',
             width: 100,
@@ -302,7 +303,7 @@
     }
     function changePlatform(n, o) {
         $('#aa').combotree({
-            url: '/Account/AccountList/' + n,
+            url: '/Home/AccountList/' + n,
             valueField: 'id',
             textField: 'text',
             width: 150

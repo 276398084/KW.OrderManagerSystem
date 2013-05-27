@@ -5,13 +5,14 @@
 <script type="text/javascript">
     $(function () {
         //这里写加载下拉列表、修改编辑控件的初始化值
-	
+
         $('#e_SolutionType').combobox({
-            url: '@Url.Action("PruchaseTroubleDeal", "Dictionary")',
-            panelHeight: 'auto',
-            valueField: 'FullName',
-            textField: 'FullName'
-        });
+            url: '@Url.Action("GetDataByCode", "Dictionary")/PurchaseTroubleDeal',
+                    valueField: 'DicValue',
+                    textField: 'FullName',
+                    panelHeight: 200,
+                    width: 150
+                });
         $('#e_SolutionType').combobox("setValue","重发")
     });
 </script>
