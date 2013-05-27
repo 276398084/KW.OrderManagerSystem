@@ -1637,6 +1637,7 @@
     <Content Include="Views\EmailMessage\Details.cshtml" />
     <Content Include="Views\EmailMessage\Edit.cshtml" />
     <Content Include="Views\EmailMessage\Index.cshtml" />
+    <Content Include="Views\OrderAmount\FreightStatistics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

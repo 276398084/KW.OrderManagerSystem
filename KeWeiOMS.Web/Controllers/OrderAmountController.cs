@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -97,7 +98,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Flush();
                 OrderHelper.SaveAmount(orderType, NSession);
                 break;
-                
+
             }
             return Json(new { IsSuccess = true });
         }
@@ -115,6 +116,40 @@ namespace KeWeiOMS.Web.Controllers
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
         }
+
+        [HttpPost]
+        public ActionResult GetFreightSumList(string search, int isa, int isl)
+        {
+            string orderby;
+            var where = GetWhere("", "", search, out @orderby);
+            string[] strs = new string[] { "", "", "", "" };
+            string sql =
+                "select COUNT(1) as count,SUM(Freight) as total {0} {1} from Orders where CreateOn between '2013-03-01' and '2013-04-01' and Status='已发货' group by {2} {3}";
+            if (isa == 1)
+            {
+                strs[0] = ",platform,account";
+                strs[2] = "platform,account";
+            }
+            if (isl == 1)
+            {
+                strs[1] = ",LogisticMode ";
+                if (isa == 1)
+                    strs[3] = ",LogisticMode";
+                else
+                    strs[3] = " LogisticMode";
+            }
+            sql = string.Format(sql, strs[0], strs[1], strs[2], strs[3]);
+            IList<object[]> objList = NSession.CreateSQLQuery(sql)
+                .List<object[]>();
+            List<OrderData> os = new List<OrderData>();
+            foreach (var o in objList)
+            {
+                AddToOrderData(o, os);
+            }
+            object count = NSession.CreateQuery("select count(Id) from OrderType " + where).UniqueResult();
+            return Json(new { total = count, rows = os });
+        }
+
         [HttpPost]
         public ActionResult GetFreightList(int page, int rows, string sort, string order, string search)
         {
@@ -124,8 +159,6 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<OrderType>();
-
-
             List<OrderData> os = new List<OrderData>();
             foreach (var o in objList)
             {
@@ -206,7 +239,7 @@ namespace KeWeiOMS.Web.Controllers
                 OrderType order = orderList.Find(x => x.Id == orderAmountType.OId);
                 AddToOrderData(order, os);
                 os[os.Count - 1].TotalCost = orderAmountType.TotalCosts;
-            } 
+            }
             return Json(new { total = os.Count, rows = os });
 
         }

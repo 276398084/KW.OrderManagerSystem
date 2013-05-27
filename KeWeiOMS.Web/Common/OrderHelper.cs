@@ -908,11 +908,11 @@ namespace KeWeiOMS.Web
             {
                 orderAmount.TotalFreight += order.Freight;
                 object obj =
-                       NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" + order.Id + " or Id=" + order.MId + ")").
-                           UniqueResult();
-                if (Convert.ToInt32(obj) > 0)
+                       NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" + order.Id + " or Id=" + order.Id + ")").UniqueResult();
+                
+                 if(Convert.ToInt32(obj)>0)
                 {
-                    orderAmount.Status = "部分发货";
+                    orderAmount.Status = "未发货";
                 }
                 else
                 {
@@ -922,7 +922,6 @@ namespace KeWeiOMS.Web
                 NSession.Update(orderAmount);
                 NSession.Flush();
             }
-
         }
 
         public static void SaveAmount(OrderType order, ISession NSession)

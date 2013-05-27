@@ -1,0 +1,139 @@
+﻿@{
+   
+}
+<script>
+    
+    $(function () {
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(7));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        $('#pp').combobox({
+            url: '/Account/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+        $('#status').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["ALL", "ALL"], ["0", "未发货"], ["1", "已发货"]],
+            width: 100
+        });
+        $('#ltype').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["ALL", "ALL"], ["0", "正常"], ["1", "重发"]],
+            width: 100
+        });
+        $('#lmode').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+            ]]
+        });
+        $('#dg').datagrid({
+            url: '@Url.Action("OrderCount", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            showFooter: true,
+            height: 400,
+            width: 550,
+            rownumbers: true,
+            singleselect: true,
+            striped: true
+        });
+
+        $('#dg2').datagrid({
+            url: '@Url.Action("OrderCountryData", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
+            height: 400,
+            rownumbers: true,
+            singleselect: true,
+            width: 380,
+            showFooter: true,
+            striped: true
+        });
+    });
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Account/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+
+    }
+
+
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+</script>
+    平台:<input id="pp" type="text" />
+    账户:<input id="aa" type="text" />
+    状态:<input id="status" type="text" />
+    类型:<input id="ltype" type="text" />
+    承运商:<input id="lmode" type="text">
+    开始:<input id="cc" type="text" />
+    结束:<input id="cc2" type="text" />
+<table>
+    <tr>
+        <td>
+            <table id="dg">
+                <thead>
+                    <tr>
+                        <th field="Platform" width="100">平台
+                        </th>
+                        <th field="Account" width="200">账户
+                        </th>
+                        <th field="OCount" width="100">承运商
+                        </th>
+                        <th field="CurrencyCode" width="100">发货量
+                        </th>
+                        <th field="TotalAmount" width="100">金额
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+        <td>
+            <table id="dg2">
+                <thead>
+                    <tr>
+                        <th field="Key" width="100">类型
+                        </th>
+                        <th field="Proportion" width="100">发货量
+                        </th>
+                        <th field="Count" width="100">金额
+                        </th>
+
+                    </tr>
+                </thead>
+            </table>
+        </td>
+    </tr>
+  </table>

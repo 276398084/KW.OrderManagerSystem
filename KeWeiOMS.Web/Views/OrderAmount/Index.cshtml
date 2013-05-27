@@ -22,7 +22,10 @@
                 fit: true,
                 pageNumber: 1,
                 pageSize: 20,
-                pageList: [20, 40, 60, 80, 100]
+                pageList: [20, 40, 60, 80, 100],
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Order")/' + r.OId);
+                 },
             });
             $('#pp').combobox({
                 url: '/Account/Platform/1',
@@ -204,7 +207,9 @@
                 <tr>
                     <th field="OrderNo" width="100">编号
                     </th>
-                    <th field="OrderExNo" width="100">订单号
+                    <th field="OrderExNo" width="100">订单号 onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Order")/' + r.Id);
+                },
                     </th>
                     <th field="Account" width="100" formatter="getAccount">账户/平台
                     </th>
