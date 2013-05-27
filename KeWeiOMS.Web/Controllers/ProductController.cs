@@ -814,8 +814,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
-
-
     }
 }
 
