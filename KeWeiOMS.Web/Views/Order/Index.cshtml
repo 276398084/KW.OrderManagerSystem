@@ -649,7 +649,15 @@
             if (v == 5) {
                 name = "IsRepeat";
             }
-            var search =name+ "&1^";
+            var search = name + "_si&1^";
+            var e = $('#CreateOn_st').datebox("getValue");
+            if (e != "ALL" && e != "" && e != "0") {
+                search += "CreateOn_st&" + e + "^";
+            }
+            var f = $('#CreateOn_et').datebox("getValue");
+            if (f != "ALL" && f != "" && f != "0") {
+                search += "CreateOn_et&" + f + "^";
+            }
             $("#dg").datagrid("load", {
                 search: search
             });

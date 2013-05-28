@@ -595,7 +595,25 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             return Json(new { total = count, rows = objList });
         }
 
-        public JsonResult List(int page, int rows, string sort, string order, string search)
+        private string InfractionWhere(string infraction)
+        {
+            string where = "";
+            if (infraction == "ALL")
+            {
+                where = " and SKU in(SELECT SKU FROM ProductIsInfractionType group by SKU having min(Isinfraction)=1) ";
+            }
+            else if (infraction == "否")
+            {
+                where = " and SKU in(SELECT SKU FROM ProductIsInfractionType group by SKU having max(Isinfraction)=0) ";
+            }
+            else
+            {
+                where = " and SKU in(SELECT SKU FROM ProductIsInfractionType where Isinfraction=1 and Platform='"+infraction+"' ) ";
+            }
+            return where;
+        }
+
+        public JsonResult List(int page, int rows, string sort, string order, string search, string infraction = "")
         {
             string orderby = Utilities.OrdeerBy(sort, order);
             string where = Utilities.SqlWhere(search);
@@ -607,10 +625,18 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             {
                 where = "where Enabled <>0";
             }
+            if (infraction != "")
+            {
+                where += InfractionWhere(infraction);
+            }
             IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<ProductType>();
+                foreach(ProductType item in objList)
+                {
+                    item.Infraction = Infraction(item.SKU);
+                }
             object count = NSession.CreateQuery("select count(Id) from ProductType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
@@ -812,6 +838,20 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         {
             IList<ProductRecordType> obj = NSession.CreateQuery("from ProductRecordType where Oid='" + id + "'").List<ProductRecordType>();
             return Json(obj, JsonRequestBehavior.AllowGet);
+        }
+        public string Infraction(string sku)
+        {
+            string str ="";
+            IList<ProductIsInfractionType> objs = NSession.CreateQuery("from ProductIsInfractionType where SKU='" + sku + "' and Isinfraction=1 ").List<ProductIsInfractionType>();
+            foreach (var item in objs)
+            {
+                str += item.Platform + "<br/>";
+            }
+            if(str=="")
+            {
+                str = "否";
+            }
+            return str;
         }
 
     }

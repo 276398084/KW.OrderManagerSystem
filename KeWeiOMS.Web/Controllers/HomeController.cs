@@ -59,6 +59,12 @@ namespace KeWeiOMS.Web.Controllers
             {
                 list.Add(new { id = "ALL", text = "ALL" });
             }
+            if (Id == "2")
+            {
+                list.Add(new { id = "不限", text = "不限" });
+                list.Add(new { id = "无侵权", text = "无侵权" });
+                list.Add(new { id = "全侵权", text = "全侵权" });
+            }
             foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
             {
                 list.Add(new { id = item, text = item });
