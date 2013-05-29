@@ -1,4 +1,4 @@
-﻿document.write("<script type='text/javascript' src='CreateControl.js'></script>");
+﻿document.write("<script type='text/javascript' src='/Scripts/CreateControl.js'></script>");
 
 //插入一个报表对象，用来判断插件是否已经安装，或是否需要安装更新版本
 //此函数应该在网页的<head>中调用，具体请看例子 ReportHome.htm 中的用法

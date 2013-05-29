@@ -61,10 +61,18 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
+        public ActionResult OrderCount(DateTime st, DateTime et, string a, string p,string i)
         {
             var sqlWhere = SqlWhere(st, et, a, p);
-            IList<object[]> objs = NSession.CreateQuery(string.Format("select Account,Count(Id),Platform,Sum(Amount),Min(CurrencyCode) from OrderType {0} group by Account,Platform", sqlWhere)).List<object[]>();
+            string sql =
+                string.Format(
+                    "select Account,Count(Id),Platform,Sum(Amount),Min(CurrencyCode) from OrderType {0} group by Account,Platform",
+                    sqlWhere);
+            if(!string.IsNullOrEmpty(i))
+            {
+                sql += " ,CurrencyCode";
+            }
+            IList<object[]> objs = NSession.CreateQuery(sql).List<object[]>();
 
             List<OrderCount> list = new List<OrderCount>();
             int sum = 0;

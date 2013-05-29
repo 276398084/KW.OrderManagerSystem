@@ -12,6 +12,7 @@
                 nowrap: false,
                 pageSize: 20,
                 height: 500,
+                queryParams: { "search": "IsStop_ds&0^" },
                 toolbar: '#toolbar',
                 rownumbers: true,
                 pagination: true,
@@ -19,23 +20,23 @@
                 view: detailview,
                 onDblClickRow: function (i, r) {
                     window.open('@Url.Action("Details", "Order")/' + r.Id);
-                },
-                detailFormatter: function (index, row) {
-                    var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
-                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '<br/> 拦截留言：' + row.CutOffMemo + '</b></div>';
-                    return html;
-                },
-                onExpandRow: function (index, row) {
-                    $('#ddv-' + index).panel({
-                        border: false,
-                        cache: false,
-                        href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
+            },
+            detailFormatter: function (index, row) {
+                var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '<br/> 拦截留言：' + row.CutOffMemo + '</b></div>';
+                return html;
+            },
+            onExpandRow: function (index, row) {
+                $('#ddv-' + index).panel({
+                    border: false,
+                    cache: false,
+                    href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
                         onLoad: function () {
                             $('#dg').datagrid('fixDetailRowHeight', index);
                         }
                     });
-                    $('#dg').datagrid('fixDetailRowHeight', index);
-                }
+                $('#dg').datagrid('fixDetailRowHeight', index);
+            }
             });
 
             $('#Platform').combobox({
@@ -143,11 +144,11 @@
                         search += "Platform_es&" + b + "^";
                     }
                     if (record[0] == 0)
-                        search += "Status_es&已处理^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(1, "d") + "^";;
+                        search += "IsStop_ds&0^Status_es&已处理^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(1, "d") + "^";;
                     if (record[0] == 1)
-                        search = "Status_es&待包装^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
+                        search = "IsStop_ds&0^Status_es&待包装^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
                     if (record[0] == 2)
-                        search = "Status_es&待发货^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
+                        search = "IsStop_ds&0^Status_es&待发货^IsOutOfStock_ei&0^CreateOn_et&" + getStartDateTime(12, "m") + "^";;
                     $("#dg").datagrid("load", {
                         search: search
                     });
@@ -169,22 +170,22 @@
         //新建
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Order")';
-            showdlg(url_str, 'c_dlg', ajaxAdd);
-        }
-        $('#Platform').combobox({
-            url: '/Home/Platform',
-            valueField: 'id',
-            textField: 'text',
-            required: true,
-            width: 150,
-            panelHeight: 'auto'
-        });
+                showdlg(url_str, 'c_dlg', ajaxAdd);
+            }
+            $('#Platform').combobox({
+                url: '/Home/Platform',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 150,
+                panelHeight: 'auto'
+            });
 
-        //编辑框
-        function e_dlg() {
-            var id = getselectedRow();
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Order")/' + id;
+            //编辑框
+            function e_dlg() {
+                var id = getselectedRow();
+                if (id != undefined) {
+                    var url = '@Url.Action("Edit", "Order")/' + id;
                 showdlg(url, 'e_dlg', ajaxEdit);
             }
         }
@@ -223,7 +224,7 @@
             return (undefined);
         }
 
-        function getselectedRows(i,b) {
+        function getselectedRows(i, b) {
             var s_ids = [];
             var rows = $('#dg').datagrid('getSelections');
             for (var i = 0; i < rows.length; i++) {
@@ -233,14 +234,12 @@
                 if (i == 1) {
 
                 } else {
-                    if(b) {
-                        
+                    if (b) {
+
                     } else {
                         $.messager.alert("请选择一条数据");
                     }
-                   
                 }
-
                 return s_ids;
             }
             return s_ids;
@@ -289,7 +288,8 @@
         }
 
         function doSearch() {
-            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^IsStop_ds&0^";
+
             var a = $('#Account').combobox("getText");
             if (a != "ALL" && a != "") {
                 search += "Account_es&" + a + "^";
@@ -377,7 +377,6 @@
 
         function showEdit() {
             var s_ids = getselectedRows(0);
-
             $('#s_dlg').show();
             $("#s_dlg").dialog({
                 title: '替换',
@@ -466,16 +465,15 @@
 
         function exportOrder() {
             $('#dg').datagrid("loading");
-            var s_ids = getselectedRows(1,0);
+            var s_ids = getselectedRows(1, 0);
             var search = "";
             if (s_ids.length == 0) {
-
                 var e = $('#CreateOn_st').combobox("getValue");
                 if (e != "ALL" && e != "" && e != "0") {
                     search += "&st=" + e + "";
                 } else {
                     alert("请选择开始时间！");
-                    stopLoad();return;
+                    stopLoad(); return;
                 }
                 var f = $('#CreateOn_et').combobox("getValue");
                 if (f != "ALL" && f != "" && f != "0") {
@@ -506,15 +504,13 @@
                     alert("不选订单，也选个时间啊！");
                     stopLoad(); return;
                 }
-
             }
             var t = $('#orderdateType').combobox("getValue");
-
             var postUrl = "/Order/ExportDown/1";
             jQuery.ajax({
                 url: "/Order/ExportOrder/",
                 type: "post",
-                data: "o=" + s_ids.join(',') + search + "&dd=" + t,
+                data: "o=" + s_ids.join(',') + search + "" + "&dd=" + t,
                 success: function (sss) {
                     location.href = postUrl;
                     $('#dg').datagrid("reload");
@@ -523,7 +519,6 @@
         }
 
         function o_Error(parameters) {
-
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要作废这" + s_ids.length + "条订单吗？", function (r) {
@@ -541,7 +536,6 @@
         }
 
         function o_ReQue(parameters) {
-
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
@@ -560,7 +554,6 @@
         }
 
         function o_ReError() {
-
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
@@ -578,7 +571,6 @@
         }
 
         function o_SplitZu() {
-
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows(0);
             $.messager.confirm("提示", "检验可能有组合产品的" + s_ids.length + "条订单吗？", function (r) {
@@ -613,11 +605,8 @@
         }
 
         function o_LanJie() {
-
-
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows(0);
-
             $.messager.confirm("提示", "你要拦截 " + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
@@ -630,11 +619,9 @@
                     });
                 }
             });
-
         }
         function kuai(v) {
-            if (v == 1)
-            {
+            if (v == 1) {
                 name = "IsPrint";
             }
             if (v == 2) {
@@ -649,7 +636,7 @@
             if (v == 5) {
                 name = "IsRepeat";
             }
-            var search = name + "_si&1^";
+            var search = name + "_si&1^IsStop_ds&0^";
             var e = $('#CreateOn_st').datebox("getValue");
             if (e != "ALL" && e != "" && e != "0") {
                 search += "CreateOn_st&" + e + "^";
@@ -718,12 +705,13 @@
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            异常订单选择:<input type="text" id="IsNo" /><br/>
+            异常订单选择:<input type="text" id="IsNo" /><br />
             快捷查询：
-            <img src='/Content/imgs/Print.gif'> <a href="#"  onclick="kuai(1)">打印</a>
-            <img src='/Content/imgs/Merger.gif'><a href="#"  onclick="kuai(2)">合并</a>
-            <img src='/Content/imgs/Split.gif'><a href="#"  onclick="kuai(3)">拆分</a>
-            <img src='/Content/imgs/OutOfStock.gif'><a href="#"  onclick="kuai(4)">缺货</a>
+            <img src='/Content/imgs/Print.gif'>
+            <a href="#" onclick="kuai(1)">打印</a>
+            <img src='/Content/imgs/Merger.gif'><a href="#" onclick="kuai(2)">合并</a>
+            <img src='/Content/imgs/Split.gif'><a href="#" onclick="kuai(3)">拆分</a>
+            <img src='/Content/imgs/OutOfStock.gif'><a href="#" onclick="kuai(4)">缺货</a>
             <img src='/Content/imgs/Repeat.gif'><a href="#" onclick="kuai(5)">重发</a>
         </div>
         <div id="mm" style="width: 120px">

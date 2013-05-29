@@ -621,6 +621,7 @@ namespace KeWeiOMS.Web.Controllers
             for (int i = 0; i < c; i++)
             {
                 NSession.Clear();
+                obj.IsSplit = 1;
                 obj.RMB = 0;
                 obj.Amount = 0;
                 obj.OrderNo = Utilities.GetOrderNo(NSession);
@@ -637,7 +638,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             NSession.Clear();
             OrderType obj = GetById(Utilities.ToInt(o));
-            obj.IsSplit = 0;
+            obj.IsSplit = 1;
 
             NSession.Update(obj);
             NSession.Flush();
@@ -646,6 +647,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Clear();
             obj.Amount = 0;
             obj.IsPrint = 0;
+            obj.IsSplit = 1;
             obj.RMB = 0;
             obj.TrackCode = "";
             obj.Freight = 0;
@@ -982,6 +984,24 @@ left join Products P On OP.SKU=P.SKU ";
             foreach (var orderType in orders)
             {
                 LoggerUtil.GetOrderRecord(orderType, "设置订单作废！", "将订单状态设置为作废！", CurrentUser, NSession);
+            }
+            if (t > 0)
+                return Json(new { IsSuccess = true });
+            else
+            {
+                return Json(new { IsSuccess = false });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ReStop(string o)
+        {
+            int t = NSession.CreateQuery(" Update OrderType set IsStop=0 where Id in(" + o + ")").ExecuteUpdate();
+
+            IList<OrderType> orders = NSession.CreateQuery("from OrderType where Id In (" + o + ")").List<OrderType>();
+            foreach (var orderType in orders)
+            {
+                LoggerUtil.GetOrderRecord(orderType, "撤销订单的停售状态！", "将订单的停售标记删除！", CurrentUser, NSession);
             }
             if (t > 0)
                 return Json(new { IsSuccess = true });

@@ -62,8 +62,7 @@
                 $("#c_PicUrl").attr("value", json[0].PicUrl);
                 $("#c_ProductUrl").attr("value", json[0].ProductUrl);
                 $("#c_Price").attr("value", json[0].Price);
-                $("#c_Suppliers").attr("value", json[0].Suppliers);
-
+                $('#c_Suppliers').combobox('setValue', json[0].Suppliers);
             }
         });
     }

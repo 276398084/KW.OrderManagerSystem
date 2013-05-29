@@ -118,7 +118,7 @@
                 jQuery.ajax({
                     url: "/StockIn/PrintSKU/" + id,
                     type: "post",
-                    success: function (sss) {
+                    success: function (msg) {
                         $('#printdata').val(msg.Result);
                         window.open('/Home/PrintDetail/33');
                     }
