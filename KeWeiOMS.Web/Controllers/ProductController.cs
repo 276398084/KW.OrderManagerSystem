@@ -598,11 +598,11 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         private string InfractionWhere(string infraction)
         {
             string where = "";
-            if (infraction == "ALL")
+            if (infraction == "全侵权")
             {
                 where = " and SKU in(SELECT SKU FROM ProductIsInfractionType group by SKU having min(Isinfraction)=1) ";
             }
-            else if (infraction == "否")
+            else if (infraction == "无侵权")
             {
                 where = " and SKU in(SELECT SKU FROM ProductIsInfractionType group by SKU having max(Isinfraction)=0) ";
             }
