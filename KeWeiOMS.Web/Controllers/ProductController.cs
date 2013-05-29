@@ -837,7 +837,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         public JsonResult Record(int id)
         {
             IList<ProductRecordType> obj = NSession.CreateQuery("from ProductRecordType where Oid='" + id + "'").List<ProductRecordType>();
-            return Json(obj, JsonRequestBehavior.AllowGet);
+            return Json(obj.OrderByDescending(p=>p.CreateOn), JsonRequestBehavior.AllowGet);
         }
         public string Infraction(string sku)
         {

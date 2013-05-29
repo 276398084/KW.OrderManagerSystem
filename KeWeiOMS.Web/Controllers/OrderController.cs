@@ -68,6 +68,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
 
         }
+
+        public ActionResult BeforePeiScan()
+        {
+            return View();
+        }
         public ActionResult SendScan()
         {
             return View();
@@ -1364,7 +1369,7 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
+                if (order.Status == OrderStatusEnum.待拣货.ToString())
                 {
                     if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
                     {
@@ -1382,6 +1387,55 @@ left join Products P On OP.SKU=P.SKU ";
                                                             <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td><td>扫描次数</td>
                                                         </tr>";
                     string html2 = @"<tr style='font-weight:bold; font-size:30px;' name='tr_{0}' code='{3}' qty='{1}' cqty='{4}'><td><img width='220px' src='/imgs/pic/{0}/1.jpg' /></td><td>{0}*{1}</td><td>{2}</td><td><span><span id='r_{3}' style='color:red'>{4}</span>/<span style='color:green'>{1}</span></td></tr>";
+                    order.Products =
+                        NSession.CreateQuery("from OrderProductType where OId=" + order.Id).List<OrderProductType>().ToList();
+                    foreach (var p in order.Products)
+                    {
+                        IList<ProductType> products = NSession.CreateQuery("from ProductType where SKU=:p").SetString("p", p.SKU).SetMaxResults(1).List<ProductType>();
+                        if (products.Count > 0)
+                        {
+                            if (products[0].IsScan == 1)
+                            {
+                                html += string.Format(html2, p.SKU.Trim().ToUpper(), p.Qty, p.Standard, p.Id, 0);
+                            }
+                            else
+                            {
+                                html += string.Format(html2, p.SKU.Trim().ToUpper(), p.Qty, p.Standard, p.Id, p.Qty);
+                            }
+                        }
+                    }
+                    html += "</table>";
+                    return Json(new { IsSuccess = true, Result = html });
+                }
+                return Json(new { IsSuccess = false, Result = "订单状态不符！此订单的状态是：" + order.Status });
+            }
+            return Json(new { IsSuccess = false, Result = "找不到该订单" });
+        }
+
+        public JsonResult GetOrderByBeforePei(string orderNo)
+        {
+            List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + orderNo + "'").List<OrderType>().ToList();
+            if (orders.Count > 0)
+            {
+                OrderType order = orders[0];
+                if (order.Status == OrderStatusEnum.已处理.ToString())
+                {
+                    if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
+                    {
+                        string tttt = "订单:" + order.OrderNo + ", 无法扫描，请拦截此包裹，原因：" + order.CutOffMemo;
+                        return Json(new { IsSuccess = false, Result = tttt });
+                    }
+                    if (order.IsAudit == 0)
+                    {
+                        string tttt = "订单:" + order.OrderNo + ", 需要审核";
+                        return Json(new { IsSuccess = false, Result = tttt });
+                    }
+
+                    string html = @"  <table width='100%' class='dataTable'>
+                                                        <tr class='dataTableHead'>
+                                                            <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td>
+                                                        </tr>";
+                    string html2 = @"<tr style='font-weight:bold; font-size:30px;' name='tr_{0}' code='{3}' qty='{1}' cqty='{4}'><td><img width='220px' src='/imgs/pic/{0}/1.jpg' /></td><td>{0}*{1}</td><td>{2}</td><td><span></td></tr>";
                     order.Products =
                         NSession.CreateQuery("from OrderProductType where OId=" + order.Id).List<OrderProductType>().ToList();
                     foreach (var p in order.Products)
@@ -1446,6 +1500,38 @@ left join Products P On OP.SKU=P.SKU ";
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
+
+        public JsonResult OutStockByBeforePei(string p1,string o)
+        {
+            List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
+            if (orders.Count > 0)
+            {
+                OrderType order = orders[0];
+                if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
+                {
+                    order.Status = "待拣货";
+                    NSession.Update(order);
+                    NSession.Flush();
+                    BeforePeiScanType obj = new BeforePeiScanType
+                    {
+                        OId=order.Id,
+                        OrderNo=order.OrderNo,
+                        PeiBy=p1,
+                        CreatBy=CurrentUser.Realname,
+                        CreateOn=DateTime.Now
+                    };
+                    NSession.Save(obj);
+                    NSession.Flush();
+                    LoggerUtil.GetOrderRecord(order, "订单配货前扫描！", "将订单配货前扫描，待拣货！", CurrentUser, 
+                        NSession);
+                    string html = "订单： " + order.OrderNo + "开始拣货！";
+                    return Json(new { IsSuccess = true, Result = html });
+                }
+                return Json(new { IsSuccess = false, Result = "订单状态不符！现在的订单状态为：" + order.Status + " 将订单状态设置为“已处理”才能配货前扫描！" });
+            }
+            return Json(new { IsSuccess = false, Result = "找不到该订单" });
+        }
+
 
         public JsonResult TimeJi(DateTime st, DateTime et)
         {
@@ -1634,7 +1720,7 @@ left join Products P On OP.SKU=P.SKU ";
         public JsonResult Record(int id)
         {
             IList<OrderRecordType> obj = NSession.CreateQuery("from OrderRecordType where Oid='" + id + "'").List<OrderRecordType>();
-            return Json(obj, JsonRequestBehavior.AllowGet);
+            return Json(obj.OrderByDescending(p=>p.CreateOn), JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetNotQueList()

@@ -154,6 +154,7 @@
     <Compile Include="Controllers\AccountEmailController.cs" />
     <Compile Include="Controllers\AccountFeeController.cs" />
     <Compile Include="Controllers\AttendController.cs" />
+    <Compile Include="Controllers\BeforePeiScanController.cs" />
     <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\DictionaryClassController.cs" />
@@ -1637,6 +1638,12 @@
     <Content Include="Views\EmailMessage\Details.cshtml" />
     <Content Include="Views\EmailMessage\Edit.cshtml" />
     <Content Include="Views\EmailMessage\Index.cshtml" />
+    <Content Include="Views\BeforePeiScan\Create.cshtml" />
+    <Content Include="Views\BeforePeiScan\Delete.cshtml" />
+    <Content Include="Views\BeforePeiScan\Details.cshtml" />
+    <Content Include="Views\BeforePeiScan\Edit.cshtml" />
+    <Content Include="Views\BeforePeiScan\Index.cshtml" />
+    <Content Include="Views\Order\BeforePeiScan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

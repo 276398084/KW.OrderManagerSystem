@@ -1,0 +1,90 @@
+﻿@model KeWeiOMS.Domain.BeforePeiScanType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		        $('#c_PeiBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+        $('#c_CreatBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_CreateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "BeforePeiScan", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OId,"订单Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OId,new{@id="c_OId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderNo,"订单号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderNo,new{@id="c_OrderNo"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.PeiBy,"配货人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.PeiBy,new{@id="c_PeiBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreatBy,"创建人:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreatBy,new{@id="c_CreatBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"创建时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}
