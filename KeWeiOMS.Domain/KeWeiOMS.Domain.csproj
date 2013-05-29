@@ -53,6 +53,7 @@
     <Compile Include="Entities\AccountFeeType.cs" />
     <Compile Include="Entities\AccountType.cs" />
     <Compile Include="Entities\AttendType.cs" />
+    <Compile Include="Entities\BeforePeiScanType.cs" />
     <Compile Include="Entities\CountryType.cs" />
     <Compile Include="Entities\CurrencyType.cs" />
     <Compile Include="Entities\DictionaryClassType.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Mappings\AccountFeeTypeMap.cs" />
     <Compile Include="Mappings\AccountTypeMap.cs" />
     <Compile Include="Mappings\AttendTypeMap.cs" />
+    <Compile Include="Mappings\BeforePeiScanTypeMap.cs" />
     <Compile Include="Mappings\CountryTypeMap.cs" />
     <Compile Include="Mappings\CurrencyTypeMap.cs" />
     <Compile Include="Mappings\DictionaryClasTypeMap.cs" />
