@@ -38,10 +38,10 @@
             url: "/Home/SetPrintData",
             data: "t=" + $("#PrintType").combobox("getValue") + "&m=" + $("#PrintTemp").combobox("getValue") + "&r=" + $("#ReturnAddress").combobox("getValue") + "&d=" + $("#txtData").val(),
             success: function (msg) {
-                if (msg.ErrorMsg != "") {
-                    alert(msg.ErrorMsg);
+                if (msg.IsSuccess != "") {
+                    $('#printdata').val(msg.Result);
+                    window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));
                 }
-                window.open('/Home/PrintDetail/' + $("#PrintTemp").combobox("getValue"));
             }
         });
     }
@@ -49,7 +49,7 @@
 
 <table>
     <tr>
-
+        <input type="hidden" id="printdata"/>
         <td>打印类型</td>
         <td>
             <input type="text" id="PrintType" /></td>

@@ -1181,9 +1181,9 @@ left join Products P On OP.SKU=P.SKU ";
 
 
             IList<OrderType> objList = NSession.CreateQuery("from OrderType where CreateOn >'2013-05-01'")
-//                 IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where OrderNo in(            '200122307',
-//'200122885',
-//'200122886')")
+                //                 IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where OrderNo in(            '200122307',
+                //'200122885',
+                //'200122886')")
                .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
@@ -1191,7 +1191,7 @@ left join Products P On OP.SKU=P.SKU ";
                 NSession.SaveOrUpdate(orderType);
                 NSession.Flush();
                 OrderHelper.SaveAmount(orderType, NSession);
-                
+
 
             }
             // TimeJi();
@@ -1339,15 +1339,29 @@ left join Products P On OP.SKU=P.SKU ";
                     order.IsOutOfStock = 1;
                     NSession.Update(order);
                     NSession.Flush();
+                    string str = "";
                     foreach (OrderProductType item in NSession.CreateQuery(" from OrderProductType where OId=" + order.Id).List<OrderProductType>())
                     {
                         if (ids.IndexOf(item.Id.ToString()) != -1)
                         {
+                            str += "SKU:" + item.SKU + " Qty:" + item.Qty;
                             item.IsQue = 1;
                             NSession.Update(item);
                             NSession.Flush();
                         }
                     }
+                    OrderOutRecordType record = new OrderOutRecordType();
+                    record.OId = order.Id;
+                    record.OrderNo = order.OrderNo;
+                    record.OrderExNo = order.OrderExNo;
+                    record.RestorationBy = CurrentUser.Realname;
+                    record.RestorationOn = DateTime.Now;
+                    record.CreateBy = CurrentUser.Realname;
+                    record.CreateOn = DateTime.Now;
+                    record.IsRestoration = 0;
+                    record.Remark = str;
+                    NSession.Save(record);
+                    NSession.Flush();
                     string html = "订单：" + order.OrderNo + " 添加到缺货！";
                     return Json(new { IsSuccess = true, Result = html });
                 }
@@ -1434,6 +1448,17 @@ left join Products P On OP.SKU=P.SKU ";
                     if (iscon)
                     {
                         LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描，订单的缺货状态删除！", CurrentUser, NSession);
+                        IList<OrderOutRecordType> list =
+                            NSession.CreateQuery("from OrderOutRecordType where OId='" + order.OrderExNo + "'").List
+                                <OrderOutRecordType>();
+                        foreach (OrderOutRecordType orderOutRecordType in list)
+                        {
+                            orderOutRecordType.IsRestoration = 1;
+                            orderOutRecordType.RestorationBy = CurrentUser.Realname;
+                            orderOutRecordType.RestorationOn = DateTime.Now;
+                            NSession.Update(orderOutRecordType);
+                            NSession.Flush();
+                        }
                     }
                     else
                     {

@@ -142,11 +142,9 @@ namespace KeWeiOMS.Web.Controllers
             IList<object[]> objList = NSession.CreateSQLQuery(sql)
                 .List<object[]>();
             List<OrderData> os = new List<OrderData>();
-            foreach (var o in objList)
-            {
-                AddToOrderData(o, os);
-            }
+           
             object count = NSession.CreateQuery("select count(Id) from OrderType " + where).UniqueResult();
+
             return Json(new { total = count, rows = os });
         }
 

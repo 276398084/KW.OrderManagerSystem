@@ -58,7 +58,7 @@
                     delData(url, 'dg');
                 }
             });
-           
+
         }
 
         //获取选中行
@@ -87,11 +87,11 @@
 
 
         function printSKU(id) {
-
             jQuery.ajax({
                 url: "/PlanDao/PrintSKU/" + id,
                 type: "post",
                 success: function (sss) {
+                    $('#printdata').val(msg.Result);
                     window.open('/Home/PrintDetail/33');
                 }
             });
@@ -213,4 +213,6 @@
         <div id="e_dlg"></div>
 
     </div>
+     <input type="hidden" id="printdata" />
 </body>
+

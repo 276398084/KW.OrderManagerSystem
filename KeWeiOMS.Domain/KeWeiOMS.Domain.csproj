@@ -120,6 +120,8 @@
     <Compile Include="Entities\WarehouseLocationType.cs" />
     <Compile Include="Entities\WarehouseStockType.cs" />
     <Compile Include="Entities\WarehouseType.cs" />
+    <Compile Include="Entities\OrderOutRecord.cs" />
+    <Compile Include="Entities\PrintDataType.cs" />
     <Compile Include="Mappings\AccountEmailTypeMap.cs" />
     <Compile Include="Mappings\AccountFeeTypeMap.cs" />
     <Compile Include="Mappings\AccountTypeMap.cs" />
@@ -191,6 +193,8 @@
     <Compile Include="Mappings\WarehouseLocationTypeMap.cs" />
     <Compile Include="Mappings\WarehouseStockTypeMap.cs" />
     <Compile Include="Mappings\WarehouseTypeMap.cs" />
+    <Compile Include="Mappings\OrderOutRecordTypeMap.cs" />
+    <Compile Include="Mappings\PrintDataTypeMapMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

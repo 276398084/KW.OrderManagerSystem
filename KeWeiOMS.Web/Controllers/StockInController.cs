@@ -117,8 +117,14 @@ namespace KeWeiOMS.Web.Controllers
                 ds.Tables.Add(dt);
                 string xml = ds.GetXml();
                 Session["data"] = xml;
+                PrintDataType data = new PrintDataType();
+                data.Content = ds.GetXml();
+                data.CreateOn = DateTime.Now;
+                NSession.Save(data);
+                NSession.Flush();
+                return Json(new { IsSuccess = true, Result = data.Id });
             }
-            return Json(new { IsSuccess = true });
+            return Json(new { IsSuccess = false });
         }
 
         /// <summary>

@@ -190,15 +190,12 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult PostData(string ids)
         {
             Session["ids"] = ids;
-
             return Json(new { IsSuccess = true });
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult SetPrintData(string m, string r, string d, string t)
         {
-
-
             IList<OrderType> objectses = NSession.CreateQuery("from OrderType where IsAudit=0 and OrderNo IN('" +
                                    d.Replace(",", "','") + "')").List<OrderType>();
             string NotPrint = "";
@@ -221,7 +218,6 @@ left join ReturnAddress R On r.Id=" + r;
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
-
             da.Fill(ds);
             ds.Tables[0].DefaultView.Sort = " OrderNo Asc";
             if (t == "多物品订单")
@@ -230,7 +226,6 @@ left join ReturnAddress R On r.Id=" + r;
             {
                 List<string> list = new List<string>();
                 DataTable dt1 = ds.Tables[0];
-
                 foreach (DataRow dr in dt1.Rows)
                 {
                     if (list.Contains(dr["OrderNo"].ToString()))
@@ -256,36 +251,35 @@ left join ReturnAddress R On r.Id=" + r;
 
                 if (list2.Contains(dr["OrderNo"].ToString()))
                 {
-
                 }
                 else
                 {
-
                     LoggerUtil.GetOrderRecord(Convert.ToInt32(dr["Id"]), dr["OrderNo"].ToString(), "订单打印", CurrentUser.Realname + "订单打印！", CurrentUser, NSession);
                     list2.Add(dr["OrderNo"].ToString());
                 }
-
             }
             //标记打印
             NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where OrderNo in ('" + d.Replace(",", "','") + "')").ExecuteUpdate();
             ds.Tables.Clear();
             ds.Tables.Add(dt);
-            Session["data"] = ds.GetXml();
             if (NotPrint != "")
             {
                 NotPrint = "有" + objectses.Count + "条订单没有审核，无法发打印，订单号：" + NotPrint;
             }
-            return Json(new { IsSuccess = true, ErrorMsg = NotPrint });
+            PrintDataType data = new PrintDataType();
+            data.Content = ds.GetXml();
+            data.CreateOn = DateTime.Now;
+            NSession.Save(data);
+            NSession.Flush();
+            return Json(new { IsSuccess = true, Result = data.Id });
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ContentResult PrintData()
+        public ContentResult PrintData(int Id)
         {
-            object obj = Session["data"];
-            if (obj == null)
-                obj = "";
-            //Session["data"] = null;
-            return Content(obj.ToString(), "text/xml");
+            PrintDataType data = NSession.Get<PrintDataType>(Id);
+
+            return Content(data.Content, "text/xml");
         }
 
         public ContentResult PrintOrder(int Id)

@@ -78,8 +78,8 @@ function formPost(form, url, dlg, dg, t, r) {
             return $(this).form('validate');
         },
         success: function (msg) {
-            var result = eval('(' + msg + ')');
-           // var result = $.parseJSON(msg);
+           // var result = eval('(' + msg + ')');
+            var result = $.parseJSON(msg);
             if (result.IsSuccess) {
                 alert("操作成功");
                 if (dlg) {
@@ -141,7 +141,7 @@ function showdlg(url, dlg, handle) {
         $(this).dialog({
             title: '新建',
             modal: true,
-            rownumbers:true,
+            rownumbers: true,
             loadingMessage: '正在加载...',
             buttons: [{
                 text: '提交',
