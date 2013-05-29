@@ -1,0 +1,307 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderAmountType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $("#cc").datebox({
+                parser: myparser
+            });
+            $("#cc2").datebox({
+                parser: myparser
+            });
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "OrderAmount")',
+                nowrap: false,
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+<<<<<<< HEAD
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100],
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Order")/' + r.OId);
+                 },
+=======
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+>>>>>>> kewei/ttt
+            });
+            $('#pp').combobox({
+                url: '/Home/Platform/1',
+                valueField: 'id',
+                textField: 'text',
+                width: 100,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
+            $('#pp').combobox("setValue", "ALL");
+            $('#loss').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+
+            $('#status').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: [["ALL", "ALL"], ["0", "已处理"], ["1", "部分发货"], ["2", "已发货"]],
+                width: 100
+            });
+        });
+        
+        function myparser(s) {
+            if (!s) return new Date();
+            var ss = s.split('-');
+            var y = parseInt(ss[0], 10);
+            var m = parseInt(ss[1], 10);
+            var d = parseInt(ss[2], 10);
+            if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                return new Date(y, m - 1, d);
+            } else {
+                return new Date();
+            }
+        }
+
+        function changePlatform(n, o) {
+            $('#aa').combotree({
+                url: '/Home/AccountList/' + n,
+                valueField: 'id',
+                textField: 'text',
+                width: 150
+            });
+            $('#aa').combotree("setValue", "ALL");
+        }
+        //新建
+        function c_dlg(i, id) {
+            //0订单 1产品 2运费
+            var url_str = "";
+            if (i == 0) {
+                url_str = '@Url.Action("GetOrders", "OrderAmount")/' + id;
+                showdlg(url_str, 'c_dlg', function () {
+                    $('#c_dlg').dialog('close');
+                });
+            } else if (i == 1) {
+                url_str = '@Url.Action("GetProducts", "OrderAmount")/' + id;
+                showdlg(url_str, 'c_dlg', function () {
+                    $('#d_dlg').dialog('close');
+                });
+            } else if (i == 2) {
+                url_str = '@Url.Action("GetFreights", "OrderAmount")/' + id;
+                    showdlg(url_str, 'e_dlg', function () {
+                        $('#e_dlg').dialog('close');
+                    });
+                }
+    }
+
+    //删除
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
+
+            var url = '@Url.Action("Delete", "OrderAmount")/' + id;
+
+            delData(url, 'dg');
+
+        }
+    }
+
+    //获取选中行
+    function getselectedRow() {
+        var row = $('#dg').datagrid('getSelected');
+        if (row != undefined) {
+            if (row.hasOwnProperty('Id')) {
+                var id = row['Id'];
+                return id;
+            }
+        }
+        $.messager.show({
+            title: '提示',
+            msg: '请选择行',
+            timeout: 3000,
+            showType: 'slide'
+        });
+        return (undefined);
+    }
+
+    function getSearch() {
+        var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+        var u = $('#pp').combobox("getValue");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "Platform_es&" + u + "^";
+        }
+        u = $('#aa').combobox("getText");
+        if (u != "ALL" && u != "" && u != "0") {
+            search += "Account_es&" + u + "^";
+        }
+        u = $('#status').combobox("getText");
+        if (u != "ALL" && u != "") {
+         
+            search += "Status_ds&" + u + "^";
+           
+        }
+        u = $('#cc').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += "CreateOn_st&" + u + "^";
+        }
+
+        u = $('#cc2').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            search += "CreateOn_et&" + u + "^";
+        }
+
+        u = $('#loss').combobox("getValue");
+        if (u != "ALL" && u != "") {
+            if(u==1)
+                search += "Profit_si&0^";
+            else
+                search += "Profit_ei&0.00001^";
+        }
+
+
+        return search;
+    }
+    function doSearch() {
+        var search = getSearch();
+        $("#dg").datagrid("load", {
+            search: search
+        });
+    }
+
+    function getAmount(v, r, i) {
+        return r.CurrencyCode + ":" + v;
+    }
+
+    function getFreights(v, r, i) {
+        return '<a href="javascript:void(0)" onclick="c_dlg(2,' + r.OId + ')">' + v + '</a>';
+    }
+
+    function getOrders(v, r, i) {
+        return '<a href="javascript:void(0)" onclick="c_dlg(0,' + r.OId + ')">' + v + '</a>';
+    }
+
+    function getProducts(v, r, i) {
+        return '<a href="javascript:void(0)" onclick="c_dlg(1,' + r.OId + ')">' + v + '</a>';
+    }
+
+    function getFees(v, r, i) {
+        var html = "";
+        html += "手续费:" + r.Fee + "<br\>";
+        html += "交易费:" + r.TransactionFees + "<br\>";
+        html += "其他费:" + r.OtherFees + "<br\>";
+        return html;
+    }
+    function getAccount(v, r, i) {
+        var html = "";
+        html += "" + r.Account + "<br\>";
+        html += "" + r.Platform + "";
+        return html;
+<<<<<<< HEAD
+    }
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="OrderNo" width="100">编号
+                    </th>
+                    <th field="OrderExNo" width="100">订单号 onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Order")/' + r.Id);
+                },
+                    </th>
+                    <th field="Account" width="100" formatter="getAccount">账户/平台
+                    </th>
+                    <th field="Account" width="100" formatter="getAccount">账户/平台
+                    </th>
+                    <th field="OrderAmount" width="100" formatter="getAmount">金额
+                    </th>
+                    <th field="ExchangeRate" width="80">汇率
+                    </th>
+                    <th field="RMB" width="100">RMB
+                    </th>
+                    <th field="TotalFreight" width="80" formatter="getFreights">运费
+                    </th>
+                    <th field="TotalCosts" width="100" formatter="getProducts">成本
+                    </th>
+                    <th field="Fee" width="100" formatter="getFees">手续费
+                    </th>
+                    <th field="Status" width="100">状态
+                    </th>
+                    <th field="Profit" width="100">利润
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">待定</a>
+            <br`/>
+           平台:<input id="pp" type="text"/>
+            账户:<input id="aa" type="text"/>
+            状态:<input id="status" type="text"/>
+            亏损:<input id="loss" type="text"/>
+=======
+    }
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="OrderNo" width="100">编号
+                    </th>
+                    <th field="OrderExNo" width="100">订单号
+                    </th>
+                    <th field="Account" width="100" formatter="getAccount">账户/平台
+                    </th>
+                    <th field="OrderAmount" width="100" formatter="getAmount">金额
+                    </th>
+                    <th field="ExchangeRate" width="80">汇率
+                    </th>
+                    <th field="RMB" width="100">RMB
+                    </th>
+                    <th field="TotalFreight" width="80" formatter="getFreights">运费
+                    </th>
+                    <th field="TotalCosts" width="100" formatter="getProducts">成本
+                    </th>
+                    <th field="Fee" width="100" formatter="getFees">手续费
+                    </th>
+                    <th field="Status" width="100">状态
+                    </th>
+                    <th field="Profit" width="100">利润
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">待定</a>
+            <br`/>
+           平台:<input id="pp" type="text"/>
+            账户:<input id="aa" type="text"/>
+            状态:<input id="status" type="text"/>
+            亏损:<input id="loss" type="text"/>
+>>>>>>> kewei/ttt
+             开始:<input id="cc" type="text" />
+    结束:<input id="cc2" type="text" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'" ></input>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'OrderExNo'">订单号</div>
+            <div data-options="name:'CurrencyCode'">货币</div>
+            
+        </div>
+        <div id="c_dlg"></div>
+        <div id="d_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+</body>
