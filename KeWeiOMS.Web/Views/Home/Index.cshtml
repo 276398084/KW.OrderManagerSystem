@@ -13,9 +13,17 @@
                 }
             });
         });
-
+        changeTheme(getCookie("easyuiThemeName"));
         //$('#mainframe').layout('collapse', 'east');
     });
+
+    function getCookie(name)//取cookies函数       
+        {
+            var arr = document.cookie.match(new RegExp("(^| )"+name+"=([^;]*)(;|$)"));
+
+            if(arr != null) return unescape(arr[2]); return null;
+        }
+
 
     function initLeftMenu() {
         $("#nav").accordion({ animate: true });
