@@ -70,19 +70,18 @@
              disabled: true
          });
         $('#c_Solution').combobox({
-            url: '@Url.Action("GetDisputeSolution","Dictionary")',
-                     valueField: 'FullName',
-                     textField: 'FullName',
-                     panelHeight: 'auto',
-                     editable: true,
-                     disabled: true
-        });
-        $('#c_DisputeCategory').combobox({
-             url: '@Url.Action("GetDisputeClass","Dictionary")',
-                    valueField: 'FullName',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/DisputeSolution',
+                    valueField: 'DicValue',
                     textField: 'FullName',
-                    panelHeight: '200',
-                     panelWidth: '200'
+                    panelHeight: 200,
+                    width: 150
+                });
+        $('#c_DisputeCategory').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/DisputeClass',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 200,
+            width: 150
         });
         $('#c_DisputeCategory').combobox("setValue", "物流部-未收到");
         $('#c_DisputesType').combobox({

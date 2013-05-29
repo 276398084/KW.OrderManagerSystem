@@ -104,97 +104,17 @@ namespace KeWeiOMS.Web.Controllers
                 .List<DictionaryType>();
             return Json(new { total = objList.Count, rows = objList });
         }
-
-        public JsonResult PruchasePlanList()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Stock.Plan")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
         public void DelDictionary(int id)
         {
             DictionaryType log = GetById(id);
             NSession.Delete(log);
             NSession.Flush();
         }
-        public JsonResult GetDisputeClass()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Dispute.Class")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetDisputeSolution()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Dispute.Solution")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetPlacard()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Placard.Tag")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetMachineStatus()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Machine.Status")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetMachineClass()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Machine.Class")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetIntType()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Stock.IntType")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult GetOutType()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Stock.OutType")
-                .List<DictionaryType>();
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
 
         public JsonResult GetDataByCode(string Id)
         {
             IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
                 .SetString("DicCode", Id)
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult PruchaseTrouble()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Purchase.Trouble")
-                .List<DictionaryType>();
-
-            return Json(objList, JsonRequestBehavior.AllowGet);
-        }
-        public JsonResult PruchaseTroubleDeal()
-        {
-            IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType where DicCode=:DicCode")
-                .SetString("DicCode", "Purchase.TroubleDeal")
                 .List<DictionaryType>();
 
             return Json(objList, JsonRequestBehavior.AllowGet);

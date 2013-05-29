@@ -36,7 +36,7 @@
             });
 
             $('#Platform').combobox({
-                url: '/Account/Platform/1',
+                url: '/Home/Platform/1',
                 valueField: 'id',
                 textField: 'text',
                 required: true,
@@ -54,7 +54,7 @@
             showdlg(url_str, 'c_dlg', ajaxAdd);
         }
         $('#Platform').combobox({
-            url: '/Account/Platform',
+            url: '/Home/Platform',
             valueField: 'id',
             textField: 'text',
             required: true,
@@ -258,7 +258,7 @@
 
         function changePlatform(n, o) {
             $('#Account').combotree({
-                url: '/Account/AccountList/' + n,
+                url: '/Home/AccountList/' + n,
                 valueField: 'id',
                 textField: 'text',
                 required: true,

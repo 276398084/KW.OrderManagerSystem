@@ -7,10 +7,11 @@
 
     $(function () {
         $('#e_LogisticsMode').combobox({
-            url: '@Url.Action("PruchasePlanList", "Dictionary")',
-            valueField: 'FullName',
-            textField: 'FullName'
-
+            url: '@Url.Action("GetDataByCode", "Dictionary")/StockPlan',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight:200,
+            width: 150
         });
 
         //$('#e_PlanNo').val('@ViewData["No"]');

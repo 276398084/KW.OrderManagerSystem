@@ -11,20 +11,18 @@
             required: true
         });
         $('#c_MachineClass').combobox({
-            url: '@Url.Action("GetMachineClass","Dictionary")',
-                    valueField: 'FullName',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/MachineClass',
+                    valueField: 'DicValue',
                     textField: 'FullName',
-                    panelHeight: 'auto',
-                    editable: true,
-                    required: true
+                    panelHeight: 200,
+                    width: 150
                 });
         $('#c_Status').combobox({
-            url: '@Url.Action("GetMachineStatus","Dictionary")',
-                    valueField: 'FullName',
+            url: '@Url.Action("GetDataByCode", "Dictionary")/MachineStatus',
+                    valueField: 'DicValue',
                     textField: 'FullName',
-                    panelHeight: 'auto',
-                    editable: true,
-                    required:true
+                    panelHeight: 200,
+                    width: 150
                 });
         $('#c_UserName').combobox({
             url: '@Url.Action("ListQ","User")',

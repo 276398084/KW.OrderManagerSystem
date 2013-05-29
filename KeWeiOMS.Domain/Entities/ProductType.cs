@@ -232,5 +232,7 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String rows2 { get; set; }
 
+
+        public virtual String Infraction { get; set; }
     }
 }

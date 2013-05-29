@@ -8,11 +8,12 @@
 
     $(function () {
         $('#t_TroubleType').combobox({
-            url: '@Url.Action("PruchaseTrouble", "Dictionary")',
-                    panelHeight: 'auto',
-                    valueField: 'FullName',
-                    textField: 'FullName'
-        });
+            url: '@Url.Action("GetDataByCode", "Dictionary")/PurchaseTrouble',
+                    valueField: 'DicValue',
+                    textField: 'FullName',
+                    panelHeight: 200,
+                    width: 150
+                });
         $('#t_TroubleType').combobox("setValue", "未收到");
     });
     

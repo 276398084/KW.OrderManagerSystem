@@ -23,7 +23,7 @@
         $('#cc').datebox("setValue", getStartDate(0));
         $('#cc2').datebox("setValue", getStartDate(0));
         $('#pp').combobox({
-            url: '/Account/Platform/1',
+            url: '/Home/Platform/1',
             valueField: 'id',
             textField: 'text',
             width: 100,
@@ -44,7 +44,7 @@
     function changePlatform(n, o) {
 
         $('#aa').combotree({
-            url: '/Account/AccountList/' + n,
+            url: '/Home/AccountList/' + n,
             valueField: 'id',
             textField: 'text',
             width: 150

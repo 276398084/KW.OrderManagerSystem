@@ -7,14 +7,12 @@
 <script type="text/javascript">
 
     $(function () {
-
- $('#c_CardType').combobox({
-            url: '@Url.Action("GetPlacard","Dictionary")',
-                    required:true,
-                    valueField: 'FullName',
+        $('#c_CardType').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/PlacardTag',
+                    valueField: 'DicValue',
                     textField: 'FullName',
-                    panelHeight: 'auto',
-                    editable: true
+                    panelHeight: 200,
+                    width: 150
                 });
         $('#c_IsTop').combobox({
             valueField: 'id',
