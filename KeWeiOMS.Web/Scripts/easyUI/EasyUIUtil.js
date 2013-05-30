@@ -22,8 +22,17 @@ changeTheme = function (themeName) {
             $(ifr).contents().find('#easyuiTheme').attr('href', href);
         }
     }
-
-    $.cookie('easyuiThemeName', themeName, {
-        expires: 7
-    });
+    SetCookie('easyuiThemeName',themeName);
 };
+function SetCookie(name,value)//两个参数，一个是cookie的名子，一个是值
+
+    {
+        var Days =365; //此 cookie 将被保存 30 天
+
+        var exp = new Date();    //new Date("December 31, 9998");
+
+        exp.setTime(exp.getTime() + Days*24*60*60*1000);
+
+        document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+    }
+
