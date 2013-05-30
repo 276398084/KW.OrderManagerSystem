@@ -22,6 +22,7 @@ changeTheme = function (themeName) {
             $(ifr).contents().find('#easyuiTheme').attr('href', href);
         }
     }
+    delCookie('easyuiThemeName');
     SetCookie('easyuiThemeName',themeName);
 };
 function SetCookie(name,value)//两个参数，一个是cookie的名子，一个是值
@@ -34,5 +35,18 @@ function SetCookie(name,value)//两个参数，一个是cookie的名子，一个
         exp.setTime(exp.getTime() + Days*24*60*60*1000);
 
         document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+}
+function delCookie(name)//删除cookie
+    {
+
+        var exp = new Date();
+
+        exp.setTime(exp.getTime() - 1);
+
+        var cval=getCookie(name);
+
+        if(cval!=null) document.cookie= name + "="+cval+";expires="+exp.toGMTString();
+
     }
+
 
