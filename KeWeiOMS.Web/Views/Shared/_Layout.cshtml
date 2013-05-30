@@ -12,7 +12,20 @@
     <script src="@Url.Content("~/Scripts/easyUI/jquery.cookie.js")"></script>
     <script src="@Url.Content("~/Scripts/easyUI/EasyUIUtil.js")"></script>
     <script src="@Url.Content("~/Scripts/date.js")"></script>
-    <script src="@Url.Content("~/Scripts/easyUI/locale/easyui-lang-zh_CN.js")"></script>
+    <script src="@Url.Content("~/Scripts/easyUI/locale/easyui-lang-zh_CN.js")"></script>   
+    <script type="text/javascript">
+        $(function () {
+            if (getCookie("Theme")!= null) {
+                changeTheme(getCookie("Theme"));
+            }
+        })
+        function getCookie(name)//取cookies函数       
+        {
+            var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+
+            if (arr != null) return unescape(arr[2]); return null;
+        }
+        </script>
 </head>
 <body>
     @RenderBody()

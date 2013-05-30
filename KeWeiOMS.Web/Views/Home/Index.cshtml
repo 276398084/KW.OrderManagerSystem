@@ -12,16 +12,11 @@
                     location.href = '/User/LogOff/';
                 }
             });
+           
         });
         //$('#mainframe').layout('collapse', 'east');
-        //changeTheme(getCookie("easyuiThemeName"));
-    });   
-    function getCookie(name)//取cookies函数       
-    {
-        var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
-
-        if (arr != null) return unescape(arr[2]); return null;
-    }
+        //changeTheme(getCookie("easyuiThemeName")); 
+    });
     function initLeftMenu() {
         $("#nav").accordion({ animate: true });
         $('.easyui-accordion li a').click(function () {
@@ -56,7 +51,6 @@
             $('#tabs').tabs('select', subtitle);
         }
         tabClose();
-        changeTheme(getCookie("easyuiThemeName"));
     }
     function closeTab(subtitle) {
         if ($('#tabs').tabs('exists', subtitle)) {
