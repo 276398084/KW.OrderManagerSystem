@@ -1205,7 +1205,7 @@ left join Products P On OP.SKU=P.SKU ";
 
 
 
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where CreateOn >'2013-05-01'")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where CreateOn >'2013-04-01'")
                 //                 IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where OrderNo in(            '200122307',
                 //'200122885',
                 //'200122886')")
@@ -1415,7 +1415,6 @@ left join Products P On OP.SKU=P.SKU ";
                         string tttt = "订单:" + order.OrderNo + ", 需要审核";
                         return Json(new { IsSuccess = false, Result = tttt });
                     }
-
                     string html = @"  <table width='100%' class='dataTable'>
                                                         <tr class='dataTableHead'>
                                                             <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td><td>扫描次数</td>
@@ -1464,7 +1463,6 @@ left join Products P On OP.SKU=P.SKU ";
                         string tttt = "订单:" + order.OrderNo + ", 需要审核";
                         return Json(new { IsSuccess = false, Result = tttt });
                     }
-
                     string html = @"  <table width='100%' class='dataTable'>
                                                         <tr class='dataTableHead'>
                                                             <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td>
@@ -1490,7 +1488,7 @@ left join Products P On OP.SKU=P.SKU ";
                     html += "</table>";
                     return Json(new { IsSuccess = true, Result = html });
                 }
-                return Json(new { IsSuccess = false, Result = "订单状态不符！此订单的状态是：" + order.Status });
+                return Json(new { IsSuccess = false, Result = "订单状态不符！此订单的状态是：" + order.Status + " 只有已处理订单 才能扫描！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
@@ -1546,7 +1544,7 @@ left join Products P On OP.SKU=P.SKU ";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
-        public JsonResult OutStockByBeforePei(string p1,string o)
+        public JsonResult OutStockByBeforePei(string p1, string o)
         {
             List<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
             if (orders.Count > 0)
@@ -1559,17 +1557,17 @@ left join Products P On OP.SKU=P.SKU ";
                     NSession.Flush();
                     BeforePeiScanType obj = new BeforePeiScanType
                     {
-                        OId=order.Id,
-                        OrderNo=order.OrderNo,
-                        PeiBy=p1,
-                        CreatBy=CurrentUser.Realname,
-                        CreateOn=DateTime.Now
+                        OId = order.Id,
+                        OrderNo = order.OrderNo,
+                        PeiBy = p1,
+                        CreatBy = CurrentUser.Realname,
+                        CreateOn = DateTime.Now
                     };
                     NSession.Save(obj);
                     NSession.Flush();
-                    LoggerUtil.GetOrderRecord(order, "订单配货前扫描！", "将订单配货前扫描，待拣货！", CurrentUser, 
+                    LoggerUtil.GetOrderRecord(order, "订单配货前扫描！", "将订单配货前扫描，" + p1 + "待拣货！", CurrentUser,
                         NSession);
-                    string html = "订单： " + order.OrderNo + "开始拣货！";
+                    string html = "订单： " + order.OrderNo + "开始拣货！配货人：" + p1;
                     return Json(new { IsSuccess = true, Result = html });
                 }
                 return Json(new { IsSuccess = false, Result = "订单状态不符！现在的订单状态为：" + order.Status + " 将订单状态设置为“已处理”才能配货前扫描！" });
@@ -1765,7 +1763,7 @@ left join Products P On OP.SKU=P.SKU ";
         public JsonResult Record(int id)
         {
             IList<OrderRecordType> obj = NSession.CreateQuery("from OrderRecordType where Oid='" + id + "'").List<OrderRecordType>();
-            return Json(obj.OrderByDescending(p=>p.CreateOn), JsonRequestBehavior.AllowGet);
+            return Json(obj.OrderByDescending(p => p.CreateOn), JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetNotQueList()
