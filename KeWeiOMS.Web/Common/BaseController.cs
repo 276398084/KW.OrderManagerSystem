@@ -22,8 +22,6 @@ namespace KeWeiOMS.Web.Controllers
     {
         protected ISession NSession = NhbHelper.GetCurrentSession();
 
-
-
         private UserType currentUser;
 
         public UserType CurrentUser

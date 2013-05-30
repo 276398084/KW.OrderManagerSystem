@@ -124,6 +124,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Config.cs" />
+    <Compile Include="Common\Config\SMTConfig.cs" />
     <Compile Include="Common\easyui\CheckBoxListHelper.cs" />
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="Controllers\AccountEmailController.cs" />
     <Compile Include="Controllers\AccountFeeController.cs" />
     <Compile Include="Controllers\AttendController.cs" />
+    <Compile Include="Controllers\BeforePeiScanController.cs" />
     <Compile Include="Controllers\CountryController.cs" />
     <Compile Include="Controllers\CurrencyController.cs" />
     <Compile Include="Controllers\DictionaryClassController.cs" />
@@ -480,7 +482,8 @@
     <Content Include="Scripts\easyUI\themes\metro-red\validatebox.css" />
     <Content Include="Scripts\easyUI\themes\metro-red\window.css" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
-    <Content Include="Scripts\griectl.cab" />
+    <Content Include="Scripts\grbsctl5.cab" />
+    <Content Include="Scripts\grbsctl5.exe" />
     <Content Include="Scripts\GRInstall.js" />
     <Content Include="Scripts\images\Data.gif" />
     <Content Include="Scripts\images\Data.png" />
@@ -1630,15 +1633,23 @@
     <Content Include="Views\RefundAmount\Edit.cshtml" />
     <Content Include="Views\RefundAmount\Index.cshtml" />
     <Content Include="Views\Statistics\RefundAmountCount.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\OrderAmount\StockIndex.cshtml" />
     <Content Include="Views\OrderAmount\FreightIndex.cshtml" />
-=======
     <Content Include="Views\EmailMessage\Create.cshtml" />
     <Content Include="Views\EmailMessage\Delete.cshtml" />
     <Content Include="Views\EmailMessage\Details.cshtml" />
     <Content Include="Views\EmailMessage\Edit.cshtml" />
     <Content Include="Views\EmailMessage\Index.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Views\OrderAmount\FreightStatistics.cshtml" />
+    <Content Include="Scripts\asd.grf" />
+=======
+    <Content Include="Views\BeforePeiScan\Create.cshtml" />
+    <Content Include="Views\BeforePeiScan\Delete.cshtml" />
+    <Content Include="Views\BeforePeiScan\Details.cshtml" />
+    <Content Include="Views\BeforePeiScan\Edit.cshtml" />
+    <Content Include="Views\BeforePeiScan\Index.cshtml" />
+    <Content Include="Views\Order\BeforePeiScan.cshtml" />
 >>>>>>> kewei/ttt
   </ItemGroup>
   <ItemGroup>

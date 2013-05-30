@@ -33,6 +33,17 @@
             showFooter: true,
             striped: true
         });
+        $('#dg4').datagrid({
+            title:'订单金额',
+            url: '@Url.Action("OrderCount", "Statistics")',
+            queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL", "i": "1" },
+            height: 400,
+            rownumbers: true,
+            singleselect: true,
+            width: 550,
+            showFooter: true,
+            striped: true
+        });
 
         $("#cc").datebox({
             parser: myparser
@@ -72,6 +83,13 @@
             et: $('#cc2').combobox("getValue"),
             p: $('#pp').combobox("getText"),
             a: $('#aa').combobox("getText")
+        });
+        $('#dg4').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText"),
+            i :"1"
         });
     }
     function changePlatform(n, o) {
@@ -113,10 +131,7 @@
                         </th>
                         <th field="OCount" width="80">数量
                         </th>
-                        <th field="CurrencyCode" width="80">货币
-                        </th>
-                        <th field="TotalAmount" width="80">金额
-                        </th>
+                       
                     </tr>
                 </thead>
             </table>
@@ -136,6 +151,27 @@
                 </thead>
             </table>
         </td>
+
+    </tr>
+    <tr>
+        <td> <table id="dg4">
+                <thead>
+                    <tr>
+                        <th field="Platform" width="80">平台
+                        </th>
+                        <th field="Account" width="200">账户
+                        </th>
+                        <th field="OCount" width="80">数量
+                        </th>
+                        <th field="CurrencyCode" width="80">货币
+                        </th>
+                        <th field="TotalAmount" width="80">金额
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+           
+        </td>
         <td>
             <table id="dg3">
                 <thead>
@@ -151,6 +187,6 @@
             </table>
         </td>
     </tr>
-  </table>
+</table>
 
 

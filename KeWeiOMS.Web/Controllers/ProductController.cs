@@ -427,7 +427,6 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 NSession.Delete("from ProductIsInfractionType where SKU='" + obj.SKU + "'");
                 NSession.Flush();
                 NSession.Clear();
-
                 foreach (ProductIsInfractionType item in list2)
                 {
                     item.OldSKU = obj.OldSKU;

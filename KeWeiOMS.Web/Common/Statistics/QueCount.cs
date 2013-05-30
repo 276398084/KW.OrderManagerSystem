@@ -23,6 +23,8 @@ namespace KeWeiOMS.Web
 
         public DateTime MinDate { get; set; }
 
+        public string Field1 { get; set; }
+
         public int BuyQty { get; set; }
 
         public int UnPeiQty { get; set; }

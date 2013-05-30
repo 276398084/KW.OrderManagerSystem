@@ -459,7 +459,7 @@
                     jQuery.ajax({
                         url: "/Order/ErrorOrder",
                         type: "post",
-                        data: "o=" + s_ids.join(',')+"&t="+$("#ErrorType").combobox("getValue")+"&d="+$("#ErrorDesc").val(),
+                        data: "o=" + s_ids.join(',') + "&t=" + $("#ErrorType").combobox("getValue") + "&d=" + $("#ErrorDesc").val(),
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
@@ -483,6 +483,23 @@
                 }
             });
 
+        }
+
+        function changeTo() {
+            var rows = $('#dg').datagrid('getSelections');
+            var s_ids = getselectedRows();
+            $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单为正常订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/ReStop",
+                        type: "post",
+                        data: "o=" + s_ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
         }
         function o_SplitZu() {
             var rows = $('#dg').datagrid('getSelections');
@@ -518,7 +535,7 @@
             return html;
         }
 
-      
+
 
     </script>
     <div region="center">
@@ -551,9 +568,9 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true"  onclick="$('#dlgError').dialog('open');" >作废订单</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#dlgError').dialog('open');">作废订单</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">标记为正常</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="changeTo()">标记为正常</a>
             <br />
             平台<input type="text" id="Platform" />
             账户<input type="text" id="Account" />

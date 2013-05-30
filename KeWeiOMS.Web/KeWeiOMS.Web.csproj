@@ -124,6 +124,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Config.cs" />
+    <Compile Include="Common\Config\SMTConfig.cs" />
     <Compile Include="Common\easyui\CheckBoxListHelper.cs" />
     <Compile Include="Common\CsvReader.cs" />
     <Compile Include="Common\easyui\Easyui.cs" />
@@ -481,7 +482,8 @@
     <Content Include="Scripts\easyUI\themes\metro-red\validatebox.css" />
     <Content Include="Scripts\easyUI\themes\metro-red\window.css" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
-    <Content Include="Scripts\griectl.cab" />
+    <Content Include="Scripts\grbsctl5.cab" />
+    <Content Include="Scripts\grbsctl5.exe" />
     <Content Include="Scripts\GRInstall.js" />
     <Content Include="Scripts\images\Data.gif" />
     <Content Include="Scripts\images\Data.png" />
@@ -1638,6 +1640,8 @@
     <Content Include="Views\EmailMessage\Details.cshtml" />
     <Content Include="Views\EmailMessage\Edit.cshtml" />
     <Content Include="Views\EmailMessage\Index.cshtml" />
+    <Content Include="Views\OrderAmount\FreightStatistics.cshtml" />
+    <Content Include="Scripts\asd.grf" />
     <Content Include="Views\BeforePeiScan\Create.cshtml" />
     <Content Include="Views\BeforePeiScan\Delete.cshtml" />
     <Content Include="Views\BeforePeiScan\Details.cshtml" />

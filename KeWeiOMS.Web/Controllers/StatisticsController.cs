@@ -61,10 +61,18 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult OrderCount(DateTime st, DateTime et, string a, string p)
+        public ActionResult OrderCount(DateTime st, DateTime et, string a, string p,string i)
         {
             var sqlWhere = SqlWhere(st, et, a, p);
-            IList<object[]> objs = NSession.CreateQuery(string.Format("select Account,Count(Id),Platform,Sum(Amount),Min(CurrencyCode) from OrderType {0} group by Account,Platform", sqlWhere)).List<object[]>();
+            string sql =
+                string.Format(
+                    "select Account,Count(Id),Platform,Sum(Amount),Min(CurrencyCode) from OrderType {0} group by Account,Platform",
+                    sqlWhere);
+            if(!string.IsNullOrEmpty(i))
+            {
+                sql += " ,CurrencyCode";
+            }
+            IList<object[]> objs = NSession.CreateQuery(sql).List<object[]>();
 
             List<OrderCount> list = new List<OrderCount>();
             int sum = 0;
@@ -424,13 +432,13 @@ namespace KeWeiOMS.Web.Controllers
             }
 
             IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * ,(Qty-BuyQty) as NeedQty,(select COUNT(Id) from SKUCode where IsOut=0 and SKUCode.SKU=tbl.SKU) as UnPeiQty from (
-select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty-DaoQty),0) from PurchasePlan where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and O.Enabled=1 and O.Status<>'作废订单' and  O.Status<>'已发货' and OP.IsQue=1 {0} group by SKU,Standard
+select SKU,SUM(Qty) as Qty,MIN(O.CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty-DaoQty),0) from PurchasePlan where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty,MIN(OOR.CreateOn) as Field1 from Orders O left join OrderProducts OP On O.Id=OP.OId left join OrderOutRecord OOR on o.Id=OOR.OId where O.IsOutOfStock=1 and O.Enabled=1 and O.Status<>'作废订单' and  O.Status<>'已发货' and OP.IsQue=1 {0} group by SKU,Standard
 ) as tbl {1}", s, orderby)).List<object[]>();
 
             List<QueCount> list = new List<QueCount>();
             foreach (object[] objectse in objs)
             {
-                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), MinDate = Convert.ToDateTime(objectse[2]), BuyQty = Utilities.ToInt(objectse[4]), NeedQty = Utilities.ToInt(objectse[5]), UnPeiQty = Utilities.ToInt(objectse[6]) };
+                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), MinDate = Convert.ToDateTime(objectse[2]), BuyQty = Utilities.ToInt(objectse[4]), NeedQty = Utilities.ToInt(objectse[6]), UnPeiQty = Utilities.ToInt(objectse[7]) };
                 if (objectse[3] is DBNull || objectse[3] == null)
                 {
                 }
@@ -438,6 +446,11 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
                 {
                     oc.Standard = objectse[3].ToString();
                 }
+                if (!(objectse[5] is DBNull) && !(objectse[5] == null))
+                {
+                    oc.Field1 = objectse[5].ToString();
+                }
+                
                 oc.NeedQty -= oc.UnPeiQty;
                 if (oc.NeedQty <= 0)
                 {

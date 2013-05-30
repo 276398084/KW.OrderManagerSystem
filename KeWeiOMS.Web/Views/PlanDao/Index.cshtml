@@ -58,7 +58,7 @@
                     delData(url, 'dg');
                 }
             });
-           
+
         }
 
         //获取选中行
@@ -87,26 +87,23 @@
 
 
         function printSKU(id) {
-
             jQuery.ajax({
                 url: "/PlanDao/PrintSKU/" + id,
                 type: "post",
-                success: function (sss) {
+                success: function (msg) {
+                    $('#printdata').val(msg.Result);
                     window.open('/Home/PrintDetail/33');
                 }
             });
         }
 
         function AuditDao(id) {
-
             $.messager.confirm("提示", "确定要审核吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
                         url: "/PlanDao/AuditDao/" + id,
                         type: "post",
                         success: function (msg) {
-
-
                             if (msg.IsSuccess) {
                                 alert("审核成功!");
                             } else {
@@ -140,7 +137,6 @@
                 }
             });
         }
-
     </script>
     <div region="center">
         <table id="dg">
@@ -213,4 +209,6 @@
         <div id="e_dlg"></div>
 
     </div>
+     <input type="hidden" id="printdata" />
 </body>
+

@@ -20,7 +20,6 @@ if( _gr_isIE )
     gr_CodeBase = 'codebase="' + gr_InstallPath + '/grbsctl5.cab#Version=' + gr_Version + '"';
 else
     gr_CodeBase = ''; //'codebase="' + gr_InstallPath + '/grbsctl5.xpi"';
-
 //创建报表对象，报表对象是不可见的对象，详细请查看帮助中的 IGridppReport
 //Name - 指定插件对象的ID，可以用js代码 document.getElementById("%Name%") 获取报表对象
 //EventParams - 指定报表对象的需要响应的事件，如："<param name='OnInitialize' value=OnInitialize> <param name='OnProcessBegin' value=OnProcessBegin>"形式，可以指定多个事件
@@ -58,7 +57,6 @@ function CreatePrintViewerEx2(PluginID, Width, Height, ReportURL, DataURL, AutoR
         typeid = 'classid="clsid:B7EF88E6-A0AD-4235-B418-6F07D8533A9F" ' + gr_CodeBase;
     else
         typeid = 'type="application/x-grplugin-printviewer"';
-    alert(gr_CodeBase);
 	document.write('<object id="' + PluginID + '" ' + typeid);
 	document.write(' width="' + Width + '" height="' + Height + '">');
 	document.write('<param name="ReportURL" value="' + ReportURL + '">');
@@ -110,8 +108,6 @@ function CreateDesignerEx(Width, Height, LoadReportURL, SaveReportURL, DataURL, 
         typeid = 'classid="clsid:3C19F439-B64D-4dfb-A96A-661FE70EA04D" ' + gr_CodeBase;
     else
         typeid = 'type="application/x-grplugin-designer"';
-
-
 	document.write('<object id="ReportDesigner" ' + typeid);
 	document.write(' width="' + Width + '" height="' + Height + '">');
 	document.write('<param name="LoadReportURL" value="' + LoadReportURL + '">');
@@ -125,12 +121,12 @@ function CreateDesignerEx(Width, Height, LoadReportURL, SaveReportURL, DataURL, 
 
 function CreatePrintViewerEx(Width, Height, ReportURL, DataURL, AutoRun, ExParams)
 {
-    CreatePrintViewerEx2("ReportViewer", Width, Height, ReportURL, DataURL, AutoRun, ExParams)
+    CreatePrintViewerEx2("ReportViewer", Width, Height, ReportURL, DataURL, AutoRun, ExParams);
 }
 
 function CreateDisplayViewerEx(Width, Height, ReportURL, DataURL, AutoRun, ExParams)
 {
-    CreateDisplayViewerEx2("ReportViewer", Width, Height, ReportURL, DataURL, AutoRun, ExParams)
+    CreateDisplayViewerEx2("ReportViewer", Width, Height, ReportURL, DataURL, AutoRun, ExParams);
 }
 
 function CreatePrintViewer(ReportURL, DataURL)

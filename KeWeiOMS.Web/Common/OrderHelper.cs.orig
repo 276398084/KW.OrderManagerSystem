@@ -60,7 +60,7 @@ namespace KeWeiOMS.Web
                 }
 
                 bool isExist = IsExist(OrderExNo, NSession);
-                if (isExist)
+                if (!isExist)
                 {
                     OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     try
@@ -101,7 +101,7 @@ namespace KeWeiOMS.Web
                             System.Text.RegularExpressions.Regex r4 = new System.Text.RegularExpressions.Regex(@"\(产品属性:(?<ppp>.*)\n", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r5 = new System.Text.RegularExpressions.Regex(@"\(产品数量:(?<quantity>\d+)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r3 = new System.Text.RegularExpressions.Regex(@"\(商家编码:(?<sku>.*)\)", System.Text.RegularExpressions.RegexOptions.None);
-                            // System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"\(物流等级&买家选择物流:(?<wuliu>.+)\)", System.Text.RegularExpressions.RegexOptions.None);
+                            //System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"\(物流等级&买家选择物流:(?<wuliu>.+)\)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Match mc2 = r2.Match(Str);
                             System.Text.RegularExpressions.Match mc3 = r3.Match(Str);
                             System.Text.RegularExpressions.Match mc4 = r4.Match(Str);
@@ -116,7 +116,6 @@ namespace KeWeiOMS.Web
                             NSession.Flush();
                             CreateOrderPruduct(mc3.Groups["sku"].Value, Utilities.ToInt(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo, NSession);
                         }
-
                     }
                     catch (Exception ex)
                     {
@@ -156,7 +155,7 @@ namespace KeWeiOMS.Web
                     continue;
                 }
                 bool isExist = IsExist(OrderExNo, NSession);
-                if (isExist)
+                if (!isExist)
                 {
                     OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -209,13 +208,16 @@ namespace KeWeiOMS.Web
                     if (item.Count < 10)//判断列数
                         continue;
                     string OrderExNo = item["Cart no."];
+                    double price = Convert.ToDouble(item["Settle Price"].Replace(",", ""));
                     if (listOrder.ContainsKey(OrderExNo))
                     {
                         CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", listOrder[OrderExNo], OrderExNo, NSession);
+                        NSession.CreateSQLQuery("update orders set Amount=Amount+" + price + " where Id=" +
+                                                listOrder[OrderExNo]).UniqueResult();
                         continue;
                     }
-                    bool isExist = IsExist(OrderExNo, NSession);
-                    if (isExist)
+                    bool isExist = IsExist(OrderExNo, NSession, account.AccountName);
+                    if (!isExist)
                     {
                         OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                         order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -264,7 +266,7 @@ namespace KeWeiOMS.Web
                 {
                     string OrderExNo = item["订单编号"].ToString();
                     bool isExist = IsExist(OrderExNo, NSession);
-                    if (isExist)
+                    if (!isExist)
                     {
                         OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                         order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -311,7 +313,7 @@ namespace KeWeiOMS.Web
                 try
                 {
                     bool isExist = IsExist(foo.GoodsDataWare.ItemNumber, NSession);
-                    if (isExist)
+                    if (!isExist)
                     {
                         OrderType order = new OrderType
                                               {
@@ -351,7 +353,13 @@ namespace KeWeiOMS.Web
                             CreateOrderPruduct(item.ItemID, item.Quantity, item.ItemID, "", 0, item.Url, order.Id,
                                                order.OrderNo, NSession);
                         }
-                        //  results.Add(GetResult(OrderExNo, "", "导入成功"));
+                        results.Add(GetResult(order.OrderNo, "", "导入成功"));
+                    }
+                    else
+                    {
+                        OrderType order = new OrderType();
+                        order.OrderNo = Utilities.GetOrderNo(NSession);
+                        results.Add(GetResult(order.OrderNo, "该订单已存在", "导入失败"));
                     }
                 }
                 catch (Exception ex)
@@ -465,7 +473,7 @@ namespace KeWeiOMS.Web
                     }
                     //查看是不是在订单系统里面存在
                     bool isExist = IsExist(ot.OrderID, NSession);
-                    if (isExist)
+                    if (!isExist)
                     {
                         OrderType order = new OrderType
                                               {
@@ -740,11 +748,22 @@ namespace KeWeiOMS.Web
         #endregion
 
         #region 是否存在订单 public static bool IsExist(string OrderExNo)
-        public static bool IsExist(string OrderExNo, ISession NSession)
+        public static bool IsExist(string OrderExNo, ISession NSession, string Account = null)
         {
-
-            object obj = NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo).UniqueResult();
-            if (Convert.ToInt32(obj) == 0)
+            object obj = 0;
+            if (string.IsNullOrEmpty(Account))
+            {
+                obj =
+                   NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p").SetString("p", OrderExNo)
+                       .UniqueResult();
+            }
+            else
+            {
+                obj =
+                     NSession.CreateQuery("select count(Id) from OrderType where OrderExNo=:p and Account=:p2").SetString("p", OrderExNo).SetString("p2", Account)
+                         .UniqueResult();
+            }
+            if (Convert.ToInt32(obj) > 0)
             {
                 return true;
             }
@@ -777,9 +796,10 @@ namespace KeWeiOMS.Web
         public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession)
         {
 
-            bool resultValue = true;
-            order.ErrorInfo = "";
 
+            bool resultValue = true;
+
+            order.ErrorInfo = "";
             if (order.Country != null)
             {
                 if (
@@ -828,62 +848,92 @@ namespace KeWeiOMS.Web
                     order.ErrorInfo += "SKU不符";
                     break;
                 }
-                item.SKU = item.SKU.Trim();
-                NSession.SaveOrUpdate(item);
-                NSession.Flush();
-                if (products.FindIndex(p => p.SKU.Trim().ToUpper() == item.SKU.Trim().ToUpper()) == -1)
+
+                ProductType product = products.Find(p => p.SKU.Trim().ToUpper() == item.SKU.Trim().ToUpper());
+                if (product == null)
                 {
                     resultValue = false;
                     order.ErrorInfo += "SKU不符";
                     break;
                 }
+                else
+                {
+                    if (product.Status == "停产")
+                    {
+                        order.IsStop = 1;
+                    }
+                }
+
             }
 
             if (resultValue)
             {
                 order.IsAudit = 1;
                 SaveAmount(order, currencys, NSession);
+
             }
-
-
             NSession.Clear();
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             if (order.ErrorInfo == "")
+            {
                 order.ErrorInfo = "验证成功！";
+                if (order.IsStop == 1)
+                {
+                    LoggerUtil.GetOrderRecord(order, "验证订单", "订单中有停产产品，自动设为停产订单", NSession);
+                }
+            }
             LoggerUtil.GetOrderRecord(order, "验证订单", order.ErrorInfo, NSession);
+
             return resultValue;
         }
         public static void UpdateAmount(OrderType order, ISession NSession)
         {
-
-            OrderAmountType orderAmount = NSession.CreateQuery("from OrderAmountType where OId=" + order.Id).SetMaxResults(1).List<OrderAmountType>()[0];
-            if (order.Status != "已发货")
+            OrderAmountType orderAmount = null;
+            if (order.MId > 0)
             {
-                orderAmount.TotalFreight += order.Freight;
-                if (order.IsSplit == 0 && order.IsRepeat == 0)
-                {
-                    orderAmount.Status = order.Status;
-                }
-                else
-                {
-                    object obj =
-                        NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" +
-                                             order.MId + " or MId=" + order.Id + " or Id=" + order.MId + ")").
-                            UniqueResult();
-                    if (Convert.ToInt32(obj) > 0)
-                    {
-                        orderAmount.Status = "部分发货";
-                    }
-                }
+                IList<OrderAmountType> l =
+                    NSession.CreateQuery("from OrderAmountType where OId=" + order.MId).SetMaxResults(1).List
+                        <OrderAmountType>();
+                if (l.Count > 0)
+                    orderAmount = l[0];
             }
             else
             {
-                orderAmount.Status = order.Status;
+                IList<OrderAmountType> l = NSession.CreateQuery("from OrderAmountType where OId=" + order.Id).SetMaxResults(1).List<OrderAmountType>();
+                if (l.Count > 0)
+                    orderAmount = l[0];
             }
+            if (orderAmount != null)
+            {
+                orderAmount.TotalFreight += order.Freight;
+                object obj =
+<<<<<<< HEAD
+                       NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" + order.Id + " or Id=" + order.Id + ")").UniqueResult();
+                
+                 if(Convert.ToInt32(obj)>0)
+                {
+                    orderAmount.Status = "未发货";
+=======
+                       NSession.CreateQuery("select count(Id) from OrderType where Status <> '已发货' and (MId=" + order.Id + " or Id=" + order.MId + ")").
+                           UniqueResult();
+                if (Convert.ToInt32(obj) > 0)
+                {
+                    orderAmount.Status = "部分发货";
+>>>>>>> kewei/ttt
+                }
+                else
+                {
+                    orderAmount.Status = "已发货";
+                }
+                orderAmount.Profit = Math.Round(orderAmount.Profit - order.Freight);
+                NSession.Update(orderAmount);
+                NSession.Flush();
+            }
+<<<<<<< HEAD
+=======
 
-            NSession.Update(orderAmount);
-            NSession.Flush();
+>>>>>>> kewei/ttt
         }
 
         public static void SaveAmount(OrderType order, ISession NSession)
@@ -894,9 +944,13 @@ namespace KeWeiOMS.Web
 
         public static void SaveAmount(OrderType order, List<CurrencyType> currencys, ISession NSession)
         {
+            NSession.Delete("from OrderAmountType where OId=" + order.Id);
+            NSession.Flush();
             CurrencyType currency = currencys.Find(p => p.CurrencyCode.ToUpper() == order.CurrencyCode.ToUpper());
-            order.Status = OrderStatusEnum.已处理.ToString();
-            order.RMB = Convert.ToDouble(currency.CurrencyValue) * order.Amount;
+
+            if (order.Status == "待处理")
+                order.Status = OrderStatusEnum.已处理.ToString();
+            order.RMB = Math.Round(Convert.ToDouble(currency.CurrencyValue) * order.Amount, 4);
             OrderAmountType orderAmount = new OrderAmountType();
             orderAmount.Account = order.Account;
             orderAmount.OrderNo = order.OrderNo;
@@ -913,14 +967,23 @@ namespace KeWeiOMS.Web
                 UniqueResult();
             orderAmount.TotalCosts = Convert.ToDouble(obj);
 
-            IList<AccountFeeType> list = NSession.CreateQuery(string.Format("from AccountFeeType where AccountId in (select Id from AccountType where AccountName='{0}' ) and AmountBegin>={1} and AmountEnd<{1} ", order.Account, order.Amount)).List<AccountFeeType>();
+            IList<AccountFeeType> list = NSession.CreateQuery(string.Format("from AccountFeeType where AccountId in (select Id from AccountType where AccountName='{0}' ) and AmountBegin<={1} and AmountEnd>{1} ", order.Account, order.Amount)).List<AccountFeeType>();
 
             foreach (var feeType in list)
             {
+
                 object d = new DataTable().Compute(feeType.FeeFormula.Replace("T", order.Amount.ToString()), "");
                 if (feeType.FeeName == "交易费")
                 {
-                    orderAmount.TransactionFees = Convert.ToDouble(d);
+                    if (order.OrderFees > 0)
+                    {
+                        orderAmount.TransactionFees = order.OrderFees;
+                    }
+                    else
+                    {
+                        orderAmount.TransactionFees = Convert.ToDouble(d);
+                    }
+
                 }
                 if (feeType.FeeName == "手续费")
                 {
@@ -936,8 +999,8 @@ namespace KeWeiOMS.Web
             orderAmount.Platform = order.Platform;
             orderAmount.Country = order.Country;
             orderAmount.RMB = order.RMB;
-            orderAmount.Profit = order.RMB - orderAmount.TotalCosts - orderAmount.OtherFees - orderAmount.Fee -
-                                 orderAmount.TransactionFees;
+            orderAmount.Profit = Math.Round(order.RMB - orderAmount.TotalCosts - orderAmount.OtherFees * Convert.ToDouble(currency.CurrencyValue) - orderAmount.Fee * Convert.ToDouble(currency.CurrencyValue) -
+                                 orderAmount.TransactionFees * Convert.ToDouble(currency.CurrencyValue), 5);
             NSession.Save(orderAmount);
             NSession.Flush();
             if (orderAmount.IsRepeat == 1 && orderAmount.MId != 0)
@@ -967,8 +1030,7 @@ namespace KeWeiOMS.Web
             {
                 oldValue = " and SKU='" + oldValue + "' ";
             }
-
-            sql = "update OrderProductType set SKU='{0}' where and Id in(select AddressId from OrderType where Status='待处理')  {1} {2}";
+            sql = "update OrderProductType set SKU='{0}' where Id in(select Id from OrderType where Status='待处理')  {1} {2}";
             sql = string.Format(sql, newValue, oldValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
@@ -1074,29 +1136,28 @@ namespace KeWeiOMS.Web
                 return string.Empty;
             }
         }
-        public static decimal GetFreight(double weight, string logisticMode, String countryCode, ISession NSession)
+        public static decimal GetFreight(double weight, string logisticMode, String countryCode, ISession NSession, decimal discount = 0)
         {
 
-            IList<CountryType> c = NSession.CreateQuery("from CountryType").List<CountryType>();
+            IList<CountryType> c = NSession.CreateQuery("from CountryType where CCountry=:p1 or ECountry=:p1").SetString("p1", countryCode).List<CountryType>();
             if (c.Count > 0)
-                return GetFreight(weight, logisticMode, c[0].Id, NSession);
+                return GetFreight(weight, logisticMode, c[0].Id, NSession, discount);
             else
             {
                 return -1;//-1为国家错误
             }
 
         }
-
-
-        public static decimal GetFreight(double weight, string logisticMode, int country, ISession NSession)
+        public static decimal GetFreight(double weight, string logisticMode, int country, ISession NSession, decimal discount = 0)
         {
 
-            decimal discount = 0;
+
             decimal ReturnFreight = 0;
             IList<LogisticsModeType> logmode = NSession.CreateQuery("from LogisticsModeType where LogisticsCode='" + logisticMode + "'").List<LogisticsModeType>();
             foreach (var item in logmode)
             {
-                discount = decimal.Parse(item.Discount.ToString());
+                if (discount == 0)
+                    discount = decimal.Parse(item.Discount.ToString());
                 IList<LogisticsAreaType> areas = NSession.CreateQuery("from LogisticsAreaType where LId='" + item.ParentID + "'").List<LogisticsAreaType>();
                 List<LogisticsAreaCountryType> AreaCountrys = NSession.CreateQuery("from LogisticsAreaCountryType where CountryCode='" + country + "' ").List<LogisticsAreaCountryType>().ToList();
                 foreach (var foo in areas)

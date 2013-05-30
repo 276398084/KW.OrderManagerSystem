@@ -4,7 +4,7 @@
 <script type="text/javascript">
 
     $(function () {
-      
+
         $("#cc").datebox({
             parser: myparser
         });
@@ -100,8 +100,8 @@
         }
     }
 
-    function  getSearch() {
-       var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+    function getSearch() {
+        var search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
         var u = $('#pp').combobox("getValue");
         if (u != "ALL" && u != "" && u != "0") {
             search += "Platform_es&" + u + "^";
@@ -156,11 +156,11 @@
         $('#dg').datagrid("loading");
         var search = getSearch();
         $.messager.prompt('重置运费', '折扣', function (r) {
-            if (r.length>0) {
+            if (r.length > 0) {
                 jQuery.ajax({
                     url: "/OrderAmount/ResetFreight",
                     type: "post",
-                    data: 'search=' +encodeURIComponent(search) + "&z=" + r,
+                    data: 'search=' + encodeURIComponent(search) + "&z=" + r,
                     success: function (sss) {
                         $('#dg').datagrid("reload");
                     }
@@ -170,6 +170,7 @@
                 return false;
             }
         });
+        $('#dg').datagrid("reload");
     }
 </script>
 <table id="dg">
@@ -181,7 +182,7 @@
             </th>
             <th field="OrderExNo" width="100">平台订单号
             </th>
-            <th field="Country" width="100">追踪码
+            <th field="Country" width="100">国家
             </th>
             <th field="TrackCode" width="100">追踪码
             </th>

@@ -26,9 +26,9 @@ namespace KeWeiOMS.Web
             IList<ModuleType> customerList = account.Modules;
             if (customerList.Count == 0)
             {
-
                 customerList = Session.CreateQuery("from ModuleType").List<ModuleType>();
             }
+
 
             //加载第一层
             List<ModuleType> list = customerList.Where(p => p.ParentId == 0 && p.DeletionStateCode == 0).OrderByDescending(f => f.SortCode).ToList<ModuleType>();
@@ -49,7 +49,8 @@ namespace KeWeiOMS.Web
                     //循环添加子菜单
                     foreach (var subtype in subs)
                     {
-                        MenuItem submi = new MenuItem() { icon = subtype.ImageIndex, menuid = subtype.Id, menuname = subtype.FullName, url = subtype.NavigateUrl };
+                        MenuItem submi = new MenuItem() { icon = subtype.ImageIndex,
+                             menuid = subtype.Id, menuname = subtype.FullName, url = subtype.NavigateUrl };
                         subitems.Add(submi);
                     }
                     mi.menus = subitems;

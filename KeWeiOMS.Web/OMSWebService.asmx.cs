@@ -307,7 +307,7 @@ namespace KeWeiOMS.Web
                 foreach(OrderType order in orders)
                 {
                     order.IsLiu = 1;
-                    order.BuyerMemo=obj.RserverDate+" 买家留言<br>"+order.SellerMemo;
+                    order.BuyerMemo = obj.RserverDate + " 有买家留言<br>" + order.BuyerMemo;
                     NSession.Update(order);
                     NSession.Flush();
                     NSession.Clear();
