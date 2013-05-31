@@ -116,6 +116,7 @@
     <Compile Include="Entities\StockOutType.cs" />
     <Compile Include="Entities\SuppliersProductType.cs" />
     <Compile Include="Entities\SupplierType.cs" />
+    <Compile Include="Entities\UserLoginType.cs" />
     <Compile Include="Entities\UserRoleType.cs" />
     <Compile Include="Entities\UserType.cs" />
     <Compile Include="Entities\WarehouseLocationType.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Mappings\StockOutTypeMap.cs" />
     <Compile Include="Mappings\SuppliersProductTypeMap.cs" />
     <Compile Include="Mappings\SupplierTypeMap.cs" />
+    <Compile Include="Mappings\UserLoginTypeMap.cs" />
     <Compile Include="Mappings\UserRoleTypeMap.cs" />
     <Compile Include="Mappings\UserTypeMap.cs" />
     <Compile Include="Mappings\WarehouseLocationTypeMap.cs" />

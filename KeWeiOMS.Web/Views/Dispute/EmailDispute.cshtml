@@ -1,7 +1,5 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.DisputeType>
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    ViewBag.Title = "EmailDiapute";
 }
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
@@ -18,9 +16,9 @@
             url: '@Url.Action("List","Dispute")',
             toolbar: '#toolbar',
             rownumbers: true,
-            queryParams: { "type":"纠纷"},
             fitColumns: true,
             singleSelect: true,
+            queryParams: { "type": "邮件记事" },
             pagination: true,
             fit: true,
             pageNumber: 1,
@@ -324,10 +322,11 @@
             结束<input id="cc2" type="text">
             平台<input type="text" id="pp" />
             账户<input type="text" id="aa" />
-            纠纷原因<input id="reason" type="text">
-            纠纷状态<input id="status" type="text">           
+            纠纷原因<input id="reason" type="text"> 
+            纠纷状态<input id="status" type="text">      
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+
            纠纷情况<input id="case" type="text">
         </div> 
 		<div id="mm" style="width: 120px">

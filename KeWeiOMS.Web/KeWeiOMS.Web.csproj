@@ -71,6 +71,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -216,6 +217,7 @@
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\SuppliersProductController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="Controllers\WarehouseLocationController.cs" />
@@ -1650,6 +1652,12 @@
     <Content Include="Views\BeforePeiScan\Index.cshtml" />
     <Content Include="Views\Order\BeforePeiScan.cshtml" />
     <Content Include="Views\OrderAmount\FreightCount.cshtml" />
+    <Content Include="Views\Dispute\EmailDispute.cshtml" />
+    <Content Include="Views\UserLogin\Create.cshtml" />
+    <Content Include="Views\UserLogin\Delete.cshtml" />
+    <Content Include="Views\UserLogin\Details.cshtml" />
+    <Content Include="Views\UserLogin\Edit.cshtml" />
+    <Content Include="Views\UserLogin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

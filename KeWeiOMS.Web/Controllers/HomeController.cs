@@ -13,6 +13,11 @@ using System.IO;
 using System.Data;
 using System.Text;
 using System.Data.SqlClient;
+using System.Management;
+using System.Net;
+using System;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace KeWeiOMS.Web.Controllers
 {
@@ -22,10 +27,10 @@ namespace KeWeiOMS.Web.Controllers
         public ViewResult Index()
         {
             ViewData["Username"] = CurrentUser.Realname;
+            UserLogin();
             return View();
+
         }
-
-
         public ActionResult Result()
         {
             return View();
@@ -347,11 +352,76 @@ left join ReturnAddress R On r.Id=" + r;
             return View();
         }
 
+        private void UserLogin()
+        {
+            string ip = GetClientIP();
+            string mac = GetMACByIP(ip);
+            UserLoginType obj = new UserLoginType
+            {
+                UserCode = CurrentUser.Code,
+                UserName = CurrentUser.Realname,
+                IP = ip,
+                MAC = mac,
+                CreateOn = DateTime.Now
+            };
+            NSession.Save(obj);
+            NSession.Flush();
+        }
+        //获取IP地址
+        //public string GetIP()
+        //{
+        //    string ip = string.Empty;
+        //    if (!string.IsNullOrEmpty(System.Web.HttpContext.Current.Request.ServerVariables["HTTP_VIA"]))
+        //        ip = Convert.ToString(System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"]);
+        //    if (string.IsNullOrEmpty(ip))
+        //        ip = Convert.ToString(System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"]);
+        //    return ip;
+        //}
+        private string GetClientIP()
+        {
+            string result = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (null == result || result == String.Empty)
+            {
+                result = System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            }
+
+            if (null == result || result == String.Empty)
+            {
+                result = System.Web.HttpContext.Current.Request.UserHostAddress;
+            }
+            return result;
+        }
 
 
+        //获取远程主机MAC
+        [DllImport("Iphlpapi.dll")]
+        private static extern int SendARP(Int32 dest, Int32 host, byte[] mac, ref Int32 length);
+        [DllImport("Ws2_32.dll")]
+        private static extern Int32 inet_addr(string ip);
 
+        /// <summary>
+        /// 根据ip得到网卡mac地址
+        /// </summary>
+        /// <param name="ip">给出的ip地址</param>
+        /// <returns>对应ip的网卡mac地址</returns>
+        public static string GetMACByIP(string ip)
+        {
+            try
+            {
+                byte[] aa = new byte[6];
+
+                Int32 ldest = inet_addr(ip); //目的地的ip
+
+                Int32 len = 6;
+                int res = SendARP(ldest, 0, aa, ref len);
+
+                return BitConverter.ToString(aa, 0, 6); ;
+            }
+            catch (Exception err)
+            {
+                throw err;
+            }
+        }
 
     }
-
-
 }
