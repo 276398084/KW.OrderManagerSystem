@@ -1,0 +1,131 @@
+﻿@{
+    ViewBag.Title = "FreightCount";
+}
+<script>
+    $(function () {
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(30));
+        $('#cc2').datebox("setValue", getStartDate(0));
+        $('#dg').datagrid({
+            url: '@Url.Action("AccountFreightCount", "OrderAmount")',
+            queryParams: { "st": $('#cc').datebox("getValue"), "et": $('#cc2').datebox("getValue"), "p": "ALL", "a": "ALL", 't': "ALL" },
+            showFooter: true,
+            height: 400,
+            width:450,
+            rownumbers: true,
+            singleselect: true,
+            striped: true
+        });
+        $('#dg2').datagrid({
+            url: '@Url.Action("TypeFreightCount", "OrderAmount")',
+            queryParams: { "st": $('#cc').datebox("getValue"), "et": $('#cc2').datebox("getValue"), "p": "ALL", "a": "ALL",'t':"ALL" },
+            height: 400,
+            rownumbers: true,
+            singleselect: true,
+            width: 300,
+            showFooter: true,
+            striped: true
+        });
+
+        $('#pp').combobox({
+            url: '/Home/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onChange: changePlatform
+        });
+        $('#pp').combobox("setValue", "ALL");
+        $('#tt').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["ALL", "ALL"], ["0", "正常"], ["1", "重发"]],
+            width: 100
+        });
+        $('#tt').combobox("setValue", "ALL");
+    });
+
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText"),
+            t: $('#tt').combobox("getText")
+        });
+        $('#dg2').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue"),
+            p: $('#pp').combobox("getText"),
+            a: $('#aa').combobox("getText"),
+            t: $('#tt').combobox("getText")
+        });
+    }
+    function changePlatform(n, o) {
+        $('#aa').combotree({
+            url: '/Home/AccountList/' + n,
+            valueField: 'id',
+            textField: 'text',
+            width: 150
+        });
+        $('#aa').combotree("setValue", "ALL");
+    }
+</script> 
+    开始:<input id="cc" type="text" />
+    结束:<input id="cc2" type="text" />
+    平台:<input id="pp" type="text" />
+    账户:<input id="aa" type="text" />
+    类型:<input id="tt" type="text" />
+    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+<table>
+    <tr>
+        <td>
+            <table id="dg">
+                <thead>
+                    <tr>
+                        <th field="Platform" width="80">平台
+                        </th>
+                        <th field="Account" width="170">账号
+                        </th>
+                        <th field="Count" width="50">数量
+                        </th>
+                         <th field="Amount" width="100">金额
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+        <td>
+            <table id="dg2">
+                <thead>
+                    <tr>
+                        <th field="Account" width="100">类型
+                        </th>
+                        <th field="Count" width="50">数量
+                        </th>
+                         <th field="Amount" width="100">金额
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+    </tr>
+</table>

@@ -47,6 +47,9 @@
                 { field: 'LogisticsCode', title: '代码', width: 100 }
             ]]
         });
+        $('#ltype').combobox("setValue", "ALL");
+        $('#status').combobox("setValue", "ALL");
+        $('#lmode').combogrid("setValue", "ALL");
         $('#dg').datagrid({
             url: '@Url.Action("GetFreightList", "OrderAmount")',
             width: 900,

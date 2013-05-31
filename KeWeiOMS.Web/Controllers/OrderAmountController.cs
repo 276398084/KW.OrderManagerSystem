@@ -27,7 +27,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
-
+        public ViewResult FreightCount()
+        {
+            return View();
+        }
 
         [HttpGet]
         public ActionResult GetOrders(string Id)
@@ -408,6 +411,82 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total = count, rows = objList });
         }
 
+        [HttpPost]
+        public ActionResult AccountFreightCount(DateTime st, DateTime et, string p, string a, string t)
+        {
+            IList<AccountFreigheCount> sores = new List<AccountFreigheCount>();
+            string where = Where(st, et, p, a,t);
+            IList<object[]> objectses = NSession.CreateQuery("select Platform,Account,Count(Id),Sum(Freight) from OrderType " + where + "  group by Account,Platform").List<object[]>();
+            decimal sum = 0;
+            decimal freight = 0;
+            foreach (var item in objectses)
+            {
+                string pp = item[0].ToString();
+                string aa = item[1].ToString();
+                decimal co = Convert.ToDecimal(item[2]);
+                decimal am = decimal.Round(decimal.Parse(item[3].ToString()),2);
+                sores.Add(new AccountFreigheCount { Platform = pp,Account=aa, Count =co,Amount=am });
+                sum += co;
+                freight += am;
+            }
+            List<object> footers = new List<object>();
+            footers.Add(new { Count = sum,Amount=decimal.Round(freight,2)});
+            return Json(new { rows = sores.OrderByDescending(x => x.Amount), footer = footers, total = sores.Count });
+        }
+        public ActionResult TypeFreightCount(DateTime st, DateTime et, string p, string a, string t)
+        {
+            IList<AccountFreigheCount> sores = new List<AccountFreigheCount>();
+            string where = Where(st, et, p, a, t);
+            IList<object[]> objectses = NSession.CreateQuery("select IsRepeat,IsSplit,Count(Id),Sum(Freight) from OrderType " + where + "  group by IsRepeat,IsSplit").List<object[]>();
+            decimal sum = 0;
+            decimal freight = 0;
+            foreach (var item in objectses)
+            {
+                string str = "正常";
+                if(item[0].ToString()=="1")
+                {
+                    str = "重发";
+                }
+                if (item[1].ToString() == "1")
+                {
+                    str += "拆包";
+                }
+                string aa = str;
+                decimal co = Convert.ToDecimal(item[2]);
+                decimal am = decimal.Round(decimal.Parse(item[3].ToString()), 2);
+                sores.Add(new AccountFreigheCount { Account = aa, Count = co, Amount = am });
+                sum += co;
+                freight += am;
+            }
+            List<object> footers = new List<object>();
+            footers.Add(new { Count = sum, Amount = decimal.Round(freight, 2) });
+            return Json(new { rows = sores.OrderByDescending(x => x.Amount), footer = footers, total = sores.Count });
+        }
+
+        public string Where(DateTime st, DateTime et, string p, string a, string t)
+        {
+            string where = "where Status='已发货' and CreateOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59'";
+            if (p != "ALL")
+            {
+                where += " and Platform='" + p + "'";
+            }
+            if (a != "ALL")
+            {
+                where += " and Account='" + a + "'";
+            }
+            if (t != "ALL")
+            {
+                if (t == "正常")
+                {
+                    where += " and IsRepeat=0 ";
+                }
+                if (t == "重发")
+                {
+                    where += " and IsRepeat=1 ";
+                }
+            }
+            return where;
+        }
     }
 }
 
