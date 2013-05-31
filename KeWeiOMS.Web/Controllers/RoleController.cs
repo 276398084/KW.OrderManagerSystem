@@ -129,14 +129,16 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult SetMP(string m, string p, int uid)
         {
-            string[] ms = m.Split(',');
-            string[] ps = p.Split(',');
+            string[] ms = m.Split(new string[]{","},StringSplitOptions.RemoveEmptyEntries);
+            string[] ps = p.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
             PermissionScopeType sc = null;
             NSession.CreateQuery("delete from PermissionScopeType where ResourceCategory='" +
                                   ResourceCategoryEnum.Role.ToString() + "' and ResourceId=" + uid).ExecuteUpdate();
             foreach (var item in ms)
             {
+                if (string.IsNullOrEmpty(item))
+                    continue;
                 sc = new PermissionScopeType();
                 sc.ResourceCategory = ResourceCategoryEnum.Role.ToString();
                 sc.ResourceId = uid;
@@ -146,8 +148,10 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Flush();
             }
 
-            foreach (var item in ms)
+            foreach (var item in ps)
             {
+                if (string.IsNullOrEmpty(item))
+                    continue; ;
                 sc = new PermissionScopeType();
                 sc.ResourceCategory = ResourceCategoryEnum.Role.ToString();
                 sc.ResourceId = uid;
@@ -156,7 +160,7 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.Save(sc);
                 NSession.Flush();
             }
-            return Json(new { IsSuccess = true  });
+            return  Json(new { IsSuccess = true  });
         }
 
     }

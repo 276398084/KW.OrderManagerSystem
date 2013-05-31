@@ -10,10 +10,12 @@ using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web;
+using System.Web.Mvc;
 using System.Xml.Serialization;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
+using Newtonsoft.Json;
 
 namespace KeWeiOMS.Web
 {
@@ -579,7 +581,6 @@ namespace KeWeiOMS.Web
                 }
             }
 
-
             IList<WarehouseStockType> list = NSession.CreateQuery("from WarehouseStockType where SKU ='" + products[0].SKU + "'").List<WarehouseStockType>();
             if (list.Count > 0)
             {
@@ -590,7 +591,7 @@ namespace KeWeiOMS.Web
             else
             {
                 IList<ProductType> productTypes = NSession.CreateQuery("from ProductType where SKU ='" + products[0].SKU + "'").List<ProductType>();
-                if (products.Count > 0)
+                if (productTypes.Count > 0)
                 {
                     AddToWarehouse(productTypes[0], NSession, min);
                 }
@@ -629,6 +630,7 @@ namespace KeWeiOMS.Web
             {
                 WarehouseStockType ws = list[0];
                 ws.Qty = ws.Qty - num;
+                ws.UpdateOn = DateTime.Now;
                 NSession.SaveOrUpdate(ws);
                 NSession.Flush();
                 SetComposeStock(sku, NSession);
@@ -657,21 +659,17 @@ namespace KeWeiOMS.Web
             {
                 WarehouseStockType ws = list[0];
                 ws.Qty = ws.Qty + num;
+                ws.UpdateOn = DateTime.Now;
                 NSession.SaveOrUpdate(ws);
                 NSession.Flush();
                 SetComposeStock(sku, NSession);
                 if (price > 0)
                 {
-                    IList<ProductType> foo =
-                        NSession.CreateQuery(" from ProductType where  SKU=:p2").
-                            SetString("p2", sku).List<ProductType>();
-                    if (foo.Count > 0)
-                    {
-                        ProductType p = foo[0];
-                        p.Price = price;
-                        NSession.SaveOrUpdate(p);
-                        NSession.Flush();
-                    }
+
+                    NSession.CreateQuery(" update ProductType set Price=" + price + " where  SKU=:p2").
+                        SetString("p2", sku).UniqueResult();
+                    NSession.Flush();
+
                 }
                 StockInType stockInType = new StockInType();
                 stockInType.IsAudit = 0;
@@ -792,6 +790,79 @@ namespace KeWeiOMS.Web
     }
 
 
+    /// <summary>
+    /// JsonResult格式化扩展
+    /// </summary>
+    public class FormatJsonResult : ActionResult
+    {
+        private bool iserror = false;
+        /// <summary>
+        /// 是否产生错误
+        /// </summary>
+        public bool IsError
+        {
+            get { return iserror; }
+            set { this.iserror = value; }
+        }
+
+        private bool isSuccess = false;
+        /// <summary>
+        /// 是否成功
+        /// </summary>
+        public bool IsSuccess
+        {
+            get { return isSuccess; }
+            set { this.isSuccess = value; }
+        }
+
+        /// <summary>
+        /// 错误信息，或者成功信息
+        /// </summary>
+        public string Message { get; set; }
+
+        /// <summary>
+        /// 成功可能时返回的数据
+        /// </summary>
+        public Object Data { get; set; }
+        /// <summary>
+        /// 正常序列化方式(为True则不进行UI友好的序列化)
+        /// </summary>
+        public bool NotLigerUIFriendlySerialize { get; set; }
+        public override void ExecuteResult(ControllerContext context)
+        {
+
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+            HttpResponseBase response = context.HttpContext.Response;
+            response.ContentType = "application/json";
+
+            StringWriter sw = new StringWriter();
+            JsonSerializer serializer = JsonSerializer.Create(
+                new JsonSerializerSettings
+                {
+                    // Converters = new JsonConverter[] { new Newtonsoft.Json.Converters.IsoDateTimeConverter() },
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Ignore
+
+                }
+                );
+
+
+            using (JsonWriter jsonWriter = new JsonTextWriter(sw))
+            {
+                jsonWriter.Formatting = Formatting.Indented;
+
+                if (!NotLigerUIFriendlySerialize)
+                    serializer.Serialize(jsonWriter, this);
+                else
+                    serializer.Serialize(jsonWriter, Data);
+            }
+            response.Write(sw.ToString());
+
+        }
+    }
 
     public class ResultInfo
     {

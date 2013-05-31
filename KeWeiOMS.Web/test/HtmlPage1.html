@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="../Scripts/easyUI/jquery-1.8.0.min.js"></script>
+    <script src="lang_cn.js"></script>
+    <script src="_globalvar.js"></script>
+    <script src="17track.js"></script>
+    <script src="hs.js"></script>
+    <script src="r.js"></script>
+</head>
+<body>
+    <script type="text/javascript" >
+        alert(hs(["RA252659289CN", 0]));
+        var url = getOneRestServer("/Rest/HandlerTrackPost.ashx");
+        var num = 'RA252659289CN';
+        var pt = 0;
+        alert(url);
+        $.ajax({
+            type: "get",
+            dataType: "jsonp",
+            url: url,
+            
+            crossDomain: true,
+            timeout: 140000,
+            data: {
+                lo: 'www.17track.net',
+                pt: pt,
+                num: num,
+                hs: hs([num, pt])
+            },
+            success: function (r) {
+                alert('1');
+                alert(r);
+               
+            },
+            error: function (XMLHttpRequest, textStatus, err) {
+                alert(err);
+            }
+        })
+    </script>
+</body>
+</html>

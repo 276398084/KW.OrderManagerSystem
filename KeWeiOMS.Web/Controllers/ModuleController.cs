@@ -161,14 +161,14 @@ namespace KeWeiOMS.Web.Controllers
                 List<SystemTree> tree2 = ConvertToTree(fooList, scopeList);
 
 
-                if (scopeList.FindIndex(p => p.TargetId == item.Id) >= 0)
-                {
-                    root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2, @checked = true });
-                }
-                else
-                {
+                //if (scopeList.FindIndex(p => p.TargetId == item.Id) >= 0)
+                //{
+                //    root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2, @checked = true });
+                //}
+                //else
+                //{
                     root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2 });
-                }
+               // }
                 GetChildren(objList, item, tree2);
             }
 

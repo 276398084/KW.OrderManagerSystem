@@ -115,8 +115,7 @@ namespace KeWeiOMS.Web.Controllers
                 }
                 DataSet ds = new DataSet();
                 ds.Tables.Add(dt);
-                string xml = ds.GetXml();
-                Session["data"] = xml;
+
                 PrintDataType data = new PrintDataType();
                 data.Content = ds.GetXml();
                 data.CreateOn = DateTime.Now;
@@ -174,7 +173,6 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-
             try
             {
                 StockInType obj = GetById(id);

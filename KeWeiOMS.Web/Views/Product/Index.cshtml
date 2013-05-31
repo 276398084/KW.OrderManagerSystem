@@ -121,14 +121,13 @@
             function doSearch() {
                 var a = $('#Platform').combobox("getText");
                 var p = "";
-                if (a != "不限")
-                {
+                if (a != "不限") {
                     p = a;
                 }
                 search = getSearch();
                 $("#dg").datagrid("load", {
                     search: search,
-                    infraction:p
+                    infraction: p
                 });
             }
             function getSearch() {
@@ -166,15 +165,17 @@
             function updateStatus(a) {
                 var s_ids = getselectedRows();
                 if (s_ids.length == 0) {
-                    alert("请选择产品");
                     return;
                 }
                 if (confirm("您确定要把这些产品的状态设置为" + a)) {
                     jQuery.ajax({
-                        url: "/Product/UpdateStatus/",
+                        url: "/Product/EditStatus/",
                         type: "post",
                         data: "p=" + s_ids.join(',') + "&s=" + a,
-                        success: function (sss) {
+                        success: function (res) {         
+                            if (res.IsError) {
+                                alert(res.Message);
+                            }
                             $("#dg").datagrid("reload");
                         }
                     });
@@ -194,16 +195,15 @@
             }
     </script>
     <div region="center">
-        <table id="dg" >
+        <table id="dg">
             <thead>
                 <tr>
-                    <th field="Id" width="80" checkbox="true">
-                    </th>
+                    <th field="Id" width="80" checkbox="true"></th>
                     <th field="SKU" width="100" sortable="true">SKU
                     </th>
                     <th field="OldSKU" width="100" sortable="true">主SKU
                     </th>
-                     <th field="Status" width="100" sortable="true">状态
+                    <th field="Status" width="100" sortable="true">状态
                     </th>
                     <th field="Category" width="100" sortable="true">类别
                     </th>
@@ -246,18 +246,19 @@
             状态：<input id="SearchStatus" />
             侵权平台<input type="text" id="Platform" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-splitbutton" data-options="menu:'#mm1',iconCls:'icon-edit'">修改产品状态</a><br/>
+            <a href="#" class="easyui-splitbutton" data-options="menu:'#mm1',iconCls:'icon-edit'">修改产品状态</a><br />
             快捷查询：
-            <img src='/Content/images/Display.gif'> <a href="#"  onclick="kuai(1)">重量为0</a>
-            <img src='/Content/images/Display.gif'><a href="#"  onclick="kuai(2)">价格为0</a>
+            <img src='/Content/images/Display.gif'>
+            <a href="#" onclick="kuai(1)">重量为0</a>
+            <img src='/Content/images/Display.gif'><a href="#" onclick="kuai(2)">价格为0</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'SKU'">SKU</div>
             <div data-options="name:'OldSKU'">主SKU</div>
             <div data-options="name:'ProductName'">商品名称</div>
-        </div> 
-        <div id="mm1" style="width:150px;">
-		<div data-options="iconCls:'icon-edit'" onclick="updateStatus('暂停销售')">暂停销售</div>
+        </div>
+        <div id="mm1" style="width: 150px;">
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('暂停销售')">暂停销售</div>
             <div class="menu-sep"></div>
             <div data-options="iconCls:'icon-edit'" onclick="updateStatus('停产')">停产</div>
             <div class="menu-sep"></div>
@@ -268,7 +269,7 @@
             <div data-options="iconCls:'icon-edit'" onclick="updateStatus('销售中')">销售中</div>
             <div class="menu-sep"></div>
             <div data-options="iconCls:'icon-edit'" onclick="updateStatus('热卖')">热卖</div>
-         </div>
+        </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
 

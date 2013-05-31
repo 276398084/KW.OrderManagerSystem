@@ -11,22 +11,39 @@
             url: '@Url.Action("SelectListByRole", "PermissionItem")/@ViewData["uid"]',
             checkbox: true
         });
-    })
+    });
 
-    function getChecked(tree) {
+    function getChecked(tree, t) {
 
         var nodes = $('#' + tree).tree('getChecked');
         var s = '';
+        var prevNode = '';
         for (var i = 0; i < nodes.length; i++) {
-            if (s != '') s += ',';
-            s += nodes[i].id;
+            if (t=="1") {
+                if (s != '') s += ',';
+                s += nodes[i].id;
+            } else {
+                if ($('#' + tree).tree('isLeaf', nodes[i].target)) {
+                    if (s != '') s += ',';
+                    s += nodes[i].id;
+                    var pnode = $('#' + tree).tree('getParent', nodes[i].target); //获取当前节点的父节点 
+                    if (prevNode != pnode.id) //保证当前父节点与上一次父节点不同  
+                    {
+                        if (s != '') s += ',';
+                        s += pnode.id;
+                        prevNode = pnode.id;
+
+                    }
+                }
+            }
         }
         return s;
     }
 
+
     function SetUser() {
         var m = getChecked('tree1');
-        var p = getChecked('tree2');
+        var p = getChecked('tree2', "1");
 
         $.ajax({
             type: "POST",

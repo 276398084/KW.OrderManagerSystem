@@ -251,7 +251,7 @@
                         var effectRow = new Object();
                         effectRow["o"] = '@ViewData["id"]';
                         effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
-                        $.post("/Order/SplitOrder/", effectRow, function (rsp) {
+                        $.post("/Order/EditSplitOrder/", effectRow, function (rsp) {
                             $('#dlg').dialog('close');
                             if (rsp.IsSuccess) {
                                 alert("提交成功！");
@@ -272,7 +272,7 @@
                         var effectRow = new Object();
                         effectRow["o"] = '@ViewData["id"]';
                         effectRow["c"] = r;
-                        $.post("/Order/SplitSendOrder/", effectRow, function (rsp) {
+                        $.post("/Order/EditSplitSendOrder/", effectRow, function (rsp) {
 
                             if (rsp.IsSuccess) {
                                 alert("提交成功！");
@@ -296,7 +296,7 @@
                 var effectRow = new Object();
                 effectRow["o"] = '@ViewData["id"]';
                 effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
-                $.post("/Order/ReOrder/", effectRow, function (rsp) {
+                $.post("/Order/EditReOrder/", effectRow, function (rsp) {
                     $('#dlg').dialog('close');
                     if (rsp.IsSuccess) {
                         alert("提交成功！");

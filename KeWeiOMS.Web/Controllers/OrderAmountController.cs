@@ -97,8 +97,6 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.SaveOrUpdate(orderType);
                 NSession.Flush();
                 OrderHelper.SaveAmount(orderType, NSession);
-                break;
-
             }
             return Json(new { IsSuccess = true });
         }

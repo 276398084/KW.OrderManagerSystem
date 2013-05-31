@@ -20,23 +20,23 @@
                 view: detailview,
                 onDblClickRow: function (i, r) {
                     window.open('@Url.Action("Details", "Order")/' + r.Id);
-            },
-            detailFormatter: function (index, row) {
-                var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
-                html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '<br/> 拦截留言：' + row.CutOffMemo + '</b></div>';
-                return html;
-            },
-            onExpandRow: function (index, row) {
-                $('#ddv-' + index).panel({
-                    border: false,
-                    cache: false,
-                    href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
+                },
+                detailFormatter: function (index, row) {
+                    var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '<br/> 拦截留言：' + row.CutOffMemo + '</b></div>';
+                    return html;
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).panel({
+                        border: false,
+                        cache: false,
+                        href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
                         onLoad: function () {
                             $('#dg').datagrid('fixDetailRowHeight', index);
                         }
                     });
-                $('#dg').datagrid('fixDetailRowHeight', index);
-            }
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
             });
 
             $('#Platform').combobox({
@@ -170,22 +170,22 @@
         //新建
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Order")';
-                showdlg(url_str, 'c_dlg', ajaxAdd);
-            }
-            $('#Platform').combobox({
-                url: '/Home/Platform',
-                valueField: 'id',
-                textField: 'text',
-                required: true,
-                width: 150,
-                panelHeight: 'auto'
-            });
+            showdlg(url_str, 'c_dlg', ajaxAdd);
+        }
+        $('#Platform').combobox({
+            url: '/Home/Platform',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150,
+            panelHeight: 'auto'
+        });
 
-            //编辑框
-            function e_dlg() {
-                var id = getselectedRow();
-                if (id != undefined) {
-                    var url = '@Url.Action("Edit", "Order")/' + id;
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Order")/' + id;
                 showdlg(url, 'e_dlg', ajaxEdit);
             }
         }
@@ -355,9 +355,6 @@
                 search: search
             });
         }
-        function ShowAdvanced() {
-            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
-        }
 
         function showPrint() {
             var rows = $('#dg').datagrid('getSelections');
@@ -387,10 +384,13 @@
                     iconCls: 'icon-ok',
                     handler: function () {
                         jQuery.ajax({
-                            url: "/Order/OrderReplace/",
+                            url: "/Order/EditOrderReplace/",
                             type: "post",
                             data: "ids=" + s_ids.join(',') + "&oldField=" + $('#txtOld').val() + "&newField=" + $('#txtNew').combogrid("getValue") + "&FieldName=" + $('#cc').combobox("getValue"),
-                            success: function () {
+                            success: function (res) {
+                                if (res.IsError) {
+                                    alert(res.Message);
+                                }
                                 $('#s_dlg').dialog('close');
                                 $('#dg').datagrid("reload");
                             }
@@ -419,13 +419,13 @@
                     var id = row['OrderNo'];
                     if (id != undefined) {
                         var url_str = '@Url.Action("Create", "Dispute")/' + id;
-                        showdlg(url_str, 'c_dlg', disputeAdd)
-                    }
+                    showdlg(url_str, 'c_dlg', disputeAdd)
                 }
             }
         }
-        function disputeAdd() {
-            formPost('c_form', '@Url.Action("Create", "Dispute")', 'c_dlg', 'dg');
+    }
+    function disputeAdd() {
+        formPost('c_form', '@Url.Action("Create", "Dispute")', 'c_dlg', 'dg');
         }
 
         function reSend() {
@@ -433,10 +433,13 @@
             $.messager.confirm("提示", "确定要重新发货吗？一共是" + s_ids.length + "条订单", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/ReSend",
+                        url: "/Order/EditReSend",
                         type: "post",
                         data: "o=" + s_ids.join(','),
-                        success: function (sss) {
+                        success: function (res) {
+                            if (res.IsError) {
+                                alert(res.Message);
+                            }
                             $('#dg').datagrid("reload");
                         }
                     });
@@ -452,7 +455,10 @@
                 url: "/Order/ExportZM",
                 type: "post",
                 data: "o=" + s_ids.join(','),
-                success: function (sss) {
+                success: function (res) {
+                    if (res.IsError) {
+                        alert(res.Message);
+                    }
                     location.href = postUrl;
                     $('#dg').datagrid("reload");
                 }
@@ -511,7 +517,10 @@
                 url: "/Order/ExportOrder/",
                 type: "post",
                 data: "o=" + s_ids.join(',') + search + "" + "&dd=" + t,
-                success: function (sss) {
+                success: function (res) {
+                    if (res.IsError) {
+                        alert(res.Message);
+                    }
                     location.href = postUrl;
                     $('#dg').datagrid("reload");
                 }
@@ -524,10 +533,13 @@
             $.messager.confirm("提示", "确定要作废这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/ErrorOrder",
+                        url: "/Order/EditOrderProperty",
                         type: "post",
-                        data: "o=" + s_ids.join(',') + "&t=" + $("#ErrorType").combobox("getValue") + "&d=" + $("#ErrorDesc").val(),
-                        success: function (sss) {
+                        data: "o=" + s_ids.join(',') + "&t=3" + "&c=" + $("#ErrorType").combobox("getValue") + " " + $("#ErrorDesc").val(),
+                        success: function (res) {
+                            if (res.IsError) {
+                                alert(res.Message);
+                            }
                             $('#dg').datagrid("reload");
                         }
                     });
@@ -541,10 +553,13 @@
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/ReQue",
+                        url: "/Order/EditOrderProperty/",
                         type: "post",
-                        data: "o=" + s_ids.join(','),
-                        success: function (sss) {
+                        data: "o=" + s_ids.join(',') + "&t=1",
+                        success: function (res) {
+                            if (res.IsError) {
+                                alert(res.Message);
+                            }
                             $('#dg').datagrid("reload");
                         }
                     });
@@ -559,10 +574,13 @@
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/ReError",
+                        url: "/Order/EditOrderProperty/",
                         type: "post",
-                        data: "o=" + s_ids.join(','),
-                        success: function (sss) {
+                        data: "o=" + s_ids.join(',') + "&t=2",
+                        success: function (res) {
+                            if (res.IsError) {
+                                alert(res.Message);
+                            }
                             $('#dg').datagrid("reload");
                         }
                     });
@@ -576,10 +594,13 @@
             $.messager.confirm("提示", "检验可能有组合产品的" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/SplitZu",
+                        url: "/Order/SplitZu/",
                         type: "post",
                         data: "o=" + s_ids.join(','),
-                        success: function (sss) {
+                        success: function (res) {
+                            if (res.IsError) {
+                                alert(res.Message);
+                            }
                             $('#dg').datagrid("reload");
                         }
                     });
@@ -610,10 +631,13 @@
             $.messager.confirm("提示", "你要拦截 " + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/OrderHoldUp/",
+                        url: "/Order/EditOrderHoldUp/",
                         type: "post",
                         data: "o=" + s_ids.join(',') + "&t=" + $("#HoldUpType").combobox("getValue") + "&d=" + $("#HoldUpDesc").val() + "&s=" + $("#CReHoldUp").val(),
-                        success: function (sss) {
+                        success: function (res) {
+                            if (res.IsError) {
+                                alert(res.Message);
+                            }
                             $('#dg').datagrid("reload");
                         }
                     });

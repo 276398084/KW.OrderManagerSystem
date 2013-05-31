@@ -127,9 +127,9 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult SetMP(string a, string m, string p, int uid)
         {
-            string[] ms = m.Split(',');
-            string[] ps = p.Split(',');
-            string[] fos = a.Split(',');
+            string[] ms = m.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            string[] ps = p.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            string[] fos = a.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
             PermissionScopeType sc = null;
             NSession.CreateQuery("delete from PermissionScopeType where ResourceCategory='" +
                                   ResourceCategoryEnum.User.ToString() + "' and ResourceId=" + uid).ExecuteUpdate();

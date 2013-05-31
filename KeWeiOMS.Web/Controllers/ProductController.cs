@@ -478,7 +478,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         }
 
         [HttpPost]
-        public ActionResult UpdateStatus(string p, string s)
+        public ActionResult EditStatus(string p, string s)
         {
             List<ProductType> products =
                 NSession.CreateQuery("from ProductType where Id in(" + p + ")").List<ProductType>().ToList();

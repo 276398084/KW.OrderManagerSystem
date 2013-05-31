@@ -582,7 +582,7 @@
     <Content Include="product\images\loginInputWrapbg.gif" />
     <Content Include="product\images\logo_login.png" />
     <Content Include="Scripts\CreateControl.js" />
-    <Content Include="Scripts\date.js" />
+    <Content Include="Scripts\js\common.js" />
     <Content Include="Scripts\easyUI\datagrid-detailview.js" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
     <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
@@ -1126,6 +1126,14 @@
     <Content Include="Scripts\uploadify\uploadify-cancel.png" />
     <Content Include="Scripts\uploadify\uploadify.css" />
     <Content Include="Scripts\uploadify\uploadify.swf" />
+    <Content Include="test\17track.js" />
+    <Content Include="test\d.js" />
+    <Content Include="test\hs.js" />
+    <Content Include="test\HtmlPage1.html" />
+    <Content Include="test\jquery.js" />
+    <Content Include="test\lang_cn.js" />
+    <Content Include="test\r.js" />
+    <Content Include="test\_globalvar.js" />
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
@@ -1155,6 +1163,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Common\json\" />
     <Folder Include="Models\" />
     <Folder Include="upload\" />
   </ItemGroup>

@@ -71,15 +71,13 @@ var Pei = 8;
 var Purchaser = 9;
 
 function formPost(form, url, dlg, dg, t, r) {
-
     $('#' + form).form('submit', {
         url: url,
         onSubmit: function () {
             return $(this).form('validate');
         },
-        success: function (msg) {
-           // var result = eval('(' + msg + ')');
-            var result = $.parseJSON(msg);
+        success: function (result) {
+             result = eval('(' + result + ')');
             if (result.IsSuccess) {
                 alert("操作成功");
                 if (dlg) {

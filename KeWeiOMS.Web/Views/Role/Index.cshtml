@@ -24,7 +24,7 @@
         //新建
         function c_dlg() {
             var url_str ='@Url.Action("Create", "Role")';
-            showdlg(url_str,'c_dlg', ajaxAdd)
+            showdlg(url_str, 'c_dlg', ajaxAdd);
         }
 
         //编辑框
@@ -32,7 +32,7 @@
             var id = getselectedRow();
             if (id != undefined) {
                 var url = '@Url.Action("Edit", "Role")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
+                showdlg(url, 'e_dlg', ajaxEdit);
             }
         }
 

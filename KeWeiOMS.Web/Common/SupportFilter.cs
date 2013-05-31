@@ -1,4 +1,5 @@
-﻿
+﻿using System.Web;
+using System.Web.UI;
 using System.Web.Mvc;
 using System.Web.Providers.Entities;
 
@@ -30,7 +31,7 @@ namespace KeWeiOMS.Web
                     {
                         string[] strs = str.Split('&');
                         iscon = Utilities.LoginByUser(strs[0], strs[1], NhibernateHelper.NhbHelper.GetCurrentSession());
-                       // IsAuthorization(filterContext, controller, action);
+                        IsAuthorization(filterContext, controller, action);
                     }
                 }
                 if (iscon)
@@ -39,29 +40,48 @@ namespace KeWeiOMS.Web
                 filterContext.Result = new EmptyResult();
                 return;
             }
-           // IsAuthorization(filterContext, controller, action);
+            //if (!IsAuthorization(filterContext, controller, action))
+            //{
+            //    filterContext.Result = new FormatJsonResult() { IsError = true, IsSuccess = false, Data = null, Message = "您没有权限执行此操作！" };//功能权限弹出提示框
+
+            //    //filterContext.RequestContext.HttpContext.Response.Write("{\"IsSuccess\":false,\"ErrorMsg\"=\"您没有权限执行此操作\"}");
+            //    //filterContext.RequestContext.HttpContext.Response.End();
+            //    //filterContext.Result = new EmptyResult();
+            //}
 
         }
 
-        private static void IsAuthorization(ActionExecutingContext filterContext, string controller, string action)
+        private static bool IsAuthorization(ActionExecutingContext filterContext, string controller, string action)
         {
+            action = action.ToLower();
+            //需要控制的操作权限
+            string[] strActions = new string[] { "delete", "create", "add", "edit", "import", "syn", "print" };
             if (controller.ToUpper() == "HOME" || controller.ToUpper() == "USER")
             {
-                return;
+                return true;
             }
             KeWeiOMS.Domain.UserType account = (KeWeiOMS.Domain.UserType)filterContext.HttpContext.Session["account"];
             if (account.Username.ToUpper() == "ADMIN")
             {
-                return;
+                return true;
             }
-            if (account.Permissions.FindIndex(
-                p =>
-                p.Code.ToString().ToUpper() ==
-                controller.Trim().ToUpper() + "." + action.Trim().ToUpper()) == -1)
+
+            foreach (string strAction in strActions)
             {
-                filterContext.RequestContext.HttpContext.Response.Write("{\"IsSuccess\":false,\"ErrorMsg\"=\"无权访问\"}");
-                filterContext.RequestContext.HttpContext.Response.End();
+                if (strAction == action || action.IndexOf(strAction) != -1)
+                {
+                    if (account.Permissions.FindIndex(
+              p =>
+              p.Code.ToString().ToUpper() ==
+              controller.Trim().ToUpper() + "." + action.Trim().ToUpper()) == -1)
+                    {
+                        return false;
+                    }
+
+                }
             }
+            return true;
+
         }
     }
 

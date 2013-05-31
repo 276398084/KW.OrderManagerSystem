@@ -35,7 +35,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -95,7 +95,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List()
@@ -148,7 +148,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<PermissionItemType> objList = NSession.CreateQuery("from PermissionItemType").List<PermissionItemType>();
             //获得这个类型的菜单权限
-            List<PermissionScopeType> scopeList = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2 and TargetCategory =:p3").SetString("p1", type).SetInt32("p2", Convert.ToInt32(id)).SetString("p3", TargetCategoryEnum.Module.ToString()).List<PermissionScopeType>().ToList<PermissionScopeType>();
+            List<PermissionScopeType> scopeList = NSession.CreateQuery("from PermissionScopeType where ResourceCategory=:p1 and ResourceId=:p2 and TargetCategory =:p3").SetString("p1", type).SetInt32("p2", Convert.ToInt32(id)).SetString("p3", TargetCategoryEnum.PermissionItem.ToString()).List<PermissionScopeType>().ToList<PermissionScopeType>();
 
             IList<PermissionItemType> fristList = objList.Where(p => p.ParentId == 0).OrderByDescending(p => p.SortCode).ToList();
             List<SystemTree> tree = new List<SystemTree>(); ;
@@ -160,7 +160,7 @@ namespace KeWeiOMS.Web.Controllers
                 List<SystemTree> tree2 = ConvertToTree(fooList, scopeList);
                 if (scopeList.FindIndex(p => p.TargetId == item.Id) >= 0)
                 {
-                    root.children.Add(new SystemTree { id = item.Id.ToString(), text = item.FullName, children = tree2, @checked = true });
+                    root.children.Add(new SystemTree { id = item.Id.ToString(),text = item.FullName, children = tree2});
                 }
                 else
                 {

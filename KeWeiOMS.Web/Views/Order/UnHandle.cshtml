@@ -212,7 +212,7 @@
                     iconCls: 'icon-ok',
                     handler: function () {
                         jQuery.ajax({
-                            url: "/Order/OrderReplace/",
+                            url: "/Order/EditOrderReplace/",
                             type: "post",
                             data: "ids=" + s_ids.join(',') + "&oldField=" + $('#txtOld').val() + "&newField=" + $('#txtNew').combogrid("getValue") + "&FieldName=" + $('#cc').combobox("getValue"),
                             success: function () {
@@ -238,19 +238,22 @@
         function o_vali() {
             $('#dg').datagrid("loading");
             jQuery.ajax({
-                url: "/Order/OrderVali",
+                url: "/Order/EditOrderVali",
                 type: "post",
                 success: function (sss) {
+                    alert(sss);
                     $('#dg').datagrid("reload");
                 }
             });
+
         }
 
         function e_Meger() {
             jQuery.ajax({
-                url: "/Order/OrderMerger",
+                url: "/Order/EditOrderMerger",
                 type: "post",
                 success: function (sss) {
+                    alert(sss);
                     $('#dg').datagrid("reload");
                 }
             });
@@ -338,7 +341,7 @@
                     idField: 'ECountry',
                     textField: 'ECountry',
                     url: '/Country/ListALL',
-                    
+
                     columns: [[
                         { field: 'CCountry', title: '中文', width: 150 },
                         { field: 'ECountry', title: '英文', width: 100 },

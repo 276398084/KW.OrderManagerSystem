@@ -151,7 +151,7 @@
         //新建
         function c_dlg() {
             var url_str = '@Url.Action("Create","PurchasePlan")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
+            showdlg(url_str, 'c_dlg', ajaxAdd);
         }
 
         //编辑框
@@ -159,7 +159,7 @@
             var id = getselectedRow();
             var url = '@Url.Action("Edit","PurchasePlan")/' + id;
         if (id != undefined) {
-            showdlg(url, 'e_dlg', ajaxEdit)
+            showdlg(url, 'e_dlg', ajaxEdit);
         }
     }
 

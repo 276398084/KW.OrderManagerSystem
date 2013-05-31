@@ -16,7 +16,7 @@
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
                 onDblClickRow: function (i, r) {
-                    window.open('@Url.Action("Edit", "Order")/' + r.Id);
+                    window.open('@Url.Action("Details", "Order")/' + r.Id);
                 },
                 detailFormatter: function (index, row) {
                     var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
@@ -128,11 +128,6 @@
             $('#CreateOn_et').datebox("setValue", getStartDate(-1));
         });
 
-        //新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create", "Order")';
-            showdlg(url_str, 'c_dlg', ajaxAdd);
-        }
         $('#Platform').combobox({
             url: '/Home/Platform',
             valueField: 'id',
@@ -142,31 +137,9 @@
             panelHeight: 'auto'
         });
 
-        //编辑框
-        function e_dlg() {
-            var id = getselectedRow();
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Order")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit);
-            }
-        }
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "Order")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "Order")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-                var url = '@Url.Action("Delete", "Order")/' + id;
 
-                delData(url, 'dg', 't');
-            }
-        }
+
+
         //获取选中行
         function getselectedRow() {
             var row = $('#dg').datagrid('getSelected');
@@ -311,22 +284,6 @@
             showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
         }
 
-        function showPrint() {
-            var rows = $('#dg').datagrid('getSelections');
-            var ids = [];
-            for (var i = 0; i < rows.length; i++) {
-                ids.push(rows[i]["OrderNo"]);
-            }
-            jQuery.ajax({
-                url: "/Home/PostData",
-                type: "post",
-                data: "ids=" + ids.join(','),
-                success: function (sss) {
-                    window.open('/Home/PrintSetup/');
-                }
-            });
-        }
-
         function showEdit() {
             var s_ids = getselectedRows();
 
@@ -457,9 +414,9 @@
             $.messager.confirm("提示", "确定要作废这" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/ErrorOrder",
+                        url: "/Order/EditOrderProperty",
                         type: "post",
-                        data: "o=" + s_ids.join(',') + "&t=" + $("#ErrorType").combobox("getValue") + "&d=" + $("#ErrorDesc").val(),
+                        data: "o=" + s_ids.join(',') + "&t=3" + "&c=" + $("#ErrorType").combobox("getValue") + "  " + $("#ErrorDesc").val(),
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
@@ -467,33 +424,16 @@
                 }
             });
         }
-        function o_ReQue() {
-            var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
-            $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单吗？", function (r) {
-                if (r) {
-                    jQuery.ajax({
-                        url: "/Order/ReQue",
-                        type: "post",
-                        data: "o=" + s_ids.join(','),
-                        success: function (sss) {
-                            $('#dg').datagrid("reload");
-                        }
-                    });
-                }
-            });
-
-        }
-
+      
         function changeTo() {
             var rows = $('#dg').datagrid('getSelections');
             var s_ids = getselectedRows();
             $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单为正常订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/ReStop",
+                        url: "/Order/EditOrderProperty",
                         type: "post",
-                        data: "o=" + s_ids.join(','),
+                        data: "o=" + s_ids.join(',')+"&t=0",
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
@@ -501,22 +441,7 @@
                 }
             });
         }
-        function o_SplitZu() {
-            var rows = $('#dg').datagrid('getSelections');
-            var s_ids = getselectedRows();
-            $.messager.confirm("提示", "检验可能有组合产品的" + s_ids.length + "条订单吗？", function (r) {
-                if (r) {
-                    jQuery.ajax({
-                        url: "/Order/SplitZu",
-                        type: "post",
-                        data: "o=" + s_ids.join(','),
-                        success: function (sss) {
-                            $('#dg').datagrid("reload");
-                        }
-                    });
-                }
-            });
-        }
+   
 
         function changePlatform(n, o) {
             $('#Account').combotree({
