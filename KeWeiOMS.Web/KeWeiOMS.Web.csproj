@@ -71,6 +71,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -216,6 +217,7 @@
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\SuppliersProductController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="Controllers\WarehouseLocationController.cs" />
@@ -484,7 +486,6 @@
     <Content Include="Scripts\easyUI\themes\metro-red\window.css" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
     <Content Include="Scripts\grbsctl5.cab" />
-    <Content Include="Scripts\grbsctl5.exe" />
     <Content Include="Scripts\GRInstall.js" />
     <Content Include="Scripts\images\Data.gif" />
     <Content Include="Scripts\images\Data.png" />
@@ -1495,7 +1496,6 @@
     <Content Include="Content\grf\Shortcut.grf" />
     <Content Include="Content\grf\ymxDE.grf" />
     <Content Include="Content\grf\zm.grf" />
-    <None Include="Properties\PublishProfiles\keweiOMs.pubxml" />
     <Content Include="Views\Home\PrintDetail.cshtml" />
     <Content Include="Views\Home\PrintSetup.cshtml" />
     <Content Include="Views\Order\TodayIndex.cshtml" />
@@ -1600,11 +1600,6 @@
     <Content Include="Views\EbayReplay\Details.cshtml" />
     <Content Include="Views\EbayReplay\Edit.cshtml" />
     <Content Include="Views\EbayReplay\Index.cshtml" />
-    <Content Include="Scripts\easyUI\themes\metro-blue\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-gray\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-green\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-orange\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-red\images\Thumbs.db" />
     <Content Include="Views\ProductIsInfraction\Create.cshtml" />
     <Content Include="Views\ProductIsInfraction\Delete.cshtml" />
     <Content Include="Views\ProductIsInfraction\Details.cshtml" />
@@ -1659,9 +1654,18 @@
     <Content Include="Views\BeforePeiScan\Index.cshtml" />
     <Content Include="Views\Order\BeforePeiScan.cshtml" />
     <Content Include="Views\OrderAmount\FreightCount.cshtml" />
+    <Content Include="Views\Dispute\EmailDispute.cshtml" />
+    <Content Include="Views\UserLogin\Create.cshtml" />
+    <Content Include="Views\UserLogin\Delete.cshtml" />
+    <Content Include="Views\UserLogin\Details.cshtml" />
+    <Content Include="Views\UserLogin\Edit.cshtml" />
+    <Content Include="Views\UserLogin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\web.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -158,7 +158,10 @@ namespace KeWeiOMS.Web.Controllers
                 {
                             IList<AttendType> objList = NSession.CreateQuery("from AttendType " + " where UserId=\'" + obj.UserId + "\'  order by CurrentDate desc ")
                             .List<AttendType>();
-                            NoAttend(objList[0].CurrentDate);
+                            if (objList.Count>0)
+                            {
+                                 NoAttend(objList[0].CurrentDate);
+                            }
                             if (list.Count > 0)
                             { 
                              obj = list[0];

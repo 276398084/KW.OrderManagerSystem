@@ -1,0 +1,80 @@
+﻿@model KeWeiOMS.Domain.UserLoginType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "UserLogin", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserCode,"用户编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserCode,new{@id="c_UserCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserName,"用户名:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="c_UserName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"登陆时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IP,"IP:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IP,new{@id="c_IP"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MAC,"MAC:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MAC,new{@id="c_MAC"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

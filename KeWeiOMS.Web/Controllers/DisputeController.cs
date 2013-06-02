@@ -26,6 +26,11 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ViewResult EmailDispute()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult Create(DisputeType obj)
         {
@@ -145,10 +150,18 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true  });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+		public JsonResult List(int page, int rows, string sort, string order, string search,string type)
         {
             string orderby = Utilities.OrdeerBy(sort, order);
-            string where = Utilities.SqlWhere(search);
+            string where = Utilities.SqlWhere(search);            
+            if (!string.IsNullOrEmpty(where))
+            { 
+                where +=" and DisputesType='"+type+"'";
+            }
+            else
+            {
+                where = " where DisputesType='" + type + "'";
+            }
             IList<DisputeType> objList = NSession.CreateQuery("from DisputeType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)

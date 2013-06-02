@@ -1,0 +1,76 @@
+﻿@model KeWeiOMS.Domain.UserLoginType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_CreateOn').datebox();
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "UserLogin", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"主键:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserCode,"用户编号:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserCode,new{@id="e_UserCode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UserName,"用户名:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UserName,new{@id="e_UserName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"登陆时间:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IP,"IP:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IP,new{@id="e_IP"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MAC,"MAC:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MAC,new{@id="e_MAC"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}
