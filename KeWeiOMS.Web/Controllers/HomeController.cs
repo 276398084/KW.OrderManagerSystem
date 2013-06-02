@@ -23,7 +23,6 @@ namespace KeWeiOMS.Web.Controllers
 {
     public class HomeController : BaseController
     {
-
         public ViewResult Index()
         {
             ViewData["Username"] = CurrentUser.Realname;
@@ -368,15 +367,6 @@ left join ReturnAddress R On r.Id=" + r;
             NSession.Flush();
         }
         //获取IP地址
-        //public string GetIP()
-        //{
-        //    string ip = string.Empty;
-        //    if (!string.IsNullOrEmpty(System.Web.HttpContext.Current.Request.ServerVariables["HTTP_VIA"]))
-        //        ip = Convert.ToString(System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"]);
-        //    if (string.IsNullOrEmpty(ip))
-        //        ip = Convert.ToString(System.Web.HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"]);
-        //    return ip;
-        //}
         private string GetClientIP()
         {
             string result = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
