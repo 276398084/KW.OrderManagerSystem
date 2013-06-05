@@ -139,9 +139,7 @@
         }
         u = $('#status').combobox("getText");
         if (u != "ALL" && u != "") {
-         
             search += "Status_ds&" + u + "^";
-           
         }
         u = $('#cc').combobox("getValue");
         if (u != "ALL" && u != "") {
@@ -200,6 +198,26 @@
         html += "" + r.Platform + "";
         return html;
     }
+    function toExcel() {
+        search = getSearch();
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel1", "OrderAmount")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        });
+    }
     </script>
     <div region="center">
         <table id="dg">
@@ -207,9 +225,9 @@
                 <tr>
                     <th field="OrderNo" width="100">编号
                     </th>
-                    <th field="OrderExNo" width="100">订单号 onDblClickRow: function (i, r) {
+                    <th field="OrderExNo" width="100">订单号@* onDblClickRow: function (i, r) {
                     window.open('@Url.Action("Details", "Order")/' + r.Id);
-                },
+                },*@
                     </th>
                     <th field="Account" width="100" formatter="getAccount">账户/平台
                     </th>
@@ -238,22 +256,21 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">待定</a>
             <br`/>
            平台:<input id="pp" type="text"/>
-            账户:<input id="aa" type="text"/>
-            状态:<input id="status" type="text"/>
-            亏损:<input id="loss" type="text"/>
-             开始:<input id="cc" type="text" />
-    结束:<input id="cc2" type="text" />
-            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'" ></input>
+           账户:<input id="aa" type="text"/>
+           状态:<input id="status" type="text"/>
+           亏损:<input id="loss" type="text"/>
+           开始:<input id="cc" type="text" />
+           结束:<input id="cc2" type="text" />
+           <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'" ></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>
             <div data-options="name:'OrderExNo'">订单号</div>
             <div data-options="name:'CurrencyCode'">货币</div>
-            
         </div>
         <div id="c_dlg"></div>
         <div id="d_dlg"></div>
         <div id="e_dlg"></div>
-
     </div>
 </body>

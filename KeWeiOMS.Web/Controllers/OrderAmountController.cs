@@ -489,6 +489,107 @@ namespace KeWeiOMS.Web.Controllers
             }
             return where;
         }
+        public JsonResult ToExcel(string search)
+        {
+            try
+            {
+                IList<OrderType> objList = NSession.CreateQuery("from OrderType " + Utilities.SqlWhere(search))
+    .List<OrderType>();
+                List<OrderData> os = new List<OrderData>();
+                foreach (var o in objList)
+                {
+                    AddToOrderData(o, os);
+                }
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((os)));
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
+        public JsonResult ToExcel1(string search)
+        {
+            try
+            {
+                string where = "";
+                if (!string.IsNullOrEmpty(search))
+                {
+                    where = Utilities.Resolve(search);
+                    if (where.Length > 0)
+                    {
+                        where = " where IsSplit=0 and IsRepeat=0 and " + where;
+                    }
+                    else
+                    {
+                        where = " where IsSplit=0 and IsRepeat=0 ";
+                    }
+                }
+                IList<OrderAmountType> objList = NSession.CreateQuery("from OrderAmountType " + where)
+                    .List<OrderAmountType>();
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
+
+        public JsonResult ToExcelAccount(DateTime st, DateTime et, string p, string a, string t)
+        {
+            try
+            {
+                IList<AccountFreigheCount> sores = new List<AccountFreigheCount>();
+                string where = Where(st, et, p, a, t);
+                IList<object[]> objectses = NSession.CreateQuery("select Platform,Account,Count(Id),Sum(Freight) from OrderType " + where + "  group by Account,Platform").List<object[]>();
+                foreach (var item in objectses)
+                {
+                    string pp = item[0].ToString();
+                    string aa = item[1].ToString();
+                    decimal co = Convert.ToDecimal(item[2]);
+                    decimal am = decimal.Round(decimal.Parse(item[3].ToString()), 2);
+                    sores.Add(new AccountFreigheCount { Platform = pp, Account = aa, Count = co, Amount = am });
+                }
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((sores)));
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
+        public JsonResult ToExcelType(DateTime st, DateTime et, string p, string a, string t)
+        {
+            try
+            {
+                IList<AccountFreigheCount> sores = new List<AccountFreigheCount>();
+                string where = Where(st, et, p, a, t);
+                IList<object[]> objectses = NSession.CreateQuery("select IsRepeat,IsSplit,Count(Id),Sum(Freight) from OrderType " + where + "  group by IsRepeat,IsSplit").List<object[]>();
+                foreach (var item in objectses)
+                {
+                    string str = "正常";
+                    if (item[0].ToString() == "1")
+                    {
+                        str = "重发";
+                    }
+                    if (item[1].ToString() == "1")
+                    {
+                        str += "拆包";
+                    }
+                    string aa = str;
+                    decimal co = Convert.ToDecimal(item[2]);
+                    decimal am = decimal.Round(decimal.Parse(item[3].ToString()), 2);
+                    sores.Add(new AccountFreigheCount { Account = aa, Count = co, Amount = am });
+                }
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((sores)));
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true, ErrorMsg = "导出成功" });
+        }
     }
 }
 
