@@ -96,6 +96,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.BuyBy = CurrentUser.Realname;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+                SaveSupplier(obj);
                 LoggerUtil.GetPurchasePlanRecord(obj, "新建计划", "创建采购计划", CurrentUser, NSession);
             }
             catch (Exception ee)
@@ -103,6 +104,46 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
             return Json(new { IsSuccess = true });
+        }
+
+        private void SaveSupplier(PurchasePlanType obj)
+        {
+            object exit = NSession.CreateQuery("from SupplierType where SuppliersName='"+obj.Suppliers+"'").UniqueResult();
+            if (exit==null)
+            {
+                SupplierType super = new SupplierType
+                {
+                    SuppliersName = obj.Suppliers
+                };
+                NSession.Save(super);
+                NSession.Flush();
+                SuppliersProductType product = new SuppliersProductType
+                {
+                    SId = super.Id,
+                    SKU = obj.SKU,
+                    Price = obj.Price,
+                    Web = obj.ProductUrl
+                };
+                NSession.Save(product);
+                NSession.Flush();
+            }
+            else
+            {
+                IList<SupplierType> list = NSession.CreateQuery("from SupplierType where SuppliersName='" + obj.Suppliers + "'").List<SupplierType>();
+                object productexit = NSession.CreateQuery("from SuppliersProductType where SId='" +list[0].Id+ "' and SKU='"+obj.SKU+"' ").UniqueResult();
+                if (productexit == null)
+                {
+                    SuppliersProductType product = new SuppliersProductType
+                    {
+                        SId = list[0].Id,
+                        SKU = obj.SKU,
+                        Price = obj.Price,
+                        Web = obj.ProductUrl
+                    };
+                    NSession.Save(product);
+                    NSession.Flush();
+                }
+            }
         }
 
         /// <summary>

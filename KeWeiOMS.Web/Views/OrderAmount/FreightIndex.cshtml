@@ -188,6 +188,26 @@
         });
 
     }
+    function toExcel() {
+        search = getSearch();
+        $('#dg').datagrid('loading');
+        var postUrl = "/Order/ExportDown/1";
+        $.ajax({
+            url: '@Url.Action("ToExcel", "OrderAmount")/',
+            type: 'post',
+            data: 'search=' + encodeURIComponent(search),
+            success: function (result) {
+                $.messager.show({
+                    title: '提示',
+                    msg: result.ErrorMsg,
+                    timeout: 0,
+                    showType: 'slide'
+                });
+                location.href = postUrl;
+                $('#dg').datagrid('reload');
+            }
+        });
+    }
 </script>
 <table id="dg">
     <thead>
@@ -227,6 +247,7 @@
     开始:<input id="cc" type="text" />
     结束:<input id="cc2" type="text" />
     <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+     <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
 </div>
 <div id="mm" style="width: 120px">
     <div data-options="name:'OrderNo'">订单编号</div>

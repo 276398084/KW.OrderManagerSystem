@@ -74,10 +74,6 @@
                     search: search
                 });
       }
-    function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "UserLogin")', 's_dlg', 'dg');
-      }		
-
 </script>
 <div region="center">
 <table id="dg" class="easyui-datagrid" 
@@ -85,10 +81,6 @@
            rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
         <thead>  
         <tr>
-            <th field="Id" width="100">
-                主键
-            </th>
-
             <th field="UserCode" width="100">
                 用户编号
             </th>
@@ -97,7 +89,7 @@
                 用户名
             </th>
 
-            <th field="CreateOn" width="100">
+            <th field="CreateOn" width="100" formatter="getDate">
                 登陆时间
             </th>
 
@@ -108,26 +100,20 @@
             <th field="MAC" width="100">
                 MAC
             </th>
-
-
     	</tr>
 		</thead>
 		</table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
+@*        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
         <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
+        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
 		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
         </div> 
 		<div id="mm" style="width: 120px">
-                        <div data-options="name:'Id'">主键</div>
             <div data-options="name:'UserCode'">用户编号</div>
             <div data-options="name:'UserName'">用户名</div>
-            <div data-options="name:'CreateOn'">登陆时间</div>
             <div data-options="name:'IP'">IP</div>
             <div data-options="name:'MAC'">MAC</div>
-
         </div>
     <div id="c_dlg"></div>
     <div id="e_dlg"></div>
