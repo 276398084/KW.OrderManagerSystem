@@ -1261,7 +1261,7 @@ left join Products P On OP.SKU=P.SKU ";
 
 
 
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where CreateOn >'2013-04-01'")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where CreateOn >'2013-04-01' and Status='已发货'")
                 //                 IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where OrderNo in(            '200122307',
                 //'200122885',
                 //'200122886')")
@@ -1459,7 +1459,8 @@ left join Products P On OP.SKU=P.SKU ";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString())
+
+                if (order.Status == OrderStatusEnum.待拣货.ToString() || (!Config.IsJi && order.Status == OrderStatusEnum.已处理.ToString()))
                 {
                     if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
                     {
@@ -1646,9 +1647,10 @@ left join Products P On OP.SKU=P.SKU ";
                     {
                         double coe = 0;
                         List<OrderProductType> OrderProducts = NSession.CreateQuery("from OrderProductType where OrderNo='" + item.OrderNo + "'").List<OrderProductType>().ToList();
-                        if (OrderProducts.Count == 0)
+                        OrderType ot = NSession.Get<OrderType>(item.OId);
+                        if (OrderProducts.Count == 0 || ot.IsSplit == 1)
                         {
-                            item.PackCoefficient = 1;
+                            item.PackCoefficient = 3;
                         }
                         else
                         {
@@ -1726,9 +1728,7 @@ left join Products P On OP.SKU=P.SKU ";
                 {
                     PackCoefficient = 1;
                 }
-
             }
-
             OrderPackRecordType orderPackRecord = new OrderPackRecordType
             {
                 OId = order.Id,

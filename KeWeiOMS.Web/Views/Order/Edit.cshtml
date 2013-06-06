@@ -245,7 +245,7 @@
     function splitOrder(x) {
 
         if (x == 0) {
-            if ("@Model.Status" == "已处理") {
+            if ("@Model.Status" == "已处理" || "@Model.Status" == "待拣货") {
                 showProduct("缺货拆分--选择产品", function () {
                     if (endEditing1()) {
                         var effectRow = new Object();

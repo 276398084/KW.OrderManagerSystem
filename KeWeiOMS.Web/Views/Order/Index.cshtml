@@ -594,7 +594,7 @@
             $.messager.confirm("提示", "检验可能有组合产品的" + s_ids.length + "条订单吗？", function (r) {
                 if (r) {
                     jQuery.ajax({
-                        url: "/Order/SplitZu/",
+                        url: "/Order/EditSplitZu/",
                         type: "post",
                         data: "o=" + s_ids.join(','),
                         success: function (res) {

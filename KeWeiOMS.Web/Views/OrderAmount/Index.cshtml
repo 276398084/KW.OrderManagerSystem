@@ -143,12 +143,12 @@
             search += "Status_ds&" + u + "^";
            
         }
-        u = $('#cc').combobox("getValue");
+        u = $('#cc').datebox("getValue");
         if (u != "ALL" && u != "") {
             search += "CreateOn_st&" + u + "^";
         }
 
-        u = $('#cc2').combobox("getValue");
+        u = $('#cc2').datebox("getValue");
         if (u != "ALL" && u != "") {
             search += "CreateOn_et&" + u + "^";
         }

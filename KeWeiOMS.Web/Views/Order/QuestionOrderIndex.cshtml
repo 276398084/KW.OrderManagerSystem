@@ -15,7 +15,7 @@
                 valueField: 'id',
                 textField: 'text',
                 panelHeight: 'auto',
-                data: [{ id: "ALL", text: "ALL" }, { id:0, text: "未处理" }, { id: 1, text: "已处理" }, { id:2, text: "已拒绝" }]
+                data: [{ id: "ALL", text: "ALL" }, { id: 0, text: "未处理" }, { id: 1, text: "已处理" }, { id: 2, text: "已拒绝" }]
             });
             $('#Status').combobox("setValue", "ALL");
             $('#Subject').combobox({
@@ -52,8 +52,8 @@
             if (ss != "ALL" && ss != "") {
                 search += "Status_ds&" + ss + "^";
             }
-            var su= $('#Subject').combobox("getText");
-            if (su != "ALL" && su !="") {
+            var su = $('#Subject').combobox("getText");
+            if (su != "ALL" && su != "") {
                 search += "Subjest_ds&" + su + "^";
             }
             $("#dg").datagrid("load", {
@@ -100,11 +100,9 @@
         }
         function GetP(v, r, i) {
             var html = "";
-            if (r.Status == "0") {
-                html += '<a href="javascript:void(0);" onclick="doNo(' + v + ')">拒绝</a>&nbsp&nbsp';
-            }
+
             if (r.Subjest.toString().indexOf("重发") > 0 && r.Status == "0") {
-                html+= '<a href="javascript:void(0);" onclick="doAudit(' + v + ')">审核</a>';
+                html += '<a href="javascript:void(0);" onclick="doAudit(' + v + ')">审核</a>&nbsp&nbsp  <a href="javascript:void(0);" onclick="doNo(' + v + ')">拒绝</a>';
             }
 
             return html;

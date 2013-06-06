@@ -925,6 +925,7 @@ namespace KeWeiOMS.Web
                     orderAmount.Status = "已发货";
                 }
                 orderAmount.Profit = Math.Round(orderAmount.Profit - order.Freight);
+                orderAmount.CreateOn = order.CreateOn;
                 NSession.Update(orderAmount);
                 NSession.Flush();
             }
@@ -990,7 +991,7 @@ namespace KeWeiOMS.Web
                     orderAmount.OtherFees = Convert.ToDouble(d);
                 }
             }
-
+            orderAmount.CreateOn = order.CreateOn;
             orderAmount.CurrencyCode = order.CurrencyCode;
             orderAmount.Platform = order.Platform;
             orderAmount.Country = order.Country;

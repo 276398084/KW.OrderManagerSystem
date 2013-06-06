@@ -48,7 +48,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.ExchangeRate);
             Map(x => x.RMB);
             Map(x => x.Profit);
-
+            Map(x => x.CreateOn);
             Map(x => x.Status).Length(20);
             Map(x => x.Account).Length(50);
             Map(x => x.Platform).Length(20);
