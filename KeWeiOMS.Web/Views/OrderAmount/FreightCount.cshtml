@@ -91,13 +91,13 @@
         $('#aa').combotree("setValue", "ALL");
     }
     function toExcel() {
-        search = getSearch();
+        //search = getSearch();
         $('#dg').datagrid('loading');
         var postUrl = "/Order/ExportDown/1";
         $.ajax({
             url: '@Url.Action("ToExcelAccount", "OrderAmount")/',
             type: 'post',
-            data: { "st": $('#cc').datebox("getValue"), "et": $('#cc2').datebox("getValue"), "p": "ALL", "a": "ALL", 't': "ALL" },
+            data: { st: $('#cc').datebox("getValue"), et: $('#cc2').datebox("getValue"), p: $('#pp').combobox("getText"), a: $('#aa').combobox("getText"), t: $('#tt').combobox("getText") },
             success: function (result) {
                 $.messager.show({
                     title: '提示',
@@ -111,13 +111,14 @@
         });
     }
     function toExcel1() {
-        search = getSearch();
-        $('#dg').datagrid('loading');
+        //search = getSearch();
+        alert(0);
+        $('#dg1').datagrid('loading');
         var postUrl = "/Order/ExportDown/1";
         $.ajax({
             url: '@Url.Action("ToExcelType", "OrderAmount")/',
             type: 'post',
-            data:"st="+$('#cc').datebox("getValue")+", et="+ $('#cc2').datebox("getValue")+", p="+$('#pp').combobox("getText")+",a="+ $('#aa').combobox("getText")+",t="+$('#tt').combobox("getText"),
+            data: { st: $('#cc').datebox("getValue"), et: $('#cc2').datebox("getValue"), p: $('#pp').combobox("getText"), a: $('#aa').combobox("getText"), t: $('#tt').combobox("getText") },
             success: function (result) {
                 $.messager.show({
                     title: '提示',
@@ -126,7 +127,7 @@
                     showType: 'slide'
                 });
                 location.href = postUrl;
-                $('#dg').datagrid('reload');
+                $('#dg1').datagrid('reload');
             }
         });
     }
@@ -172,9 +173,9 @@
         </td>
     </tr>
 </table>
-@*        <div id="toolbar">
+        <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
         <div id="toolbar1">
             <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel1();">导出数据</a>
-        </div>*@
+        </div>
