@@ -111,21 +111,24 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Platform(string Id)
         {
             List<object> list = new List<object>();
-            if (Id == "1")
-            {
-                list.Add(new { id = "ALL", text = "ALL" });
-            }
-            if (Id == "2")
-            {
-                list.Add(new { id = "不限", text = "不限" });
-                list.Add(new { id = "无侵权", text = "无侵权" });
-                list.Add(new { id = "全侵权", text = "全侵权" });
-            }
-            foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
-            {
-                list.Add(new { id = item, text = item });
-            }
+
+            list.Add(new { id = "SMT", text = "SMT" });
             return Json(list);
+            //if (Id == "1")
+            //{
+            //    list.Add(new { id = "ALL", text = "ALL" });
+            //}
+            //if (Id == "2")
+            //{
+            //    list.Add(new { id = "不限", text = "不限" });
+            //    list.Add(new { id = "无侵权", text = "无侵权" });
+            //    list.Add(new { id = "全侵权", text = "全侵权" });
+            //}
+            //foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
+            //{
+            //    list.Add(new { id = item, text = item });
+            //}
+            //return Json(list);
         }
 
         public ActionResult GetRoleEnum()

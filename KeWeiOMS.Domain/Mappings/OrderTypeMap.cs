@@ -57,7 +57,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.BuyerName).Length(200);
             Map(x => x.BuyerEmail).Length(200);
             Map(x => x.BuyerId);
-            Map(x => x.BuyerMemo).CustomType("StringClob").CustomSqlType("ntext"); ;
+            Map(x => x.BuyerMemo).CustomType("StringClob").CustomSqlType("ntext");
             Map(x => x.SellerMemo).Length(1000);
             Map(x => x.CutOffMemo).Length(1000);
             Map(x => x.LogisticMode).Length(40);
@@ -74,7 +74,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.ScanningBy).Length(40);
             Map(x => x.Account).Length(40);
             Map(x => x.Platform).Length(40);
-
+            Map(x => x.UID);
         }
     }
 }

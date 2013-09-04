@@ -40,6 +40,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Province).Length(50);
             Map(x => x.Country).Length(50);
             Map(x => x.CountryCode).Length(50);
+            Map(x => x.UID);
         }
     }
 }

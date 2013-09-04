@@ -80,5 +80,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String CountryCode { get; set; }
 
+
+        /// <summary>
+        /// 国家代码
+        /// </summary>
+        public virtual int UID { get; set; }
     }
 }
