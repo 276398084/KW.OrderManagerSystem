@@ -1,13 +1,9 @@
 ﻿@model KeWeiOMS.Domain.EbayMessageType
 @{
-    Layout = null;
+    
 }
-<script type="text/javascript">
-    $(function () {
-        $('#old').datagrid({
-            url: '@Url.Action("GetOld", "EbayMessageRe")/@ViewData["messageid"]'
-        })
-    });
+    <script type="text/javascript">
+
     function operate(v, r, i) {
         return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'de(" + v + ")\'>详细</a>"
     }
@@ -18,9 +14,9 @@
                 width: 500,
                 height: 300,
                 content: function () {
-                    return json;
+                    return "<textarea style='width: 472px; height: 233px;'>" + json + "</textarea>";
                 },
-                loadingMessage: '正在加载...',
+               
                 buttons: [{
                     text: '关闭',
                     handler: function () {
@@ -37,27 +33,20 @@
 <table class="editForm">
 	<tr>
 		<td>
+            
             @Html.LabelFor(model => model.MessageType, "消息类型:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.MessageType, new { @id = "e_MessageType", @readonly = "readonly" })
 		</td>
-	</tr>
-
-	<tr>
-        <td>
+         <td>
             @Html.LabelFor(model => model.SenderID, "买家Id:")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.SenderID, new { @id = "e_SenderID", @readonly = "readonly" })
 		</td>
-		<td>
-            @Html.LabelFor(model => model.SenderEmail, "买家邮箱:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.SenderEmail, new { @id = "e_SenderEmail", @style = "width:300px", @readonly = "readonly" })
-		</td>
 	</tr>
+
 
 
 	<tr>
@@ -65,7 +54,7 @@
             @Html.LabelFor(model => model.Subject, "消息主题:")
 		</td>
 		<td colspan="3">
-            @Html.TextAreaFor(model => model.Subject, new { @id = "e_Subject", @style = "width:600px;height:80px;resize:none", @readonly = "readonly" })
+            @Html.TextAreaFor(model => model.Subject, new { @id = "e_Subject", @style = "width:600px;height:40px;resize:none", @readonly = "readonly" })
 		</td>
 	</tr>
 
@@ -74,7 +63,11 @@
             @Html.LabelFor(model => model.Body, "消息内容:")
 		</td>
 		<td colspan="3">
-            @Html.TextAreaFor(model => model.Body, new { @id = "e_Body", @style = "width:600px;height:80px;resize:none", @readonly = "readonly" })
+              <div style="height:300px;overflow-y:auto; width:600px;" id="r-div">
+                                     
+                                    @{WriteLiteral(Model.Body);}
+</div>
+           
 		</td>
 	</tr>
 
@@ -113,8 +106,8 @@
     
 <fieldset>
         <legend>回复信息</legend>
-        <table id="old" class="easyui-datagrid" style="width:700px;height:100px"
-           singleSelect="true">
+        <table id="e_old"  class="easyui-datagrid" style="width:700px;height:100px"
+            url='@Url.Action("GetOld", "EbayMessageRe")/@ViewData["messageid"]' >
             <thead>
             <tr>
                 <th field="Id" width="60" formatter="operate">操作

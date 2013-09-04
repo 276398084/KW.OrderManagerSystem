@@ -34,8 +34,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.MessageType);
             Map(x => x.SenderEmail);
             Map(x => x.SenderID);
-            Map(x => x.Subject);
-            Map(x => x.Body);
+            Map(x => x.Subject).Length(1000);
+            Map(x => x.Body).CustomType("StringClob").CustomSqlType("ntext");
             Map(x => x.MessageStatus);
             Map(x => x.ItemId);
             Map(x=>x.Shop);
@@ -45,6 +45,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.ReplayOn);
             Map(x=>x.ReplayOnlyBy);
             Map(x => x.ForwardWhy);
+            Map(x => x.Title).Length(1000);
         }
     }
 }

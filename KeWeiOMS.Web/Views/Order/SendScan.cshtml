@@ -23,7 +23,8 @@
             fit: true,
             columns: [[
                 { field: 'LogisticsName', title: '名称', width: 250 },
-                { field: 'LogisticsCode', title: '代码', width: 100 }
+                { field: 'LogisticsCode', title: '代码', width: 100 },
+                { field: 'ParentID', title: '代码', width: 100 }
             ]]
         });
         $('#ww').combobox({
@@ -34,7 +35,24 @@
         });
         $('#ll').combogrid("setValue", "NJGH");
         $('#ww').combobox("setValue", "1");
-    })
+    });
+
+    function getDataa(v,l,m) {
+        $.ajax({
+            url: "/Logistics/GetData/",
+            type: "post",
+            data: "Id=" + v,
+            success: function (res) {
+                TrackCodeLength = res.CodeLength;
+                if (l != TrackCodeLength) {
+                    m = "     该订单 物流方式不能强制转换!    "+m;
+                    TrackCodeLength = l;
+                    progress = 0;
+                    ShowMessage(m, "物流方式不能强制转换", false);
+                }
+            }
+        });
+    }
 </script>
 
 <table width="100%" cellspacing="6" cellpadding="0" border="0" style="border-collapse: separate; border-spacing: 6px;">
@@ -114,11 +132,13 @@
     var o = ""; //包裹编号
     var progress = 0;
     var txt = document.getElementById("txt");
-
-
+    var TrackCodeLength = -1;
+    var TrackCodeLength2 = -1;
+    var oldstr = "";
     var spanInfo = document.getElementById("spanInfo");
     var spanStatus = document.getElementById("spanStatus");
     function txt_keydown(e) {
+
         var keynum;
         if (window.event) //IE
         {
@@ -129,8 +149,12 @@
             keynum = e.which;
         }
         if (keynum == 13) {
-            if (txt.value == "") { Reset(); }
+
+            if (txt.value == "") { Reset(); return; }
+
             if (progress == 0) {
+                TrackCodeLength = -1;
+                TrackCodeLength2 = -1;
                 getOrder(txt.value);
             }
             else if (progress == 1) {
@@ -157,20 +181,30 @@
     }
 
     function getOrder(str) {
+        if ($("#ckCheng").attr("checked")) {
+            var tc = document.getElementById('tc');
+            tc.ReadCheng();
+            zl = tc.Value;
+        }
         jQuery.ajax({
             url: "/Order/GetOrderBySend/",
             type: "post",
-            data: "o=" + str,
+            data: "o=" + str + "&w=" + zl,
             success: function (msg) {
                 if (msg.IsSuccess) {
+                    if ($("#ckQ").attr("checked")) {
+                        var g = $('#ll').combogrid('grid');	// get datagrid object
+                        var r = g.datagrid('getSelected');	// get the selected row
+                        TrackCodeLength2 = msg.Code;
+                        getDataa(r.ParentID, msg.Code, msg.Result);
+                    }
+                    else {
+                        TrackCodeLength = msg.Code;
+                    }
                     if ($("#ckCheng").attr("checked")) {
                         progress = 2;
                         o = str;
-
                         ShowMessage(msg.Result, "请输入追踪码", true);
-                        var tc = document.getElementById('tc');
-                        tc.ReadCheng();
-                        zl = tc.Value;
                     } else {
                         progress = 1;
                         o = str;
@@ -180,14 +214,29 @@
                     progress = 0;
                     ShowMessage(msg.Result, "等待扫描", false);
                 }
-
             }
         });
     }
     function OutStock(str) {
-        if (str.length < 13) {
-            ShowMessage("挂号" + str + "长度不足，请重新输入", "等待扫描", false);
-            return;
+      
+        if (TrackCodeLength == 0) {
+            if (o != str) {
+                ShowMessage("前后输入不一致，请重新输入", "等待扫描", false);
+                return;
+            } else {
+                str = "";
+            }
+        } else {
+            if (str.length == 0) {
+                ShowMessage("请输入挂号或验证！", "等待扫描", false);
+                return;
+            }
+            if (str.length != TrackCodeLength) {
+                ShowMessage("挂号" + str + "长度不对，正确长度为：" + TrackCodeLength + "，请重新输入", "等待扫描", false);
+                return;
+            } else {
+
+            }
         }
         var l = $("#ll").combogrid("getValue");
         var s = $("#ww").combobox("getValue");
@@ -206,7 +255,6 @@
                     print(msg.OId);
                 } else {
                     progress = 0;
-
                     ShowMessage(msg.Result, "等待扫描", false);
                 }
             }
@@ -218,6 +266,7 @@
     function Reset() {
         progress = 0;
         txt.value = "";
+        ShowMessage("", "等待扫描", true);
     }
     function ShowMessage(msgInfo, msgStatus, isOk) {
         if (msgInfo != null) {

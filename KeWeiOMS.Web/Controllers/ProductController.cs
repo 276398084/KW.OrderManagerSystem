@@ -181,6 +181,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
                     p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
                     p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
+                    p.ProductAttribute = dt.Rows[i]["产品属性"].ToString();
                     p.Enabled = 1;
                     if (!HasExsit(p.SKU))
                     {
@@ -229,11 +230,36 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         }
 
         [HttpPost]
-        public ActionResult Export(string search)
+        public ActionResult Export(string search, string c)
         {
             try
             {
-                List<ProductType> objList = NSession.CreateQuery("from ProductType " + Utilities.SqlWhere(search))
+                string where = Utilities.SqlWhere(search);
+
+                if (!string.IsNullOrEmpty(c))
+                {
+                    string cs = "";
+                    IList<object> objectes = NSession.CreateSQLQuery(@"with a as(
+select * from ProductCategory where ID=" + c + @"
+union all
+select x.* from ProductCategory x,a
+where x.ParentId=a.Id)
+select Name from a").List<object>();
+                    foreach (object item in objectes)
+                    {
+                        cs += "'" + item + "',";
+                    }
+                    if (cs.Length > 0)
+                    {
+                        cs = cs.Trim(',');
+                    }
+                    if (!string.IsNullOrEmpty(where))
+                        where += " and Category in (" + cs + ")";
+                    else
+                        where = " where Category in (" + cs + ")";
+
+                }
+                List<ProductType> objList = NSession.CreateQuery("from ProductType " + where)
                     .List<ProductType>().ToList();
                 Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
             }
@@ -260,7 +286,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
                     Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
                 }
-               
+
                 List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
                 if (list1.Count > 0)
                     obj.IsZu = 1;
@@ -505,10 +531,11 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                         NSession.Flush();
                         LoggerUtil.GetOrderRecord(orderType, "订单产品属性修改",
                                                   "产品：" + productType.SKU + "状态修改为“" + s + "”，同时订单属性设置为停售订单", CurrentUser, NSession);
-                        orderid += orderType.OrderNo+"  ";
+                        orderid += orderType.OrderNo + "  ";
                         count++;
                     }
-                    PlacardType placard = new PlacardType {CardType="产品",Title=productType.SKU+" 停产" ,Content="相关"+count+"条订单编号： "+orderid,CreateBy="系统自动",CreateOn=DateTime.Now,IsTop=1 };
+                    NSession.CreateQuery("update OrderProductType set IsQue=2 where SKU='" + productType.SKU + "'").UniqueResult();
+                    PlacardType placard = new PlacardType { CardType = "产品", Title = productType.SKU + " 停产", Content = "相关" + count + "条订单编号： " + orderid, CreateBy = "系统自动", CreateOn = DateTime.Now, IsTop = 1 };
                     NSession.Save(placard);
                     NSession.Flush();
 
@@ -553,7 +580,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         }
         public JsonResult ListQ(string q)
         {
-            IList<ProductType> objList = NSession.CreateQuery("from ProductType where SKU like '%" + q + "%'")
+            IList<ProductType> objList = NSession.CreateQuery("from ProductType where Status <>'停产' and SKU like '%" + q + "%'")
                 .SetFirstResult(0)
                 .SetMaxResults(20)
                 .List<ProductType>();
@@ -607,12 +634,12 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             }
             else
             {
-                where = " and SKU in(SELECT SKU FROM ProductIsInfractionType where Isinfraction=1 and Platform='"+infraction+"' ) ";
+                where = " and SKU in(SELECT SKU FROM ProductIsInfractionType where Isinfraction=1 and Platform='" + infraction + "' ) ";
             }
             return where;
         }
 
-        public JsonResult List(int page, int rows, string sort, string order, string search, string infraction = "")
+        public JsonResult List(int page, int rows, string sort, string order, string search, string infraction = "", string c = "")
         {
             string orderby = Utilities.OrdeerBy(sort, order);
             string where = Utilities.SqlWhere(search);
@@ -628,14 +655,34 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             {
                 where += InfractionWhere(infraction);
             }
+            if (!string.IsNullOrEmpty(c))
+            {
+                string cs = "";
+                IList<object> objectes = NSession.CreateSQLQuery(@"with a as(
+select * from ProductCategory where ID=" + c + @"
+union all
+select x.* from ProductCategory x,a
+where x.ParentId=a.Id)
+select Name from a").List<object>();
+                foreach (object item in objectes)
+                {
+                    cs += "'" + item + "',";
+                }
+                if (cs.Length > 0)
+                {
+                    cs = cs.Trim(',');
+                }
+                where += " and Category in (" + cs + ")";
+
+            }
             IList<ProductType> objList = NSession.CreateQuery("from ProductType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<ProductType>();
-                foreach(ProductType item in objList)
-                {
-                    item.Infraction = Infraction(item.SKU);
-                }
+            foreach (ProductType item in objList)
+            {
+                item.Infraction = Infraction(item.SKU);
+            }
             object count = NSession.CreateQuery("select count(Id) from ProductType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
@@ -643,10 +690,19 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
 
         public JsonResult ReP(string p)
         {
-            string ps = p.Replace("\r", "").Trim('\n').Replace("\n", "','");
-            NSession.CreateQuery("update  SKUCodeType set IsOut=1,IsSend=1 where SKU in('" + ps + "') ").ExecuteUpdate();
-            NSession.CreateSQLQuery("update WarehouseStock set Qty=(select COUNT(1) from skucode where SKU=WarehouseStock.SKU and IsSend=0) where SKU  in('" + ps + "')").ExecuteUpdate();
-            return Json(new { IsSuccess = true });
+            string username = GetCurrentAccount().Username;
+            string str = "kelvin,csa,jb";
+            if (str.IndexOf(username) != -1)
+            {
+                string ps = p.Replace("\r", "").Trim('\n').Replace("\n", "','");
+                NSession.CreateQuery("update  SKUCodeType set IsOut=1,IsSend=1 where SKU in('" + ps + "') ").ExecuteUpdate();
+                NSession.CreateSQLQuery("update WarehouseStock set Qty=(select COUNT(1) from skucode where SKU=WarehouseStock.SKU and IsSend=0) where SKU  in('" + ps + "')").ExecuteUpdate();
+                return Json(new { IsSuccess = true });
+            }
+            else
+            {
+                return Json(new { IsSuccess = false });
+            }
         }
 
         public JsonResult ZuList(String Id)
@@ -836,17 +892,17 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
         public JsonResult Record(int id)
         {
             IList<ProductRecordType> obj = NSession.CreateQuery("from ProductRecordType where Oid='" + id + "'").List<ProductRecordType>();
-            return Json(obj.OrderByDescending(p=>p.CreateOn), JsonRequestBehavior.AllowGet);
+            return Json(obj.OrderByDescending(p => p.CreateOn), JsonRequestBehavior.AllowGet);
         }
         public string Infraction(string sku)
         {
-            string str ="";
+            string str = "";
             IList<ProductIsInfractionType> objs = NSession.CreateQuery("from ProductIsInfractionType where SKU='" + sku + "' and Isinfraction=1 ").List<ProductIsInfractionType>();
             foreach (var item in objs)
             {
                 str += item.Platform + "<br/>";
             }
-            if(str=="")
+            if (str == "")
             {
                 str = "否";
             }

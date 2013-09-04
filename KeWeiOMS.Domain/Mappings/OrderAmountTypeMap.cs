@@ -37,6 +37,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.OrderNo).Length(20);
             Map(x => x.OrderExNo).Length(50);
             Map(x => x.AgainCount);
+            Map(x => x.FreightDiscount);
             Map(x => x.SplitCount);
             Map(x => x.TotalFreight);
             Map(x => x.TotalCosts);
@@ -49,6 +50,10 @@ namespace KeWeiOMS.Domain
             Map(x => x.RMB);
             Map(x => x.Profit);
             Map(x => x.CreateOn);
+            Map(x => x.UpdateOn);
+            Map(x => x.ScanningOn);
+            Map(x => x.Enabled);
+            Map(x => x.SId);
             Map(x => x.Status).Length(20);
             Map(x => x.Account).Length(50);
             Map(x => x.Platform).Length(20);

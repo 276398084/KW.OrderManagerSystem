@@ -4,51 +4,51 @@
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","EmailTemplate")',
-            toolbar: '#toolbar',
-            rownumbers: true,
-            fitColumns: true,
-            singleSelect: true,
-            pagination: true,
-            fit: true,
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100],
-            onDblClickRow: function (index, row) {
-
-                var id = getselectedRow();
-                if (id != undefined) {
-                    var ur = '@Url.Action("Details","EmailTemplate")/' + id;
-                    $('#d_dlg').load(ur, function () {
-                        $(this).dialog({
-                            title: '详细内容',
-                            modal: true,
-                            loadingMessage: '正在加载...',
-                            buttons: [{
-                                text: '关闭',
-                                handler: function () {
-                                    $('#d_dlg').dialog('close');
-                                }
-                            }]
-                        });
-                    }).dialog('open');;
+    <script language="javascript" type="text/javascript">
+        $(function() {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "EmailTemplate")',
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                
+                pagination: true,
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100],
+                onDblClickRow: function(index, row) {
+                    var id = getselectedRow();
+                    if (id != undefined) {
+                        var ur = '@Url.Action("Details", "EmailTemplate")/' + id;
+                        $('#d_dlg').load(ur, function() {
+                            $(this).dialog({
+                                title: '详细内容',
+                                modal: true,
+                                loadingMessage: '正在加载...',
+                                buttons: [{
+                                    text: '关闭',
+                                    handler: function() {
+                                        $('#d_dlg').dialog('close');
+                                    }
+                                }]
+                            });
+                        }).dialog('open');
+                        ;
+                    }
                 }
-            }
-
-
+            });
         });
-    });
 
-    //新建
-    function c_dlg() {
-        var url_str = '@Url.Action("Create", "EmailTemplate")';
+        //新建
+
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "EmailTemplate")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
+
         function e_dlg() {
             var id = getselectedRow();
             if (id != undefined) {
@@ -58,14 +58,19 @@
         }
 
         //异步新建提交
+
         function ajaxAdd() {
             formPost('c_form', '@Url.Action("Create", "EmailTemplate")', 'c_dlg', 'dg');
         }
-        //异步修改提交
+
+//异步修改提交
+
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "EmailTemplate")', 'e_dlg', 'dg');
         }
-        //删除
+
+//删除
+
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
@@ -73,68 +78,125 @@
                 delData(url, 'dg');
             }
         }
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
+
+//获取选中行
+
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
             }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
         }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-    function doSearch() {
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        $("#dg").datagrid("load", {
-            search: search
 
-        });
-    }
-</script>
-<div region="center">
-<table id="dg">  
-        <thead>  
-        <tr>
-@*          <th field="Id" width="100">
-                主键
+        function up() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                alert("请选择数据");
+                return;
+            }
+            $.ajax({
+                url: "/EmailTemplate/Up",
+                type: "post",
+                data: "ids=" + s_ids.join(","),
+                success:function () {
+                    alert("修改成功!");
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+
+        function GetC(v) {
+  if(v==1) {
+      return "启用";
+  }
+  if (v == 0) {
+      return "停用";
+  }
+        }
+        
+        function down() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                alert("请选择数据");
+                return;
+            }
+            $.ajax({
+                url: "/EmailTemplate/Down",
+                type: "post",
+                data: "ids=" + s_ids.join(","),
+                success: function () {
+                    alert("修改成功!");
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg">  
+            <thead>  
+                <tr>
+                             <th field="Id" width="60" checkbox="true" >
+                
             </th>
-
+ @*
             <th field="Subject" width="100">
                 主题
             </th>*@
+                     <th field="Enable" width="80" sortable="true" formatter="GetC">
+                        状态
+                    </th>
+                    <th field="Title" width="200" sortable="true">
+                        标题
+                    </th>
 
-            <th field="Title" width="100" sortable="true">
-                标题
-            </th>
-
-            <th field="Content" width="300" sortable="true">
-                内容
-            </th>
+                    <th field="Content" width="300" sortable="true">
+                        内容
+                    </th>
 
 
-    	</tr>
-		</thead>
-		</table>
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true"  onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-        <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick=" c_dlg(); ">新建</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true"  onclick=" e_dlg() ">编辑</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick=" del(); ">删除</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick=" up(); ">启用</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true" onclick=" down(); ">停用</a>  
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'Title'">标题</div>
             <div data-options="name:'Content'">内容</div>
         </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
-    <div id="d_dlg"></div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="d_dlg"></div>
 
-</div>
+    </div>
 </body>

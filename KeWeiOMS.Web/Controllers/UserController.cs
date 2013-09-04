@@ -270,6 +270,14 @@ namespace KeWeiOMS.Web.Controllers
             return Json(objList);
         }
 
+        public JsonResult QQList()
+        {
+
+            IList<UserType> objList = NSession.CreateQuery("from UserType")
+                .List<UserType>();
+            return Json(objList);
+        }
+
         public JsonResult QList2()
         {
             IList<UserType> objList = NSession.CreateQuery("from UserType where DId in (19,24,25,15)")

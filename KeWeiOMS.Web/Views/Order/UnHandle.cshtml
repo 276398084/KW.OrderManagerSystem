@@ -12,6 +12,9 @@
                 nowrap: false,
                 pageSize: 20,
                 height: 500,
+                toolbar:"#toolbar",
+                rownumbers:true,
+                pagination:true,
                 pageList: [20, 40, 60, 80, 100, 200],
                 view: detailview,
                 onDblClickRow: function (i, r) {
@@ -46,6 +49,14 @@
             });
             $('#Platform').combobox("setValue", "ALL");
             $('#Account').combotree("setValue", "ALL");
+            $('#IsLiu').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsLiu').combobox("setValue", "ALL");
         });
 
         //新建
@@ -53,14 +64,9 @@
             var url_str = '@Url.Action("Create", "Order")';
             showdlg(url_str, 'c_dlg', ajaxAdd);
         }
-        $('#Platform').combobox({
-            url: '/Home/Platform',
-            valueField: 'id',
-            textField: 'text',
-            required: true,
-            width: 150,
-            panelHeight: 'auto'
-        });
+    
+       
+        
 
         //编辑框
         function e_dlg() {
@@ -168,32 +174,25 @@
             if (a != "ALL") {
                 search += "Account_es&" + a + "^";
             }
+          
             var b = $('#Platform').combobox("getText");
             if (b != "ALL") {
                 search += "Platform_es&" + b + "^";
             }
-
-
+            var d = $('#IsLiu').combobox("getValue");
+            if (d != "ALL") {
+                if (d == "1") {
+                    search += "IsLiu_si&1^";
+                } else {
+                    search += "IsLiu_ei&0^";
+                   
+                }
+            }
             $("#dg").datagrid("load", {
                 search: search
             });
         }
 
-        function showPrint() {
-            var rows = $('#dg').datagrid('getSelections');
-            var ids = [];
-            for (var i = 0; i < rows.length; i++) {
-                ids.push(rows[i]["OrderNo"]);
-            }
-            jQuery.ajax({
-                url: "/Home/PostData",
-                type: "post",
-                data: "ids=" + ids.join(','),
-                success: function (sss) {
-                    window.open('/Home/PrintSetup/');
-                }
-            });
-        }
         var s_ids = [];
         function showEdit() {
             s_ids = [];
@@ -201,7 +200,6 @@
             for (var i = 0; i < rows.length; i++) {
                 s_ids.push(rows[i]["Id"]);
             }
-
             $('#s_dlg').show();
             $("#s_dlg").dialog({
                 title: '替换',
@@ -230,18 +228,44 @@
             }).dialog('open');
         }
 
+
+        function allocation() {
+            s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if(s_ids.length==0) {
+                alert("请选择一条数据");
+                return;
+            }
+            jQuery.ajax({
+                url: "/Order/EditLogisticsAllocation/",
+                type: "post",
+                data: "ids=" + s_ids.join(','),
+                success: function (sss) {
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+       
+
         function e_order() {
             var id = getselectedRow();
             window.open('@Url.Action("Edit", "Order")/' + id);
         }
 
         function o_vali() {
+            var ids= getselectedRows();
+            if(ids.length==0){
+                return;
+            }
             $('#dg').datagrid("loading");
             jQuery.ajax({
                 url: "/Order/EditOrderVali",
+                data: "ids=" + ids,
                 type: "post",
                 success: function (sss) {
-                    alert(sss);
                     $('#dg').datagrid("reload");
                 }
             });
@@ -253,7 +277,7 @@
                 url: "/Order/EditOrderMerger",
                 type: "post",
                 success: function (sss) {
-                    alert(sss);
+
                     $('#dg').datagrid("reload");
                 }
             });
@@ -276,8 +300,8 @@
         }
     </script>
     <div region="center">
-        <table id="dg" class="easyui-datagrid"
-            toolbar="#toolbar" rownumbers="true" pagination="true">
+        <table id="dg"
+          >
             <thead>
                 <tr>
                     <th field="Id" width="60" checkbox="true"></th>
@@ -311,16 +335,19 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_Meger()">相同卖家合并订单</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showEdit()">修改选中</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="allocation()">划分渠道</a>
 
             平台：
             <input type="text" id="Platform" />
             账户<input type="text" id="Account" />
+            留言:<input type="text" id="IsLiu" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'OrderNo'">订单编号</div>
             <div data-options="name:'OrderExNo'">外部编号</div>
             <div data-options="name:'TId'">流水交易号</div>
+             <div data-options="name:'SKU_OrderProduct'">SKU</div>
             <div data-options="name:'BuyerName'">买家</div>
             <div data-options="name:'BuyerEmail'">买家邮箱</div>
             <div data-options="name:'LogisticMode'">发货方式</div>
@@ -341,7 +368,6 @@
                     idField: 'ECountry',
                     textField: 'ECountry',
                     url: '/Country/ListALL',
-
                     columns: [[
                         { field: 'CCountry', title: '中文', width: 150 },
                         { field: 'ECountry', title: '英文', width: 100 },
@@ -427,7 +453,6 @@
                             <option value="SKU">SKU</option>
                             <option value="LogisticMode">运输方式</option>
                         </select>
-
                     </td>
 
                 </tr>
@@ -445,5 +470,6 @@
 
             </table>
         </div>
+       
     </div>
 </body>

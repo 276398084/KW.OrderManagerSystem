@@ -13,6 +13,10 @@ namespace KeWeiOMS.Web
         /// 总数
         /// </summary>
         public int Qty { get; set; }
+        /// <summary>
+        /// 总数
+        /// </summary>
+        public int SQty { get; set; }
 
         /// <summary>
         /// 总订单数
@@ -32,6 +36,8 @@ namespace KeWeiOMS.Web
         public int NowQty { get; set; }
 
         public int NeedQty { get; set; }
+
+        public int SNeedQty { get; set; }
 
 
     }

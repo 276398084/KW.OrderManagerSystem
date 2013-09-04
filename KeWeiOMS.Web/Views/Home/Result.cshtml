@@ -6,19 +6,36 @@
     $(function () {
         $('#dg').datagrid({
             rownumbers: true,
-            singleSelect:true,
+            singleSelect: true,
             url: '@Url.Action("GetResult", "Home")',
-            });
+        });
     });
+    function showPrint() {
+        var rows = $('#dg').datagrid('getRows');
+        var ids = [];
+        for (var i = 0; i < rows.length; i++) {
+            if (rows[i]["Field1"].length > 0)
+                ids.push(rows[i]["Field1"]);
+        }
+        jQuery.ajax({
+            url: "/Home/PostData",
+            type: "post",
+            data: "ids=" + ids.join(','),
+            success: function (sss) {
+                window.open('/Home/PrintSetup/');
+            }
+        });
+    }
 </script>
-<table id="dg" class="easyui-datagrid">
+<a href="#" class="easyui-linkbutton" iconcls="icon-edit" onclick="showPrint()">打印分包的订单(缺货一键分包使用)</a>
+<table id="dg">
     <thead>
         <tr>
             <th field="Key" width="100">Key
             </th>
-            <th field="Result" width="150">结果
+            <th field="Result" width="250">结果
             </th>
-            <th field="Info" width="200">原因
+            <th field="Info" width="300">原因
             </th>
             <th field="CreateOn" width="200" formatter="getDate">时间
             </th>

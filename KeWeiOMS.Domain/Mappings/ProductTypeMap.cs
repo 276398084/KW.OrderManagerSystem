@@ -39,7 +39,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.Status).Length(10);
             Map(x => x.Weight);
             Map(x => x.TotalWeight);
-
+            Map(x => x.MinWeight);
+            Map(x => x.MaxWeight);
             Map(x => x.Long);
             Map(x => x.Wide);
             Map(x => x.High);
@@ -69,6 +70,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.CreateBy).Length(50);
             Map(x => x.Manager).Length(50);
             Map(x => x.Enabled);
+            Map(x => x.ProductAttribute).Length(100);
         }
     }
 }

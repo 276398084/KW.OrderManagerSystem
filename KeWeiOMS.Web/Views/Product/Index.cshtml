@@ -35,11 +35,10 @@
                 width: 100,
                 panelHeight: 'auto'
             });
-            $('#SearchCategory').combobox({
-                url: '/ProductCategory/PList',
-                valueField: 'id',
-                textField: 'text',
-                width: 100
+            $('#SearchCategory').combotree({
+                url: '/ProductCategory/ParentList',
+          
+                width: 200
             });
             $('#Platform').combobox({
                 url: '/Home/Platform/2',
@@ -71,12 +70,15 @@
             }
             function exportdt() {
                 search = getSearch();
-                $('#dg').datagrid('loading');
+                var SearchCategory = "";
+                if ($('#SearchCategory').combotree("getText") != "根目录") {
+                    SearchCategory = $('#SearchCategory').combotree("getValue") + "";
+                }
                 var postUrl = "/Order/ExportDown/1";
                 $.ajax({
                     url: '@Url.Action("Export", "Product")/',
                     type: 'post',
-                    data: 'search=' + encodeURIComponent(search),
+                    data: 'search=' + encodeURIComponent(search) + "&c=" + SearchCategory,
                     success: function (result) {
                         $.messager.show({
                             title: '提示',
@@ -85,7 +87,7 @@
                             showType: 'slide'
                         });
                         location.href = postUrl;
-                        $('#dg').datagrid('reload');
+                        
                     }
                 });
             }
@@ -125,9 +127,14 @@
                     p = a;
                 }
                 search = getSearch();
+                var SearchCategory="";
+                if ($('#SearchCategory').combotree("getText") != "根目录") {
+                    SearchCategory =  $('#SearchCategory').combotree("getValue") + "";
+                }
                 $("#dg").datagrid("load", {
                     search: search,
-                    infraction: p
+                    infraction: p,
+                    c: SearchCategory
                 });
             }
             function getSearch() {
@@ -139,9 +146,7 @@
                 if ($('#SearchStatus').combobox("getText") != "所有") {
                     search += "Status&" + $('#SearchStatus').combobox("getText") + "^";
                 }
-                if ($('#SearchCategory').combobox("getText") != "所有") {
-                    search += "Category&" + $('#SearchCategory').combobox("getText") + "^";
-                }
+               
                 return search;
             }
             function getSale(v, r, i) {
@@ -226,10 +231,10 @@
                     <th field="PackCoefficient" width="100">包装系数
                     </th>
 
-                    <th field="IsElectronic" width="100" formatter="getTrue" sortable="true">电子
+                    <th field="ProductAttribute" width="100" sortable="true">产品属性
                     </th>
-                    <th field="HasBattery" width="100" formatter="getTrue" sortable="true">电池
-                    </th>
+                    @*<th field="HasBattery" width="100" formatter="getTrue" sortable="true">电池
+                    </th>*@
                     <th field="Location" width="100" sortable="true">库位
                     </th>
                 </tr>
@@ -269,6 +274,8 @@
             <div data-options="iconCls:'icon-edit'" onclick="updateStatus('销售中')">销售中</div>
             <div class="menu-sep"></div>
             <div data-options="iconCls:'icon-edit'" onclick="updateStatus('热卖')">热卖</div>
+             <div class="menu-sep"></div>
+            <div data-options="iconCls:'icon-edit'" onclick="updateStatus('提价销售')">提价销售</div>
         </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>

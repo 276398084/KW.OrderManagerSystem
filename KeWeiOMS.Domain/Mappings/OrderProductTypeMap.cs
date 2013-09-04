@@ -40,6 +40,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Remark).Length(400);
             Map(x => x.Standard).Length(400);
             Map(x => x.Price);
+            Map(x => x.SalePrice);
             Map(x => x.Url).Length(200);
         }
     }

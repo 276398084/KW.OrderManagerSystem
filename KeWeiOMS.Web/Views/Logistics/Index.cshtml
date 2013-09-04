@@ -88,10 +88,10 @@
 
         //编辑框
         function e_dlg() {
-            var url = '@Url.Action("Edit", "Logistics")/' + id;
+            var id = getselectedRow();
             if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-            showdlg(url, 'e_dlg', ajaxEdit)
+                var url = '@Url.Action("Edit", "Logistics")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit);
         }
     }
 
@@ -206,8 +206,8 @@
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
-            @*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
+                   <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+       @*  <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">

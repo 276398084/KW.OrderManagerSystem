@@ -33,7 +33,6 @@
 
     });
     function onSelect1() {
-
         $('#dg').datagrid("load", {
             st: $('#cc').combobox("getValue"),
             et: $('#cc2').combobox("getValue"),
@@ -42,7 +41,6 @@
         });
     }
     function changePlatform(n, o) {
-
         $('#aa').combotree({
             url: '/Home/AccountList/' + n,
             valueField: 'id',

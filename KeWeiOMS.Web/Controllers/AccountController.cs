@@ -30,6 +30,12 @@ namespace KeWeiOMS.Web.Controllers
             {
                 if (IsCreateOk(obj.AccountName, obj.Platform))
                     return Json(new { errorMsg = "此账号已存在！" });
+
+                if (obj.Platform == "SMT")
+                {
+                    if (!string.IsNullOrEmpty(obj.ApiToken) && obj.ApiToken.Trim().Length > 0)
+                        obj.ApiToken = AliUtil.GetToken(obj.ApiToken.Trim());
+                }
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -48,6 +54,45 @@ namespace KeWeiOMS.Web.Controllers
                 return true;
             }
             return false;
+        }
+
+        public JsonResult GetAliLoginUrl()
+        {
+            try
+            {
+                return Json(new { IsSuccess = true, Result = AliUtil.GetAuthUrl() });
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+        }
+
+        public JsonResult GetEbayLoginUrl()
+        {
+            try
+            {
+                string url = "https://signin.ebay.com/ws/eBayISAPI.dll?SignIn&RuName={0}&SessID={1}";
+                string code = EBayUtil.GetSessionID();
+                url = string.Format(url, AppSettingHelper.GetGenericApiContext("US").RuName, code);
+                return Json(new { IsSuccess = true, Result = url, Code = code });
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+        }
+
+        public JsonResult GetEbaySession(string o)
+        {
+            try
+            {
+                return Json(new { IsSuccess = true, Result = EBayUtil.GetToKen(o) });
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
         }
 
         /// <summary>

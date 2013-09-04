@@ -90,6 +90,10 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     obj.ReceiveOn = Convert.ToDateTime("2000-01-01");
                 }
+                if (obj.ReceiveOn < Convert.ToDateTime("2000-01-01"))
+                {
+                    obj.ReceiveOn = Convert.ToDateTime("2000-01-01");
+                }
                 obj.CreateOn = DateTime.Now;
                 obj.BuyOn = DateTime.Now;
                 obj.CreateBy = CurrentUser.Realname;

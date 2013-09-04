@@ -61,14 +61,14 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult OrderCount(DateTime st, DateTime et, string a, string p,string i)
+        public ActionResult OrderCount(DateTime st, DateTime et, string a, string p, string i)
         {
             var sqlWhere = SqlWhere(st, et, a, p);
             string sql =
                 string.Format(
                     "select Account,Count(Id),Platform,Sum(Amount),Min(CurrencyCode) from OrderType {0} group by Account,Platform",
                     sqlWhere);
-            if(!string.IsNullOrEmpty(i))
+            if (!string.IsNullOrEmpty(i))
             {
                 sql += " ,CurrencyCode";
             }
@@ -279,11 +279,23 @@ namespace KeWeiOMS.Web.Controllers
         #region 销售统计
 
         [HttpPost]
-        public ActionResult SellCount(DateTime st, DateTime et, string a, string p, string s)
+        public ActionResult SellCount(DateTime st, DateTime et, string a, string p, string s, int page, int rows)
         {
-            var list = GetSellCount(st, et, a, p, s);
+            var list = GetSellCount(st, et, a, p, s,page,rows);
             List<object> footers = new List<object>();
-            return Json(new { rows = list.OrderByDescending(f => f.Qty), total = list.Count });
+            var sqlWhere = SqlWhere(st, et, a, p, s);
+            if (sqlWhere.Length > 3)
+            {
+                sqlWhere += " and SKU is not null ";
+            }
+            else
+            {
+                sqlWhere = " where SKU is not null ";
+            }
+            object obj = NSession.CreateSQLQuery(string.Format(
+                          "select COUNT(1) from ( select SKU from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU ) as tbl",
+                          sqlWhere)).UniqueResult();
+          return Json(new { rows = list.OrderByDescending(f => f.Qty), total = obj });
         }
         public JsonResult GetOrder(string id)
         {
@@ -340,7 +352,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string s)
+        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string s, int page=0, int rows=0)
         {
             var sqlWhere = SqlWhere(st, et, a, p, s);
             if (sqlWhere.Length > 3)
@@ -354,8 +366,30 @@ namespace KeWeiOMS.Web.Controllers
             IList<object[]> objs =
                 NSession.CreateSQLQuery(
                     string.Format(
-                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU ",
-                        sqlWhere)).List<object[]>();
+                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
+                        sqlWhere))
+              .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows).
+            List<object[]>();
+            if (page == 0)
+            {
+                objs =
+                NSession.CreateSQLQuery(
+                    string.Format(
+                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
+                        sqlWhere)).            
+            List<object[]>();
+            }
+            else{
+                objs =
+                NSession.CreateSQLQuery(
+                    string.Format(
+                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
+                        sqlWhere))
+              .SetFirstResult(rows * (page - 1))
+                .SetMaxResults(rows).
+            List<object[]>();
+            }
             string sku = string.Empty;
             List<ProductData> list = new List<ProductData>();
             foreach (object[] objectse in objs)
@@ -408,6 +442,88 @@ namespace KeWeiOMS.Web.Controllers
             Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable(list));
             return Json(new { IsSuccess = true });
         }
+
+        [HttpPost]
+        public ContentResult GetSaleChart(string s, DateTime st, string p)
+        {
+
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("<chart caption='{0} 的销售记录({1}-{2})' subCaption='销量'  showLabels='1' showColumnShadow='1' animation='1' showAlternateHGridColor='1' AlternateHGridColor='ff5904' divLineColor='ff5904' divLineAlpha='20' alternateHGridAlpha='5' canvasBorderColor='666666' baseFontColor='666666'  lineAlpha='85' showValues='1' rotateValues='0' valuePosition='auto' canvaspadding='8' lineThickness='3'>");
+            //sb.AppendLine("<chart palette='2'  caption='{0} 的销售记录({1}-{2})' subCaption='销量' caption='Sales Comparison' showValues='0' numVDivLines='10' drawAnchors='0' numberPrefix='$' divLineAlpha='30' alternateHGridAlpha='20'  setAdaptiveYMin='1'  canvaspadding='10' labelDisplay='ROTATE'>");
+
+            DateTime et = st.AddDays(15);
+            List<string> strData = new List<string>();
+            StringBuilder sb2 = new StringBuilder();
+            DateTime date = st;
+            sb2.Append("select {0} as 'Y',");
+            if (et > DateTime.Now)
+            {
+                et = DateTime.Now;
+            }
+            while (date <= et)
+            {
+                string week = GetWeek("zh", date);
+                strData.Add(date.ToString("MM.dd") + "(" + week + ")");
+
+                sb2.Append(" SUM(case  when convert(varchar(10),[CreateOn],120)='" + date.ToString("yyyy-MM-dd") + "' then  rcount else 0 end  ) as '" + date.ToString("MM.dd") + "(" + week + ")' ,");
+                date = date.AddDays(1);
+            }
+            sb2 = sb2.Remove(sb2.Length - 1, 1);
+            sb2.Append("  from  ( select {0} ,convert(varchar(10),[CreateOn],120) [CreateOn] ,sum(op.Qty) as 'rcount'  from Orders O left join OrderProducts OP on O.Id=OP.OId where [CreateOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' and SKU='{1}' {2}  group by {0} ,convert(varchar(10),[CreateOn],120)) as tbl1  group by {0} ");
+
+            string sql = "";
+            if (p != "ALL")
+            {
+                sql = string.Format(sb2.ToString(), "Account", s, " and Platform='" + p + "'");
+            }
+            else
+            {
+                sql = string.Format(sb2.ToString(), "Platform", s, "");
+            }
+            IList<object[]> objectes = NSession.CreateSQLQuery(sql).List<object[]>();
+            sb.AppendLine("<categories>");
+            foreach (string foo in strData)
+            {
+                sb.Append("<category label='" + foo + "'/>");
+            }
+            //sb = sb.Remove(sb.Length - 1, 1);
+            sb.AppendLine("</categories>");
+            foreach (object[] objs in objectes)
+            {
+                sb.Append("<dataset lineThickness='3' seriesName=\"" + objs[0] + "\">");
+
+                for (int i = 1; i < objs.Length; i++)
+                {
+                    sb.Append("<set value='" + objs[i] + "' />");
+                }
+
+
+                sb.AppendLine("</dataset>");
+            }
+
+            foreach (object[] objs in objectes)
+            {
+                sb.Append("<dataset lineThickness='3' seriesName='ALL'>");
+
+                for (int i = 1; i < objs.Length; i++)
+                {
+                    int n = 0;
+                    for (int j = 0; j < objectes.Count; j++)
+                    {
+                        n += Convert.ToInt32(objectes[j][i]);
+                    }
+                    sb.Append("<set value='" + n + "' />");
+                }
+                sb.AppendLine("</dataset>");
+                break;
+
+            }
+            sb.AppendLine("</chart>");
+            return Content(string.Format(sb.ToString(), s, st.ToShortDateString(), et.ToShortDateString()));
+
+        }
         #endregion
 
         #region 缺货统计
@@ -417,7 +533,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult QueData(string order, string sort, string s, string p, string a)
+        public ActionResult QueData(string order, string sort, string s, string p, string a, string c)
         {
             string orderby = "";
             if (!string.IsNullOrEmpty(order) && !string.IsNullOrEmpty(sort))
@@ -430,15 +546,42 @@ namespace KeWeiOMS.Web.Controllers
             {
                 s = " and " + s;
             }
+            string sqlss = "";
+            if (!string.IsNullOrEmpty(c))
+            {
+                string cs = "";
+                IList<object> objectes = NSession.CreateSQLQuery(@"with a as(
+select * from ProductCategory where ID=" + c + @"
+union all
+select x.* from ProductCategory x,a
+where x.ParentId=a.Id)
+select Name from a").List<object>();
+                foreach (object item in objectes)
+                {
+                    cs += "'" + item + "',";
+                }
+                if (cs.Length > 0)
+                {
+                    cs = cs.Trim(',');
+                }
+                sqlss = " where OP.SKU in (select SKU from Products where Category in (" + cs + "))";
 
-            IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * ,(Qty-BuyQty) as NeedQty,(select COUNT(Id) from SKUCode where IsOut=0 and SKUCode.SKU=tbl.SKU) as UnPeiQty from (
-select SKU,SUM(Qty) as Qty,MIN(O.CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty-DaoQty),0) from PurchasePlan where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty,MIN(OOR.CreateOn) as Field1 from Orders O left join OrderProducts OP On O.Id=OP.OId left join OrderOutRecord OOR on o.Id=OOR.OId where O.IsOutOfStock=1 and O.Enabled=1 and O.Status<>'作废订单' and  O.Status<>'已发货' and OP.IsQue=1 {0} group by SKU,Standard
-) as tbl {1}", s, orderby)).List<object[]>();
-
+            }
+            IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * from (
+select *,(Qty-BuyQty-UnPeiQty) as NeedQty,(SQty-BuyQty-UnPeiQty) as SNeedQty from( select * ,(select COUNT(Id) from SKUCode where IsOut=0 and SKUCode.SKU=tbl1.SKU) as UnPeiQty,
+isnull((select SUM(Qty) from   Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and O.Enabled=1 and O.Status in ('已处理','待拣货') and OP.IsQue=1 and OP.SKU=tbl1.SKU),0) as 'SQty'
+from (
+select OP.SKU,SUM(OP.Qty) as Qty,MIN(O.CreateOn) as MinDate,P.Standard,
+(select isnull(SUM(Qty-DaoQty),0) from PurchasePlan 
+where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty
+from Orders O left join OrderProducts OP On O.Id=OP.OId 
+left join Products P on OP.SKU=P.SKU 
+where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and OP.SKU is not null {0} group by OP.SKU,P.Standard)
+ as tbl1 ) as tbl2 ) as tbl3 where SQty>0 or (Qty-UnPeiQty)>0 {1} {2}", s, sqlss, orderby)).List<object[]>();
             List<QueCount> list = new List<QueCount>();
             foreach (object[] objectse in objs)
             {
-                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), MinDate = Convert.ToDateTime(objectse[2]), BuyQty = Utilities.ToInt(objectse[4]), NeedQty = Utilities.ToInt(objectse[6]), UnPeiQty = Utilities.ToInt(objectse[7]) };
+                QueCount oc = new QueCount { SKU = objectse[0].ToString(), Qty = Utilities.ToInt(objectse[1]), MinDate = Convert.ToDateTime(objectse[2]), BuyQty = Utilities.ToInt(objectse[4]), NeedQty = Utilities.ToInt(objectse[7]), SNeedQty = Utilities.ToInt(objectse[8]), UnPeiQty = Utilities.ToInt(objectse[5]), SQty = Utilities.ToInt(objectse[6]) };
                 if (objectse[3] is DBNull || objectse[3] == null)
                 {
                 }
@@ -446,32 +589,64 @@ select SKU,SUM(Qty) as Qty,MIN(O.CreateOn) as MinDate,isnull(Standard,0) as Stan
                 {
                     oc.Standard = objectse[3].ToString();
                 }
-                if (!(objectse[5] is DBNull) && !(objectse[5] == null))
+                if (!(objectse[2] is DBNull) && !(objectse[2] == null))
                 {
-                    oc.Field1 = objectse[5].ToString();
+                    oc.Field1 = objectse[2].ToString();
                 }
-                
-                oc.NeedQty -= oc.UnPeiQty;
+                //oc.NeedQty -= oc.UnPeiQty;
                 if (oc.NeedQty <= 0)
                 {
                     oc.NeedQty = 0;
                 }
-
+                if (oc.SNeedQty <= 0)
+                {
+                    oc.SNeedQty = 0;
+                }
                 list.Add(oc);
             }
 
             return Json(list);
         }
 
-        public JsonResult ExportQue(string s)
+        public JsonResult ExportQue(string s, string p, string a, string c)
         {
-            if (s != null)
+            s = SqlWhere(a, p, s, "");
+            if (s.Length > 0)
             {
-                s = " and OP.SKU like '%" + s + "%'";
+                s = " and " + s;
             }
-            string sql = string.Format(@"select * ,(Qty-BuyQty) as NeedQty from (
-select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standard,(select isnull(SUM(Qty),0) from PurchasePlan where SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty from Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and  O.Status<>'作废订单' and OP.IsQue=1 and O.Enabled=1 {0} group by SKU,Standard
-) as tbl", s);
+            string sqlss = "";
+            if (!string.IsNullOrEmpty(c))
+            {
+                string cs = "";
+                IList<object> objectes = NSession.CreateSQLQuery(@"with a as(
+select * from ProductCategory where ID=" + c + @"
+union all
+select x.* from ProductCategory x,a
+where x.ParentId=a.Id)
+select Name from a").List<object>();
+                foreach (object item in objectes)
+                {
+                    cs += "'" + item + "',";
+                }
+                if (cs.Length > 0)
+                {
+                    cs = cs.Trim(',');
+                }
+                sqlss = " where OP.SKU in (select SKU from Products where Category in (" + cs + "))";
+
+            }
+            string sql = string.Format(@"select * from (
+select *,(Qty-BuyQty-UnPeiQty) as NeedQty,(SQty-BuyQty-UnPeiQty) as SNeedQty from( select * ,(select COUNT(Id) from SKUCode where IsOut=0 and SKUCode.SKU=tbl1.SKU) as UnPeiQty,
+isnull((select SUM(Qty) from   Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and O.Enabled=1 and O.Status in ('已处理','待拣货') and OP.IsQue=1 and OP.SKU=tbl1.SKU),0) as 'SQty'
+from (
+select OP.SKU,SUM(OP.Qty) as Qty,MIN(O.CreateOn) as MinDate,P.Standard,
+(select isnull(SUM(Qty-DaoQty),0) from PurchasePlan 
+where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty
+from Orders O left join OrderProducts OP On O.Id=OP.OId 
+left join Products P on OP.SKU=P.SKU 
+where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and OP.SKU is not null {0} group by OP.SKU,P.Standard)
+ as tbl1 ) as tbl2 ) as tbl3 where SQty>0 or (Qty-UnPeiQty)>0 {1} ", s, sqlss);
 
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
@@ -486,7 +661,6 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
 
         public ActionResult PurchaseStatistcs(int Id)
         {
-
             //Id ：1为 三天未采购 2为5天未到货
             IList<PurchasePlanType> list = new List<PurchasePlanType>();
             if (Id == 1)
@@ -498,7 +672,6 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
                 list = NSession.CreateQuery("from PurchasePlanType where Status in ('已发货','部分发货') and  BuyOn <=dateadd(day,-5,GETDATE())").List<PurchasePlanType>();
             }
             List<object> footers = new List<object>();
-
             return Json(new { rows = list.OrderBy(f => f.BuyOn), total = list.Count });
         }
 
@@ -512,7 +685,6 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
                 case 1:
                     orderTypes = NSession.CreateQuery("from OrderType where Status='已处理' and IsOutOfStock=0 and CreateOn<'" + dt.AddDays(-1).ToString("yyyy/MM/dd HH:mm:ss") + "'").List<OrderType>();
                     break;
-
                 case 2:
                     orderTypes = NSession.CreateQuery("from OrderType where Status='待包装' and IsOutOfStock=0 and CreateOn<'" + dt.AddHours(-12).ToString("yyyy/MM/dd HH:mm:ss") + "'").List<OrderType>();
                     break;
@@ -524,11 +696,9 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             return Json(new { rows = orderTypes.OrderBy(f => f.CreateOn), total = orderTypes.Count });
         }
 
-
         private string SqlWhere(DateTime st, DateTime et, string a, string p, string ss = "")
         {
-            string sqlWhere = " where Status<>'待处理' and IsSplit=0 and Enabled=1 and IsRepeat=0 and CreateOn between '" + st.ToString("yyyy/MM/dd 00:00:00") + "' and '" +
-                              et.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' and";
+            string sqlWhere = " where Status<>'待处理' and MId=0 and Enabled=1 and CreateOn between '" + st.ToString("yyyy/MM/dd 00:00:00") + "' and '" + et.AddDays(1).ToString("yyyy/MM/dd 00:00:00") + "' and";
             sqlWhere = SqlWhere(a, p, ss, sqlWhere);
             return sqlWhere;
         }
@@ -546,7 +716,7 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
             }
             if (!string.IsNullOrEmpty(ss) && ss != "ALL")
             {
-                sqlWhere += " SKU like '%" + ss + "%' and";
+                sqlWhere += " OP.SKU like '%" + ss + "%' and";
             }
             if (sqlWhere.Length > 4)
                 sqlWhere = sqlWhere.Substring(0, sqlWhere.Length - 3);
@@ -839,13 +1009,13 @@ select SKU,SUM(Qty) as Qty,MIN(CreateOn) as MinDate,isnull(Standard,0) as Standa
         {
             IList<AmountCount> sores = new List<AmountCount>();
             string where = Where(st, et, p, a);
-            IList<object[]> obj = NSession.CreateQuery("select Account,Count(Account),sum(Amount) from RefundAmountType " + where+" group by Account").List<object[]>();
+            IList<object[]> obj = NSession.CreateQuery("select Account,Count(Account),sum(Amount) from RefundAmountType " + where + " group by Account").List<object[]>();
             foreach (var item in obj)
             {
                 string account = item[0].ToString();
-                int count =Convert.ToInt32(item[1]);
+                int count = Convert.ToInt32(item[1]);
                 decimal qcount = Convert.ToDecimal(item[2]);
-                sores.Add(new AmountCount { Account = account, Count = count ,Qcount=qcount});
+                sores.Add(new AmountCount { Account = account, Count = count, Qcount = qcount });
             }
             return Json(new { rows = sores.OrderByDescending(x => x.Count) });
         }

@@ -231,7 +231,7 @@
                 });
      }
      function getSearch() {
-         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^type&邮件记事^";
          var r = $('#reason').combobox("getText");
          if (r != "ALL" && r != "") {
              search += "DisputeCategory&"+ r + "^";
@@ -282,20 +282,19 @@
 
      }
     function todispute(value) {
-       $.ajax({
-           url: '@Url.Action("ToDispute","Dispute")/' + value,
-           success: function (result) {
-               if (result) {
-                   if (result.IsSuccess) {
-                       alert("操作成功");
-                       $('#dg').datagrid('reload');
-                   }
-                   else {
-                       alert("操作成功" + result.ErrorMsg);
-                   }
-               }
-           }
-        })
+        $.ajax({
+            url: '@Url.Action("ToDispute","Dispute")/' + value,
+            success: function(result) {
+                if (result) {
+                    if (result.IsSuccess) {
+                        alert("操作成功");
+                        $('#dg').datagrid('reload');
+                    } else {
+                        alert("操作成功" + result.ErrorMsg);
+                    }
+                }
+            }
+        });
     }
     function changePlatform(n, o) {
         $('#aa').combotree({

@@ -233,7 +233,7 @@
                 });
      }
      function getSearch() {
-         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^type&纠纷^";
          var r = $('#reason').combobox("getText");
          if (r != "ALL" && r != "") {
              search += "DisputeCategory&"+ r + "^";

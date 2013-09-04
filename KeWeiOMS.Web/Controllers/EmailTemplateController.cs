@@ -27,6 +27,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
+                obj.Enable = 1;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -62,6 +63,23 @@ namespace KeWeiOMS.Web.Controllers
             return View(obj);
         }
 
+       [HttpPost]
+        public ActionResult Up(string ids)
+        {
+         
+           NSession.CreateSQLQuery("update EmailTemplate set Enable=1 where Id in(" + ids + ")").UniqueResult();
+           NSession.Flush();
+            return Json(new { IsSuccess = true  });
+        }
+       [HttpPost]
+       public ActionResult Down(string ids)
+       {
+        
+           NSession.CreateSQLQuery("update EmailTemplate set Enable=0 where Id in(" + ids + ")").UniqueResult();
+           NSession.Flush();
+           return Json(new { IsSuccess = true });
+       }
+
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(EmailTemplateType obj)
@@ -79,6 +97,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true  });
 
         }
+
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)

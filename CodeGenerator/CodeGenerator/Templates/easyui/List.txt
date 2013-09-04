@@ -43,7 +43,6 @@
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
-
                 var url = '@Url.Action("Delete", "<#ControllerRootName#>")/' + id;
                 alert(1);
                 delData(url, 'dg');

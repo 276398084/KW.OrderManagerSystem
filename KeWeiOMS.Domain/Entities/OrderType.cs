@@ -66,6 +66,11 @@ namespace KeWeiOMS.Domain
         public virtual int IsLiu { get; set; }
 
         /// <summary>
+        /// 是否上传到平台
+        /// </summary>
+        public virtual int IsUpload { get; set; }
+
+        /// <summary>
         /// 问题订单
         /// </summary>
         public virtual int IsError { get; set; }
@@ -101,6 +106,11 @@ namespace KeWeiOMS.Domain
         public virtual int IsRepeat { get; set; }
 
         /// <summary>
+        /// 是否可以拆分订单
+        /// </summary>
+        public virtual int IsCanSplit { get; set; }
+
+        /// <summary>
         /// Enabled
         /// </summary>
         public virtual int Enabled { get; set; }
@@ -115,10 +125,26 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual double Amount { get; set; }
 
+
+        public virtual String OrderCurrencyCode { get; set; }
+
         /// <summary>
         /// 总金额
         /// </summary>
         public virtual double OrderFees { get; set; }
+
+
+        /// <summary>
+        /// 货币
+        /// </summary>
+        public virtual String OrderCurrencyCode2 { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual double OrderFees2 { get; set; }
+
+
+
 
         /// <summary>
         /// 总金额

@@ -22,7 +22,7 @@
                 if (type == 1) {
                     formPost('c_Import', '@Url.Action("ImportAmount", "Order")');
                 } else {
-                    formPost('c_Import', '@Url.Action("Import", "Order")',null,null,null,'@Url.Action("Result", "Home")');
+                    formPost('c_Import', '@Url.Action("Import", "Order")', null, null, null, '@Url.Action("Result", "Home")');
                 }
                 $('#c_Import').clear();
             }
@@ -77,6 +77,8 @@
         $('#Account').combotree("setValue", "ALL");
         $('#Platform2').combobox("setValue", "LT");
         $('#Account2').combotree("setValue", "ALL");
+        $('#et').datebox("setValue", getStartDate(-1));
+        $('#st').datebox("setValue", getStartDate(3));
     });
 
     function changePlatform2(n, o) {
@@ -120,11 +122,43 @@
         $('#up_file2').uploadify('upload', '*');
     }
 
-    function Synchronous() {
-        formPost('c_Synchronous', '@Url.Action("Synchronous", "Order")',null, null, null, '@Url.Action("Result", "Home")');
-        $('c_Synchronous').clear();
+    function closeLoad() {
+        $("#tt").tabs("loaded");
     }
- (function () {
+
+    function Synchronous() {
+        $("#tt").tabs("loading", "导入中。。。");
+        formPost2('c_Synchronous', '@Url.Action("Synchronous", "Order")', '@Url.Action("Result", "Home")');
+
+    }
+
+    function formPost2(form, url, r) {
+        $('#' + form).form('submit', {
+            url: url,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                result = eval('(' + result + ')');
+                if (result.IsSuccess) {
+                    alert("操作成功");
+                } else {
+                    if (result.ErrorMsg)
+                        alert("保存失败!" + result.ErrorMsg);
+                    else {
+                        alert("保存失败!");
+                    }
+                }
+                if (result.Info) {
+                    closeLoad();
+                    window.open(r);
+
+
+                }
+            }
+        });
+    }
+    (function () {
         $.extend($.fn.tabs.methods, {
             //显示遮罩  
             loading: function (jq, msg) {
@@ -156,7 +190,7 @@
         @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { id = "c_Import" }))
         {
            
-            <table  class="dv-table" border="0" style="width: 400px; height: 250px;">
+            <table class="dv-table" border="0" style="width: 400px; height: 250px;">
                 <tr>
                     <td>平台:</td>
                     <td>

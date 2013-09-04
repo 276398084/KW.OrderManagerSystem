@@ -10,7 +10,7 @@ namespace KeWeiOMS.Domain
 
     /// <summary>
     /// AccountEmailType
-    /// 账户邮件
+    /// 账户件邮
     /// 
     /// 修改纪录
     /// 

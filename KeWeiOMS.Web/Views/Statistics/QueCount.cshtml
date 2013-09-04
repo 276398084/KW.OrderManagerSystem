@@ -17,6 +17,10 @@
             onChange: changePlatform
         });
         $('#pp').combobox("setValue", "ALL");
+        $('#SearchCategory').combotree({
+            url: '/ProductCategory/ParentList',
+            width: 200
+        });
     });
     function changePlatform(n, o) {
         $('#aa').combotree({
@@ -32,44 +36,110 @@
         $('#dg').datagrid("load", {
             s: $('#cc').val(),
             p: $('#pp').combobox("getText"),
-            a: $('#aa').combobox("getText")
+            a: $('#aa').combobox("getText"),
+            c: $('#SearchCategory').combotree("getValue")
         });
     }
 
+    function work(v, r) {
+        return '<a href="javascript:void(0);" onclick="showPlan(\'' + r.SKU + '\',\'' + r.NeedQty + '\')">采购</a>';
+    }
+
+    function showPlan(v, q) {
+        c_dlg(v, q);
+    }
+
+    //异步新建提交
+    function ajaxAdd() {
+        $('#c_form').form('submit', {
+            url: '@Url.Action("Create", "PurchasePlan")',
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (msg) {
+                var result = $.parseJSON(msg);
+                if (!result.IsSuccess) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存失败:' + result.ErrorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                } else {
+                    $('#c_dlg').dialog('close');
+                    $('#dg').datagrid('reload');
+                    $.messager.show({
+                        title: '提示',
+                        msg: '保存成功',
+                        timeout: 2000,
+                        showType: 'slide'
+                    });
+                }
+            }
+        });
+    }
+    function c_dlg(v, q) {
+      
+        var url_str = '@Url.Action("CreateByW", "PurchasePlan")/' + v;
+        $('#c_dlg').load(url_str, function () {
+            $(this).dialog({
+                title: '新建',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        ajaxAdd();
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#c_dlg').dialog('close');
+                    }
+                }]
+            });
+            $("#c_Qty").val(q);
+        }).dialog('open');
+    }
+
+
     function ExportOrder() {
-        $('#dg').datagrid("loading");
         var postUrl = "/Order/ExportDown/1";
         jQuery.ajax({
             url: "/Statistics/ExportQue",
             type: "post",
-            data: "s=" + $('#cc').val(),
+            data: "s=" + $('#cc').val() + "&p=" + $('#pp').combobox("getText") + "&a=" + $('#aa').combobox("getText") + "&c=" + $('#SearchCategory').combotree("getValue"),
             success: function (sss) {
                 location.href = postUrl;
-                $('#dg').datagrid("reload");
             }
         });
     }
 </script>
 
-<table id="dg" title="缺货统计" style="width: 1200px; height: 500px" toolbar="#toolbar"
-    singleselect="true" fitcolumns="true" rownumbers="true">
+<table id="dg" title="缺货统计" style="width: 1100px; height: 500px" toolbar="#toolbar"
+    singleselect="true" rownumbers="true">
     <thead>
         <tr>
+            <th width="100px"  formatter="work">操作 </th>
             <th field='SKU' sortable="true" width="100px">SKU</th>
-            <th field='Qty' sortable="true" width="100px">缺货数量</th>
+            <th field='Qty' sortable="true" width="100px"><b>缺货(预)</b></th>
+            <th field='SQty' sortable="true" width="100px">缺货(扫)</th>
             <th field='UnPeiQty' sortable="true" width="100px">未配货</th>
-
-            <th field='MinDate' sortable="true" width="100px" formatter="getDate">最早时间</th>
-            <th field='Field1' sortable="true" width="100px" >扫描时间</th>
             <th field='BuyQty' sortable="true" width="100px">已经购买数</th>
-            <th field='NeedQty' sortable="true" width="100px">还需要购买数</th>
+            <th field='NeedQty' sortable="true" width="100px">采购(预)</th>
+            <th field='SNeedQty' sortable="true" width="100px">采购(扫)</th>
+            <th field='MinDate' sortable="true" width="160px" formatter="getDate">最早时间</th>
+        
         </tr>
     </thead>
 </table>
 <div id="toolbar">
     平台<input id="pp" type="text">
     账户<input id="aa" type="text">
-    SKU<input type="text" id="cc" />
+    分类<input type="text" id="SearchCategory" >
+    SKU<input type="text" id="cc" >
     <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="doSearch();">查询</a>
     <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="ExportOrder();">导出</a>
 </div>
+<div id="c_dlg"></div>

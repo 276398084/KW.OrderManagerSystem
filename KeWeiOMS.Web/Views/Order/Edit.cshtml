@@ -243,7 +243,7 @@
         formPost('e_form', '@Url.Action("Edit", "Order")');
     }
     function splitOrder(x) {
-
+        $('#divm').hide();
         if (x == 0) {
             if ("@Model.Status" == "已处理" || "@Model.Status" == "待拣货") {
                 showProduct("缺货拆分--选择产品", function () {
@@ -291,10 +291,17 @@
 
     function reOrder() {
         $('#dg_p').datagrid({ closed: false });
+        $('#divm').show();
         showProduct("重发", function () {
             if (endEditing1()) {
                 var effectRow = new Object();
                 effectRow["o"] = '@ViewData["id"]';
+                effectRow["m"] = $('#m').val();
+                if ($('#m').val() == "") {
+                    alert("请输入重发原因！");
+                    return;
+                }
+               
                 effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
                 $.post("/Order/EditReOrder/", effectRow, function (rsp) {
                     $('#dlg').dialog('close');
@@ -307,6 +314,7 @@
                 });
             }
         });
+        //$('#divm').hide();
     }
 
     function showProduct(title, handle) {
@@ -315,6 +323,7 @@
             width: 700,
             onClickRow: onClickRow1
         });
+       
         $('#dlg').dialog({
             width: 750,
             title: title,
@@ -373,8 +382,11 @@
     <a href="#" class="easyui-linkbutton" onclick="addOrder();">保存</a>  
     <a href="#" class="easyui-linkbutton" onclick="splitOrder(0);">缺货拆分</a>  
     <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">发货拆分</a>  
-    <a href="#" class="easyui-linkbutton" onclick="reOrder();">重发</a>  
-    
+    <a href="#" class="easyui-linkbutton" onclick="reOrder();">新建重发订单</a>@*  
+    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">重新发货</a>
+    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">标记作废</a>
+    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">标记正常</a>*@
+
     <fieldset>
         <legend>订单信息</legend>
         <table class="editForm" style="height: 150px">
@@ -504,8 +516,6 @@
                     </td>
                     <td></td>
                     <td>
-
-
                         @Html.HiddenFor(model => model.AddressId, new { @id = "e_AddressId" })
                     </td>
                 </tr>
@@ -670,5 +680,6 @@
             </tr>
         </thead>
     </table>
+    <div id="divm"><h3>重发原因:</h3><textarea id="m" rows="3" style="width:700px;"></textarea></div>
 </div>
 

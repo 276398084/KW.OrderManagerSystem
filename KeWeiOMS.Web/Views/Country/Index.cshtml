@@ -4,7 +4,7 @@
 }
 <body class="easyui-layout">
     <script type="text/javascript">
-        $(function () {
+        $(function() {
             $('#dg').datagrid({
                 url: '@Url.Action("List", "Country")',
                 toolbar: '#toolbar',
@@ -20,12 +20,14 @@
         });
 
         //新建
+
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Country")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
+
         function e_dlg() {
             var id = getselectedRow();
             if (id != undefined) {
@@ -35,14 +37,19 @@
         }
 
         //异步新建提交
+
         function ajaxAdd() {
             formPost('c_form', '@Url.Action("Create", "Country")', 'c_dlg', 'dg');
         }
-        //异步修改提交
+
+//异步修改提交
+
         function ajaxEdit() {
             formPost('e_form', '@Url.Action("Edit", "Country")', 'e_dlg', 'dg');
         }
-        //删除
+
+//删除
+
         function del() {
             var id = getselectedRow();
             if (id != undefined) {
@@ -51,34 +58,53 @@
             }
         }
 
-            //获取选中行
-            function getselectedRow() {
-                var row = $('#dg').datagrid('getSelected');
-                if (row != undefined) {
-                    if (row.hasOwnProperty('Id')) {
-                        var id = row['Id'];
-                        return id;
-                    }
+        //获取选中行
+
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
                 }
-                $.messager.show({
-                    title: '提示',
-                    msg: '请选择行',
-                    timeout: 3000,
-                    showType: 'slide'
-                });
-                return (undefined);
             }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
 
-            function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                $("#dg").datagrid("load", {
-                    search: search
-                });
-            }
-            function ShowAdvanced() {
-                showSrarch('@Url.Action("Search", "NewGuide")', 's_dlg', 'dg');
-            }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
 
+      
+
+        function toExcel() {
+            search = getSearch();
+            $('#dg').datagrid('loading');
+            var postUrl = "/Order/ExportDown/1";
+            $.ajax({
+                url: '@Url.Action("ToExcel", "Country")/',
+                type: 'post',
+                success: function(result) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.ErrorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                    location.href = postUrl;
+                    $('#dg').datagrid('reload');
+                }
+            });
+        }
     </script>
     <div region="center">
         <table id="dg">
@@ -94,9 +120,9 @@
             </thead>
         </table>
         <div id="toolbar">
-            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick=" c_dlg(); ">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick=" e_dlg() ">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick=" del(); ">删除</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">

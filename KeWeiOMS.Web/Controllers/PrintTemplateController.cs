@@ -63,10 +63,28 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
+       
+        public ActionResult IsEnabled(string ids,int i)
+        {
+
+            try
+            {
+                NSession.CreateSQLQuery("update PrintTemplate set Enable="+i+" where Id in("+ids+")");
+                NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true });
+
+        }
+
+
+        [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(PrintTemplateType obj)
         {
-
             try
             {
                 NSession.Update(obj);

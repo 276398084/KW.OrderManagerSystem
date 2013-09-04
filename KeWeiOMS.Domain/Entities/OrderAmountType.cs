@@ -122,6 +122,11 @@ namespace KeWeiOMS.Domain
         public virtual double Profit { get; set; }
 
         /// <summary>
+        /// FreightDiscount
+        /// </summary>
+        public virtual double FreightDiscount { get; set; }
+
+        /// <summary>
         /// 状态
         /// </summary>
         public virtual String Status { get; set; }
@@ -147,5 +152,25 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual DateTime CreateOn { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual DateTime ScanningOn { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual DateTime UpdateOn { get; set; }
+
+        /// <summary>
+        /// 结算ID
+        /// </summary>
+        public virtual int SId { get; set; }
+
+
+        /// <summary>
+        /// 启用
+        /// </summary>
+        public virtual int Enabled { get; set; }
     }
 }

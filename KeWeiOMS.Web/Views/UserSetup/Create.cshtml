@@ -1,0 +1,61 @@
+﻿@model KeWeiOMS.Domain.UserSetupType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#c_SetupID').combobox({
+            url: '/Home/GetRoleEnum/',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 200
+        });
+        $('#c_UId').combobox({
+            url: '/User/QQList/',
+            valueField: 'Id',
+            textField: 'Realname',
+            required: true,
+            width: 200
+
+        });
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "UserSetup", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SetupID,"角色:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SetupID,new{@id="c_SetupID"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UId,"指定人员:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UId,new{@id="c_UId"})
+		</td>
+	</tr>
+
+
+
+
+</table>
+</fieldset>
+}

@@ -104,7 +104,6 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<LogisticsAreaCountryType>();
-
             object count = NSession.CreateQuery("select count(Id) from LogisticsAreaCountryType ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }
@@ -116,14 +115,14 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
         [HttpPost]
-        public JsonResult GetUnCountryByAreaCode(string sort, string order, int id)
+        public JsonResult GetUnCountryByAreaCode(string sort, string order, int id, string s)
         {
             string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = "order by " + sort + " " + order;
             }
-            IList<object[]> list = NSession.CreateSQLQuery("select Id,CCountry,ECountry,CountryCode,(select AreaName from LogisticsArea where ID=(select top 1 AreaCode from LogisticsAreaCountry la where c.Id= la.CountryCode and la.AreaCode in (select ID from LogisticsArea where LId =(select LId from LogisticsArea where LogisticsArea.Id=:cid)))) as AreaNane from Country c where c.Id not in (select CountryCode from LogisticsAreaCountry where AreaCode=:cid)" + orderby)
+            IList<object[]> list = NSession.CreateSQLQuery("select Id,CCountry,ECountry,CountryCode,(select AreaName from LogisticsArea where ID=(select top 1 AreaCode from LogisticsAreaCountry la where c.Id= la.CountryCode and la.AreaCode in (select ID from LogisticsArea where LId =(select LId from LogisticsArea where LogisticsArea.Id=:cid)))) as AreaNane from Country c where c.Id not in (select CountryCode from LogisticsAreaCountry where AreaCode=:cid ) and (CCountry like'%" + s + "%' or ECountry like '%" + s + "%')" + orderby)
               .SetInt32("cid", id)
               .List<object[]>();
             List<CountryType> l = new List<CountryType>();

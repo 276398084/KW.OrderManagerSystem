@@ -56,7 +56,7 @@ namespace KeWeiOMS.Domain
         public virtual int Qty { get; set; }
 
         /// <summary>
-        /// 是否缺货
+        /// 0:无；1：缺货;2:停产；3：占位
         /// </summary>
         public virtual int IsQue { get; set; }
 
@@ -76,9 +76,14 @@ namespace KeWeiOMS.Domain
         public virtual String Standard { get; set; }
 
         /// <summary>
-        /// 产品价格
+        /// 内部产品价格
         /// </summary>
         public virtual double Price { get; set; }
+
+        /// <summary>
+        /// 产品价格
+        /// </summary>
+        public virtual double SalePrice { get; set; }
 
         /// <summary>
         /// 产品网址

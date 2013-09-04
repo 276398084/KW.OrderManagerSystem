@@ -10,6 +10,7 @@ using System.Web;
 using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
+using Newtonsoft.Json;
 using eBay.Service.Core.Sdk;
 using eBay.Service.Core.Soap;
 using OrderType = KeWeiOMS.Domain.OrderType;
@@ -223,7 +224,7 @@ namespace KeWeiOMS.Web
                         order.OrderNo = Utilities.GetOrderNo(NSession);
                         order.CurrencyCode = item["Currency"];
                         order.OrderExNo = OrderExNo;
-                        order.Amount = Utilities.ToDouble(item["Total Price"]);
+                        order.Amount = Utilities.ToDouble(item["Settle Price"]);
                         order.BuyerMemo = item["Memo to Seller"];
                         order.Country = item["Nation"];
                         order.BuyerName = item["Customer"];
@@ -353,13 +354,12 @@ namespace KeWeiOMS.Web
                             CreateOrderPruduct(item.ItemID, item.Quantity, item.ItemID, "", 0, item.Url, order.Id,
                                                order.OrderNo, NSession);
                         }
-                        results.Add(GetResult(order.OrderNo, "", "导入成功"));
+                        results.Add(GetResult(order.OrderExNo, "", "导入成功"));
                     }
                     else
                     {
-                        OrderType order = new OrderType();
-                        order.OrderNo = Utilities.GetOrderNo(NSession);
-                        results.Add(GetResult(order.OrderNo, "该订单已存在", "导入失败"));
+
+                        results.Add(GetResult(foo.GoodsDataWare.ItemNumber, "该订单已存在", "导入失败"));
                     }
                 }
                 catch (Exception ex)
@@ -378,10 +378,140 @@ namespace KeWeiOMS.Web
             return results;
         }
 
-        public static List<ResultInfo> APIBySMT(AccountType account, DateTime st, DateTime et)
+        public static DateTime GetAliDate(string DateStr)
+        {
+            return new DateTime(Convert.ToInt32(DateStr.Substring(0, 4)), Convert.ToInt32(DateStr.Substring(4, 2)), Convert.ToInt32(DateStr.Substring(6, 2)), Convert.ToInt32(DateStr.Substring(8, 2)), Convert.ToInt32(DateStr.Substring(10, 2)), Convert.ToInt32(DateStr.Substring(12, 2)));
+        }
+
+        public static List<ResultInfo> APIBySMT(AccountType account, DateTime st, DateTime et, ISession NSession)
         {
 
             List<ResultInfo> results = new List<ResultInfo>();
+            string token = AliUtil.RefreshToken(account);
+            List<CountryType> countryTypes = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
+            AliOrderListType aliOrderList = null;
+            int page = 1;
+            do
+            {
+                try
+                {
+                    aliOrderList = AliUtil.findOrderListQuery(token, page);
+                    if (aliOrderList.totalItem != 0)
+                    {
+
+                        foreach (var o in aliOrderList.orderList)
+                        {
+
+                            bool isExist = IsExist(o.orderId.ToString(), NSession);
+
+                            if (!isExist)
+                            {
+                                AliOrderType ot = AliUtil.findOrderById(token, o.orderId.ToString());
+                                OrderType order = new OrderType
+                                                      {
+                                                          IsMerger = 0,
+                                                          Enabled = 1,
+                                                          IsOutOfStock = 0,
+                                                          IsRepeat = 0,
+                                                          IsSplit = 0,
+                                                          Status = OrderStatusEnum.待处理.ToString(),
+                                                          IsPrint = 0,
+                                                          CreateOn = DateTime.Now,
+                                                          ScanningOn = DateTime.Now
+                                                      };
+                                order.OrderNo = Utilities.GetOrderNo(NSession);
+                                order.CurrencyCode = ot.orderAmount.currencyCode;
+                                order.OrderExNo = ot.id.ToString();
+                                order.Amount = ot.orderAmount.amount;
+                                order.LogisticMode = o.productList[0].logisticsServiceName;
+                                CountryType country =
+                                    countryTypes.Find(
+                                        p => p.CountryCode.ToUpper() == ot.receiptAddress.country.ToUpper());
+                                if (country != null)
+                                {
+                                    order.Country = country.ECountry;
+                                }
+                                else
+                                {
+                                    order.Country = ot.receiptAddress.country;
+                                }
+
+                                order.BuyerName = ot.buyerInfo.firstName + " " + ot.buyerInfo.lastName;
+                                order.BuyerEmail = ot.buyerInfo.email;
+                                foreach (ProductList p in o.productList)
+                                {
+                                    order.BuyerMemo += p.memo;
+                                }
+                                OrderMsgType[] msgTypes = AliUtil.findOrderMsgByOrderId(token, order.OrderExNo);
+
+                                foreach (OrderMsgType orderMsgType in msgTypes)
+                                {
+                                    order.BuyerMemo += "<br/>" + orderMsgType.senderName + "  " +
+                                                       GetAliDate(orderMsgType.gmtCreate).ToString("yyyy-MM-dd HH:mm:ss") +
+                                                       ":" + orderMsgType.content + "";
+                                }
+                                if (!string.IsNullOrEmpty(order.BuyerMemo))
+                                    order.IsLiu = 1;
+
+                                order.TId = "";
+                                order.OrderFees = 0;
+                                order.OrderCurrencyCode = "";
+                                order.Account = account.AccountName;
+                                order.GenerateOn = GetAliDate(ot.gmtPaySuccess);
+                                order.Platform = PlatformEnum.SMT.ToString();
+                                order.AddressId = CreateAddress(ot.receiptAddress.contactPerson,
+                                                                ot.receiptAddress.detailAddress + "  " + ot.receiptAddress.address2,
+                                                                ot.receiptAddress.city, ot.receiptAddress.province,
+                                                                country == null
+                                                                    ? ot.receiptAddress.country
+                                                                    : country.ECountry,
+                                                                country == null
+                                                                    ? ot.receiptAddress.country
+                                                                    : country.CountryCode, ot.receiptAddress.phoneCountry + " " + ot.receiptAddress.phoneArea + " " + ot.receiptAddress.phoneNumber,
+                                                                ot.receiptAddress.mobileNo, ot.buyerInfo.email,
+                                                                ot.receiptAddress.zip, 0, NSession);
+                                NSession.Save(order);
+                                NSession.Flush();
+                                foreach (ChildOrderList item in ot.childOrderList)
+                                {
+                                    string remark = "";
+                                    if (item.productAttributes.Length > 0)
+                                    {
+                                        SkuListType skuList =
+                                            JsonConvert.DeserializeObject<SkuListType>(
+                                                item.productAttributes.Replace("\\", ""));
+                                        foreach (SkuType skuType in skuList.sku)
+                                        {
+                                            remark += skuType.pName + ":" + skuType.pValue;
+                                        }
+                                    }
+                                    CreateOrderPruduct(item.productId.ToString(), item.skuCode, item.productCount,
+                                                       item.productName,
+                                                       remark, item.initOrderAmt.amount,
+                                                       "",
+                                                       order.Id,
+                                                       order.OrderNo, NSession);
+                                }
+                                NSession.Clear();
+                                NSession.Update(order);
+                                NSession.Flush();
+                                results.Add(GetResult(order.OrderExNo, "", "导入成功"));
+                            }
+                            else
+                            {
+                                results.Add(GetResult(o.orderId.ToString(), "该订单已存在", "导入失败"));
+                            }
+                        }
+                        page++;
+                    }
+                }
+                catch (Exception)
+                {
+                    token = AliUtil.RefreshToken(account);
+                    continue;
+                }
+
+            } while (aliOrderList.totalItem > (page - 1) * 50);
             return results;
         }
 
@@ -395,6 +525,7 @@ namespace KeWeiOMS.Web
             apicall.IncludeFinalValueFee = true;
             apicall.DetailLevelList.Add(eBay.Service.Core.Soap.DetailLevelCodeType.ReturnAll);
             eBay.Service.Core.Soap.OrderTypeCollection m = null;
+
             int i = 1;
             do
             {
@@ -403,8 +534,8 @@ namespace KeWeiOMS.Web
                 apicall.Pagination.EntriesPerPage = 50;
                 apicall.OrderRole = eBay.Service.Core.Soap.TradingRoleCodeType.Seller;
                 apicall.OrderStatus = eBay.Service.Core.Soap.OrderStatusCodeType.Completed;
-                apicall.ModTimeFrom = st;
-                apicall.ModTimeTo = et;
+                apicall.CreateTimeFrom = st;
+                apicall.CreateTimeTo = et;
                 apicall.Execute();
                 m = apicall.OrderList;
                 for (int k = 0; k < m.Count; k++)
@@ -416,13 +547,12 @@ namespace KeWeiOMS.Web
                     {
                         OrderType order = orders[0];
                         order.OrderFees = ot.ExternalTransaction[0].FeeOrCreditAmount.Value;
+                        order.OrderCurrencyCode = ot.ExternalTransaction[0].FeeOrCreditAmount.currencyID.ToString();
                         foreach (TransactionType item in ot.TransactionArray)
                         {
-
-                            order.OrderFees += item.FinalValueFee.Value;
-
+                            order.OrderCurrencyCode2 = item.FinalValueFee.currencyID.ToString();
+                            order.OrderFees2 += item.FinalValueFee.Value;
                         }
-
                         NSession.Update(order);
                         NSession.Flush();
                     }
@@ -454,6 +584,7 @@ namespace KeWeiOMS.Web
                 apicall.ModTimeFrom = st;
                 apicall.ModTimeTo = et;
                 apicall.Execute();
+
                 m = apicall.OrderList;
                 for (int k = 0; k < m.Count; k++)
                 {
@@ -499,6 +630,7 @@ namespace KeWeiOMS.Web
 
                         order.TId = ot.ExternalTransaction[0].ExternalTransactionID;
                         order.OrderFees = ot.ExternalTransaction[0].FeeOrCreditAmount.Value;
+                        order.OrderCurrencyCode = ot.ExternalTransaction[0].FeeOrCreditAmount.currencyID.ToString();
                         order.Account = account.AccountName;
                         order.GenerateOn = ot.PaidTime;
                         order.Platform = PlatformEnum.Ebay.ToString();
@@ -531,7 +663,8 @@ namespace KeWeiOMS.Web
                             {
                                 sku = item.Item.SKU;
                             }
-                            order.OrderFees += item.FinalValueFee.Value;
+                            order.OrderCurrencyCode2 = item.FinalValueFee.currencyID.ToString();
+                            order.OrderFees2 += item.FinalValueFee.Value;
 
                             CreateOrderPruduct(item.Item.ItemID, sku, item.QuantityPurchased, item.Item.Title,
                                                "", 0,
@@ -542,6 +675,11 @@ namespace KeWeiOMS.Web
                         NSession.Clear();
                         NSession.Update(order);
                         NSession.Flush();
+                        results.Add(GetResult(order.OrderExNo, "", "导入成功"));
+                    }
+                    else
+                    {
+                        results.Add(GetResult(ot.OrderID, "该订单已存在", "导入失败"));
                     }
                 }
                 i++;
@@ -669,7 +807,8 @@ namespace KeWeiOMS.Web
         {
             OrderProductType product = new OrderProductType();
             product.ExSKU = exSKU;
-            product.SKU = sku;
+            if (sku != null)
+                product.SKU = sku.Trim();
             product.Qty = qty;
             product.Price = price;
             product.Title = name;
@@ -690,10 +829,15 @@ namespace KeWeiOMS.Web
             {
                 foreach (string fo in product.SKU.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    product.SKU = fo;
+
+
+                    product.Id = 0;
+                    if (fo != null)
+                        product.SKU = fo.Trim();
                     GetItem(product, NSession);
                     NSession.Save(product);
                     NSession.Flush();
+                    NSession.Clear();
                     SplitProduct(product, NSession, products);
                 }
             }
@@ -724,7 +868,8 @@ namespace KeWeiOMS.Web
                 System.Text.RegularExpressions.Match mc1 = r1.Match(item.SKU);
                 System.Text.RegularExpressions.Match mc2 = r2.Match(item.SKU);
                 string[] cels = item.SKU.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-                item.SKU = cels[0];
+                if (cels[0] != null)
+                    item.SKU = cels[0].Trim();
                 int fo = Utilities.ToInt(mc1.Groups["num"].ToString());
                 if (fo != 0)
                     item.Qty = fo * item.Qty;
@@ -792,13 +937,14 @@ namespace KeWeiOMS.Web
         }
         #endregion
 
+
         #region 订单验证
         public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession)
         {
 
 
             bool resultValue = true;
-
+            order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>().ToList();
             order.ErrorInfo = "";
             if (order.Country != null)
             {
@@ -839,7 +985,6 @@ namespace KeWeiOMS.Web
                 resultValue = false;
                 order.ErrorInfo += "金额不能为0 ";
             }
-            order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>().ToList();
             foreach (var item in order.Products)
             {
                 if (item.SKU == null)
@@ -848,7 +993,6 @@ namespace KeWeiOMS.Web
                     order.ErrorInfo += "SKU不符";
                     break;
                 }
-
                 ProductType product = products.Find(p => p.SKU.Trim().ToUpper() == item.SKU.Trim().ToUpper());
                 if (product == null)
                 {
@@ -861,16 +1005,27 @@ namespace KeWeiOMS.Web
                     if (product.Status == "停产")
                     {
                         order.IsStop = 1;
+                        item.IsQue = 2;
+                        NSession.SaveOrUpdate(item);
+                        NSession.Flush();
                     }
                 }
-
+            }
+            object obj = NSession.CreateQuery("select count(Id) from OrderType where Status<>'待处理' and OrderExNo=:p and Account=:p2 and IsSplit =0 and IsRepeat=0").SetString("p", order.OrderExNo).SetString("p2", order.Account).UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                resultValue = false;
+                order.ErrorInfo += " 订单重复";
             }
 
             if (resultValue)
             {
                 order.IsAudit = 1;
                 SaveAmount(order, currencys, NSession);
-
+                if (order.IsStop == 0)
+                {
+                    // SetQueOrder(order, NSession);
+                }
             }
 
             if (order.ErrorInfo == "")
@@ -878,8 +1033,9 @@ namespace KeWeiOMS.Web
                 order.ErrorInfo = "验证成功！";
                 if (order.IsStop == 1)
                 {
-                    LoggerUtil.GetOrderRecord(order, "验证订单", "订单中有停产产品，自动设为停产订单", NSession);
+                    LoggerUtil.GetOrderRecord(order, "验证订单", "订单中有停产产品，自动设为停产订单。", NSession);
                 }
+
                 IList<EmailMessageType> messageTypes = NSession.CreateQuery("from EmailMessageType where OrderExNo='" + order.OrderExNo + "'").List<EmailMessageType>();
                 foreach (EmailMessageType emailMessageType in messageTypes)
                 {
@@ -890,8 +1046,62 @@ namespace KeWeiOMS.Web
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             LoggerUtil.GetOrderRecord(order, "验证订单", order.ErrorInfo, NSession);
-
             return resultValue;
+        }
+
+        public static void SetQueOrder(OrderType order, ISession NSession)
+        {
+            ///计算产品是否是缺货订单--确定定位：设置缺货标记，设置产品占位标记，根据订单审核时间设置。订单统一设置。
+            bool isUse = true;
+            bool isold = false;
+            if (order.IsOutOfStock == 1)
+                isold = true;
+            if (order.Products == null)
+            {
+                order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>().ToList();
+            }
+            if (order.Products.Count > 1)
+            {
+                order.IsCanSplit = 1;
+            }
+            foreach (var item in order.Products)
+            {
+                item.IsQue = 0;
+                int unPeiCount = Convert.ToInt32(NSession.CreateSQLQuery("select isnull(count(Id),0) from SKUCode where SKU='" + item.SKU + "' and IsOut=0 ").UniqueResult());
+                int useCount = Convert.ToInt32(NSession.CreateSQLQuery("select isnull(sum(OP.Qty),0) from OrderProducts OP where OP.SKU='" + item.SKU + "' and OP.IsQue=3").UniqueResult());
+                if (item.Qty > 1)
+                    order.IsCanSplit = 1;
+                if ((unPeiCount - useCount) < item.Qty) //剩余的数量不足于订单的的SKU数量
+                {
+                    isUse = false;
+                    item.IsQue = 1;//标记缺货
+                    order.IsOutOfStock = 1;//只要有一个产品是缺货的，那么整个订单都是缺货的。
+                }
+                NSession.SaveOrUpdate(item);
+                NSession.Flush();
+            }
+            if (isUse) //订单都是不缺货的的。
+            {
+
+                order.IsOutOfStock = 0;
+                foreach (var item in order.Products)
+                {
+                    item.IsQue = 3;//标记这个产品排入库存的序列
+                    NSession.SaveOrUpdate(item);
+                    NSession.Flush();
+                }
+            }
+            NSession.SaveOrUpdate(order);
+            NSession.Flush();
+            if (!isold && order.IsOutOfStock == 1)
+            {
+                LoggerUtil.GetOrderRecord(order, "验证订单", "订单中有产品缺货,自动设置为缺货订单。", NSession);
+            }
+            else if (isold && order.IsOutOfStock == 0)
+            {
+                LoggerUtil.GetOrderRecord(order, "系统自动检验订单", "检验到产品有库存，缺货自动状态删除。", NSession);
+            }
+
         }
         public static void UpdateAmount(OrderType order, ISession NSession)
         {
@@ -924,8 +1134,10 @@ namespace KeWeiOMS.Web
                 {
                     orderAmount.Status = "已发货";
                 }
-                orderAmount.Profit = Math.Round(orderAmount.Profit - order.Freight);
+                orderAmount.ScanningOn = order.ScanningOn;
+                orderAmount.Profit = Math.Round(orderAmount.Profit - order.Freight, 5);
                 orderAmount.CreateOn = order.CreateOn;
+                orderAmount.UpdateOn = DateTime.Now;
                 NSession.Update(orderAmount);
                 NSession.Flush();
             }
@@ -992,7 +1204,10 @@ namespace KeWeiOMS.Web
                 }
             }
             orderAmount.CreateOn = order.CreateOn;
+            orderAmount.ScanningOn = order.ScanningOn;
             orderAmount.CurrencyCode = order.CurrencyCode;
+            orderAmount.UpdateOn = DateTime.Now;
+
             orderAmount.Platform = order.Platform;
             orderAmount.Country = order.Country;
             orderAmount.RMB = order.RMB;
@@ -1164,7 +1379,7 @@ namespace KeWeiOMS.Web
                     {
                         List<LogisticsFreightType> list = NSession.CreateQuery("from LogisticsFreightType where AreaCode=" + tt.AreaCode).List<LogisticsFreightType>().ToList();
                         LogisticsFreightType logisticsFreight =
-                            list.Find(x => x.FristFreight <= weight && x.EndWeight > weight);
+                            list.Find(x => x.BeginWeight <= weight && x.EndWeight > weight);
                         if (logisticsFreight != null)
                         {
                             if (logisticsFreight.EveryFee != 0)
@@ -1183,7 +1398,7 @@ namespace KeWeiOMS.Web
                             {
                                 if (logisticsFreight.IsDiscountALL == 1)
                                 {
-                                    ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) + decimal.Parse(logisticsFreight.ProcessingFee.ToString()) + (Convert.ToDecimal(weight) - decimal.Parse(logisticsFreight.FristWeight.ToString())) / decimal.Parse(logisticsFreight.IncrementWeight.ToString()) * decimal.Parse(logisticsFreight.IncrementFreight.ToString())) * decimal.Parse(discount.ToString());
+                                    ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) + decimal.Parse(logisticsFreight.ProcessingFee.ToString()) + Math.Ceiling((Convert.ToDecimal(weight) - decimal.Parse(logisticsFreight.FristWeight.ToString())) / decimal.Parse(logisticsFreight.IncrementWeight.ToString())) * decimal.Parse(logisticsFreight.IncrementFreight.ToString())) * decimal.Parse(discount.ToString());
                                 }
                                 else
                                 {

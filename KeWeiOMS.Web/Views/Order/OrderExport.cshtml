@@ -2,8 +2,8 @@
     ViewBag.Title = "OrderExport";
 }
 <script type="text/javascript">
-    function ExportOrder() {
-        var search = "ids=" + $('#data').val() + "&" + "s=" + $('#state').combobox("getValue");
+    function ExportOrder(t) {
+        var search = "ids=" + $('#data').val() + "&" + "s=" + $('#state').combobox("getValue")+"&t="+t;
         var postUrl = "/Order/ExportDown/1";
         jQuery.ajax({
             url: "/Order/ExportOrder2/",
@@ -23,5 +23,6 @@
     <option value="OrderExNo">平台订单号</option>
     <option value="TrackCode">追踪码</option>
 </select>
-<input type="button" value="导出" onclick="ExportOrder()" />
+<input type="button" value="导出" onclick="ExportOrder(0)" />
+<input type="button" value="导出邮局清单" onclick="ExportOrder(1)" />
 

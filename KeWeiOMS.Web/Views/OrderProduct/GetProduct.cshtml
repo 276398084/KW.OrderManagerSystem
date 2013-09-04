@@ -10,17 +10,25 @@
         <tr>
             <td style="width: 70px;">
                 <img src="@Url.Content("/ProductImg/SPic/" + p.SKU + ".png")" width="64px" height="64px" /></td>
-            <td style="width: 180px;">ExSKU:@p.ExSKU</td>
-            <td style="width: 180px;">SKU:<b>@p.SKU</b></td>
-            <td style="width: 80px;">Qty:@p.Qty</td>
-            <td style="width: 80px;">缺货:
+            <td style="width: 80px;">ExSKU:@p.ExSKU</td>
+            <td style="width: 80px;">SKU:<b>@p.SKU</b></td>
+            <td style="width: 40px;">Qty:@p.Qty</td>
+            <td style="width: 120px;">Status:
         @if (p.IsQue == 1)
         {
-            <b>缺</b>
+            <b>缺货</b><br />
+            <b>库存:@KeWeiOMS.Web.Utilities.GetUnPeiQty(p.SKU, KeWeiOMS.NhibernateHelper.NhbHelper.GetCurrentSession())
+            </b>
+            <br />
+            <b>@KeWeiOMS.Web.Utilities.GetLastCai(p.SKU, KeWeiOMS.NhibernateHelper.NhbHelper.GetCurrentSession())</b>
+        }
+        else if (p.IsQue == 2)
+        {
+            <b>停产</b>
         }
             </td>
-            <td>规格: @p.Standard</td>
-            <td>描述: @p.Remark</td>
+            <td style="width: 80px;">规格: @p.Standard</td>
+            <td style="width: 80px;">描述: @p.Remark</td>
         </tr>
     }
 </table>

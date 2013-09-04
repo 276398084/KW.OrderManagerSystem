@@ -1,0 +1,63 @@
+﻿@model KeWeiOMS.Domain.logisticsSetupType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.logisticsSetupType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.logisticsSetupType</legend>
+    <div class="display-label">Column_8</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">Platform</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Platform)
+    </div>
+
+    <div class="display-label">SetupId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SetupId)
+    </div>
+
+    <div class="display-label">SetupName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SetupName)
+    </div>
+
+    <div class="display-label">LId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LId)
+    </div>
+
+    <div class="display-label">logisticsName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.LogisticsName)
+    </div>
+
+    <div class="display-label">CreateOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">CreatebY</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

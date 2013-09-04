@@ -89,9 +89,15 @@
                         type: "post",
                         data: "p=" + $("#ps").val(),
                         success: function (sss) {
-                            alert("重置成功");
-                            $('#dg').datagrid("reload");
-                            $("#ps").val('');
+                            if (sss.IsSuccess) {
+                                alert("重置成功");
+                                $('#dg').datagrid("reload");
+                                $("#ps").val('');
+                            } else {
+                                alert("您没有权限重置，请联系景波，kelvin，储善昂！");
+                                $('#dg').datagrid("reload");
+                                $("#ps").val('');
+                            }
                         }
                     });
                 }

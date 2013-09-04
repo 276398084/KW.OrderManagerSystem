@@ -33,6 +33,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.Subject).Length(200);
             Map(x => x.Title).Length(200);
             Map(x => x.Content);
+            Map(x => x.Enable);
         }
     }
 }

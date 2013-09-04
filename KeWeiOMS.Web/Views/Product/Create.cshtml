@@ -124,6 +124,15 @@
             width: 200,
             panelHeight: 'auto'
         });
+        $('#c_ProductAttribute').combobox({
+            url: '/Home/GetProductAttributeEnum/',
+            valueField: 'id',
+            textField: 'text',
+
+            width: 200,
+            panelHeight: 'auto'
+        });
+        
         $('#c_Status').combobox({
             url: '/Home/ProductStatus/',
             valueField: 'id',
@@ -361,6 +370,16 @@
                     <input id="up_file" type="file" name="up_file" />
                     @Html.HiddenFor(model => model.PicUrl, new { @id = "c_PicUrl" })
                 </td>
+
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ProductAttribute, "产品属性:")
+                </td>
+                <td colspan="5">
+                    @Html.TextBoxFor(model => model.ProductAttribute, new { @id = "c_ProductAttribute" })
+                </td>
+                
 
             </tr>
 

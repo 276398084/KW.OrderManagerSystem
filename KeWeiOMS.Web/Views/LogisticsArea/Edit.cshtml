@@ -12,35 +12,18 @@
 {
 <fieldset>
 <table class="editForm">
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Id,"主键:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
-		</td>
-	</tr>
 
 	<tr>
 		<td>
             @Html.LabelFor(model => model.AreaName,"分区名称:")
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.LId)
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.AreaName,new{@id="e_AreaName"})
 		</td>
 	</tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.LId,"承运商ID:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.LId,new{@id="e_LId"})
-		</td>
-	</tr>
-
-
-    
 </table>
 </fieldset>
 }

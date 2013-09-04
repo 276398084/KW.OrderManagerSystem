@@ -1,0 +1,100 @@
+﻿@model KeWeiOMS.Domain.logisticsSetupType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#c_SetupId').combobox({
+            url: '/Home/GetEbayLogistics',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 200
+      });
+        $('#c_LId').combobox({
+            url: '/Logistics/ShowList/',
+            valueField: 'Id',
+            textField: 'LogisticsName',
+            required: true,
+            width: 200
+        });
+        $('#c_Platform').combobox({
+            valueField: 'id',
+            textField: 'text',
+            panelHeight: 'auto',
+            data:[{ id: "Ebay", text: "Ebay" }, { id: "SMT", text: "SMT" }],
+            width:100,
+            onChange:change2
+            });
+        //$('#c_Platform').combobox("SetValue","Ebay");
+
+    });
+    function change2(n,o){
+        if(n=="Ebay"){
+            $('#c_SetupId').combobox({
+                url: '/Home/GetEbayLogistics',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 200
+            });
+        }
+        else{
+            $('#c_SetupId').combobox({
+                url: '/Home/GetSMTLogistics',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 200
+            });
+        }
+    }
+    
+</script>
+
+@using (Html.BeginForm("Create", "logisticsSetup", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+
+
+    <tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"平台:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="c_Platform"})
+		</td>
+	</tr>
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SetupId,"平台物流:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SetupId,new{@id="c_SetupId"})
+		</td>
+	</tr>
+
+
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LId,"指定物流:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LId,new{@id="c_LId"})
+		</td>
+	</tr>
+
+	
+
+	
+
+
+</table>
+</fieldset>
+}

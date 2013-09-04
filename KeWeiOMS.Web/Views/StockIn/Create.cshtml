@@ -44,14 +44,14 @@
                     panelHeight: 'auto',
                     width: 150
                 });
-        $('#c_InType').combobox("setValue", "采购到货");
+        $('#c_InType').combobox("setValue", "坏件出库");
         $('#c_Price').numberbox({
             precision: 2,
-            required: true,
             onChange: function () {
                 nozero();
             }
         });
+        $('#c_Price').numberbox("setValue", "0");
         $('#c_Qty').numberbox({
             required: true,
             onChange: function () {

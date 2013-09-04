@@ -39,6 +39,40 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
         }
+        [HttpPost]
+        public JsonResult EditReset(string o)
+        {
+            try
+            {
+                o = o.Replace("\r", "").Replace("\t", " ").Replace("  ", " ");
+                string[] rows = o.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                string updateOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                foreach (string row in rows)
+                {
+                    string[] cels = row.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    if (cels.Length == 2)
+                    {
+                        try
+                        {
+                            NSession.CreateSQLQuery(" update WarehouseStock set Qty=" + cels[1] + " , UpdateOn='" + updateOn + "'  where SKU='" + cels[0] +
+                                             "'").UniqueResult();
+                            NSession.Flush();
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, Message = "出错了" });
+            }
+            return Json(new { IsSuccess = true, Message = "成功！" });
+        }
+
 
         /// <summary>
         /// 根据Id获取

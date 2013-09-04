@@ -23,7 +23,7 @@
         //新建
         function c_dlg() {
             var url_str = '@Url.Action("Create", "Account")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
+            showdlg(url_str, 'c_dlg', ajaxAdd);
         }
 
         //编辑框
@@ -72,7 +72,7 @@
         }
 
         function ShowOp(v, r, i) {
-            return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showData("' + v + '")\'>查看明细</a>';
+            return '<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showData("' + v + '")\'>查看明细</a> <a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'showLData("' + v + '")\'>渠道划分</a>';
         }
         var code;
 
@@ -81,6 +81,19 @@
             $('#s_dlg').load(url_str, function () {
                 $(this).dialog({
                     title: '运费设置',
+                    iconCls: 'icon-save',
+                    modal: true,
+                    width: 800,
+                    height: 400,
+                    loadingMessage: '正在加载...',
+                });
+            }).dialog('open');
+        }
+        function showLData(v) {
+            var url_str = '/LogisticsAllocation/Index/' + v;
+            $('#l_dlg').load(url_str, function () {
+                $(this).dialog({
+                    title: '渠道划分',
                     iconCls: 'icon-save',
                     modal: true,
                     width: 800,
@@ -138,5 +151,6 @@
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
         <div id="s_dlg"></div>
+        <div id="l_dlg"></div>
     </div>
 </body>

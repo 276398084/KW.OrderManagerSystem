@@ -104,6 +104,12 @@ namespace KeWeiOMS.Domain
         /// 同步时间
         /// </summary>
         public virtual string ReplayOnlyBy { get; set; }
+
+         /// <summary>
+        /// 同步时间
+        /// </summary>
+        public virtual string Title { get; set; }
+        
         
     }
 }

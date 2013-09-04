@@ -4,7 +4,9 @@
 }
 
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<script src="@Url.Content("~/Scripts/FusionCharts/FusionCharts.js")"></script>
 <script>
+   
     $(function () {
         var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
         $('#dg').datagrid({
@@ -12,18 +14,25 @@
             queryParams: { "st": dt, "et": dt, "p": "ALL", "a": "ALL" },
             showFooter: true,
             title: "订单数量统计",
-            height: 430,
+            height: 330,
             nowrap: false,
             width: 1200,
+            pagination: true,
             rownumbers: true,
             striped: true,
             view: detailview,
+            pageNumber: 1,
+            pageSize: 10,
+            pageList: [10,20],
             detailFormatter: function (index, row) {
                 return '<div style="padding:2px"><table id="ddv-' + index + '" style="padding:5px 0"></table></div>';
             },
+            onDblClickRow: function (rowIndex, rowData) {
+                sku = rowData["SKU"];
+                setChart();
+            },
             onExpandRow: function (index, row) {
                 var search = row.SKU + "$" + $('#cc').combobox("getValue") + "$" + $('#cc2').combobox("getValue") + "$" + $('#pp').combobox("getText") + "$" + $('#aa').combobox("getText");
-
                 $('#ddv-' + index).datagrid({
                     fitColumns: true,
                     singleSelect: true,
@@ -80,8 +89,16 @@
         $("#cc2").datebox({
             parser: myparser
         });
+        $("#st").datebox({
+            parser: myparser,
+            onChange: function () {
+                setChart();
+            }
+        });
         $('#cc').datebox("setValue", getStartDate(0));
         $('#cc2').datebox("setValue", getStartDate(0));
+        $('#st').datebox("setValue", getStartDate(15));
+
         $('#pp').combobox({
             url: '/Home/Platform/1',
             valueField: 'id',
@@ -91,10 +108,36 @@
             onChange: changePlatform
         });
         $('#pp').combobox("setValue", "ALL");
-
+        $('#pp2').combobox({
+            url: '/Home/Platform/1',
+            valueField: 'id',
+            textField: 'text',
+            width: 100,
+            panelHeight: 'auto',
+            onSelect: function () {
+                setChart();
+            }
+           
+        });
+        $('#pp2').combobox("setValue", "ALL");
 
 
     });
+    var sku = "";
+    function setChart() {
+        if (sku.length == 0)
+            return;
+        jQuery.ajax({
+            url: "/Statistics/GetSaleChart",
+            type: "post",
+            data: "s=" + sku + "&p=" + $('#pp2').combobox("getText") + "&st=" + $('#st').combobox("getValue"),
+            success: function (data) {
+                var chart = new FusionCharts("/Scripts/FusionCharts/MSLine.swf", "ChartId", "1200", "300", "0", "0");
+                chart.setDataXML(data);
+                chart.render("chart2div");
+            }
+        });
+    }
     function onSelect1() {
         $('#dg').datagrid("load", {
             st: $('#cc').combobox("getValue"),
@@ -174,4 +217,9 @@ SKU<input id="ss" type="text">
         </td>
     </tr>
 </table>
-
+平台<input id="pp2" type="text">
+开始<input id="st" type="text">
+<div>
+    <div id="chart2div">
+    </div>
+</div>

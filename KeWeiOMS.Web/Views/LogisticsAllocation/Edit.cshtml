@@ -1,0 +1,118 @@
+﻿@model KeWeiOMS.Domain.LogisticsAllocationType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        $('#e_AllocationType').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["1", "金额"], ["2", "国家"], ["3", "商品"]],
+            width: 100
+        });
+        $('#e_LogisticsMode').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+            ]]
+        });
+
+        $('#e_NBegin').numberbox({
+            min: 0,
+            precision: 2
+        });
+
+        $('#e_NEnd').numberbox({
+            min: 0,
+            precision: 2
+        });
+
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "LogisticsAllocation", FormMethod.Post, new { id = "e_form" }))
+{
+    @Html.HiddenFor(model => model.Id);
+    @Html.HiddenFor(model => model.CreateBy);
+    @Html.HiddenFor(model => model.CreateOn);
+
+<fieldset>
+<table class="editForm">
+	
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AllocationType,"划分类型:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AllocationType,new{@id="e_AllocationType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.AId,"账户ID:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.AId,new{@id="e_AId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsMode,"承运商:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsMode,new{@id="e_LogisticsMode"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NBegin,"开始:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NBegin,new{@id="e_NBegin"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.NEnd,"结束:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.NEnd,new{@id="e_NEnd"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"内容:")
+		</td>
+		<td>
+            @Html.TextAreaFor(model => model.Content,new{@id="e_Content"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SortCode,"优先级:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SortCode,new{@id="e_SortCode"})
+		</td>
+	</tr>
+
+
+
+
+    
+</table>
+</fieldset>
+}

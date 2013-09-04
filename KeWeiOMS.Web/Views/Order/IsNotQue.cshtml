@@ -19,20 +19,13 @@
     }
 
     function toExcel() {
-        $('#dg').datagrid('loading');
+     
         var postUrl = "/Order/ExportDown/1";
-        $.ajax({
+        jQuery.ajax({
             url: '@Url.Action("ToExcel", "Order")/',
+            type: "post",
             success: function (result) {
-
-                $.messager.show({
-                    title: '提示',
-                    msg: result.Msg,
-                    timeout: 0,
-                    showType: 'slide'
-                })
                 location.href = postUrl;
-                $('#dg').datagrid('reload');
             }
         })
     }

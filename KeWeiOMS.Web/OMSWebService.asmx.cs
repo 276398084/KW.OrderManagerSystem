@@ -1,5 +1,6 @@
 ﻿using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
+using KeWeiOMS.Web.Common.Utils;
 using NHibernate;
 using System;
 using System.Collections;
@@ -21,7 +22,6 @@ namespace KeWeiOMS.Web
     public class OMSWebService : System.Web.Services.WebService
     {
         public ISession NSession = NhbHelper.GetCurrentSession();
-
 
         [WebMethod]
         public bool HasExisitOrderExNo(string OrderExNo)
@@ -95,14 +95,42 @@ namespace KeWeiOMS.Web
             return productTypes;
         }
 
+    
+
+        [WebMethod]
+        public List<KeyValue> GetStockBySKU(string[] skus)
+        {
+
+            List<KeyValue> dic = new List<KeyValue>();
+            if (skus == null || skus.Length == 0)
+            {
+                return dic;
+            }
+            string ids = "";
+            foreach (string item in skus)
+            {
+                ids += "" + item + ",";
+            }
+            ids = ids.Trim(',');
+         
+            IList<object[]> objectes =
+                 NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
+
+            foreach (object[] objs in objectes)
+            {
+                dic.Add(new KeyValue { Key = objs[0].ToString(), Value = objs[1].ToString() });
+              
+            }
+
+            return dic;
+        }
+
         [WebMethod]
         public List<CurrencyType> GetCurrencys()
         {
             List<CurrencyType> productTypes = NSession.CreateQuery(" from CurrencyType").List<CurrencyType>().ToList();
             return productTypes;
         }
-
-
 
         [WebMethod]
         public string GMarket(string ItemId, string ItemTitle, decimal Price, string PicUrl, string Nownum, int Qty, string ProductUrl, string Account)
@@ -151,8 +179,6 @@ namespace KeWeiOMS.Web
             return 0;
         }
 
-
-
         [WebMethod]
         public string EbayMessageDown(EbayMessageType obj)
         {
@@ -160,7 +186,7 @@ namespace KeWeiOMS.Web
             {
                 obj.CreateOn = DateTime.Now;
                 obj.ReplayOn = Convert.ToDateTime("2000-01-01");
-                if (HasExist(obj.MessageId))
+                if (HasExistByMessageId(obj.MessageId))
                 {
                     return "该条邮件已同步！";
                 }
@@ -173,12 +199,12 @@ namespace KeWeiOMS.Web
             }
             catch (Exception ex)
             {
-                return "保存失败";
+                return "保存失败" + ex.Message;
             }
         }
 
-
-        private bool HasExist(string MessageId)
+        [WebMethod]
+        public bool HasExistByMessageId(string MessageId)
         {
             object obj = NSession.CreateQuery("select count(Id) from EbayMessageType where MessageId='" + MessageId + "'").UniqueResult();
             if (Convert.ToInt32(obj) > 0)
@@ -189,18 +215,18 @@ namespace KeWeiOMS.Web
         }
 
         [WebMethod]
-        public List<AccountType> ApiToken()
+        public List<AccountType> ApiToken(PlatformEnum platform = PlatformEnum.Ebay)
         {
             List<AccountType> account = new List<AccountType>();
             ArrayList arry = new ArrayList();
-                try
-                {
-                    account = NSession.CreateQuery("from AccountType where Platform ='Ebay' and ApiToken <>''").List<AccountType>().ToList();
-                }
-                catch (Exception ex)
-                {
+            try
+            {
+                account = NSession.CreateQuery("from AccountType where Platform ='" + platform + "' and (ApiToken <>'' or ApiToken is null )").List<AccountType>().ToList();
+            }
+            catch (Exception ex)
+            {
 
-                }
+            }
             return account;
         }
 
@@ -219,13 +245,10 @@ namespace KeWeiOMS.Web
         [WebMethod]
         public List<EbayMessageReType> GetUnUplod()
         {
-            List<EbayMessageReType> ebay = new List<EbayMessageReType>();
+
             List<EbayMessageReType> account = NSession.CreateQuery("from EbayMessageReType where IsUpload <>'1'").List<EbayMessageReType>().ToList();
-            foreach (var item in account)
-            {
-                ebay.Add(item);
-            }
-            return ebay;
+
+            return account;
         }
 
         [WebMethod]
@@ -265,7 +288,7 @@ namespace KeWeiOMS.Web
         {
             try
             {
-                object ject = NSession.Delete(" from EbayType where Account='" +obj.AccountName+ "'");
+                object ject = NSession.Delete(" from EbayType where Account='" + obj.AccountName + "'");
                 NSession.Flush();
                 return "删除该账号库存信息成功";
             }
@@ -303,8 +326,8 @@ namespace KeWeiOMS.Web
                 }
                 NSession.Save(obj);
                 NSession.Flush();
-                IList<OrderType> orders = NSession.CreateQuery("from OrderType where OrderExNo='"+obj.OrderExNo+"'").List<OrderType>();
-                foreach(OrderType order in orders)
+                IList<OrderType> orders = NSession.CreateQuery("from OrderType where OrderExNo='" + obj.OrderExNo + "'").List<OrderType>();
+                foreach (OrderType order in orders)
                 {
                     order.IsLiu = 1;
                     order.BuyerMemo = obj.RserverDate + " 有买家留言<br>" + order.BuyerMemo;
@@ -314,9 +337,9 @@ namespace KeWeiOMS.Web
 
                     OrderRecordType orderRecord = new OrderRecordType();
                     orderRecord.OId = order.Id;
-                    orderRecord.OrderNo =order.OrderNo;
+                    orderRecord.OrderNo = order.OrderNo;
                     orderRecord.RecordType = "买家留言";
-                    orderRecord.CreateBy ="系统自动";
+                    orderRecord.CreateBy = "系统自动";
                     orderRecord.Content = "买家留言";
                     orderRecord.CreateOn = DateTime.Now;
                     NSession.Save(orderRecord);
@@ -331,6 +354,7 @@ namespace KeWeiOMS.Web
             }
 
         }
+
         private bool Exit(string msgid)
         {
             object obj = NSession.CreateQuery("select Count(Id) from EmailMessageType where MessageId='" + msgid + "'").UniqueResult();
@@ -340,6 +364,13 @@ namespace KeWeiOMS.Web
             }
             return false;
         }
-        
+
+        [WebMethod]
+        public List<OrderType> GetUnloadOrder(PlatformEnum platform)
+        {
+            return NSession.CreateQuery("from OrderType where Platform='" + platform + "' and IsUpload=0 and Status='已发货'").List<OrderType>().ToList();
+
+        }
+
     }
 }

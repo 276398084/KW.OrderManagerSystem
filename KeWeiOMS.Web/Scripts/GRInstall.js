@@ -36,13 +36,13 @@ function Install_Detect()
     }
     else if ((_ReportOK.Utility.ShouldUpdatePlugin == undefined) || _ReportOK.Utility.ShouldUpdatePlugin(gr_Version) == true)  //检查是否应该下载新版本程序
     {
-        document.write('<div style="width: 100%; background-color: #fff8dc; text-align: center; vertical-align: middle; line-height: 20pt; padding-bottom: 12px; padding-top: 12px;">');
+            document.write('<div style="width: 100%; background-color: #fff8dc; text-align: center; vertical-align: middle; line-height: 20pt; padding-bottom: 12px; padding-top: 12px;">');
             document.write('<strong> 此网站需要升级安装 锐浪报表插件 才能保证其正常运行<br /></strong>');
             document.write('<a href="' + gr_InstallPath + '/grbsctl5.exe"><span style="color: #ff0000"><strong>点击此处下载锐浪报表插件安装包<br /></strong></span></a>');
             document.write('插件安装时必须关闭网页窗口，点击本网页窗口的关闭按钮进行关闭，安装完成后再重新打开本网页<br />');
             document.write('如安装中出现“不能打开要写入的文件...”的提示时，请将网页窗口关闭，然后点击“重试”按钮继续安装');
-        document.write('</div>');
-        return false;
+            document.write('</div>');
+            return false;
     }
     
     return true;

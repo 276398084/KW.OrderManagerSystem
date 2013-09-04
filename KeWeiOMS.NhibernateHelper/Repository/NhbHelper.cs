@@ -29,14 +29,12 @@ namespace KeWeiOMS.NhibernateHelper
         private static Configuration CreateConfiguration()
         {
             //HibernatingRhinos.Profiler.Appender.NHibernate.NHibernateProfiler.Initialize();//NHProf工具
-
             string connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["defaultConnection"].ConnectionString;//配置文件中取
-
             Configuration cfg = FluentNHibernate.Cfg.Fluently.Configure()
 
                            .Database(FluentNHibernate.Cfg.Db.MsSqlConfiguration.MsSql2008
                                .Dialect<MsSql2008Dialect>()
-                               .Driver<NHibernate.Driver.SqlClientDriver>()
+                               .Driver<NHibernate.Driver.SqlClientDriver>().ShowSql()
                                .QuerySubstitutions("true 1, false 0, yes 'Y', no 'N'")
                                .UseOuterJoin()
                                .ConnectionString(connectionString))

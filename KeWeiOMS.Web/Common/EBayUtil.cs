@@ -59,6 +59,20 @@ namespace KeWeiOMS.Web
             return apiContext;
         }
 
+        public static string GetSessionID()
+        {
+            ApiContext context = AppSettingHelper.GetGenericApiContext("US");
+            GetSessionIDCall calla = new GetSessionIDCall(context);
+            return calla.GetSessionID(context.RuName);
+        }
+
+        public static string GetToKen(string session)
+        {
+            ApiContext context = AppSettingHelper.GetGenericApiContext("US");
+            FetchTokenCall call = new FetchTokenCall(context);
+            return call.FetchToken(session);
+        }
+
 
 
 
@@ -66,44 +80,122 @@ namespace KeWeiOMS.Web
         {
             ISession NSession = NhbHelper.OpenSession();
             Dictionary<string, int> sendNum = new Dictionary<string, int>();
-            ApiContext context = GetGenericApiContext("US");
-            IList<AccountType> accounts =
-                NSession.CreateQuery("from AccountType where AccountName='" + account + "'").SetMaxResults(1).
+            IList<AccountType> accounts = NSession.CreateQuery("from AccountType where AccountName='" + account + "'").SetMaxResults(1).
                     List<AccountType>();
             if (accounts.Count > 0)
             {
+
+                IList<KeWeiOMS.Domain.OrderType> orderList = new List<KeWeiOMS.Domain.OrderType>();
+                if (orderType.IsMerger == 1)
+                {
+                    orderList = NSession.CreateQuery("from OrderType where MId='" + orderType.Id + "'").List<KeWeiOMS.Domain.OrderType>();
+                }
+                else
+                {
+                    orderList.Add(orderType);
+                }
+                ApiContext context = GetGenericApiContext("US");
+
                 context.ApiCredential.eBayToken = accounts[0].ApiToken;
                 eBay.Service.Call.CompleteSaleCall call = null;
-
+                string CarrierUsed = "";
+                // IList<logisticsSetupType> setups = NSession.CreateQuery("from  logisticsSetupType where LId in (select ParentID from LogisticsModeType where LogisticsCode='" + orderType.LogisticMode + "')").List<logisticsSetupType>();
+                //if (setups != null)
+                //{
+                //    CarrierUsed = setups[0].SetupName;
+                //}
+                CarrierUsed = "China Post";
                 call = new eBay.Service.Call.CompleteSaleCall(context);
-
-                string orderid = orderType.OrderExNo;
-
-                if (orderid.IndexOf("-") == -1 || orderType.IsMerger == 1) return;
-                ;
-                call.Shipment = new ShipmentType();
-                call.Shipment.DeliveryStatus = eBay.Service.Core.Soap.ShipmentDeliveryStatusCodeType.Delivered;
-                call.Shipment.ShipmentTrackingDetails = new ShipmentTrackingDetailsTypeCollection();
-                call.Shipment.ShipmentTrackingNumber = orderType.TrackCode.ToString();
-                call.Shipment.ShippingCarrierUsed = "China post air mail";
-
-                call.Shipment.DeliveryDate = DateTime.Now;
-                call.Shipment.DeliveryDateSpecified = true;
-                call.Shipment.DeliveryStatus = ShipmentDeliveryStatusCodeType.Delivered;
-                try
+                foreach (KeWeiOMS.Domain.OrderType order in orderList)
                 {
-                    call.CompleteSale(orderid.Substring(0, orderid.IndexOf("-")),
-                                      orderid.Substring(orderid.IndexOf("-") + 1), true, true);
-                }
-                catch (Exception)
-                {
-                    return;
-                    ;
-                }
-                finally
-                {
-                    NSession.Close();
+                    string orderid = "";
+                    string itemid = "";
 
+                    if (order.OrderExNo.IndexOf("-") == -1)
+                    {
+                        orderid = order.OrderExNo;
+
+                        GetOrdersCall apicall = new GetOrdersCall(context);
+                        OrderTypeCollection orders = null;
+                        try
+                        {
+                            orders = apicall.GetOrders(new StringCollection { order.OrderExNo });
+                        }
+                        catch (Exception)
+                        {
+                            orders = new OrderTypeCollection();
+
+                        }
+
+                        if (orders.Count > 0)
+                        {
+                            foreach (TransactionType trans in orders[0].TransactionArray)
+                            {
+                                itemid = trans.Item.ItemID;
+                                orderid = trans.TransactionID;
+                                call.Shipment = new ShipmentType();
+                                call.Shipment.DeliveryStatus = eBay.Service.Core.Soap.ShipmentDeliveryStatusCodeType.Delivered;
+                                call.Shipment.ShipmentTrackingDetails = new ShipmentTrackingDetailsTypeCollection();
+
+                                if (orderType.OrderNo == order.TrackCode || order.TrackCode == "" || order.TrackCode == null)
+                                {
+                                    //call.Shipment.ShipmentTrackingNumber = "";
+                                }
+                                else
+                                {
+                                    call.Shipment.ShippingCarrierUsed = CarrierUsed;
+                                    call.Shipment.ShipmentTrackingNumber = orderType.TrackCode.ToString();
+                                }
+                                call.Shipment.DeliveryDate = DateTime.Now;
+                                call.Shipment.DeliveryDateSpecified = true;
+                                call.Shipment.DeliveryStatus = ShipmentDeliveryStatusCodeType.Delivered;
+                                try
+                                {
+                                    call.CompleteSale(itemid, orderid, true, true);
+                                }
+                                catch (Exception ex)
+                                {
+                                    break;
+                                }
+                                break;
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        itemid = order.OrderExNo.Substring(0, order.OrderExNo.IndexOf("-"));
+                        orderid = order.OrderExNo.Substring(order.OrderExNo.IndexOf("-") + 1);
+                        call.Shipment = new ShipmentType();
+                        call.Shipment.DeliveryStatus = eBay.Service.Core.Soap.ShipmentDeliveryStatusCodeType.Delivered;
+                        call.Shipment.ShipmentTrackingDetails = new ShipmentTrackingDetailsTypeCollection();
+                        if (orderType.OrderNo == order.TrackCode || order.TrackCode == "" || order.TrackCode==null)
+                        {
+                            //call.Shipment.ShipmentTrackingNumber = "";
+                        }
+                        else
+                        {
+                            call.Shipment.ShippingCarrierUsed = CarrierUsed;
+                            call.Shipment.ShipmentTrackingNumber = orderType.TrackCode.ToString();
+                        }
+                       
+                        call.Shipment.DeliveryDate = DateTime.Now;
+                        call.Shipment.DeliveryDateSpecified = true;
+                        call.Shipment.DeliveryStatus = ShipmentDeliveryStatusCodeType.Delivered;
+                        try
+                        {
+                            call.CompleteSale(itemid, orderid, true, true);
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                        finally
+                        {
+
+
+                        }
+                    }
                 }
             }
         }
@@ -124,7 +216,7 @@ namespace KeWeiOMS.Web
             apicall.ActiveList = new ItemListCustomizationType();
             int i = 1;
             DeleteALL(sa.AccountName, NSession);
-            //EbayItem.deleteBatch("AccountFrom='" + sa.UserName + "' and CompanyId='" + sa.CompanyId + "'");
+
             do
             {
                 apicall.ActiveList.Pagination = new PaginationType();
@@ -134,67 +226,93 @@ namespace KeWeiOMS.Web
 
                 if (apicall.ActiveListReturn != null && apicall.ActiveListReturn.ItemArray != null && apicall.ActiveListReturn.ItemArray.Count > 0)
                 {
+
                     foreach (ItemType actitem in apicall.ActiveListReturn.ItemArray)
                     {
-                        if (actitem.SellingStatus != null)
+
+                        try
                         {
-                            EbayType ei = new EbayType();
-                            ei.ItemId = actitem.ItemID;
-
-
-                            ei.ItemTitle = actitem.Title;
-                            ei.Price = actitem.SellingStatus.CurrentPrice.Value.ToString();
-
-
-                            ei.Currency = actitem.SellingStatus.CurrentPrice.currencyID.ToString();
-                            ei.StartNum = actitem.Quantity;
-                            ei.NowNum = actitem.QuantityAvailable;
-                            ei.ProductUrl = actitem.ListingDetails.ViewItemURL;
-                            if (actitem.PictureDetails != null && actitem.PictureDetails.GalleryURL != null)
+                            if (actitem.SellingStatus != null)
                             {
-                                ei.PicUrl = actitem.PictureDetails.GalleryURL;
-                            }
-                            ei.StartTime = actitem.ListingDetails.StartTime;
-                            ei.Account = sa.AccountName;
-                            ei.Status = "销售中";
-                            ei.SKU = "";
-                            if (actitem.SKU != null)
-                            {
-                                ei.SKU = actitem.SKU;
-                                if (ei.NowNum == 0)
+                                EbayType ei = new EbayType();
+                                ei.ItemId = actitem.ItemID;
+
+
+                                ei.ItemTitle = actitem.Title;
+                                ei.Price = actitem.SellingStatus.CurrentPrice.Value.ToString();
+
+
+                                ei.Currency = actitem.SellingStatus.CurrentPrice.currencyID.ToString();
+                                ei.StartNum = actitem.Quantity;
+                                ei.NowNum = actitem.QuantityAvailable;
+                                ei.ProductUrl = actitem.ListingDetails.ViewItemURL;
+                                if (actitem.PictureDetails != null && actitem.PictureDetails.GalleryURL != null)
                                 {
-                                    ei.Status = "卖完";
+                                    ei.PicUrl = actitem.PictureDetails.GalleryURL;
                                 }
-                                NSession.Clear();
-                                ei.CreateOn = DateTime.Now;
-                                NSession.Save(ei);
-                                NSession.Flush();
-                            }
-                            else
-                            {
-                                foreach (VariationType v in actitem.Variations.Variation)
+                                ei.StartTime = actitem.ListingDetails.StartTime;
+                                ei.Account = sa.AccountName;
+                                ei.Status = "销售中";
+                                ei.SKU = "";
+                                if (actitem.SKU != null)
                                 {
-                                    NSession.Clear();
-                                    ei.SKU = v.SKU;
-                                    ei.StartNum = v.Quantity;
-                                    ei.NowNum = v.Quantity - v.SellingStatus.QuantitySold;
-                                    ei.Status = "销售中";
+                                    ei.SKU = actitem.SKU;
                                     if (ei.NowNum == 0)
                                     {
                                         ei.Status = "卖完";
                                     }
-                                    ei.ItemTitle = v.VariationTitle;
-
+                                    NSession.Clear();
                                     ei.CreateOn = DateTime.Now;
                                     NSession.Save(ei);
                                     NSession.Flush();
                                 }
+                                else
+                                {
+                                    if (actitem.Variations != null)
+                                    {
+                                        foreach (VariationType v in actitem.Variations.Variation)
+                                        {
+                                            NSession.Clear();
+                                            ei.SKU = v.SKU;
+                                            ei.StartNum = v.Quantity;
+                                            ei.NowNum = v.Quantity - v.SellingStatus.QuantitySold;
+                                            ei.Status = "销售中";
+                                            if (ei.NowNum == 0)
+                                            {
+                                                ei.Status = "卖完";
+                                            }
+                                            ei.ItemTitle = v.VariationTitle;
+
+                                            ei.CreateOn = DateTime.Now;
+                                            NSession.Save(ei);
+                                            NSession.Flush();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ei.SKU = "";
+                                        if (ei.NowNum == 0)
+                                        {
+                                            ei.Status = "卖完";
+                                        }
+                                        NSession.Clear();
+                                        ei.CreateOn = DateTime.Now;
+                                        NSession.Save(ei);
+                                        NSession.Flush();
+                                    }
+
+                                }
+
 
 
                             }
-
+                        }
+                        catch (Exception)
+                        {
+                            continue;
 
                         }
+
 
                     }
                     i++;

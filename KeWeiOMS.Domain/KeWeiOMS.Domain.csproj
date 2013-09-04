@@ -69,10 +69,12 @@
     <Compile Include="Entities\EmailTemplateType.cs" />
     <Compile Include="Entities\EmailType.cs" />
     <Compile Include="Entities\GMarketType.cs" />
+    <Compile Include="Entities\LogisticsAllocationType.cs" />
     <Compile Include="Entities\LogisticsAreaCountryType.cs" />
     <Compile Include="Entities\LogisticsAreaType.cs" />
     <Compile Include="Entities\LogisticsFreightType.cs" />
     <Compile Include="Entities\LogisticsModeType.cs" />
+    <Compile Include="Entities\logisticsSetupType.cs" />
     <Compile Include="Entities\LogisticsType.cs" />
     <Compile Include="Entities\MachineType.cs" />
     <Compile Include="Entities\ModuleType.cs" />
@@ -86,7 +88,9 @@
     <Compile Include="Entities\OrderPeiRecordType.cs" />
     <Compile Include="Entities\OrderProductType.cs" />
     <Compile Include="Entities\OrderRecordType.cs" />
+    <Compile Include="Entities\OrderReturnRecordType.cs" />
     <Compile Include="Entities\OrderType.cs" />
+    <Compile Include="Entities\OrderWeightRecordType.cs" />
     <Compile Include="Entities\OrganizeType.cs" />
     <Compile Include="Entities\PaypalAccountType.cs" />
     <Compile Include="Entities\PermissionItemType.cs" />
@@ -110,6 +114,7 @@
     <Compile Include="Entities\ReturnAddresType.cs" />
     <Compile Include="Entities\RoleType.cs" />
     <Compile Include="Entities\SerialNumberType.cs" />
+    <Compile Include="Entities\SettlementType.cs" />
     <Compile Include="Entities\SKUCodeType.cs" />
     <Compile Include="Entities\SoresAddType.cs" />
     <Compile Include="Entities\StockInType.cs" />
@@ -118,6 +123,7 @@
     <Compile Include="Entities\SupplierType.cs" />
     <Compile Include="Entities\UserLoginType.cs" />
     <Compile Include="Entities\UserRoleType.cs" />
+    <Compile Include="Entities\UserSetupType.cs" />
     <Compile Include="Entities\UserType.cs" />
     <Compile Include="Entities\WarehouseLocationType.cs" />
     <Compile Include="Entities\WarehouseStockType.cs" />
@@ -144,10 +150,12 @@
     <Compile Include="Mappings\EmailTemplateTypeMap.cs" />
     <Compile Include="Mappings\EmailTypeMap.cs" />
     <Compile Include="Mappings\GMarketTypeMap.cs" />
+    <Compile Include="Mappings\LogisticsAllocationTypeMap.cs" />
     <Compile Include="Mappings\LogisticsAreaCountryTypeMap.cs" />
     <Compile Include="Mappings\LogisticsAreaTypeMap.cs" />
     <Compile Include="Mappings\LogisticsFreightTypeMap.cs" />
     <Compile Include="Mappings\LogisticsModeTypeMap.cs" />
+    <Compile Include="Mappings\logisticsSetupTypeMap.cs" />
     <Compile Include="Mappings\LogisticTypeMap.cs" />
     <Compile Include="Mappings\MachineTypeMap.cs" />
     <Compile Include="Mappings\ModuleTypeMap.cs" />
@@ -161,7 +169,9 @@
     <Compile Include="Mappings\OrderPeiRecordTypeMap.cs" />
     <Compile Include="Mappings\OrderProductTypeMap.cs" />
     <Compile Include="Mappings\OrderRecordTypeMap.cs" />
+    <Compile Include="Mappings\OrderReturnRecordTypeMap.cs" />
     <Compile Include="Mappings\OrderTypeMap.cs" />
+    <Compile Include="Mappings\OrderWeightRecordTypeMap.cs" />
     <Compile Include="Mappings\OrganizeTypeMap.cs" />
     <Compile Include="Mappings\PaypalAccountTypeMap.cs" />
     <Compile Include="Mappings\PermissionItemTypeMap.cs" />
@@ -185,6 +195,7 @@
     <Compile Include="Mappings\ReturnAddresTypeMap.cs" />
     <Compile Include="Mappings\RoleTypeMap.cs" />
     <Compile Include="Mappings\SerialNumberTypeMap.cs" />
+    <Compile Include="Mappings\SettlementTypeMap.cs" />
     <Compile Include="Mappings\SKUCodeTypeMap.cs" />
     <Compile Include="Mappings\SoresAddTypeMap.cs" />
     <Compile Include="Mappings\StockInTypeMap.cs" />
@@ -193,6 +204,7 @@
     <Compile Include="Mappings\SupplierTypeMap.cs" />
     <Compile Include="Mappings\UserLoginTypeMap.cs" />
     <Compile Include="Mappings\UserRoleTypeMap.cs" />
+    <Compile Include="Mappings\UserSetupTypeMap.cs" />
     <Compile Include="Mappings\UserTypeMap.cs" />
     <Compile Include="Mappings\WarehouseLocationTypeMap.cs" />
     <Compile Include="Mappings\WarehouseStockTypeMap.cs" />

@@ -4,20 +4,83 @@
 }
 
 <script type="text/javascript">
-
     $(function () {
-
         $('#c_Platform').combotree({
             url: '/Home/Platform',
             valueField: 'id',
             textField: 'text',
             required: true,
-            width: 150
+            width: 150,
+           onChange: pChange
         });
-        $('#c_Platform').combotree("setValue","LT");
+        $('#c_Platform').combotree("setValue", "EBay");
+        pChange('Ebay', "");
     });
 
-</script>
+    function pChange(n, o) {
+        $('#tr1').hide();
+        $('#tr2').hide();
+        $('#tr3').hide();
+        $('#btnEbayLogin').hide();
+        $('#btnEbayToken').hide();
+        $('#btnAliLogin').hide();
+        if (n == "Ebay") {
+            $('#tr3').show();
+            $('#btnEbayLogin').show();
+            $('#btnEbayToken').show();
+        }
+        if (n == "SMT") {
+            $('#tr3').show();
+            $('#btnAliLogin').show();
+        }
+    }
+    var code = "";
+    function aliLogin() {
+        jQuery.ajax({
+            url: "/Account/GetAliLoginUrl",
+            type: "post",
+            success: function (res) {
+                if (res.IsSuccess) {
+                  
+                    window.open(res.Result);
+                } else {
+                    alert(res.ErrorMsg);
+                }
+            }
+        });
+    }
+    
+    function ebayLogin() {
+        jQuery.ajax({
+            url: "/Account/GetEbayLoginUrl",
+            type: "post",
+            success: function (res) {
+                if (res.IsSuccess) {
+                    code = res.Code;
+                  
+                    window.open(res.Result);
+                } else {
+                    alert(res.ErrorMsg);
+                }
+            }
+        });
+    }
+    
+    function getEbaySession() {
+        jQuery.ajax({
+            url: "/Account/GetEbaySession",
+            type: "post",
+            data:'o='+code,
+            success: function (res) {
+                if (res.IsError) {
+                    alert(res.Message);
+                } else {
+                    $('#c_ApiToken').val(res.Result);
+                }
+            }
+        });
+    }
+</script>1754b098-bea9-4062-a106-dfe70da16a54
 
 @using (Html.BeginForm("Create", "Account", FormMethod.Post, new { id = "c_form" }))
 {
@@ -41,7 +104,7 @@
                 </td>
             </tr>
 
-            <tr>
+            <tr id="tr1">
                 <td>
                     @Html.LabelFor(model => model.ApiKey, "APIKey:")
                 </td>
@@ -50,7 +113,7 @@
                 </td>
             </tr>
 
-            <tr>
+            <tr id="tr2">
                 <td>
                     @Html.LabelFor(model => model.ApiSecret, "API密钥:")
                 </td>
@@ -59,12 +122,20 @@
                 </td>
             </tr>
 
-            <tr>
+            <tr id="tr3">
                 <td>
-                    @Html.LabelFor(model => model.ApiToken, "API会话:")
+                    @Html.LabelFor(model => model.ApiToken, "APIToken:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.ApiToken, new { @id = "c_ApiToken" })
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" id="btnEbayLogin" onclick="ebayLogin()" value="ebay登录" />
+                    <input type="button" id="btnEbayToken" onclick="getEbaySession()" value="获得Token" />
+                    <input type="button" id="btnAliLogin" onclick="aliLogin()" value="获得Token" />
                 </td>
             </tr>
 

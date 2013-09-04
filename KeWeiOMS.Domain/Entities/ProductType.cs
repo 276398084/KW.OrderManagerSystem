@@ -77,6 +77,16 @@ namespace KeWeiOMS.Domain
         public virtual int TotalWeight { get; set; }
 
         /// <summary>
+        /// 最小重量
+        /// </summary>
+        public virtual double MinWeight { get; set; }
+
+        /// <summary>
+        /// 最大重量
+        /// </summary>
+        public virtual double MaxWeight { get; set; }
+
+        /// <summary>
         /// 长
         /// </summary>
         public virtual int Long { get; set; }
@@ -234,5 +244,9 @@ namespace KeWeiOMS.Domain
 
 
         public virtual String Infraction { get; set; }
+
+
+        public virtual String ProductAttribute { get; set; }
+        
     }
 }

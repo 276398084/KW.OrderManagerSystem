@@ -132,16 +132,18 @@
         u = $('#cc').combobox("getValue");
         if (u != "ALL" && u != "") {
             search += t + "_st&" + u + "^";
-            if (t == "ScanningOn" && search.indexOf("Status_ds&已发货^")==-1)
-                search += t + "Status_ds&已发货^";
-           
+            if (t == "ScanningOn" && search.indexOf("Status_ds&已发货^")==-1) {
+                search += "Status_ds&已发货^";
+              
+            }
+
         }
 
         u = $('#cc2').combobox("getValue");
         if (u != "ALL" && u != "") {
             search += t + "_et&" + u + "^";
             if (t == "ScanningOn" && search.indexOf("Status_ds&已发货^") == -1)
-                search += t + "Status_ds&已发货^";
+                search += "Status_ds&已发货^";
             
         }
         u = $('#ltype').combobox("getValue");

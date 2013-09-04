@@ -97,6 +97,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true  });
         }
 
+
         public JsonResult List(int page, int rows)
         {
             IList<OrderAddressType> objList = NSession.CreateQuery("from OrderAddressType")

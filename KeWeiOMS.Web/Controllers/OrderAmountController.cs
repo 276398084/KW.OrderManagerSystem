@@ -92,10 +92,10 @@ namespace KeWeiOMS.Web.Controllers
             string orderby;
             var where = GetWhere(null, null, search, out @orderby);
             IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
-
                 .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
+               double d=0;
                 orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession, z));
                 NSession.SaveOrUpdate(orderType);
                 NSession.Flush();
@@ -143,7 +143,7 @@ namespace KeWeiOMS.Web.Controllers
             IList<object[]> objList = NSession.CreateSQLQuery(sql)
                 .List<object[]>();
             List<OrderData> os = new List<OrderData>();
-           
+
             object count = NSession.CreateQuery("select count(Id) from OrderType " + where).UniqueResult();
 
             return Json(new { total = count, rows = os });
@@ -273,10 +273,10 @@ namespace KeWeiOMS.Web.Controllers
                 ProductType product = products.Find(x => x.SKU.Trim().ToUpper() == orderProductType.SKU.Trim().ToUpper());
                 if (product != null)
                 {
-                    p.Standard = product.Standard;
+                    p.Standard = orderProductType.Standard;
                     p.Status = product.Status;
                     p.Title = product.ProductName;
-                    p.Price = product.Price;
+                    p.Price = orderProductType.Price;
                     p.PicUrl = product.SPicUrl;
                     p.TotalPrice = p.Price * p.Qty;
                     total += p.TotalPrice;
@@ -291,6 +291,8 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult GetProduct(string o)
         {
             IList<OrderProductType> list = NSession.CreateQuery("from OrderProductType where OId=" + o).List<OrderProductType>();
+
+
             return Json(new { total = list.Count, rows = list });
         }
 
@@ -415,7 +417,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult AccountFreightCount(DateTime st, DateTime et, string p, string a, string t)
         {
             IList<AccountFreigheCount> sores = new List<AccountFreigheCount>();
-            string where = Where(st, et, p, a,t);
+            string where = Where(st, et, p, a, t);
             IList<object[]> objectses = NSession.CreateQuery("select Platform,Account,Count(Id),Sum(Freight) from OrderType " + where + "  group by Account,Platform").List<object[]>();
             decimal sum = 0;
             decimal freight = 0;
@@ -424,13 +426,13 @@ namespace KeWeiOMS.Web.Controllers
                 string pp = item[0].ToString();
                 string aa = item[1].ToString();
                 decimal co = Convert.ToDecimal(item[2]);
-                decimal am = decimal.Round(decimal.Parse(item[3].ToString()),2);
-                sores.Add(new AccountFreigheCount { Platform = pp,Account=aa, Count =co,Amount=am });
+                decimal am = decimal.Round(decimal.Parse(item[3].ToString()), 2);
+                sores.Add(new AccountFreigheCount { Platform = pp, Account = aa, Count = co, Amount = am });
                 sum += co;
                 freight += am;
             }
             List<object> footers = new List<object>();
-            footers.Add(new { Count = sum,Amount=decimal.Round(freight,2)});
+            footers.Add(new { Count = sum, Amount = decimal.Round(freight, 2) });
             return Json(new { rows = sores.OrderByDescending(x => x.Amount), footer = footers, total = sores.Count });
         }
         public ActionResult TypeFreightCount(DateTime st, DateTime et, string p, string a, string t)
@@ -443,7 +445,7 @@ namespace KeWeiOMS.Web.Controllers
             foreach (var item in objectses)
             {
                 string str = "正常";
-                if(item[0].ToString()=="1")
+                if (item[0].ToString() == "1")
                 {
                     str = "重发";
                 }
@@ -525,7 +527,23 @@ namespace KeWeiOMS.Web.Controllers
                 }
                 IList<OrderAmountType> objList = NSession.CreateQuery("from OrderAmountType " + where)
                     .List<OrderAmountType>();
-                Session["ExportDown"] = ExcelHelper.GetExcelXml(Utilities.FillDataTable((objList)));
+
+                List<OrderProductType> objList2 = NSession.CreateQuery("from OrderProductType where OId in (select OId from OrderAmountType " + where + " ) ")
+                    .List<OrderProductType>().ToList();
+
+                DataTable dt = Utilities.FillDataTable((objList));
+                dt.Columns.Add("产品信息");
+                foreach (DataRow dr in dt.Rows)
+                {
+                    List<OrderProductType> foos = objList2.FindAll(p => p.OId == Convert.ToInt32(dr["OId"]));
+                    StringBuilder sb=new StringBuilder();
+                    foreach (OrderProductType foo in foos)
+                    {
+                        sb.AppendLine("SKU:" + foo.SKU + "    Qty:" + foo.Qty + "    Price:" + foo.Price);
+                    }
+                    dr["产品信息"] = sb.ToString();
+                }
+                Session["ExportDown"] = ExcelHelper.GetExcelXml(dt);
             }
             catch (Exception ee)
             {

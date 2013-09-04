@@ -1,0 +1,127 @@
+﻿
+@model IEnumerable<KeWeiOMS.Domain.LogisticsAllocationType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function() {
+            $('#dg5').datagrid({
+                url: '@Url.Action("List", "LogisticsAllocation")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
+        });
+
+
+        //新建
+
+        function c_dlg2() {
+            var url_str = '@Url.Action("Create", "LogisticsAllocation")';
+            showdlg(url_str, 'c_dlg2', ajaxAdd2);
+        }
+
+        //编辑框
+
+        function e_dlg2() {
+            var url = '@Url.Action("Edit", "LogisticsAllocation")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg2', ajaxEdit2);
+            }
+        }
+
+        //异步新建提交
+
+        function ajaxAdd2() {
+            formPost('c_form2', '@Url.Action("Create", "LogisticsAllocation")', 'c_dlg2', 'dg5');
+        }
+
+//异步修改提交
+
+        function ajaxEdit2() {
+            formPost('e_form2', '@Url.Action("Edit", "LogisticsAllocation")', 'e_dlg2', 'dg5');
+        }
+
+//删除
+
+        function del2() {
+            var id = getselectedRow();
+            if (id != undefined) {
+
+                var url = '@Url.Action("Delete", "LogisticsAllocation")/' + id;
+               
+                delData(url, 'dg5');
+
+            }
+        }
+
+        //获取选中行
+
+        function getselectedRow() {
+            var row = $('#dg5').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        
+
+
+
+    </script>
+    <div region="center">
+        <table id="dg5" class="easyui-datagrid" 
+               toolbar="#toolbar5"  
+               rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
+            <thead>  
+                <tr>
+                    <th field="AllocationType" width="100">
+                        划分类型
+                    </th>
+                    <th field="AId" width="100">
+                        名称
+                    </th>
+                    <th field="LogisticsMode" width="100">
+                        承运商
+                    </th>
+                    <th field="NBegin" width="100">
+                        开始
+                    </th>
+                    <th field="NEnd" width="100">
+                        结束
+                    </th>
+                    <th field="SortCode" width="100">
+                        优先级
+                    </th>
+                    <th field="CreateBy" width="100">
+                        CreateBy
+                    </th>
+
+                    <th field="CreateOn" width="100">
+                        CreateOn
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar5">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick=" c_dlg2(); ">新建</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick=" e_dlg2() ">编辑</a>  
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick=" del2(); ">删除</a>  
+        </div>
+        <div id="c_dlg2"></div>
+        <div id="e_dlg2"></div>
+
+    </div>
+</body>

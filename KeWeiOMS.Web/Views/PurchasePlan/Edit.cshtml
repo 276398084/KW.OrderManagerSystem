@@ -21,9 +21,9 @@
 
         $('#e_SendOn').datebox();
 
-
+        
         $('#e_ReceiveOn').datebox();
-
+        $('#e_ExpectReceiveOn').datebox();
         $('#e_Status').combobox({
             valueField: 'id',
             textField: 'text',
@@ -146,14 +146,12 @@
                 <td>
                     @Html.TextBoxFor(model => model.ProductName, new { @id = "e_ProductName" })
                 </td>
-
-                <td>
-                    @Html.LabelFor(model => model.Memo, "备注:")
+                  <td>
+                    @Html.LabelFor(model => model.ExpectReceiveOn, "预计到货时间:")
                 </td>
                 <td>
-                    @Html.TextAreaFor(model => model.Memo, new { @id = "e_Memo" })
+                    @Html.TextBoxFor(model => model.ExpectReceiveOn, new { @id = "e_ExpectReceiveOn" })
                 </td>
-
             </tr>
 
             <tr>
@@ -162,6 +160,12 @@
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.Suppliers, new { @id = "e_Suppliers" })
+                </td>
+                 <td>
+                    @Html.LabelFor(model => model.Memo, "备注:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Memo, new { @id = "e_Memo" })
                 </td>
             </tr>
 

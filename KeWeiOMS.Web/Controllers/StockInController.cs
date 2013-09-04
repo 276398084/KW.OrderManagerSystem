@@ -72,6 +72,11 @@ namespace KeWeiOMS.Web.Controllers
                     NSession.Flush();
                     Utilities.SetComposeStock(obj.SKU, NSession);
                     Utilities.CreateSKUCode(obj.SKU, obj.Qty, obj.Id.ToString(), NSession);
+                    IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Id in(select OId from OrderProductType where SKU ='" + obj.SKU + "' and IsQue=1) and IsOutOfStock=1").List<OrderType>();
+                    foreach (OrderType item in orders)
+                    {
+                        OrderHelper.SetQueOrder(item, NSession);
+                    }
                 }
 
             }

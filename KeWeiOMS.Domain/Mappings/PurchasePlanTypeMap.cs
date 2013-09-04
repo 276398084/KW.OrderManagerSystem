@@ -51,6 +51,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.BuyOn);
             Map(x => x.SendOn);
             Map(x => x.ReceiveOn);
+            Map(x => x.ExpectReceiveOn);
             Map(x => x.Memo).Length(800);
         }
     }

@@ -135,6 +135,12 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual DateTime ReceiveOn { get; set; }
 
+
+        /// <summary>
+        /// 到货时间
+        /// </summary>
+        public virtual DateTime ExpectReceiveOn { get; set; }
+
         /// <summary>
         /// 备注
         /// </summary>

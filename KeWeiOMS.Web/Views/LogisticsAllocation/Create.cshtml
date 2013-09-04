@@ -1,0 +1,121 @@
+﻿@model KeWeiOMS.Domain.LogisticsAllocationType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+        $('#c_AllocationType').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: [["1", "金额"], ["2", "国家"], ["3","商品"]],
+            width: 100
+        });
+        $('#c_LogisticsMode').combogrid({
+            panelWidth: 360,
+            idField: 'LogisticsCode',
+            textField: 'LogisticsName',
+            url: '/LogisticsMode/ALLList',
+            fit: true,
+            columns: [[
+                { field: 'LogisticsName', title: '名称', width: 250 },
+                { field: 'LogisticsCode', title: '代码', width: 100 }
+            ]]
+        });
+        
+        $('#c_NBegin').numberbox({
+            min: 0,
+            precision: 2
+        });
+        
+        $('#c_NEnd').numberbox({
+            min: 0,
+            precision: 2
+        });
+       
+
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "LogisticsAllocation", FormMethod.Post, new { id = "c_form2" }))
+{
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                @ViewData["AId"]
+                <input type="hidden"/>
+                <td>
+                    @Html.LabelFor(model => model.AllocationType, "划分类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AllocationType, new { @id = "c_AllocationType" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.AId, "改划分的名字:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.AId, new { @id = "c_AId" })
+                </td>
+            </tr>
+             <tr>
+                <td>
+                    @Html.LabelFor(model => model.NBegin, "开始:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.NBegin, new { @id = "c_NBegin" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.NEnd, "结束:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.NEnd, new { @id = "c_NEnd" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Content, "内容:")
+                </td>
+                <td>
+                    @Html.TextAreaFor(model => model.Content, new { @id = "c_Content" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SortCode, "优先级:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SortCode, new { @id = "c_SortCode" })
+                </td>
+            </tr>
+            @*  <tr>
+                <td>
+                    @Html.LabelFor(model => model.QuerySql, "查询SQL:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.QuerySql, new { @id = "c_QuerySql" })
+                </td>
+            </tr>*@
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.LogisticsMode, "承运商:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.LogisticsMode, new { @id = "c_LogisticsMode" })
+                </td>
+            </tr>
+
+           
+        </table>
+    </fieldset>
+}

@@ -45,5 +45,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String Content { get; set; }
 
+        /// <summary>
+        /// 启用
+        /// </summary>
+        public virtual int Enable { get; set; }
+
     }
 }

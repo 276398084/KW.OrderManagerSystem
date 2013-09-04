@@ -14,7 +14,7 @@ using System.Collections;
 namespace KeWeiOMS.Web.Controllers
 {
     public class EbayMessageReController : BaseController
-    {           
+    {
         EbayMessageController ebay = new EbayMessageController();
         public ViewResult Index()
         {
@@ -30,11 +30,42 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["mid"] = id;
             EbayMessageType obj = ebay.GetById(id);
             ViewData["sub"] = obj.Subject;
-            ViewData["bod"]=obj.Body;
+            ViewData["bod"] = obj.Body;
             ViewData["buyer"] = obj.SenderID;
             ViewData["creation"] = obj.CreationDate;
             ViewData["email"] = obj.SenderEmail;
+            ViewData["ItemId"] = obj.ItemId;
+            ViewData["Title"] = obj.Title;
+            ViewData["Shop"] = obj.Shop;
             return View();
+        }
+
+        public JsonResult EditProcessed(int Id)
+        {
+            EbayMessageType ebaymessage = ebay.GetById(Id);
+            EbayMessageReType obj = new EbayMessageReType();
+            obj.ItemId = ebaymessage.ItemId;
+            obj.EbayId = ebaymessage.MessageId;
+            obj.Account = ebaymessage.Shop;
+            obj.BodyRe = "";
+            obj.ItemId = ebaymessage.ItemId;
+            obj.SenderID = ebaymessage.SenderID;
+            obj.SenderEmail = ebaymessage.SenderEmail;
+            obj.EbayId = ebaymessage.MessageId;
+            obj.ReplayBy = CurrentUser.Realname;
+            obj.SenderEmail = ebaymessage.SenderEmail;
+            obj.SenderID = ebaymessage.SenderID;
+            obj.Account = ebaymessage.Shop;
+            obj.ReplayOn = DateTime.Now;
+            obj.UploadTime = Convert.ToDateTime("2000-01-01");
+            NSession.Save(obj);
+            NSession.Flush();
+            ebaymessage.ReplayBy = CurrentUser.Realname;
+            ebaymessage.ReplayOn = DateTime.Now;
+            ebaymessage.MessageStatus = "已回复";
+            NSession.Update(ebaymessage);
+            NSession.Flush();
+            return Json(new { IsSuccess = "true" });
         }
 
         [HttpPost]
@@ -54,7 +85,6 @@ namespace KeWeiOMS.Web.Controllers
                 obj.UploadTime = Convert.ToDateTime("2000-01-01");
                 NSession.Save(obj);
                 NSession.Flush();
-
                 ebaymessage.ReplayBy = obj.ReplayBy;
                 ebaymessage.ReplayOn = obj.ReplayOn;
                 ebaymessage.MessageStatus = "已回复";
@@ -73,7 +103,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  EbayMessageReType GetById(int Id)
+        public EbayMessageReType GetById(int Id)
         {
             EbayMessageReType obj = NSession.Get<EbayMessageReType>(Id);
             if (obj == null)
@@ -99,7 +129,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(EbayMessageReType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -110,13 +140,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 EbayMessageReType obj = GetById(id);
@@ -130,7 +160,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string orderby = Utilities.OrdeerBy(sort, order);
             string where = Utilities.SqlWhere(search);
@@ -139,7 +169,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows)
                 .List<EbayMessageReType>();
 
-            object count = NSession.CreateQuery("select count(Id) from EbayMessageReType " + where ).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from EbayMessageReType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
 
@@ -161,12 +191,12 @@ namespace KeWeiOMS.Web.Controllers
 
         public JsonResult GetNext(int id)
         {
-            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where MessageStatus='未回复'  order by Id ").List<EbayMessageType>();
-            foreach(var item in list)
+            IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where MessageStatus='未回复' and ReplayOnlyBy='" + CurrentUser.Realname + "'  order by Id ").List<EbayMessageType>();
+            foreach (var item in list)
             {
-                    return Json(new { Msg =item.Id }, JsonRequestBehavior.AllowGet);
+                return Json(new { Msg = item.Id }, JsonRequestBehavior.AllowGet);
             }
-            return Json(new { Msg =0}, JsonRequestBehavior.AllowGet);
+            return Json(new { Msg = 0 }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult Syn()
@@ -182,9 +212,10 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { Msg = "同步成功" }, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetOrder(string id)
+        public JsonResult GetOrder(int id)
         {
-            IList<OrderType> list = NSession.CreateQuery("from OrderType where BuyerName='" + id + "' order by Id desc").List<OrderType>();
+            EbayMessageType ebayMessage = NSession.Get<EbayMessageType>(id);
+            IList<OrderType> list = NSession.CreateQuery("from OrderType where BuyerName='" + ebayMessage.SenderID + "' order by Id desc").List<OrderType>();
             return Json(list, JsonRequestBehavior.AllowGet);
 
         }
@@ -204,42 +235,42 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult GetDetail(int id)
         {
             EbayMessageReType de = GetById(id);
-            return Json(de.BodyRe,JsonRequestBehavior.AllowGet);
+            return Json(de.BodyRe, JsonRequestBehavior.AllowGet);
         }
         public JsonResult GetTop(string search)
         {
             string where = "";
-            if(!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
-                  return TopTime(where);
+                    return TopTime(where);
                 }
                 return Json("");
             }
             else
             {
-               DateTime time = DateTime.Now;
-                 return TopToday(time);
+                DateTime time = DateTime.Now;
+                return TopToday(time);
             }
         }
 
         private JsonResult TopToday(DateTime time)
         {
-            ArrayList obj =new ArrayList();
-            ArrayList arry=new ArrayList();
-            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where ReplayOn>'" + time.Date.ToString()+ "'").List<EbayMessageReType>();
+            ArrayList obj = new ArrayList();
+            ArrayList arry = new ArrayList();
+            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where ReplayOn>'" + time.Date.ToString() + "'").List<EbayMessageReType>();
             foreach (var item in list)
             {
                 int c = 0;
-                if(arry.Count!=0)
+                if (arry.Count != 0)
                 {
                     foreach (var name in arry)
                     {
-                        if (item.ReplayBy==Convert.ToString(name))
+                        if (item.ReplayBy == Convert.ToString(name))
                         {
-                            c=1;
+                            c = 1;
                         }
                     }
                 }
@@ -254,32 +285,32 @@ namespace KeWeiOMS.Web.Controllers
                 foreach (var name in arry)
                 {
                     object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='" + name + "' and ReplayOn>'" + time.Date.ToString() + "'").UniqueResult();
-                    obj.Add(new eployee{ Count = Convert.ToInt32(count), Name = Convert.ToString(name) });
+                    obj.Add(new eployee { Count = Convert.ToInt32(count), Name = Convert.ToString(name) });
                 }
             }
-            if(obj.Count!=0)
+            if (obj.Count != 0)
             {
                 obj.Sort(compare);
             }
             return Json(obj);
-        }  
- 
-       private JsonResult TopTime(string where)
+        }
+
+        private JsonResult TopTime(string where)
         {
 
-            ArrayList obj =new ArrayList();
-            ArrayList arry=new ArrayList();
-            IList<EbayMessageReType> list= NSession.CreateQuery("from EbayMessageReType where " + where ).List<EbayMessageReType>();
+            ArrayList obj = new ArrayList();
+            ArrayList arry = new ArrayList();
+            IList<EbayMessageReType> list = NSession.CreateQuery("from EbayMessageReType where " + where).List<EbayMessageReType>();
             foreach (var item in list)
             {
                 int c = 0;
-                if(arry.Count!=0)
+                if (arry.Count != 0)
                 {
                     foreach (var name in arry)
                     {
-                        if (item.ReplayBy==Convert.ToString(name))
+                        if (item.ReplayBy == Convert.ToString(name))
                         {
-                            c=1;
+                            c = 1;
                         }
                     }
                 }
@@ -293,21 +324,21 @@ namespace KeWeiOMS.Web.Controllers
             {
                 foreach (var name in arry)
                 {
-                    object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='" + name + "' and "+where).UniqueResult();
-                    obj.Add(new eployee{ Count = Convert.ToInt32(count), Name = Convert.ToString(name) });
+                    object count = NSession.CreateQuery("select count(Id) from EbayMessageReType where ReplayBy='" + name + "' and " + where).UniqueResult();
+                    obj.Add(new eployee { Count = Convert.ToInt32(count), Name = Convert.ToString(name) });
                 }
             }
-            if(obj.Count!=0)
+            if (obj.Count != 0)
             {
                 obj.Sort(compare);
             }
             return Json(obj);
-        }   
+        }
 
     }
 
 
-   public struct eployee
+    public struct eployee
     {
         public string Name;
         public int Count;

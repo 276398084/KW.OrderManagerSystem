@@ -22,6 +22,8 @@
             width: 120,
             panelHeight: 'auto'
         });
+        $('#c_CheckBy').combobox("setValue", "王凯");
+        $('#c_ValiBy').combobox("setValue", "王凯");
         $('#c_PassRate').numberbox({
             min: 0,
             max: 100
@@ -36,6 +38,22 @@
             editable: false,
             data: [{ id: "已收到", text: "已收到" }, { id: "部分到货", text: "部分到货" }, { id: "异常", text: "异常" }]
         });
+        $('#c_WId').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'Id',
+            textField: 'WName',
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+            ]]
+        });
+        $('#c_WId').combogrid("setValue", 1);
     });
 
 </script>
@@ -143,8 +161,14 @@
                 <td>
                     @Html.LabelFor(model => model.RealQty, "实际到货数量:")
                 </td>
-                <td colspan="3">
+                <td >
                     @Html.TextBoxFor(model => model.RealQty, new { @id = "c_RealQty" }) <a href="javascript:void(0);" onclick="alldao()">全部到货</a>
+                </td>
+                <td >
+                     @Html.LabelFor(model => model.WId, "入库仓库:")
+                </td>
+                <td >
+                    @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
                 </td>
             </tr>
             <tr>

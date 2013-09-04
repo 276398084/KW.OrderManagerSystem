@@ -75,6 +75,14 @@ namespace KeWeiOMS.Web.Controllers
             return View(obj);
         }
 
+       [HttpPost]
+        public ActionResult GetData(int Id)
+        {
+            LogisticsType obj = GetById(Id);
+            return Json(obj);
+        }
+
+        
         [HttpPost]
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(LogisticsType obj)

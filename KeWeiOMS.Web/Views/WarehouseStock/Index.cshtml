@@ -87,6 +87,24 @@
             });
         }
 
+        function o_Error() {
+            $.messager.confirm("提示", "确定要重置这些SKU吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/WarehouseStock/EditReset",
+                        type: "post",
+                        data: "o=" + encodeURIComponent($("#ErrorDesc").val()),
+                        success: function (res) {
+
+                            alert(res.Message);
+
+
+                        }
+                    });
+                }
+            });
+        }
+
     </script>
     <div region="center">
         <table id="dg" class="easyui-datagrid"
@@ -104,14 +122,14 @@
                     <th field="Title" width="100">商品名称
                     </th>
 
-                    <th field="Qty" width="100">数量
-                        
-                    </th>
-                    @*<th field="UnPeiQty" width="100">未配货数量
+                    @*<th field="Qty" width="100">数量
                         
                     </th>*@
+                    <th field="UnPeiQty" width="100">未配货数量
+                        
+                    </th>
 
-                    <th field="UpdateOn" width="100" formatter="getDate ">更新时间
+                    <th field="UpdateOn" width="100" formatter="getDate " sortable="true">更新时间
                     </th>
                 </tr>
             </thead>
@@ -121,6 +139,7 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>*@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="exportdt();">导出</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#dlgError').dialog('open');$('#ErrorDesc').val('');">重置包裹</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
@@ -130,7 +149,24 @@
         </div>
         <div id="c_dlg"></div>
         <div id="e_dlg"></div>
-        <div id="s_dlg"></div>
 
+        <div id="dlgError" class="easyui-dialog" title="重置订单" style="width: 550px; height: 300px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td></td>
+                    <td>SKU+库存数量(中间用tab的空格)不然无法识别</td>
+                </tr>
+                <tr>
+
+                    <td colspan="2">
+                        <textarea id="ErrorDesc" style="width: 500px;height: 250px"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="o_Error()" /></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </body>

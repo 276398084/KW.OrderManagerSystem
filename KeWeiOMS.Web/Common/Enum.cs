@@ -25,7 +25,8 @@ namespace KeWeiOMS.Web
         滞销 = 2,
         清仓 = 3,
         停产 = 4,
-        暂停销售 = 5
+        暂停销售 = 5,
+        提价销售 = 6
     }
 
     public enum PlatformEnum
@@ -57,6 +58,31 @@ namespace KeWeiOMS.Web
         多物品订单,
         商品
     }
+
+    public enum RoleEnum
+    {
+        配货人员 = 0,
+        配货检验人员 = 1,
+        包装人员 = 2,
+        清点人员 = 3,
+        到货检验人员 = 4,
+        邮件回复人员 = 5,
+        邮件主管 = 6
+    }
+
+    public enum ProductAttributeEnum
+    {
+        粉末,
+        液体,
+        大电池,
+        纽扣电池,
+        仿牌,
+        电子,
+        磁铁,
+        普货
+    }
+
+
 
 
 }

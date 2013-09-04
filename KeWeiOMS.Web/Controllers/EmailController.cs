@@ -114,12 +114,16 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { total =count, rows = objList });
         }
         //获取邮件模板
+        [OutputCache(Location = OutputCacheLocation.None)]
         public JsonResult getEmailTemp()
         {
-            IList<EmailTemplateType> EmaiTemp = NSession.CreateQuery("from EmailTemplateType").List<EmailTemplateType>();
+            IList<EmailTemplateType> EmaiTemp = NSession.CreateQuery("from EmailTemplateType where Enable=1").List<EmailTemplateType>();
             for (int i = 0; i < EmaiTemp.Count; i++)
             {
-                EmaiTemp[i].Content = EmaiTemp[i].Content.ToString().Substring(0, 100) + "...";
+                if (EmaiTemp[i].Content.ToString().Length > 100)
+                {
+                    EmaiTemp[i].Content = EmaiTemp[i].Content.ToString().Substring(0, 100) + "...";
+                }
             }
             return Json(EmaiTemp, JsonRequestBehavior.AllowGet);
         }

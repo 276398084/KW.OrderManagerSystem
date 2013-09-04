@@ -55,6 +55,58 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult GetEbayLogistics()
+        {
+            List<string> list = new List<string>();
+            list.Add("China Post");
+            list.Add("Chunghwa Post");
+            list.Add("DHL");
+            list.Add("FedEx");
+            list.Add("Hong Kong Post");
+            list.Add("TNT");
+            list.Add("UPS");
+            List<object> list2 = new List<object>();
+            foreach (string item in list)
+            {
+                list2.Add(new { id = item, text = item });
+            }
+            return Json(list2);
+        }
+
+        public ActionResult GetSMTLogistics()
+        {
+            Dictionary<string, string> list = new Dictionary<string, string>();
+            list.Add("DHL Global Mail", "EMS_SH_ZX_US");
+            list.Add("EMS", "EMS");
+            list.Add("Sweden Post", "SEP");
+            list.Add("Fedex IP", "FEDEX");
+            list.Add("UPS Expedited", "UPSE");
+            list.Add("ePacket", "EMS_ZX_ZX_US");
+            list.Add("FEDEX_IE", "FEDEX_IE");
+            list.Add("Ruston Package", "RUSTON");
+            list.Add("HongKong Post Air Parcel", "HKPAP");
+            list.Add("China Post Air Mail", "CPAM");
+            list.Add("SF Express", "SF");
+            list.Add("HongKong Post Air Mail", "HKPAM");
+            list.Add("Swiss Post", "CHP");
+            list.Add("ZTO Express to Russia", "ZTORU");
+            list.Add("ARAMEX", "ARAMEX");
+            list.Add("China Post Air Parcel", "CPAP");
+            list.Add("TNT", "TNT");
+            list.Add("139 ECONOMIC Package", "ECONOMIC139");
+            list.Add("DHL", "DHL");
+            list.Add("UPS", "UPS");
+            list.Add("Singapore Post", "SGP");
+
+
+            List<object> list2 = new List<object>();
+            foreach (string item in list.Keys)
+            {
+                list2.Add(new { id = list[item], text = item });
+            }
+            return Json(list2);
+
+        }
 
         public ActionResult Platform(string Id)
         {
@@ -71,6 +123,32 @@ namespace KeWeiOMS.Web.Controllers
             }
             foreach (string item in Enum.GetNames(typeof(PlatformEnum)))
             {
+                list.Add(new { id = item, text = item });
+            }
+            return Json(list);
+        }
+
+        public ActionResult GetRoleEnum()
+        {
+            List<object> list = new List<object>();
+
+
+            foreach (string item in Enum.GetNames(typeof(RoleEnum)))
+            {
+                RoleEnum role = (RoleEnum)Enum.Parse(typeof(RoleEnum), item);
+                list.Add(new { id = (int)role, text = item });
+            }
+            return Json(list);
+        }
+
+        public ActionResult GetProductAttributeEnum()
+        {
+            List<object> list = new List<object>();
+
+
+            foreach (string item in Enum.GetNames(typeof(ProductAttributeEnum)))
+            {
+               
                 list.Add(new { id = item, text = item });
             }
             return Json(list);
@@ -184,7 +262,6 @@ namespace KeWeiOMS.Web.Controllers
             }
             else
             {
-
                 return Json(new { Success = false, Message = "请选择要上传的文件！" }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -221,6 +298,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult SetPrintData(string m, string r, string d, string t)
         {
+            d = d.Replace("\r", "").Replace("\n", ",");
             IList<OrderType> objectses = NSession.CreateQuery("from OrderType where IsAudit=0 and OrderNo IN('" +
                                    d.Replace(",", "','") + "')").List<OrderType>();
             string NotPrint = "";
@@ -230,8 +308,8 @@ namespace KeWeiOMS.Web.Controllers
             }
             string sql = "";
             sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.Id,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,O.IsSplit,O.IsRepeat,O.IsAudit,
-O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
-OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,P.OldSKU,P.Location,
+O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.TrackCode,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
+OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,P.OldSKU,P.Location,P.ProductName,
 R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn,
 R.Country as 'RCountry',R.PostCode as 'RPostCode',R.Province as 'RProvince' from Orders O 
 left join OrderProducts OP on o.Id=op.OId
@@ -255,25 +333,31 @@ left join ReturnAddress R On r.Id=" + r;
                 {
                     if (list.Contains(dr["OrderNo"].ToString()))
                     {
-                        dr.Delete();
+                      //dr.Delete();
                     }
                     else
                     {
                         list.Add(dr["OrderNo"].ToString());
                     }
                 }
-                ds.Tables[0].DefaultView.Sort = " OldSKU Asc";
+                ds.Tables[0].DefaultView.Sort = " OrderNo Asc";
 
             }
             DataTable dt = ds.Tables[0].DefaultView.ToTable();
             dt.Columns.Add("PrintName");
-            dt.Columns.Add("TrackCode");
+            dt.Columns.Add("AreaName");
+
             List<string> list2 = new List<string>();
             foreach (DataRow dr in dt.Rows)
             {
                 dr["PrintName"] = CurrentUser.Realname;
-                dr["TrackCode"] = "1372100" + dr["OrderNo"].ToString();
+                if (dr["LogisticMode"].ToString() == "BLS")
+                {
+                    dr["TrackCode"] = "1372100" + dr["OrderNo"].ToString();
+                }
 
+                object obj = NSession.CreateSQLQuery("select top 1 AreaName from [LogisticsArea] where LId = (select top 1 ParentID from LogisticsMode where LogisticsCode='" + dr["LogisticMode"] + "')  and Id =(select top 1 AreaCode from LogisticsAreaCountry where [LogisticsArea].Id=AreaCode  and CountryCode in (select ID from Country where ECountry='" + dr["Country"] + "') )").UniqueResult();
+                dr["AreaName"] = obj;
                 if (list2.Contains(dr["OrderNo"].ToString()))
                 {
                 }

@@ -148,6 +148,14 @@
             required: true,
             width: 200
         });
+        $('#e_ProductAttribute').combobox({
+            url: '/Home/GetProductAttributeEnum/',
+            valueField: 'id',
+            textField: 'text',
+
+            width: 200,
+            panelHeight: 'auto'
+        });
         $('#e_Location').combogrid({
             panelWidth: 360,
             idField: 'PositionsName',
@@ -289,7 +297,6 @@
                     <input type="hidden" id="rows2" name="rows2" />
                     @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.CreateOn)
-
                     @Html.HiddenFor(model => model.CreateBy)
                     @Html.HiddenFor(model => model.SPicUrl)
                     @Html.HiddenFor(model => model.PicUrl)
@@ -333,6 +340,14 @@
                 </td>
 
 
+            </tr>
+              <tr>
+                <td>
+                    @Html.LabelFor(model => model.ProductAttribute, "产品属性:")
+                </td>
+                <td colspan="5">
+                    @Html.TextBoxFor(model => model.ProductAttribute, new { @id = "e_ProductAttribute" })
+                </td>
             </tr>
         </table>
     </fieldset>
@@ -446,8 +461,20 @@
                     <td>
                         @Html.LabelFor(model => model.TotalWeight, "加上包装的重量:")
                     </td>
-                    <td colspan="5">
+                    <td>
                         @Html.TextBoxFor(model => model.TotalWeight, new { @id = "e_TotalWeight", @class = "easyui-validatebox", @required = "true" })
+                    </td>
+                     <td>
+                        @Html.LabelFor(model => model.Packer, "最小重量:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.MinWeight, new { @id = "e_MinWeight" })
+                    </td>
+                     <td>
+                        @Html.LabelFor(model => model.Packer, "最大重量:")
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(model => model.MaxWeight, new { @id = "e_MaxWeight" })
                     </td>
                 </tr>
             </table>

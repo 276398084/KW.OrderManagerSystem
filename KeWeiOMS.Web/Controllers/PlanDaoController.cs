@@ -41,6 +41,8 @@ namespace KeWeiOMS.Web.Controllers
                     {
                         obj.PlanId = plan[0].Id;
                         obj.PlanNo = plan[0].PlanNo;
+                        WarehouseType w = NSession.Get<WarehouseType>(obj.WId);
+                        obj.WName = w.WName;
                         obj.Price = Math.Round(plan[0].Price + plan[0].Freight / plan[0].Qty, 4);
                         obj.DaoOn = DateTime.Now;
                         obj.SendOn = DateTime.Now;
@@ -80,7 +82,7 @@ namespace KeWeiOMS.Web.Controllers
 
                     NSession.SaveOrUpdate(obj);
                     NSession.Flush();
-                    Utilities.StockIn(1, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo, NSession, true);
+                    Utilities.StockIn(obj.WId, obj.SKU, obj.RealQty, obj.Price, "采购到货", CurrentUser.Realname, obj.Memo, NSession, true);
                     return Json(new { IsSuccess = true });
                 }
                 return Json(new { ErrorMsg = "已经审核了", IsSuccess = false });
@@ -138,12 +140,15 @@ namespace KeWeiOMS.Web.Controllers
                     dr[4] = plan.BuyBy;
                     dr[5] = plan.PlanNo;
                     dr[6] = skuCodeType.Code;
-                    dt.Rows.Add(dr);
+                    dt.Rows.Add(dr);  
                     i++;
                 }
                 DataSet ds = new DataSet();
                 ds.Tables.Add(dt);
-
+                if(plan.ExpectReceiveOn <(new DateTime(2000, 1, 1)))
+                {
+                    plan.ExpectReceiveOn = new DateTime(2000, 1, 1);
+                }
                 PrintDataType data = new PrintDataType();
                 data.Content = ds.GetXml();
                 data.CreateOn = DateTime.Now;

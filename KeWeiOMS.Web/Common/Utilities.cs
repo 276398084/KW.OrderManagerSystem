@@ -143,6 +143,26 @@ namespace KeWeiOMS.Web
         }
 
 
+        public static object GetUnPeiQty(string sku, ISession NSession)
+        {
+            object obj = NSession.CreateQuery("select COUNT(Id) from SKUCodeType where SKU ='" + sku + "' and IsOut=0 group by SKU ").UniqueResult();
+            return obj == null ? "0" : obj;
+        }
+
+        public static string GetLastCai(string sku, ISession NSession)
+        {
+            IList<PurchasePlanType> list = NSession.CreateQuery("from PurchasePlanType where SKU ='" + sku + "' and Status not in('异常','已收到')  Order By ExpectReceiveOn desc").SetMaxResults(1).List<PurchasePlanType>();
+            if (list.Count > 0)
+            {
+                return list[0].ExpectReceiveOn.ToString("yyyy-MM-dd") + " 预计到货 " + list[0].Qty;
+            }
+            else
+            {
+                return "近期没有物品到货";
+            }
+        }
+
+
 
         #region 缩略图生成
         public static void DrawImageRectRect(Image imageFrom, string newImgPath, int width, int height)
@@ -279,7 +299,11 @@ namespace KeWeiOMS.Web
                     }
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_Time)) //需要查询的列名
                     {
-                        where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <=  '" + item.Value + "'";
+                        DateTime date = Convert.ToDateTime(item.Value);
+                        if (date.Hour == 0 && date.Minute == 0)
+                            where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <=  '" + date.ToString("yyyy-MM-dd 23:59:59") + "'";
+                        else
+                            where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <=  '" + item.Value + "'";
                         continue;
                     }
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(Start_Int)) //需要查询的列名
@@ -601,7 +625,6 @@ namespace KeWeiOMS.Web
         private static void AddToWarehouse(ProductType obj, ISession NSession, int Qty = 0)
         {
             IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
-
             //
             //在仓库中添加产品库存
             //
@@ -641,7 +664,7 @@ namespace KeWeiOMS.Web
                 stockOutType.Qty = num;
                 stockOutType.SKU = sku;
                 stockOutType.OutType = outType;
-                stockOutType.SourceQty = ws.Qty;
+                stockOutType.SourceQty = ws.Qty + num;
                 stockOutType.WId = wid;
                 stockOutType.Memo = memo;
                 NSession.Save(stockOutType);
@@ -663,14 +686,6 @@ namespace KeWeiOMS.Web
                 NSession.SaveOrUpdate(ws);
                 NSession.Flush();
                 SetComposeStock(sku, NSession);
-                if (price > 0)
-                {
-
-                    NSession.CreateQuery(" update ProductType set Price=" + price + " where  SKU=:p2").
-                        SetString("p2", sku).UniqueResult();
-                    NSession.Flush();
-
-                }
                 StockInType stockInType = new StockInType();
                 stockInType.IsAudit = 0;
                 if (isAudit)
@@ -682,11 +697,25 @@ namespace KeWeiOMS.Web
                 stockInType.InType = InType;
                 stockInType.Memo = memo;
                 stockInType.WName = ws.Warehouse;
-                stockInType.SourceQty = ws.Qty;
+                stockInType.SourceQty = ws.Qty - num;
                 stockInType.CreateBy = user;
                 stockInType.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(stockInType);
                 NSession.Flush();
+
+                if (price > 0)
+                {
+
+                    NSession.CreateSQLQuery(" update Products set Price=" + price + "  where  SKU='" + sku + "'")
+                      .UniqueResult();
+                    NSession.Flush();
+                }
+
+                IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Id in(select OId from OrderProductType where SKU ='" + sku + "' and IsQue=1) and IsOutOfStock=1").List<OrderType>();
+                foreach (OrderType item in orders)
+                {
+                    OrderHelper.SetQueOrder(item,NSession);
+                }
                 return true;
             }
             return false;
@@ -707,6 +736,7 @@ namespace KeWeiOMS.Web
             }
             return new String(c);
         }
+
 
         public static int ToInt(string str)
         {

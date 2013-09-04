@@ -1,0 +1,99 @@
+﻿@model KeWeiOMS.Domain.logisticsSetupType
+@{
+    Layout = null;
+}
+<script type="text/javascript">
+    $(function () {
+        //这里写加载下拉列表、修改编辑控件的初始化值
+	
+        $('#e_CreateOn').datebox();
+
+        $('#e_CreateBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+    });
+</script>
+@using (Html.BeginForm("Edit", "logisticsSetup", FormMethod.Post, new { id = "e_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Column_8:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="e_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Platform,"Platform:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Platform,new{@id="e_Platform"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SetupId,"SetupId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SetupId,new{@id="e_SetupId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SetupName,"SetupName:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SetupName,new{@id="e_SetupName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LId,"LId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LId,new{@id="e_LId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.LogisticsName,"logisticsName:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.LogisticsName,new{@id="e_LogisticsName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"CreateOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="e_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateBy,"CreatebY:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateBy,new{@id="e_CreateBy"})
+		</td>
+	</tr>
+
+
+    
+</table>
+</fieldset>
+}

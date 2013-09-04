@@ -34,10 +34,11 @@
         }
 
         //编辑框
-        function e_dlg() {
+    function e_dlg() {
+        var id = getselectedRow();
             var url = '@Url.Action("Edit","LogisticsArea")/' + id;
             if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
+                var url = '@Url.Action("Edit", "LogisticsArea")/' + id;
                 showdlg(url, 'e_dlg', ajaxEdit)
             }
         }
@@ -47,8 +48,8 @@
             formPost('c_form', '@Url.Action("Create", "LogisticsArea")', 'c_dlg', 'dg');
         }
         //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "LogisticsArea")', 'e_dlg', 'dg');
+    function ajaxEdit() {
+        formPost('e_form', '@Url.Action("Edit", "LogisticsArea")', 'e_dlg', 'dg');
         }
         //删除
         function del() {
@@ -132,11 +133,12 @@
 		</table>
         <div id="toolbar">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-@*        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
+       @* <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
         </div> 
         
     <div id="c_dlg"></div>
+     <div id="e_dlg"></div>
     <div id="setc_dlg"></div>
     <div id="setf_dlg"></div>
 

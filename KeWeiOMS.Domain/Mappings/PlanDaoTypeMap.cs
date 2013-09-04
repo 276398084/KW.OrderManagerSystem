@@ -37,6 +37,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.PlanId);
             Map(x => x.IsAudit);
             Map(x => x.SendOn);
+            Map(x => x.WId);
+            Map(x => x.WName).Length(200);
             Map(x => x.LogisticMode).Length(200);
             Map(x => x.TrackCode).Length(200);
             Map(x => x.PlanQty);
