@@ -86,9 +86,9 @@ namespace KeWeiOMS.Web
             {
 
                 IList<KeWeiOMS.Domain.OrderType> orderList = new List<KeWeiOMS.Domain.OrderType>();
-                if (orderType.IsMerger == 1)
+                if (orderType.IsMerger == 1 || orderType.OrderExNo.IndexOf("|") != -1)
                 {
-                    orderList = NSession.CreateQuery("from OrderType where MId='" + orderType.Id + "'").List<KeWeiOMS.Domain.OrderType>();
+                    orderList = NSession.CreateQuery("from OrderType where MId='" + orderType.Id + "' Or Id ='" + orderType.Id + "'").List<KeWeiOMS.Domain.OrderType>();
                 }
                 else
                 {
@@ -169,7 +169,7 @@ namespace KeWeiOMS.Web
                         call.Shipment = new ShipmentType();
                         call.Shipment.DeliveryStatus = eBay.Service.Core.Soap.ShipmentDeliveryStatusCodeType.Delivered;
                         call.Shipment.ShipmentTrackingDetails = new ShipmentTrackingDetailsTypeCollection();
-                        if (orderType.OrderNo == order.TrackCode || order.TrackCode == "" || order.TrackCode==null)
+                        if (orderType.OrderNo == order.TrackCode || order.TrackCode == "" || order.TrackCode == null)
                         {
                             //call.Shipment.ShipmentTrackingNumber = "";
                         }
@@ -178,7 +178,7 @@ namespace KeWeiOMS.Web
                             call.Shipment.ShippingCarrierUsed = CarrierUsed;
                             call.Shipment.ShipmentTrackingNumber = orderType.TrackCode.ToString();
                         }
-                       
+
                         call.Shipment.DeliveryDate = DateTime.Now;
                         call.Shipment.DeliveryDateSpecified = true;
                         call.Shipment.DeliveryStatus = ShipmentDeliveryStatusCodeType.Delivered;
