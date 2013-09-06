@@ -114,32 +114,19 @@
         <table id="dg">
             <thead>
                 <tr>
-                    <th field="Id" width="100" sortable="true" formatter="ShowOp">操作
-                    </th>
+                  
                     <th field="AccountName" width="200" sortable="true">账户名称
                     </th>
 
-                    <th field="AccountUrl" width="100" sortable="true">平台网址
-                    </th>
+                  
 
                     <th field="Platform" width="100" sortable="true">平台
                     </th>
-
-                    <th field="Status" width="100" sortable="true">状态
-                    </th>
-
-                    <th field="Description" width="100" sortable="true">描述
-                    </th>
-
-                    <th field="Manager" width="100" sortable="true">负责人
-                    </th>
-
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
             <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>

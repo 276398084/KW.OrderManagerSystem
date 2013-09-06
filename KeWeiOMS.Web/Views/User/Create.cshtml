@@ -31,7 +31,7 @@
             valueField: 'Id',
             textField: 'FullName',
             required: true
-           
+
         });
         $('#c_DId').combotree();
         $('#c_RoleId').combobox("setValue", "销售职员");
@@ -39,7 +39,7 @@
         $('#c_DId').combotree({
             url: '/Organize/BuMenList/1',
             required: true,
-            width:200
+            width: 200
         });
     });
 
@@ -57,12 +57,7 @@
     <fieldset>
         <table class="editForm">
             <tr>
-                <td>
-                    @Html.LabelFor(model => model.Code, "编号:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Code, new { @id = "c_Code" })
-                </td>
+
                 <td>
                     @Html.LabelFor(model => model.Username, "登录名:")
                 </td>
@@ -78,14 +73,7 @@
                 <td>
                     @Html.PasswordFor(model => model.Password, new { @id = "c_Password" })
                 </td>
-                <td>
-                    @Html.LabelFor(model => model.Password, "确认密码")
-                </td>
-                <td>
-                    <input type="password" name="repassword" id="repassword" required="true" class="easyui-validatebox" validtype="equalTo['#Password']" invalidmessage="两次输入密码不匹配" />
-                </td>
             </tr>
-
 
             <tr>
                 <td>
@@ -94,51 +82,8 @@
                 <td>
                     @Html.TextBoxFor(model => model.Realname, new { @id = "c_Realname" })
                 </td>
-                <td>
-                    @Html.LabelFor(model => model.RoleId, "角色:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.RoleId, new { @id = "c_RoleId" })
-                    @Html.HiddenFor(model => model.RoleName, new { @id = "c_RoleName" })
-                </td>
-            </tr>
-            <tr>
-
-                <td>
-                    @Html.LabelFor(model => model.CId, "公司:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.CId, new { @id = "c_CId" })
-                    @Html.HiddenFor(model => model.CompanyName, new { @id = "c_CompanyName" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.DId, "部门:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.DId, new { @id = "c_DId" })
-                    @Html.HiddenFor(model => model.DepartmentName, new { @id = "c_DepartmentName" })
-                </td>
-            </tr>
-
-
-
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Gender, "性别:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Gender, new { @id = "c_Gender" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.Birthday, "出生日期:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Birthday, new { @id = "c_Birthday" })
-                </td>
 
             </tr>
-
 
             <tr>
                 <td>
@@ -147,37 +92,26 @@
                 <td>
                     @Html.TextBoxFor(model => model.Mobile, new { @id = "c_Mobile" })
                 </td>
-                <td>
-                    @Html.LabelFor(model => model.Telephone, "电话:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Telephone, new { @id = "c_Telephone" })
-                </td>
+
             </tr>
 
-
-
-            <tr>
+             <tr>
                 <td>
-                    @Html.LabelFor(model => model.Email, "电子邮件:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Email, new { @id = "c_Email" })
-                </td>
-                <td>
-                    @Html.LabelFor(model => model.HomeAddress, "家庭住址:")
+                    @Html.LabelFor(model => model.HomeAddress, "地址:")
                 </td>
                 <td>
                     @Html.TextBoxFor(model => model.HomeAddress, new { @id = "c_HomeAddress" })
                 </td>
+
             </tr>
+
 
 
             <tr>
                 <td>
                     @Html.LabelFor(model => model.Description, "备注:")
                 </td>
-                <td colspan="3">
+                <td>
                     @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
                 </td>
             </tr>

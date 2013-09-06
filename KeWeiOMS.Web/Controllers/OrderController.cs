@@ -270,7 +270,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult ImportAmount(FormCollection form)
         {
-            string Platform = form["Platform"];
+            string Platform = "SMT";
             string Account = form["Account"];
             var account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             string file = form["hfile"];
@@ -283,7 +283,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                string Platform = form["Platform"];
+                string Platform = "SMT";
                 string Account = form["Account"];
                 var account = NSession.Get<AccountType>(Convert.ToInt32(Account));
                 string file = form["hfile"];
@@ -291,7 +291,7 @@ namespace KeWeiOMS.Web.Controllers
                 switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
                 {
                     case PlatformEnum.SMT:
-                        results = OrderHelper.ImportBySMT(account, file, NSession);
+                        results = OrderHelper.ImportBySMT(account, file, NSession, GetCurrentAccount());
                         break;
                     case PlatformEnum.Ebay:
                         break;
@@ -393,8 +393,9 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Synchronous(string Platform, int Account, DateTime st, DateTime et)
+        public ActionResult Synchronous(int Account, DateTime st, DateTime et)
         {
+            string Platform = "SMT";
             var account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             var results = new List<ResultInfo>();
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
@@ -406,7 +407,8 @@ namespace KeWeiOMS.Web.Controllers
                     results = OrderHelper.APIByB2C(account, st, et, NSession);
                     break;
                 case PlatformEnum.SMT:
-                    results = OrderHelper.APIBySMT(account, st, et, NSession);
+                    if (!string.IsNullOrEmpty(account.ApiToken))
+                        results = OrderHelper.APIBySMT(account, st, et, NSession, GetCurrentAccount());
                     break;
                 case PlatformEnum.Amazon:
                 case PlatformEnum.Gmarket:
@@ -2102,12 +2104,12 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                 where = Utilities.Resolve(search);
                 if (where.Length > 0)
                 {
-                    where = " where Enabled=1 and  Status" + flag + "'待处理' and " + where;
+                    where = " where UId='" + GetCurrentAccount().Id + "' and Enabled=1 and  Status" + flag + "'待处理' and " + where;
                 }
             }
             if (where.Length == 0)
             {
-                where = " where Enabled=1 and  Status" + flag + "'待处理'";
+                where = " where UId='" + GetCurrentAccount().Id + "' and Enabled=1 and  Status" + flag + "'待处理'";
             }
             IList<OrderType> objList = NSession.CreateQuery("from OrderType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))

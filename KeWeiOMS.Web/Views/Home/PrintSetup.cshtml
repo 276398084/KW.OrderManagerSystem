@@ -12,23 +12,7 @@
             width: 300,
             panelHeight: 'auto'
         });
-        $('#PrintType').combobox({
-            url: '/Home/PrintCategory',
-            valueField: 'id',
-            textField: 'text',
-            required: true,
-            width: 300,
-            panelHeight: 'auto'
-        });
-
-        $('#ReturnAddress').combobox({
-            url: '/ReturnAddress/QList',
-            valueField: 'Id',
-            textField: 'Street',
-            required: true,
-            width: 300,
-            panelHeight: 'auto'
-        });
+       
     })
 
 
@@ -36,7 +20,7 @@
         $.ajax({
             type: "POST",
             url: "/Home/SetPrintData",
-            data: "t=" + $("#PrintType").combobox("getValue") + "&m=" + $("#PrintTemp").combobox("getValue") + "&r=" + $("#ReturnAddress").combobox("getValue") + "&d=" + $("#txtData").val(),
+            data: "t=1&m=" + $("#PrintTemp").combobox("getValue") + "&d=" + $("#txtData").val(),
             success: function (msg) {
                 if (msg.IsSuccess != "") {
                     $('#printdata').val(msg.Result);
@@ -48,12 +32,13 @@
 </script>
 
 <table>
-    <tr>
-        <input type="hidden" id="printdata" />
+    <input type="hidden" id="printdata" />
+  @*  <tr>
+        
         <td>打印类型</td>
         <td>
             <input type="text" id="PrintType" /></td>
-    </tr>
+    </tr>*@
     <tr>
         <td>打印数据</td>
         <td>
@@ -64,12 +49,7 @@
         <td>
             <input type="text" id="PrintTemp" /></td>
     </tr>
-    <tr>
-        <td>回邮地址</td>
-        <td>
-            <input type="text" id="ReturnAddress" />
-        </td>
-    </tr>
+   
     <tr>
         <td></td>
         <td>

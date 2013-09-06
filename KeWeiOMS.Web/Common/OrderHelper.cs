@@ -44,7 +44,7 @@ namespace KeWeiOMS.Web
 
         }
 
-        public static List<ResultInfo> ImportBySMT(AccountType account, string fileName, ISession NSession)
+        public static List<ResultInfo> ImportBySMT(AccountType account, string fileName, ISession NSession,KeWeiOMS.Domain.UserType user)
         {
 
 
@@ -60,10 +60,10 @@ namespace KeWeiOMS.Web
                     continue;
                 }
 
-                bool isExist = IsExist(OrderExNo, NSession);
+                bool isExist = IsExist(OrderExNo, NSession,account.AccountName);
                 if (!isExist)
                 {
-                    OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.已处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
                     try
                     {
                         order.OrderNo = Utilities.GetOrderNo(NSession);
@@ -78,6 +78,7 @@ namespace KeWeiOMS.Web
                         order.Account = account.AccountName;
                         order.GenerateOn = Convert.ToDateTime(dr["付款时间"]);
                         order.Platform = PlatformEnum.SMT.ToString();
+                        order.UID = user.Id;
                         //舍弃原来的客户表
                         //下面地址
                         order.AddressId = CreateAddress(dr["收货人名称"].ToString(), dr["地址"].ToString(), dr["城市"].ToString(), dr["州/省"].ToString(), dr["收货国家"].ToString(), dr["收货国家"].ToString(), dr["联系电话"].ToString(), dr["手机"].ToString(), dr["买家邮箱"].ToString(), dr["邮编"].ToString(), 0, NSession);
@@ -383,9 +384,8 @@ namespace KeWeiOMS.Web
             return new DateTime(Convert.ToInt32(DateStr.Substring(0, 4)), Convert.ToInt32(DateStr.Substring(4, 2)), Convert.ToInt32(DateStr.Substring(6, 2)), Convert.ToInt32(DateStr.Substring(8, 2)), Convert.ToInt32(DateStr.Substring(10, 2)), Convert.ToInt32(DateStr.Substring(12, 2)));
         }
 
-        public static List<ResultInfo> APIBySMT(AccountType account, DateTime st, DateTime et, ISession NSession)
+        public static List<ResultInfo> APIBySMT(AccountType account, DateTime st, DateTime et, ISession NSession,KeWeiOMS.Domain.UserType user)
         {
-
             List<ResultInfo> results = new List<ResultInfo>();
             string token = AliUtil.RefreshToken(account);
             List<CountryType> countryTypes = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
@@ -414,7 +414,7 @@ namespace KeWeiOMS.Web
                                                           IsOutOfStock = 0,
                                                           IsRepeat = 0,
                                                           IsSplit = 0,
-                                                          Status = OrderStatusEnum.待处理.ToString(),
+                                                          Status = OrderStatusEnum.已处理.ToString(),
                                                           IsPrint = 0,
                                                           CreateOn = DateTime.Now,
                                                           ScanningOn = DateTime.Now
@@ -424,6 +424,7 @@ namespace KeWeiOMS.Web
                                 order.OrderExNo = ot.id.ToString();
                                 order.Amount = ot.orderAmount.amount;
                                 order.LogisticMode = o.productList[0].logisticsServiceName;
+                                order.UID = user.Id;
                                 CountryType country =
                                     countryTypes.Find(
                                         p => p.CountryCode.ToUpper() == ot.receiptAddress.country.ToUpper());
@@ -442,14 +443,14 @@ namespace KeWeiOMS.Web
                                 {
                                     order.BuyerMemo += p.memo;
                                 }
-                                OrderMsgType[] msgTypes = AliUtil.findOrderMsgByOrderId(token, order.OrderExNo);
+                                //OrderMsgType[] msgTypes = AliUtil.findOrderMsgByOrderId(token, order.OrderExNo);
 
-                                foreach (OrderMsgType orderMsgType in msgTypes)
-                                {
-                                    order.BuyerMemo += "<br/>" + orderMsgType.senderName + "  " +
-                                                       GetAliDate(orderMsgType.gmtCreate).ToString("yyyy-MM-dd HH:mm:ss") +
-                                                       ":" + orderMsgType.content + "";
-                                }
+                                //foreach (OrderMsgType orderMsgType in msgTypes)
+                                //{
+                                //    order.BuyerMemo += "<br/>" + orderMsgType.senderName + "  " +
+                                //                       GetAliDate(orderMsgType.gmtCreate).ToString("yyyy-MM-dd HH:mm:ss") +
+                                //                       ":" + orderMsgType.content + "";
+                                //}
                                 if (!string.IsNullOrEmpty(order.BuyerMemo))
                                     order.IsLiu = 1;
 

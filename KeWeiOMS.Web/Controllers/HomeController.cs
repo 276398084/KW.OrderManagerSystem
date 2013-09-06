@@ -172,9 +172,8 @@ namespace KeWeiOMS.Web.Controllers
         }
         public ActionResult AccountList(string id)
         {
-            IList<AccountType> list1 = NSession.CreateQuery(" from AccountType where Platform=:p").SetString("p", id).List<AccountType>();
+            IList<AccountType> list1 = NSession.CreateQuery(" from AccountType where Platform=:p and Status="+GetCurrentAccount().Id).SetString("p", id).List<AccountType>();
             List<object> list = new List<object>();
-            list.Add(new { id = "ALL", text = "ALL" });
             foreach (var item in list1)
             {
                 list.Add(new { id = item.Id, text = item.AccountName });
@@ -299,27 +298,20 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [OutputCache(Location = OutputCacheLocation.None)]
-        public ActionResult SetPrintData(string m, string r, string d, string t)
+        public ActionResult SetPrintData(string m, string d, string t)
         {
             d = d.Replace("\r", "").Replace("\n", ",");
             IList<OrderType> objectses = NSession.CreateQuery("from OrderType where IsAudit=0 and OrderNo IN('" +
                                    d.Replace(",", "','") + "')").List<OrderType>();
-            string NotPrint = "";
-            foreach (OrderType c in objectses)
-            {
-                NotPrint += c.OrderNo + " ;";
-            }
+          
             string sql = "";
             sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.Id,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,O.IsSplit,O.IsRepeat,O.IsAudit,
 O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.TrackCode,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
-OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,P.OldSKU,P.Location,P.ProductName,
-R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn,
-R.Country as 'RCountry',R.PostCode as 'RPostCode',R.Province as 'RProvince' from Orders O 
+OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn from Orders O 
 left join OrderProducts OP on o.Id=op.OId
 left join OrderAddress OA on o.AddressId=oa.Id
-Left Join Products P ON OP.SKU=P.SKU
-left join ReturnAddress R On r.Id=" + r;
-            sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "')";
+";
+            sql += " where  O.OrderNo IN('" + d.Replace(",", "','") + "') and UID="+GetCurrentAccount().Id;
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
@@ -336,7 +328,7 @@ left join ReturnAddress R On r.Id=" + r;
                 {
                     if (list.Contains(dr["OrderNo"].ToString()))
                     {
-                      dr.Delete();
+                      //dr.Delete();
                     }
                     else
                     {
@@ -356,11 +348,11 @@ left join ReturnAddress R On r.Id=" + r;
                 dr["PrintName"] = CurrentUser.Realname;
                 if (dr["LogisticMode"].ToString() == "BLS")
                 {
-                    dr["TrackCode"] = "1372100" + dr["OrderNo"].ToString();
+                    //dr["TrackCode"] = "1372100" + dr["OrderNo"].ToString();
                 }
 
-                object obj = NSession.CreateSQLQuery("select top 1 AreaName from [LogisticsArea] where LId = (select top 1 ParentID from LogisticsMode where LogisticsCode='" + dr["LogisticMode"] + "')  and Id =(select top 1 AreaCode from LogisticsAreaCountry where [LogisticsArea].Id=AreaCode  and CountryCode in (select ID from Country where ECountry='" + dr["Country"] + "') )").UniqueResult();
-                dr["AreaName"] = obj;
+                //object obj = NSession.CreateSQLQuery("select top 1 AreaName from [LogisticsArea] where LId = (select top 1 ParentID from LogisticsMode where LogisticsCode='" + dr["LogisticMode"] + "')  and Id =(select top 1 AreaCode from LogisticsAreaCountry where [LogisticsArea].Id=AreaCode  and CountryCode in (select ID from Country where ECountry='" + dr["Country"] + "') )").UniqueResult();
+                //dr["AreaName"] = obj;
                 if (list2.Contains(dr["OrderNo"].ToString()))
                 {
                 }
@@ -374,10 +366,7 @@ left join ReturnAddress R On r.Id=" + r;
             NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where OrderNo in ('" + d.Replace(",", "','") + "')").ExecuteUpdate();
             ds.Tables.Clear();
             ds.Tables.Add(dt);
-            if (NotPrint != "")
-            {
-                NotPrint = "有" + objectses.Count + "条订单没有审核，无法发打印，订单号：" + NotPrint;
-            }
+           
             PrintDataType data = new PrintDataType();
             data.Content = ds.GetXml();
             data.CreateOn = DateTime.Now;

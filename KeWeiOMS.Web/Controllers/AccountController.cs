@@ -36,6 +36,7 @@ namespace KeWeiOMS.Web.Controllers
                     if (!string.IsNullOrEmpty(obj.ApiToken) && obj.ApiToken.Trim().Length > 0)
                         obj.ApiToken = AliUtil.GetToken(obj.ApiToken.Trim());
                 }
+                obj.Status = GetCurrentAccount().Id;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -172,10 +173,11 @@ namespace KeWeiOMS.Web.Controllers
         {
             string orderby = Utilities.OrdeerBy(sort, order);
             string where = Utilities.SqlWhere(search);
-            IList<AccountType> objList = NSession.CreateQuery("from AccountType" + where + orderby)
+            IList<AccountType> objList = NSession.CreateQuery("from AccountType where Status = '" + GetCurrentAccount().Id + "'" + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows * page)
                 .List<AccountType>();
+
             object count = NSession.CreateQuery("select count(Id) from AccountType" + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }

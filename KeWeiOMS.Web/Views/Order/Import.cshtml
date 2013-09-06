@@ -48,23 +48,19 @@
                 });
             }
         });
-        $('#Platform').combobox({
-            url: '/Home/Platform',
+        $('#Account').combotree({
+            url: '/Home/AccountList/SMT',
             valueField: 'id',
             textField: 'text',
             required: true,
-            width: 150,
-            panelHeight: 'auto',
-            onChange: changePlatform
+            width: 150
         });
-        $('#Platform2').combobox({
-            url: '/Home/Platform',
+        $('#Account2').combotree({
+            url: '/Home/AccountList/SMT',
             valueField: 'id',
             textField: 'text',
             required: true,
-            width: 150,
-            panelHeight: 'auto',
-            onChange: changePlatform2
+            width: 150
         });
         var d = new Date(-1);
         $('#st').datebox({
@@ -73,10 +69,6 @@
         $('#et').datebox({
             required: true
         });
-        $('#Platform').combobox("setValue", "LT");
-        $('#Account').combotree("setValue", "ALL");
-        $('#Platform2').combobox("setValue", "LT");
-        $('#Account2').combotree("setValue", "ALL");
         $('#et').datebox("setValue", getStartDate(-1));
         $('#st').datebox("setValue", getStartDate(3));
     });
@@ -100,7 +92,7 @@
             required: true,
             width: 150
         });
-        $('#Account').combotree("setValue", "ALL");
+       
     }
     function addOrder() {
         $("#tt").tabs("loading", "导入中。。。");
@@ -191,11 +183,7 @@
         {
            
             <table class="dv-table" border="0" style="width: 400px; height: 250px;">
-                <tr>
-                    <td>平台:</td>
-                    <td>
-                        <input id="Platform" name="Platform" /></td>
-                </tr>
+              
                 <tr>
                     <td>账户:</td>
                     <td>
@@ -211,7 +199,7 @@
                     <td></td>
                     <td>
                         <input type="button" value="导入订单" onclick="addOrder();" />
-                        <input type="button" value="导入金额" onclick="importAmount();" />
+                       @* <input type="button" value="导入金额" onclick="importAmount();" />*@
                     </td>
                 </tr>
             </table>
@@ -252,7 +240,7 @@
             </table>
         }
     </div>
-    <div title="Gmarket追踪条码导出" style="overflow: auto; padding: 20px;">
+  @*  <div title="Gmarket追踪条码导出" style="overflow: auto; padding: 20px;">
         @using (Html.BeginForm("GExport", "Order", FormMethod.Post, new { id = "c_GExport" }))
         {
             <table class="dv-table" border="0" style="width: 400px; height: 250px;">
@@ -270,7 +258,7 @@
                 </tr>
             </table>
         }
-    </div>
+    </div>*@
 
 </div>
 

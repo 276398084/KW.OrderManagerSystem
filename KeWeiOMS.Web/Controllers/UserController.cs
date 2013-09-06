@@ -29,16 +29,16 @@ namespace KeWeiOMS.Web.Controllers
 
         public ActionResult ChangePassword()
         {
-            ViewData["Username"]=CurrentUser.Username;
-            return View(); 
+            ViewData["Username"] = CurrentUser.Username;
+            return View();
         }
 
-        public JsonResult Change(string oldpsd,string newpsd)
+        public JsonResult Change(string oldpsd, string newpsd)
         {
             try
             {
                 if (oldpsd == CurrentUser.Password)
-                { 
+                {
                     UserType obj = GetById(CurrentUser.Id);
                     obj.Password = newpsd;
                     NSession.Update(obj);
@@ -69,15 +69,11 @@ namespace KeWeiOMS.Web.Controllers
             try
             {
 
-                OrganizeType obj1 = NSession.Get<OrganizeType>(obj.DId);
-                if (obj1 != null)
+
+                IList<UserType> list = NSession.CreateQuery("from UserType where Username='" + obj.Username + "'").List<UserType>();
+                if (list.Count > 0)
                 {
-                    obj.DepartmentName = obj1.ShortName;
-                }
-                OrganizeType obj2 = NSession.Get<OrganizeType>(obj.CId);
-                if (obj2 != null)
-                {
-                    obj.CompanyName = obj2.ShortName;
+                    return Json(new { IsSuccess = false, ErrorMsg = "用户名重复！" });
                 }
                 obj.CreateOn = DateTime.Now;
                 obj.LastVisit = DateTime.Now;

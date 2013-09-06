@@ -13,8 +13,8 @@
             width: 150,
            onChange: pChange
         });
-        $('#c_Platform').combotree("setValue", "EBay");
-        pChange('Ebay', "");
+        $('#c_Platform').combotree("setValue", "SMT");
+        pChange('SMT', "");
     });
 
     function pChange(n, o) {
@@ -80,8 +80,7 @@
             }
         });
     }
-</script>1754b098-bea9-4062-a106-dfe70da16a54
-
+</script>
 @using (Html.BeginForm("Create", "Account", FormMethod.Post, new { id = "c_form" }))
 {
     <fieldset>
@@ -95,14 +94,7 @@
                 </td>
             </tr>
 
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.AccountUrl, "平台网址:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.AccountUrl, new { @id = "c_AccountUrl" })
-                </td>
-            </tr>
+            
 
             <tr id="tr1">
                 <td>
@@ -147,52 +139,6 @@
                     @Html.TextBoxFor(model => model.Platform, new { @id = "c_Platform" })
                 </td>
             </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Status, "状态:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Description, "描述:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Description, new { @id = "c_Description" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Manager, "负责人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Manager, new { @id = "c_Manager" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Phone, "负责人电话:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Phone, new { @id = "c_Phone" })
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Html.LabelFor(model => model.Email, "负责人邮箱:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.Email, new { @id = "c_Email" })
-                </td>
-            </tr>
-
 
         </table>
     </fieldset>
