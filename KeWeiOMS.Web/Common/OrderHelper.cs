@@ -46,17 +46,14 @@ namespace KeWeiOMS.Web
 
         public static List<ResultInfo> ImportBySMT(AccountType account, string fileName, ISession NSession,KeWeiOMS.Domain.UserType user)
         {
-
-
             List<ResultInfo> results = new List<ResultInfo>();
-
             foreach (DataRow dr in GetDataTable(fileName).Rows)
             {
                 string OrderExNo = dr["订单号"].ToString();
                 string o = dr["订单状态"].ToString();
-                if (o != "等待您发货")
+                if (o == "")
                 {
-                    results.Add(GetResult(OrderExNo, "订单已经发货", "导入失败"));
+                    results.Add(GetResult(OrderExNo, "状态为空", "导入失败"));
                     continue;
                 }
 
@@ -1025,7 +1022,7 @@ namespace KeWeiOMS.Web
                 SaveAmount(order, currencys, NSession);
                 if (order.IsStop == 0)
                 {
-                    // SetQueOrder(order, NSession);
+                    SetQueOrder(order, NSession);
                 }
             }
 

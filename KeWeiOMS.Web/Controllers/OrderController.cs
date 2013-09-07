@@ -1466,13 +1466,13 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-08-01 07:00:00'  and Status='已发货' and Platform='Ebay' and Account in('jinbostore','Linxiaosellor')")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where OrderStatus='已处理'")
                 //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where IsOutOfStock=1 ")
             .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
-                //OrderHelper.SetQueOrder(orderType, NSession);
-                UploadTrackCode(orderType);
+                OrderHelper.SetQueOrder(orderType, NSession);
+                //UploadTrackCode(orderType);
                 //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
                 //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
                 //NSession.SaveOrUpdate(orderType);
