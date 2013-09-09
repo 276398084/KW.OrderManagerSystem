@@ -1464,13 +1464,21 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-08-20 07:00:00'  and Status='已发货' and Platform='Ebay' and Account='EbayGamesalor'")
-                //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where IsOutOfStock=1 ")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-05 07:00:00'  and Status='已发货' and Platform='SMT' ")
+               // IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已处理' ")
             .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
-                //OrderHelper.SetQueOrder(orderType, NSession);
-                UploadTrackCode(orderType);
+               // OrderHelper.SetQueOrder(orderType, NSession);
+                try
+                {
+                    UploadTrackCode(orderType);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+              
                 //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
                 //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
                 //NSession.SaveOrUpdate(orderType);
@@ -1579,7 +1587,6 @@ left join OrderAddress OA on O.AddressId=OA.Id";
             }
             if (o.Platform == PlatformEnum.SMT.ToString())
             {
-                return;
                 string CarrierUsed = "";
                 IList<logisticsSetupType> setups = NSession.CreateQuery("from  logisticsSetupType where LId in (select ParentID from LogisticsModeType where LogisticsCode='" + o.LogisticMode + "') and Platform='SMT'").List<logisticsSetupType>();
                 if (setups.Count > 0)

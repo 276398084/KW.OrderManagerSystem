@@ -1024,7 +1024,7 @@ namespace KeWeiOMS.Web
                 SaveAmount(order, currencys, NSession);
                 if (order.IsStop == 0)
                 {
-                    // SetQueOrder(order, NSession);
+                     SetQueOrder(order, NSession);
                 }
             }
 
