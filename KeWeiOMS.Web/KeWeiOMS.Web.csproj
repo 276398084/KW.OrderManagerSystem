@@ -195,6 +195,7 @@
     <Compile Include="Controllers\OrderPeiRecordController.cs" />
     <Compile Include="Controllers\OrderProductController.cs" />
     <Compile Include="Controllers\OrderRecordController.cs" />
+    <Compile Include="Controllers\OrderReturnRecordController.cs" />
     <Compile Include="Controllers\OrganizeController.cs" />
     <Compile Include="Controllers\PaypalAccountController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
@@ -1205,7 +1206,8 @@
     <Content Include="Views\UserSetup\Details.cshtml" />
     <Content Include="Views\UserSetup\Edit.cshtml" />
     <Content Include="Views\UserSetup\Index.cshtml" />
-    <Content Include="Views\Order\副本 Index.cshtml" />
+    <Content Include="Views\Order\OrderReturnList.cshtml" />
+    <Content Include="Views\Order\ReturnScan.cshtml" />
     <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

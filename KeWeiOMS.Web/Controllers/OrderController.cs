@@ -95,6 +95,14 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult ReturnScan()
+        {
+            return View();
+        }
+        public ActionResult OrderReturnList()
+        {
+            return View();
+        }
 
         public ActionResult QuestionScan()
         {
@@ -1464,7 +1472,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-05 07:00:00'  and Status='已发货' and Platform='SMT' ")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-09 07:00:00'  and Status='已发货'")
                // IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已处理' ")
             .List<OrderType>();
             foreach (OrderType orderType in objList)

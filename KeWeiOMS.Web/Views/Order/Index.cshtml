@@ -712,7 +712,7 @@
                     search: ""
                 });
             }
-            if (v == '待处理' || v == '已处理' || v == '待拣货' || v == '待包装' || v == '待发货' || v == '已发货' || v == '已完成' || v == '作废订单') {
+            if (v == '退货订单' ||||v == '待处理' || v == '已处理' || v == '待拣货' || v == '待包装' || v == '待发货' || v == '已发货' || v == '已完成' || v == '作废订单') {
                 $('#OrderStatus').combobox("setValue", v);
                 $("#dg").datagrid("load", {
                     search: "IsAudit_ds&1^IsStop_ds&0^Status_es&" + v
@@ -748,6 +748,7 @@
             <li><a href="javascript:selectlist('待发货')">待发货</a></li>
             <li><a href="javascript:selectlist('已发货')">已发货</a></li>
             <li><a href="javascript:selectlist('已完成')">已完成</a></li>
+            <li><a href="javascript:selectlist('退货订单')">退货订单</a></li>
             <li><a href="javascript:selectlist('缺货订单')">缺货订单</a></li>
             <li><a href="javascript:selectlist('停售订单')">停售订单</a></li>
             <li><a href="javascript:selectlist('等待审核')">等待审核</a></li>

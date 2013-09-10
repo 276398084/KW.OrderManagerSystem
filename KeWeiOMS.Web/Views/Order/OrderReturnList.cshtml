@@ -1,0 +1,171 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderReturnRecordType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "OrderReturnRecord")',
+            pageNumber: 1,
+            pageSize: 20,
+            pageList: [20, 40, 60, 80, 100]
+        });
+
+    });
+
+
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "OrderReturnRecord")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit", "OrderReturnRecord")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Module")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "OrderReturnRecord")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "OrderReturnRecord")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "OrderReturnRecord")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "OrderReturnRecord")', 's_dlg', 'dg');
+    }
+
+    </script>
+    <div region="center">
+        <table id="dg"
+            toolbar="#toolbar"
+            rownumbers="true" singleselect="true" pagination="true">
+            <thead>
+                <tr>
+
+
+                    <th field="OrderNo" width="100">OrderNo
+                    </th>
+
+                    <th field="OrderExNO" width="100">OrderExNO
+                    </th>
+
+                    <th field="OId" width="100">OId
+                    </th>
+
+                    <th field="ReturnType" width="100">ReturnType
+                    </th>
+
+                    <th field="ReturnLogisticsMode" width="100">ReturnLogisticsMode
+                    </th>
+
+
+                    <th field="OldTrackCode" width="100">OldTrackCode
+                    </th>
+
+
+
+                    <th field="BuyerName" width="100">BuyerName
+                    </th>
+
+                    <th field="Account" width="100">Account
+                    </th>
+
+                    <th field="Platform" width="100">Platform
+                    </th>
+
+                    <th field="CreateOn" formatter="getDate" width="100">添加时间
+                    </th>
+
+                    <th field="CreateBy" width="100">添加人
+                    </th>
+
+                    <th field="Amount" width="100">Amount
+                    </th>
+
+                    <th field="Country" width="100">Country
+                    </th>
+
+                    <th field="CurrencyCode" width="100">CurrencyCode
+                    </th>
+
+                    <th field="OrderCreateOn" formatter="getDate" width="100">同步时间
+                    </th>
+
+                    <th field="OrderSendOn" formatter="getDate" width="100">扫描时间
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Id'">Id</div>
+            <div data-options="name:'OrderNo'">OrderNo</div>
+            <div data-options="name:'OrderExNO'">OrderExNO</div>
+            <div data-options="name:'OId'">OId</div>
+            <div data-options="name:'ReturnType'">ReturnType</div>
+            <div data-options="name:'ReturnLogisticsMode'">ReturnLogisticsMode</div>
+            <div data-options="name:'NewLogisticsMode'">NewLogisticsMode</div>
+            <div data-options="name:'OldTrackCode'">OldTrackCode</div>
+            <div data-options="name:'NewTrackCode'">NewTrackCode</div>
+            <div data-options="name:'BuyerName'">BuyerName</div>
+            <div data-options="name:'Account'">Account</div>
+            <div data-options="name:'Platform'">Platform</div>
+            <div data-options="name:'Amount'">Amount</div>
+            <div data-options="name:'Country'">Country</div>
+            <div data-options="name:'CurrencyCode'">CurrencyCode</div>
+
+
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+</body>
