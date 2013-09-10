@@ -328,7 +328,7 @@ left join OrderAddress OA on o.AddressId=oa.Id
                 {
                     if (list.Contains(dr["OrderNo"].ToString()))
                     {
-                      //dr.Delete();
+                      dr.Delete();
                     }
                     else
                     {
