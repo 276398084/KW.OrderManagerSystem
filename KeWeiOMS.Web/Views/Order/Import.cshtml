@@ -22,7 +22,7 @@
                 if (type == 1) {
                     formPost('c_Import', '@Url.Action("ImportAmount", "Order")');
                 } else {
-                    formPost('c_Import', '@Url.Action("Import", "Order")', null, null, null, '@Url.Action("Result", "Home")');
+                    formPost3('@Url.Action("Import", "Order")', '@Url.Action("Result", "Home")');
                 }
                 $('#c_Import').clear();
             }
@@ -132,6 +132,33 @@
             },
             success: function (result) {
                 result = eval('(' + result + ')');
+                if (result.IsSuccess) {
+                    alert("操作成功");
+                } else {
+                    if (result.ErrorMsg)
+                        alert("保存失败!" + result.ErrorMsg);
+                    else {
+                        alert("保存失败!");
+                    }
+                }
+                if (result.Info) {
+                    closeLoad();
+                    window.open(r);
+
+
+                }
+            }
+        });
+    }
+
+    function formPost3(url, r) {
+        jQuery.ajax({
+            url: url,
+            type: "post",
+            data: "a=" + $('#Account').combotree("getValue") + "&f=" + $('#hfile').val(),
+            success: function (result) {
+               // alert
+               // result = eval('(' + result + ')');
                 if (result.IsSuccess) {
                     alert("操作成功");
                 } else {

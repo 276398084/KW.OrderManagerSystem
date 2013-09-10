@@ -279,14 +279,14 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult Import(FormCollection form)
+        public ActionResult Import(string a, string f)
         {
             try
             {
                 string Platform = "SMT";
-                string Account = form["Account"];
+                string Account = a;
                 var account = NSession.Get<AccountType>(Convert.ToInt32(Account));
-                string file = form["hfile"];
+                string file = f;
                 var results = new List<ResultInfo>();
                 switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
                 {
