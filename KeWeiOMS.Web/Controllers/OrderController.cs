@@ -395,7 +395,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult Synchronous(int Account, DateTime st, DateTime et)
         {
-            string Platform = "SMT";
+            string Platform = "Ebay";
             var account = NSession.Get<AccountType>(Convert.ToInt32(Account));
             var results = new List<ResultInfo>();
             switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
@@ -1315,7 +1315,6 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                                 }
 
                             }
-
                         }
                         if (desc.Length > 0)
                         {

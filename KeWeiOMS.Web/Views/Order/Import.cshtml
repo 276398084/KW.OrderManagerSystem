@@ -125,13 +125,13 @@
     }
 
     function formPost2(form, url, r) {
-        $('#' + form).form('submit', {
+        jQuery.ajax({
             url: url,
-            onSubmit: function () {
-                return $(this).form('validate');
-            },
+            type: "post",
+            data: "a=" + $('#Account').combotree("getValue") + "&st=" + $('#st').combobox("getValue") + "&et=" + $('#et').combobox("getValue"),
             success: function (result) {
-                result = eval('(' + result + ')');
+                // alert
+                // result = eval('(' + result + ')');
                 if (result.IsSuccess) {
                     alert("操作成功");
                 } else {
@@ -148,7 +148,6 @@
 
                 }
             }
-        });
     }
 
     function formPost3(url, r) {
@@ -204,7 +203,7 @@
 </script>
 
 
-<div id="tt" class="easyui-tabs" style="width: 600px; height: 400px;">
+@*<div id="tt" class="easyui-tabs" style="width: 600px; height: 400px;">
     <div title="订单导入" style="padding: 20px;">
         @using (Html.BeginForm("Import", "Order", FormMethod.Post, new { id = "c_Import" }))
         {
@@ -226,22 +225,19 @@
                     <td></td>
                     <td>
                         <input type="button" value="导入订单" onclick="addOrder();" />
-                       @* <input type="button" value="导入金额" onclick="importAmount();" />*@
+                      
                     </td>
                 </tr>
             </table>
         }
-    </div>
+    </div>*@
+
     <div title="订单同步" style="overflow: auto; padding: 20px;">
         @using (Html.BeginForm("Synchronous", "Order", FormMethod.Post, new { id = "c_Synchronous" }))
         {
            
             <table class="dv-table" border="0" style="width: 400px; height: 250px;">
-                <tr>
-                    <td>平台:</td>
-                    <td>
-                        <input id="Platform2" name="Platform" /></td>
-                </tr>
+               
                 <tr>
                     <td>账户:</td>
                     <td>
