@@ -152,10 +152,12 @@ namespace KeWeiOMS.Web.Controllers
         {
             string orderby = Utilities.OrdeerBy(sort, order);
             string where = Utilities.SqlWhere(search);
-            List<WarehouseStockType> objList = NSession.CreateQuery(" from WarehouseStockType " + where + orderby)
-                .SetFirstResult(rows * (page - 1))
-                .SetMaxResults(rows)
-                .List<WarehouseStockType>().ToList();
+
+
+            List<WarehouseStockType> objList = NSession.CreateSQLQuery("select *,(select COUNT(Id) from SKUCode S where S.SKU = WS.sku and IsOut=0 group by SKU) as UnPeiQty from WarehouseStock WS" + where + orderby).AddEntity(typeof(WarehouseStockType))
+               .SetFirstResult(rows * (page - 1))
+               .SetMaxResults(rows)
+               .List<WarehouseStockType>().ToList();
             string ids = "";
             foreach (var warehouseStockType in objList)
             {

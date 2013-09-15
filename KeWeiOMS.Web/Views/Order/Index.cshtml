@@ -5,7 +5,9 @@
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
     <script type="text/javascript">
+
         $(function () {
+           
             $('#dg').datagrid({
                 url: '@Url.Action("List", "Order")',
                 pageNumber: 1,
@@ -38,7 +40,7 @@
                     $('#dg').datagrid('fixDetailRowHeight', index);
                 }
             });
-
+            alert("2");
             $('#Platform').combobox({
                 url: '/Home/Platform/1',
                 valueField: 'id',

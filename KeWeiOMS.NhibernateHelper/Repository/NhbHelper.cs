@@ -42,7 +42,7 @@ namespace KeWeiOMS.NhibernateHelper
                                .AddFromAssembly(Assembly.Load("KeWeiOMS.Domain"))
                                .Conventions.Add<EnumConvention>()
                                .Conventions.Add<HasManyConvention>())
-                               .ExposeConfiguration(build_schema)
+                              // .ExposeConfiguration(build_schema)
                            .BuildConfiguration();
 
             //Session绑定配置

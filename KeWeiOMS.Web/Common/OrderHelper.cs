@@ -827,10 +827,11 @@ namespace KeWeiOMS.Web
                 product.SKU = "";
             if (product.SKU.IndexOf("+") != -1)
             {
+                int qty = product.Qty;
                 foreach (string fo in product.SKU.Split(new char[] { '+' }, StringSplitOptions.RemoveEmptyEntries))
                 {
 
-
+                    product.Qty = qty;
                     product.Id = 0;
                     if (fo != null)
                         product.SKU = fo.Trim();

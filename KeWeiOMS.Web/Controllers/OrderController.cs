@@ -1034,15 +1034,49 @@ namespace KeWeiOMS.Web.Controllers
             string sql =
                 @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderCurrencyCode,OrderFees,OrderCurrencyCode2,OrderFees2,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.Freight,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发',O.BuyerName   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
+            string sql2 = "";
             if (t == 1)
             {
-                sql = @"select TrackCode as '追踪号',OA.City as '收件人城市名',OA.Addressee as '收件人全名',oa.Street+' '+oa.City+' '+OA.Province+' '+OA.Country+' '+OA.PostCode as '收件人详细地址',oa.Phone+'('+oa.Tel+')' as '收件人电话','' as 寄件人详细地址及姓名,OP.Title as '物品名称',OP.Qty as '数量',o.weight as '重量',10 as '申报价值','China' as '原产地' from Orders O
+                sql = @"select TrackCode as '跟踪号',OA.City as '收件人城市名',OA.Addressee as '收件人全名',oa.Street+' '+oa.City+' '+OA.Province+' '+OA.Country+' '+OA.PostCode as '收件人详细地址',oa.Phone+'('+oa.Tel+')' as '收件人电话','' as 寄件人详细地址及姓名,OP.Title as '物品名称',OP.Qty as '数量',o.weight as '重量',10 as '申报价值','China' as '原产地' from Orders O
 left join OrderProducts OP on O.Id=OP.OId
 left join OrderAddress OA on O.AddressId=OA.Id";
+                //跟踪号	物品中文名称	物品英文名称(不能超过50个字符）	数量	单件重量	单价	原产地
+            }
+
+            if (t == 2)
+            {
+                sql = @"select  TrackCode as '运单码',C.CCountry as '寄达国家（中文）',O.Country as '寄达国家（英文）',OA.Province as '州名',OA.City as '城市名',
+isnull(oa.Street,'')+','+isnull(oa.City,'')+','+isnull(OA.Province,'')+','+isnull(OA.Country,'')+','+isnull(OA.PostCode,'') as '收件人详细地址',OA.Addressee as '收件人姓名',isnull(oa.Phone,'')+'('+isnull(oa.Tel,'')+')' as '收件人电话','KeXin Road 28, Ningbo, ZheJiang,China' as '寄件人详细地址（英文）','胡启雄' as '寄件人姓名','87910330' as '寄件人电话','1' as '内件类型代码' from Orders O
+left join OrderAddress OA on O.AddressId=OA.Id
+left join Country C On O.Country=C.ECountry";
+                sql2 = @"select TrackCode as '跟踪号','物品' as '物品中文名称',OP.Title as '物品英文名称(不能超过50个字符）',OP.Qty as '数量',o.weight as '单件重量',10 as '价值','China' as '原产地' from Orders O
+left join OrderProducts OP on O.Id=OP.OId
+left join OrderAddress OA on O.AddressId=OA.Id";
+                //运单码	寄达国家（中文）	寄达国家（英文）	州名	城市名	收件人详细地址	收件人姓名	收件人电话	寄件人详细地址（英文）	寄件人姓名	寄件人电话	内件类型代码
+                //
+                //
             }
             sql += " where  O.IsError =0 and O.Enabled=1 and O." + s + " in('" +
                    ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
+
             DataSet ds = GetOrderExport(sql, t);
+            if (sql2.Length > 5)
+            {
+                sql2 += " where  O.IsError =0 and O.Enabled=1 and O." + s + " in('" +
+                     ids.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "") + "')";
+                DataSet ds2 = GetOrderExport(sql2, t);
+
+                DataTable dt = ds2.Tables[0].Clone();
+                foreach (DataRow item in ds2.Tables[0].Rows)
+                {
+                    dt.Rows.Add(item.ItemArray);
+                }
+                dt.TableName = "Sheet2";
+                ds.Tables.Add(dt);
+                ds.Tables[0].TableName = "Sheet1";
+
+            }
+
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
@@ -1102,7 +1136,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
             int i = 1;
             var list = new List<string>();
             string str = "";
-            if (t == 1)
+            if (t != 0)
             {
                 return ds;
             }
@@ -1472,12 +1506,12 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-09 07:00:00'  and Status='已发货'")
-               // IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已处理' ")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-12 07:00:00'  and Status='已发货'")
+                // IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已处理' ")
             .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
-               // OrderHelper.SetQueOrder(orderType, NSession);
+                // OrderHelper.SetQueOrder(orderType, NSession);
                 try
                 {
                     UploadTrackCode(orderType);
@@ -1486,7 +1520,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                 {
                     continue;
                 }
-              
+
                 //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
                 //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
                 //NSession.SaveOrUpdate(orderType);
@@ -1637,7 +1671,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
+                if (order.Status == OrderStatusEnum.待拣货.ToString())
                 {
                     if (order.IsOutOfStock != 1)
                     {
@@ -1687,7 +1721,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
+                if (order.Status == OrderStatusEnum.待拣货.ToString())
                 {
                     LoggerUtil.GetOrderRecord(order, "缺货扫描", CurrentUser.Realname + "将订单添加到 添加到缺货订单中！", CurrentUser,
                                               NSession);

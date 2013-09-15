@@ -281,7 +281,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult SellCount(DateTime st, DateTime et, string a, string p, string s, int page, int rows)
         {
-            var list = GetSellCount(st, et, a, p, s,page,rows);
+            var list = GetSellCount(st, et, a, p, s, page, rows);
             List<object> footers = new List<object>();
             var sqlWhere = SqlWhere(st, et, a, p, s);
             if (sqlWhere.Length > 3)
@@ -295,7 +295,7 @@ namespace KeWeiOMS.Web.Controllers
             object obj = NSession.CreateSQLQuery(string.Format(
                           "select COUNT(1) from ( select SKU from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU ) as tbl",
                           sqlWhere)).UniqueResult();
-          return Json(new { rows = list.OrderByDescending(f => f.Qty), total = obj });
+            return Json(new { rows = list.OrderByDescending(f => f.Qty), total = obj });
         }
         public JsonResult GetOrder(string id)
         {
@@ -352,7 +352,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string s, int page=0, int rows=0)
+        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string s, int page = 0, int rows = 0)
         {
             var sqlWhere = SqlWhere(st, et, a, p, s);
             if (sqlWhere.Length > 3)
@@ -377,10 +377,11 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.CreateSQLQuery(
                     string.Format(
                         "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
-                        sqlWhere)).            
+                        sqlWhere)).
             List<object[]>();
             }
-            else{
+            else
+            {
                 objs =
                 NSession.CreateSQLQuery(
                     string.Format(
@@ -542,6 +543,7 @@ namespace KeWeiOMS.Web.Controllers
             }
 
             s = SqlWhere(a, p, s, "");
+            s = s.Replace("SKU", "OP.SKU");
             if (s.Length > 0)
             {
                 s = " and " + s;
@@ -573,7 +575,7 @@ isnull((select SUM(Qty) from   Orders O left join OrderProducts OP On O.Id=OP.OI
 from (
 select OP.SKU,SUM(OP.Qty) as Qty,MIN(O.CreateOn) as MinDate,P.Standard,
 (select isnull(SUM(Qty-DaoQty),0) from PurchasePlan 
-where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty
+where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU ) as BuyQty
 from Orders O left join OrderProducts OP On O.Id=OP.OId 
 left join Products P on OP.SKU=P.SKU 
 where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and OP.SKU is not null {0} group by OP.SKU,P.Standard)
@@ -611,6 +613,7 @@ where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and 
         public JsonResult ExportQue(string s, string p, string a, string c)
         {
             s = SqlWhere(a, p, s, "");
+            s = s.Replace("SKU", "OP.SKU");
             if (s.Length > 0)
             {
                 s = " and " + s;
@@ -642,7 +645,7 @@ isnull((select SUM(Qty) from   Orders O left join OrderProducts OP On O.Id=OP.OI
 from (
 select OP.SKU,SUM(OP.Qty) as Qty,MIN(O.CreateOn) as MinDate,P.Standard,
 (select isnull(SUM(Qty-DaoQty),0) from PurchasePlan 
-where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU and BuyOn>MIN(O.CreateOn)) as BuyQty
+where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU ) as BuyQty
 from Orders O left join OrderProducts OP On O.Id=OP.OId 
 left join Products P on OP.SKU=P.SKU 
 where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and OP.SKU is not null {0} group by OP.SKU,P.Standard)
@@ -716,7 +719,7 @@ where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and 
             }
             if (!string.IsNullOrEmpty(ss) && ss != "ALL")
             {
-                sqlWhere += " OP.SKU like '%" + ss + "%' and";
+                sqlWhere += " SKU like '%" + ss + "%' and";
             }
             if (sqlWhere.Length > 4)
                 sqlWhere = sqlWhere.Substring(0, sqlWhere.Length - 3);
