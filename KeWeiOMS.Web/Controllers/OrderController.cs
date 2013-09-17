@@ -1049,7 +1049,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 isnull(oa.Street,'')+','+isnull(oa.City,'')+','+isnull(OA.Province,'')+','+isnull(OA.Country,'')+','+isnull(OA.PostCode,'') as '收件人详细地址',OA.Addressee as '收件人姓名',isnull(oa.Phone,'')+'('+isnull(oa.Tel,'')+')' as '收件人电话','KeXin Road 28, Ningbo, ZheJiang,China' as '寄件人详细地址（英文）','胡启雄' as '寄件人姓名','87910330' as '寄件人电话','1' as '内件类型代码' from Orders O
 left join OrderAddress OA on O.AddressId=OA.Id
 left join Country C On O.Country=C.ECountry";
-                sql2 = @"select TrackCode as '跟踪号','物品' as '物品中文名称',OP.Title as '物品英文名称(不能超过50个字符）',OP.Qty as '数量',o.weight as '单件重量',10 as '价值','China' as '原产地' from Orders O
+                sql2 = @"select TrackCode as '跟踪号','物品' as '物品中文名称',OP.Title as '物品英文名称(不能超过50个字符）',OP.Qty as '数量',o.weight as '单件重量',10 as '单价','China' as '原产地' from Orders O
 left join OrderProducts OP on O.Id=OP.OId
 left join OrderAddress OA on O.AddressId=OA.Id";
                 //运单码	寄达国家（中文）	寄达国家（英文）	州名	城市名	收件人详细地址	收件人姓名	收件人电话	寄件人详细地址（英文）	寄件人姓名	寄件人电话	内件类型代码
@@ -1069,6 +1069,10 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                 DataTable dt = ds2.Tables[0].Clone();
                 foreach (DataRow item in ds2.Tables[0].Rows)
                 {
+                    if (item["物品英文名称(不能超过50个字符）"].ToString().Length > 48)
+                    {
+                        item["物品英文名称(不能超过50个字符）"] = item["物品英文名称(不能超过50个字符）"].ToString().Substring(0, 45);
+                    }
                     dt.Rows.Add(item.ItemArray);
                 }
                 dt.TableName = "Sheet2";
@@ -1506,15 +1510,16 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-12 07:00:00'  and Status='已发货'")
-                // IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已处理' ")
+           // IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-13 07:00:00'  and Status='已发货'")
+                 IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
             .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
                 // OrderHelper.SetQueOrder(orderType, NSession);
                 try
                 {
-                    UploadTrackCode(orderType);
+                    //UploadTrackCode(orderType);
+                    OrderHelper.SetQueOrder(orderType, NSession);
                 }
                 catch (Exception)
                 {

@@ -1025,7 +1025,7 @@ namespace KeWeiOMS.Web
                 SaveAmount(order, currencys, NSession);
                 if (order.IsStop == 0)
                 {
-                     SetQueOrder(order, NSession);
+                    SetQueOrder(order, NSession);
                 }
             }
 
@@ -1053,6 +1053,7 @@ namespace KeWeiOMS.Web
         public static void SetQueOrder(OrderType order, ISession NSession)
         {
             ///计算产品是否是缺货订单--确定定位：设置缺货标记，设置产品占位标记，根据订单审核时间设置。订单统一设置。
+            if (order.Enabled == 0) return;
             bool isUse = true;
             bool isold = false;
             if (order.IsOutOfStock == 1)
