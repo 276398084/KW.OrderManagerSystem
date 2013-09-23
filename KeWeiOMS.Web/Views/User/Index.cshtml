@@ -83,13 +83,14 @@
         }
         //删除
         function del() {
-            var ids = getselectedRows();
+            var ids = getselectedRow();
+          
             if (ids != undefined) {
                 if (confirm("你确定要删除吗？")) {
                     jQuery.ajax({
-                        url: '@Url.Action("Delete", "Order")',
+                        url: '@Url.Action("Delete", "User")',
                         type: "post",
-                        data: "o=" + ids.join(','),
+                        data: "Id=" + ids,
                         success: function (sss) {
                             $('#dg').datagrid("reload");
                         }
