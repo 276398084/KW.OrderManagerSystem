@@ -698,6 +698,7 @@ namespace KeWeiOMS.Web.Controllers
                 obj.OrderNo = Utilities.GetOrderNo(NSession);
                 obj.MId = Utilities.ToInt(o);
                 NSession.Save(obj);
+
                 NSession.Flush();
                 LoggerUtil.GetOrderRecord(obj, "发货拆分订单！", "拆分新建！", CurrentUser, NSession);
             }
@@ -861,22 +862,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Flush();
             var ps = JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
             NSession.Clear();
-            //obj.Amount = 0;
-            //obj.IsPrint = 0;
-            //obj.IsRepeat = 1;
-            //obj.TrackCode = "";
-            //obj.Freight = 0;
-            //obj.Weight = 0;
-            //obj.CreateOn = DateTime.Now;
-            //if (obj.MId == 0)
-            //    obj.MId = obj.Id;
-            //obj.RMB = 0;
-            //obj.Status = OrderStatusEnum.已处理.ToString();
-            //obj.IsOutOfStock = 0;
-            //obj.IsAudit = 0;
-            //obj.OrderNo = Utilities.GetOrderNo(NSession);
-            //NSession.Save(obj);
-            //NSession.Flush();
+      
             CreateNewOrder(obj, 1);
             foreach (OrderProductType orderProductType in ps)
             {
@@ -1510,16 +1496,16 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
 
             //计算利润
-           // IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-13 07:00:00'  and Status='已发货'")
-                 IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
-            .List<OrderType>();
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-17 07:00:00'  and Status='已发货'")
+                //  IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
+             .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
                 // OrderHelper.SetQueOrder(orderType, NSession);
                 try
                 {
-                    //UploadTrackCode(orderType);
-                    OrderHelper.SetQueOrder(orderType, NSession);
+                    UploadTrackCode(orderType);
+                    //OrderHelper.SetQueOrder(orderType, NSession);
                 }
                 catch (Exception)
                 {
@@ -2237,8 +2223,7 @@ select SKU,SUM(Qty) as Qty,(select isnull(SUM(Qty),0) from WarehouseStock where 
             {
                 objlist =
                     NSession.CreateQuery("from OrderType where (Id=:p1 or MId=:p1) and Id <> :p2").SetInt32("p1",
-                                                                                                            obj.MId).
-                        SetInt32("p2", obj.Id).List<OrderType>();
+                                                                                                            obj.MId).SetInt32("p2", obj.Id).List<OrderType>();
             }
             else
             {

@@ -148,7 +148,7 @@ namespace KeWeiOMS.Web.Controllers
 
             foreach (string item in Enum.GetNames(typeof(ProductAttributeEnum)))
             {
-               
+
                 list.Add(new { id = item, text = item });
             }
             return Json(list);
@@ -316,7 +316,10 @@ left join OrderProducts OP on o.Id=op.OId
 left join OrderAddress OA on o.AddressId=oa.Id
 Left Join Products P ON OP.SKU=P.SKU
 left join ReturnAddress R On r.Id=" + r;
-            sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "')";
+
+
+            //2013.9.22 添加 sal不打印,直接硬编码.--> 看后期是否可以变成过滤模块吧，
+            sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "') and O.LogisticMode not like '%sal%'";
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
@@ -333,7 +336,7 @@ left join ReturnAddress R On r.Id=" + r;
                 {
                     if (list.Contains(dr["OrderNo"].ToString()))
                     {
-                      dr.Delete();
+                        dr.Delete();
                     }
                     else
                     {
@@ -348,6 +351,7 @@ left join ReturnAddress R On r.Id=" + r;
             dt.Columns.Add("AreaName");
 
             List<string> list2 = new List<string>();
+          
             foreach (DataRow dr in dt.Rows)
             {
                 dr["PrintName"] = CurrentUser.Realname;
@@ -365,10 +369,11 @@ left join ReturnAddress R On r.Id=" + r;
                 {
                     LoggerUtil.GetOrderRecord(Convert.ToInt32(dr["Id"]), dr["OrderNo"].ToString(), "订单打印", CurrentUser.Realname + "订单打印！", CurrentUser, NSession);
                     list2.Add(dr["OrderNo"].ToString());
+               
                 }
             }
             //标记打印
-            NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where OrderNo in ('" + d.Replace(",", "','") + "')").ExecuteUpdate();
+            NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where  IsAudit=1 and  OrderNo IN('" + d.Replace(",", "','") + "') and LogisticMode not like '%sal%'").ExecuteUpdate();
             ds.Tables.Clear();
             ds.Tables.Add(dt);
             if (NotPrint != "")
