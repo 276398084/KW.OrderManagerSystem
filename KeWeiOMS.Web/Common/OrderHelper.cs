@@ -1232,7 +1232,7 @@ namespace KeWeiOMS.Web
         #endregion
 
         #region 订单4项属性替换
-        public static bool ReplaceBySKU(string ids, string oldValue, string newValue, ISession NSession)
+        public static bool ReplaceBySKU(string ids, string newValue, ISession NSession)
         {
 
             string sql = "";
@@ -1240,18 +1240,15 @@ namespace KeWeiOMS.Web
             {
                 ids = " and OId in(" + ids + ") ";
             }
-            if (!string.IsNullOrEmpty(oldValue))
-            {
-                oldValue = " and SKU='" + oldValue + "' ";
-            }
-            sql = "update OrderProductType set SKU='{0}' where Id in(select Id from OrderType where Status='待处理')  {1} {2}";
-            sql = string.Format(sql, newValue, oldValue, ids);
+
+            sql = "update OrderProductType set SKU='{0}' where Id in(select Id from OrderType where Status='待处理')  {2}";
+            sql = string.Format(sql, newValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             return Query.ExecuteUpdate() > 0;
 
         }
 
-        public static bool ReplaceByCountry(string ids, string oldValue, string newValue, ISession NSession)
+        public static bool ReplaceByCountry(string ids, string newValue, ISession NSession)
         {
 
             string sql = "";
@@ -1260,24 +1257,19 @@ namespace KeWeiOMS.Web
                 ids = " and  Id in(" + ids + ")";
 
             }
-            if (!string.IsNullOrEmpty(oldValue))
-            {
-                oldValue = " and Country='" + oldValue + "' ";
-            }
-
-            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where 1=1 and Id in(select AddressId from OrderType where Status='待处理'  {2}  )  {1}";
-            sql = string.Format(sql, newValue, oldValue, ids);
+            sql = "update OrderAddressType set Country='{0}',CountryCode='{0}' where 1=1 and Id in(select AddressId from OrderType where Status='待处理'){1}";
+            sql = string.Format(sql, newValue, ids);
             IQuery Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
-            sql = "update OrderType set Country='{0}' where Status='待处理' {1} {2}";
-            sql = string.Format(sql, newValue, oldValue, ids.Replace("OId", "Id"));
+            sql = "update OrderType set Country='{0}' where Status='待处理' {2}";
+            sql = string.Format(sql, newValue, ids.Replace("OId", "Id"));
             Query = NSession.CreateQuery(sql);
             Query.ExecuteUpdate();
 
             return true;
         }
 
-        public static bool ReplaceByCurrencyOrLogistic(string ids, string oldValue, string newValue, int type, ISession NSession)
+        public static bool ReplaceByCurrencyOrLogistic(string ids, string newValue, int type, ISession NSession)
         {
 
             string sql = "";
@@ -1286,13 +1278,7 @@ namespace KeWeiOMS.Web
                 ids = " and Id in(" + ids + ")  ";
 
             }
-            if (!string.IsNullOrEmpty(oldValue))
-            {
-                if (type == 1)
-                    ids += " and  CurrencyCode='" + oldValue + "'  ";
-                else
-                    ids += " and  LogisticMode='" + oldValue + "'  ";
-            }
+
             if (type == 1)
                 sql = "update OrderType set CurrencyCode='{0}' where  Status='待处理' {1}";
             else

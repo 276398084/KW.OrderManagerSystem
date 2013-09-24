@@ -144,29 +144,27 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditOrderReplace(string ids, string oldField, string newField, string fieldName)
+        public ActionResult EditOrderReplace(string ids, string newField, string fieldName)
         {
             switch (fieldName)
             {
                 case "Country":
-                    OrderHelper.ReplaceByCountry(ids, oldField, newField, NSession);
+                    OrderHelper.ReplaceByCountry(ids,  newField, NSession);
                     break;
                 case "SKU":
-                    OrderHelper.ReplaceBySKU(ids, oldField, newField, NSession);
+                    OrderHelper.ReplaceBySKU(ids,  newField, NSession);
                     break;
                 case "CurrencyCode":
-                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, oldField, newField, 1, NSession);
+                    OrderHelper.ReplaceByCurrencyOrLogistic(ids,  newField, 1, NSession);
                     break;
                 case "LogisticMode":
-                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, oldField, newField, 0, NSession);
+                    OrderHelper.ReplaceByCurrencyOrLogistic(ids,  newField, 0, NSession);
                     break;
                 default:
                     break;
             }
-            IQuery Query =
-                NSession.CreateQuery(string.Format("update {3} set {0}='{1}' where {0}='{2}'", fieldName, newField,
-                                                   oldField, fieldName == "SKU" ? "OrderProductType" : "OrderType"));
-            int num = Query.ExecuteUpdate();
+           // IQuery Query =                NSession.CreateQuery(string.Format("update {3} set {0}='{1}' where {0}='{2}'", fieldName, newField,                                                   oldField, fieldName == "SKU" ? "OrderProductType" : "OrderType"));
+           // int num = Query.ExecuteUpdate();
             return Json(new { IsSuccess = true });
         }
 
@@ -1496,8 +1494,8 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-17 07:00:00'  and Status='已发货'")
-                //  IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-20 07:00:00'  and Status='已发货'")
+                //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
              .List<OrderType>();
             foreach (OrderType orderType in objList)
             {
