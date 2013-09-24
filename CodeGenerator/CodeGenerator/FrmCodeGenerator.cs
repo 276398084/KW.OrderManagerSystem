@@ -905,13 +905,13 @@ namespace CodeGenerator
                 overwrite = this.BuilderEditPage(this.txtOutput.Text, overwrite);
 
                 //// 生成删除页面
-                overwrite = this.BuilderDeletePage(this.txtOutput.Text, overwrite);
+                //overwrite = this.BuilderDeletePage(this.txtOutput.Text, overwrite);
 
                 //// 生成列表页面
                 overwrite = this.BuilderListPage(this.txtOutput.Text, overwrite);
 
                 //// 生成详细页面
-                overwrite = this.BuilderDetailsPage(this.txtOutput.Text, overwrite);
+               // overwrite = this.BuilderDetailsPage(this.txtOutput.Text, overwrite);
                 //// 生成Controller页面
                 overwrite = this.BuilderController(this.txtOutput.Text, overwrite);
 

@@ -49,7 +49,8 @@ namespace CodeGenerator.Business
 
         public void GetEasyCreateInit(string tableName)
         {
-       
+            int a = 0;
+            int b = 0;
             XmlNode xmlNode = this.GetXmlNode(tableName);
             for (int i = 0; i < xmlNode.ChildNodes.Count; i++)
             {
@@ -123,47 +124,73 @@ namespace CodeGenerator.Business
                             ejs.AppendLine("");
                         }
 
-                        chtml.AppendLine("	<tr>");
-                        chtml.AppendLine("		<td>");
-                        chtml.AppendLine(string.Format("            @Html.LabelFor(model => model.{0},\"{1}:\")", fieldKey, fieldName));
+                        if (a == 0)
+                        {
+                            chtml.AppendLine("	<tr>");
+                            ehtml.AppendLine("	<tr>");
+                        }
+                        chtml.AppendLine("		<td align=\"right\">");
+                        chtml.AppendLine(string.Format("            {0}：", fieldName));
                         chtml.AppendLine("		</td>");
-                        chtml.AppendLine("		<td>");
-                        chtml.AppendLine(string.Format("            @Html.TextBoxFor(model => model.{0},new{{@id=\"c_{0}\"}})", fieldKey));
+                        chtml.AppendLine("		<td align=\"left\">");
+                        chtml.AppendLine(string.Format("            <input class='easyui-validatebox' type='text' name='{0}' id='{0}'  data-options=\"required:true\"></input>", fieldKey));
                         chtml.AppendLine("		</td>");
-                        chtml.AppendLine("	</tr>");
-                        chtml.AppendLine("");
-
-                        ehtml.AppendLine("	<tr>");
-                        ehtml.AppendLine("		<td>");
-                        ehtml.AppendLine(string.Format("            @Html.LabelFor(model => model.{0},\"{1}:\")", fieldKey, fieldName));
+                        a++;
+                        ehtml.AppendLine("		<td align=\"right\">");
+                        ehtml.AppendLine(string.Format("            {0}：", fieldName));
                         ehtml.AppendLine("		</td>");
-                        ehtml.AppendLine("		<td>");
-                        ehtml.AppendLine(string.Format("            @Html.TextBoxFor(model => model.{0},new{{@id=\"e_{0}\"}})", fieldKey));
+                        ehtml.AppendLine("		<td align=\"left\">");
+                        ehtml.AppendLine(string.Format("            <input  type='text' name='{0}' id='{0}' value='@Model.{0}' ></input>", fieldKey));
                         ehtml.AppendLine("		</td>");
-                        ehtml.AppendLine("	</tr>");
-                        ehtml.AppendLine("");
-
-                        ihtml.AppendLine(string.Format("            <th field=\"{0}\" width=\"100\">", fieldKey));
-                        ihtml.AppendLine(string.Format("                {0}", fieldName));
-                        ihtml.AppendLine("            </th>");
-                        ihtml.AppendLine("");
-
-                        detailhtml.AppendLine(string.Format("    <div class=\"display-label\">{0}</div>", fieldName));
-                        detailhtml.AppendLine("    <div class=\"display-field\">");
-                        detailhtml.AppendLine(string.Format("        @Html.DisplayFor(model => model.{0})", fieldKey));
-                        detailhtml.AppendLine("    </div>");
-                        detailhtml.AppendLine("");
+                        if (a == 2)
+                        {
+                            chtml.AppendLine("	</tr>");
+                            ehtml.AppendLine("	</tr>");
+                            a = 0;
+                        }
 
 
-                        easySearch.AppendLine(string.Format(@"            <div data-options=""name:'{0}'"">{1}</div>", fieldKey, fieldName));
+                        ////以上添加和修改页面修改完成
 
+                        //生成Grid字段
+                        if (j == 0)
+                        {
+                            ihtml.AppendLine("[[");
+                        }
+                        ihtml.AppendLine("{ title: '"+fieldName+"', field: '"+fieldKey+"', width: 80, sortable: true },");
+                           if (j == xmlNode.ChildNodes[i].ChildNodes.Count - 1)
+                        {
+                            ihtml = ihtml.Remove(ihtml.Length - 1, 0);
+                            ihtml.AppendLine("]]");
+                        }
+                        if (b == 0)
+                        {
+                            easySearch.AppendLine("<tr>");
+                        }
+                        easySearch.AppendLine(string.Format(@"            <td><label>{1}:</label><input type='text' id='txt{0}' /></td>", fieldKey, fieldName));
+                        b++;
 
+                        if (b == 4)
+                        {
+                            if (j == xmlNode.ChildNodes[i].ChildNodes.Count - 1)
+                            {
+                                easySearch.AppendLine("<a href='#' class='easyui-linkbutton' iconcls='icon-search' onclick='doSearch();'>查询</a>");
+                            }
+                            easySearch.AppendLine("</tr>");
+                            b = 0;
+                        }
 
                     }
+                    if (b != 0)
+                    {
+                        easySearch.AppendLine("<a href='#' class='easyui-linkbutton' iconcls='icon-search' onclick='doSearch();'>查询</a>");
+                        easySearch.AppendLine("</tr>");
+                    }
+
                     break;
                 }
             }
-          
+
         }
 
     }

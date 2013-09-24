@@ -15,7 +15,6 @@ namespace KeWeiOMS.Web
 
         public const string EbayAppKey = "";
 
-
         public const string VERSION = "Version";
 
         public const string TIME_OUT = "TimeOut";
@@ -27,9 +26,6 @@ namespace KeWeiOMS.Web
         public const string EPS_SERVER_URL = "Environment.EpsServerUrl";
 
         public const string SIGNIN_URL = "Environment.SignInUrl";
-
-
-
 
     }
 }

@@ -40,7 +40,7 @@ namespace KeWeiOMS.Web
             dic.Add("redirect_uri", "http://127.0.0.1/");
             dic.Add("state", "sss");
             dic.Add("_aop_signature", SMTConfig.Sign("", dic, false));
-           // System.Diagnostics.Process.Start(url + SMTConfig.GetParamUrl(dic));
+            // System.Diagnostics.Process.Start(url + SMTConfig.GetParamUrl(dic));
 
             return url + SMTConfig.GetParamUrl(dic);
         }
@@ -89,13 +89,13 @@ namespace KeWeiOMS.Web
             return Newtonsoft.Json.JsonConvert.DeserializeObject<OrderMsgType[]>(c);
         }
 
-        public static string sellerShipment(string token, string orderExNo, string trackCode, string serviceName,bool isALL=false)
+        public static string sellerShipment(string token, string orderExNo, string trackCode, string serviceName, bool isALL = false)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
             dic.Add(SMTConfig.fieldAccessToken, token);
             dic.Add("serviceName", serviceName);
             dic.Add("logisticsNo", trackCode);
-            if(isALL)
+            if (isALL)
                 dic.Add("sendType", "all");
             else
                 dic.Add("sendType", "part");
@@ -108,6 +108,7 @@ namespace KeWeiOMS.Web
         {   // 总是接受    
             return true;
         }
+
         public static string PostWebRequest(string postUrl, string paramData, bool isFile = false, byte[] stream = null)
         {
             string ret = string.Empty;

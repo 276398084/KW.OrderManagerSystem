@@ -251,8 +251,12 @@
             var id = getselectedRow();
             if (id != undefined) {
                 window.open('@Url.Action("Edit", "Order")/' + id);
-            }
         }
+    }
+
+    function exportexcel() {
+        
+    }
     </script>
 
     <div region="center">
@@ -287,6 +291,7 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_order()">编辑</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint();">打印</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="exportexcel();">导出邮局清单</a>
             <br />
 
             账户<input type="text" id="Account" />

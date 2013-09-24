@@ -4,102 +4,124 @@
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
+
 <script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","<#ControllerRootName#>")',
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100]
+        var grid;
+        $(function () {
+            grid = $('#dg').datagrid({
+                url: '/<#ControllerRootName#>/List',
+                pageNumber: 1,
+                idField: 'Id',
+                iconCls: 'icon-view',
+                height: 650,
+                width: function () { return document.body.clientWidth * 0.9 },
+                nowrap: true,
+                autoRowHeight: false,
+                striped: true,
+                collapsible: true,
+                pagination: true,
+                pageSize: 100,
+                pageList: [50, 100, 200],
+                rownumbers: true,
+                remoteSort: false,
+                columns: <#ihtml#>,
+                toolbar: [{
+                    id: 'btnAdd',
+                    text: '添加',
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        ShowAddOrViewDialog();//实现添加记录的页面
+                    }
+                }, '-', {
+                    id: 'btnEdit',
+                    text: '修改',
+                    iconCls: 'icon-edit',
+                    handler: function () {
+                        ShowEditOrViewDialog();//实现修改记录的方法
+                    }
+                }, '-', {
+                    id: 'btnDelete',
+                    text: '删除',
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        del(grid, '/AliShop/Delete');//实现直接删除数据的方法
+                    }
+                }, '-', {
+                    id: 'btnView',
+                    text: '查看',
+                    iconCls: 'icon-view',
+                    handler: function () {
+                        ShowEditOrViewDialog("view");//实现查看记录详细信息的方法
+                    }
+                }, '-', {
+                    id: 'btnReload',
+                    text: '刷新',
+                    iconCls: 'icon-reload',
+                    handler: function () {
+                        //实现刷新栏目中的数据
+                        grid.datagrid("reload");
+                    }
+                }]
+            });
+
         });
 
-    });
 
-
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","<#ControllerRootName#>")';
-            showdlg(url_str, 'c_dlg', ajaxAdd)
+        function ShowAddOrViewDialog() {
+            parent.$.modalDialog({
+                title: '添加数据',
+                width: 650,
+                height: 350,
+                href: '/<#ControllerRootName#>/Create',
+                buttons: [{
+                    text: '添加',
+                    handler: function () {
+                        parent.$.modalDialog.penner_grid = grid;//将grid绑定到公共变量中
+                        var f = parent.$.modalDialog.handler.find('#form');
+                        f.submit();
+                    }
+                }]
+            });
         }
 
         //编辑框
-        function e_dlg() {
-            var url = '@Url.Action("Edit","<#ControllerRootName#>")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "Module")/' + id;
-                showdlg(url, 'e_dlg', ajaxEdit)
-            }
-        }
-
-        //异步新建提交
-        function ajaxAdd() {
-            formPost('c_form', '@Url.Action("Create", "<#ControllerRootName#>")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "<#ControllerRootName#>")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
-                var url = '@Url.Action("Delete", "<#ControllerRootName#>")/' + id;
-                alert(1);
-                delData(url, 'dg');
-
-            }
-        }
-
-    //获取选中行
-    function getselectedRow() {
-        var row = $('#dg').datagrid('getSelected');
-        if (row != undefined) {
-            if (row.hasOwnProperty('Id')) {
-                var id = row['Id'];
-                return id;
-            }
-        }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-     function doSearch() {
-                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-                $("#dg").datagrid("load", {
-                    search: search
+        function ShowEditOrViewDialog() {
+            var id = getselectedRow(grid);
+            if (id) {
+                parent.$.modalDialog({
+                    title: '编辑数据',
+                    width: 650,
+                    height: 300,
+                    href: '/<#ControllerRootName#>/edit/' + id,
+                    buttons: [{
+                        text: '修改',
+                        handler: function () {
+                            parent.$.modalDialog.penner_grid = grid;//将grid绑定到公共变量中
+                            var f = parent.$.modalDialog.handler.find('#form');
+                            f.submit();
+                        }
+                    }]
                 });
-      }
-    function ShowAdvanced() {
-    showSrarch('@Url.Action("Search", "<#ControllerRootName#>")', 's_dlg', 'dg');
-      }		
+            }
+        }
 
-</script>
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            grid.datagrid("load", {
+                search: search
+            });
+        }
+    </script>
 <div region="center">
-<table id="dg" class="easyui-datagrid" 
-           toolbar="#toolbar"  
-           rownumbers="true" fitColumns="true" singleSelect="true" pagination="true" fit="true">  
-        <thead>  
-        <tr>
-<#ihtml#>
-    	</tr>
-		</thead>
+	<fieldset>
+        <legend>数据查询</legend>
+        <table border="0">
+			<#easySearch#>
 		</table>
-        <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  
-		  <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-            <a href="#" class="easyui-linkbutton" iconcls="icon-search" plain="true" onclick="ShowAdvanced();">Advanced</a>
-        </div> 
-		<div id="mm" style="width: 120px">
-            <#easySearch#>
-        </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
-
+    </fieldset>
+	<table id="dg">  
+	</table>
+       
 </div>
 </body>
