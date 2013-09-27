@@ -306,7 +306,7 @@ namespace KeWeiOMS.Web.Controllers
           
             string sql = "";
             sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.Id,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,O.IsSplit,O.IsRepeat,O.IsAudit,
-O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.TrackCode,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
+O.BuyerMemo,O.CreateOn,O.SellerMemo,O.Freight,O.Weight,O.TrackCode,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
 OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn from Orders O 
 left join OrderProducts OP on o.Id=op.OId
 left join OrderAddress OA on o.AddressId=oa.Id

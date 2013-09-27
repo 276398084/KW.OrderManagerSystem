@@ -395,12 +395,9 @@ namespace KeWeiOMS.Web
                     aliOrderList = AliUtil.findOrderListQuery(token, page);
                     if (aliOrderList.totalItem != 0)
                     {
-
                         foreach (var o in aliOrderList.orderList)
                         {
-
                             bool isExist = IsExist(o.orderId.ToString(), NSession);
-
                             if (!isExist)
                             {
                                 AliOrderType ot = AliUtil.findOrderById(token, o.orderId.ToString());

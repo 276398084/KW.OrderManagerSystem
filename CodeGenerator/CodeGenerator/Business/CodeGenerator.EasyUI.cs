@@ -133,22 +133,23 @@ namespace CodeGenerator.Business
                         chtml.AppendLine(string.Format("            {0}：", fieldName));
                         chtml.AppendLine("		</td>");
                         chtml.AppendLine("		<td align=\"left\">");
-                        chtml.AppendLine(string.Format("            <input class='easyui-validatebox' type='text' name='{0}' id='{0}'  data-options=\"required:true\"></input>", fieldKey));
+                        chtml.AppendLine(string.Format("            <input  type='text' name='{0}' id='{0}' ></input>", fieldKey));
                         chtml.AppendLine("		</td>");
-                        a++;
+
+
                         ehtml.AppendLine("		<td align=\"right\">");
                         ehtml.AppendLine(string.Format("            {0}：", fieldName));
                         ehtml.AppendLine("		</td>");
                         ehtml.AppendLine("		<td align=\"left\">");
                         ehtml.AppendLine(string.Format("            <input  type='text' name='{0}' id='{0}' value='@Model.{0}' ></input>", fieldKey));
                         ehtml.AppendLine("		</td>");
+                        a++;
                         if (a == 2)
                         {
                             chtml.AppendLine("	</tr>");
                             ehtml.AppendLine("	</tr>");
                             a = 0;
                         }
-
 
                         ////以上添加和修改页面修改完成
 
@@ -157,33 +158,41 @@ namespace CodeGenerator.Business
                         {
                             ihtml.AppendLine("[[");
                         }
-                        ihtml.AppendLine("{ title: '"+fieldName+"', field: '"+fieldKey+"', width: 80, sortable: true },");
-                           if (j == xmlNode.ChildNodes[i].ChildNodes.Count - 1)
+                        ihtml.Append("{ title: '" + fieldName + "', field: '" + fieldKey + "', width: 80, sortable: true }");
+                        if (j == xmlNode.ChildNodes[i].ChildNodes.Count - 1)
                         {
                             ihtml = ihtml.Remove(ihtml.Length - 1, 0);
                             ihtml.AppendLine("]]");
+                        }
+                        else
+                        {
+                            ihtml.AppendLine(",");
                         }
                         if (b == 0)
                         {
                             easySearch.AppendLine("<tr>");
                         }
-                        easySearch.AppendLine(string.Format(@"            <td><label>{1}:</label><input type='text' id='txt{0}' /></td>", fieldKey, fieldName));
+                        easySearch.AppendLine(string.Format(@"            <td><label>{1}:</label><input type='text' id='txt{0}' />", fieldKey, fieldName));
                         b++;
 
                         if (b == 4)
                         {
                             if (j == xmlNode.ChildNodes[i].ChildNodes.Count - 1)
                             {
-                                easySearch.AppendLine("<a href='#' class='easyui-linkbutton' iconcls='icon-search' onclick='doSearch();'>查询</a>");
+                                easySearch.AppendLine("<a href='#' class='easyui-linkbutton' iconcls='icon-search' onclick='doSearch();'>查询</a></td>");
                             }
                             easySearch.AppendLine("</tr>");
                             b = 0;
+                        }
+                        else
+                        {
+                            easySearch.AppendLine("            </td>");
                         }
 
                     }
                     if (b != 0)
                     {
-                        easySearch.AppendLine("<a href='#' class='easyui-linkbutton' iconcls='icon-search' onclick='doSearch();'>查询</a>");
+                        easySearch.AppendLine("<a href='#' class='easyui-linkbutton' iconcls='icon-search' onclick='doSearch();'>查询</a></td>");
                         easySearch.AppendLine("</tr>");
                     }
 
