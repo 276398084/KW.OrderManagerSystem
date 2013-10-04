@@ -272,7 +272,7 @@ namespace KeWeiOMS.Web
             }
             return xmlString;
         }
-        public static string Resolve(string search)
+        public static string Resolve(string search, bool iso = true)
         {
             string where = string.Empty;
             int flagWhere = 0;
@@ -300,7 +300,7 @@ namespace KeWeiOMS.Web
                     if (!string.IsNullOrWhiteSpace(item.Key) && !string.IsNullOrWhiteSpace(item.Value) && item.Key.Contains(End_Time)) //需要查询的列名
                     {
                         DateTime date = Convert.ToDateTime(item.Value);
-                        if (date.Hour == 0 && date.Minute == 0)
+                        if (date.Hour == 0 && date.Minute == 0 && iso)
                             where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <=  '" + date.ToString("yyyy-MM-dd 23:59:59") + "'";
                         else
                             where += item.Key.Remove(item.Key.IndexOf(End_Time)) + " <=  '" + item.Value + "'";
@@ -714,7 +714,7 @@ namespace KeWeiOMS.Web
                 IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Id in(select OId from OrderProductType where SKU ='" + sku + "' and IsQue=1) and IsOutOfStock=1").List<OrderType>();
                 foreach (OrderType item in orders)
                 {
-                    OrderHelper.SetQueOrder(item,NSession);
+                    OrderHelper.SetQueOrder(item, NSession);
                 }
                 return true;
             }

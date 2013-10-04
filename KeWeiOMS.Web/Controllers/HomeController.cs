@@ -308,7 +308,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             string sql = "";
             sql = @"select (select COUNT(1) from OrderProducts where OrderProducts.OId=O.id) as 'GCount',O.IsPrint as 'PCount' ,O.Id,O.OrderNo,o.OrderExNo,O.Account,O.Platform,O.Amount,O.CurrencyCode,O.BuyerEmail,O.BuyerName,O.LogisticMode,O.IsSplit,O.IsRepeat,O.IsAudit,
-O.BuyerMemo,O.SellerMemo,O.Freight,O.Weight,O.TrackCode,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
+O.BuyerMemo,O.SellerMemo,O.CreateOn,O.Freight,O.Weight,O.TrackCode,O.Country,OA.Addressee,OA.Street,OA.County,OA.City,OA.Province,
 OA.Phone,OA.Tel,OA.PostCode,OA.CountryCode,OP.SKU,OP.Standard,OP.Remark,OP.Title,OP.Qty,OP.ExSKU,P.OldSKU,P.Category,P.SPicUrl,P.OldSKU,P.Location,P.ProductName,
 R.RetuanName ,R.City as 'RCity',R.Street as 'RStreet',R.Phone as 'RPhone',R.Tel as 'RTel',R.County as 'RCounty',(select top 1 CCountry from Country where ECountry=O.Country) as CCountry,O.GenerateOn,
 R.Country as 'RCountry',R.PostCode as 'RPostCode',R.Province as 'RProvince' from Orders O 
@@ -319,7 +319,7 @@ left join ReturnAddress R On r.Id=" + r;
 
 
             //2013.9.22 添加 sal不打印,直接硬编码.--> 看后期是否可以变成过滤模块吧，
-            sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "') and O.LogisticMode not like '%sal%'";
+            sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "') and O.LogisticMode not like '%sal%' and O.Account not in ('wunderschoen_dream')";
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;

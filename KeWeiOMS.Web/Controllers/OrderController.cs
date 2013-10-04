@@ -149,22 +149,22 @@ namespace KeWeiOMS.Web.Controllers
             switch (fieldName)
             {
                 case "Country":
-                    OrderHelper.ReplaceByCountry(ids,  newField, NSession);
+                    OrderHelper.ReplaceByCountry(ids, newField, NSession);
                     break;
                 case "SKU":
-                    OrderHelper.ReplaceBySKU(ids,  newField, NSession);
+                    OrderHelper.ReplaceBySKU(ids, newField, NSession);
                     break;
                 case "CurrencyCode":
-                    OrderHelper.ReplaceByCurrencyOrLogistic(ids,  newField, 1, NSession);
+                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, newField, 1, NSession);
                     break;
                 case "LogisticMode":
-                    OrderHelper.ReplaceByCurrencyOrLogistic(ids,  newField, 0, NSession);
+                    OrderHelper.ReplaceByCurrencyOrLogistic(ids, newField, 0, NSession);
                     break;
                 default:
                     break;
             }
-           // IQuery Query =                NSession.CreateQuery(string.Format("update {3} set {0}='{1}' where {0}='{2}'", fieldName, newField,                                                   oldField, fieldName == "SKU" ? "OrderProductType" : "OrderType"));
-           // int num = Query.ExecuteUpdate();
+            // IQuery Query =                NSession.CreateQuery(string.Format("update {3} set {0}='{1}' where {0}='{2}'", fieldName, newField,                                                   oldField, fieldName == "SKU" ? "OrderProductType" : "OrderType"));
+            // int num = Query.ExecuteUpdate();
             return Json(new { IsSuccess = true });
         }
 
@@ -860,7 +860,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Flush();
             var ps = JsonConvert.DeserializeObject<List<OrderProductType>>(rows);
             NSession.Clear();
-      
+
             CreateNewOrder(obj, 1);
             foreach (OrderProductType orderProductType in ps)
             {
@@ -1109,6 +1109,34 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
+        }
+
+
+        [HttpPost]
+        public ActionResult ExportExcel(string ids, int t = 0)
+        {
+            string sql = "select O.OrderExNo'eBayOrderID' from Orders O Left join OrderProducts OP on O.Id=OP.OId left join OrderAddress OA on O.AddressId=OA.Id where Id in(" + ids + ")";
+            if (t == 0)
+            {
+                sql = @"select cast(OP.Qty as nvarchar)+'  X  '+OP.SKU as 'Note (数量及货号)',OA.Addressee as 'Name 1 （收件人）','' as 'Name 2 （收货公司）',OA.Street as 'Strasse und Hausnummer （地址）'
+,OA.PostCode as 'PLZ （邮编）',OA.City as 'Ort （城市）',(OP.Qty*p.Weight)/1000 as 'Gewicht （公斤数）',OA.CountryCode as 'Land （国家代码）'
+,OA.Phone as 'Telefonnummer （联系电话）','DLS002' as 'Account （客户代号）',O.OrderNo as 'Referenz （订单号）',O.BuyerEmail as 'email',CONVERT(varchar(12) , getdate(), 104 ) as 'Versanddatum'
+
+from Orders O 
+Left join OrderProducts OP on O.Id=OP.OId left join OrderAddress OA on O.AddressId=OA.Id 
+left join Products P on OP.SKU=P.SKU
+where O.Id in(" + ids + ")";
+            }
+            else if (t == 1)
+            {
+
+            }
+            DataSet ds = GetOrderExport(sql,1);
+
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            //Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
         }
 
@@ -2137,7 +2165,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 
             if (!string.IsNullOrEmpty(search))
             {
-                where = Utilities.Resolve(search);
+                where = Utilities.Resolve(search, false);
                 if (where.Length > 0)
                 {
                     where = " where Enabled=1 and  Status" + flag + "'待处理' and " + where;
