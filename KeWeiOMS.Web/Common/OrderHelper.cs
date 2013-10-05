@@ -278,7 +278,7 @@ namespace KeWeiOMS.Web
                         order.CurrencyCode = "USD";
                         order.Account = account.AccountName;
                         order.GenerateOn = DateTime.Now;
-                        order.Platform = PlatformEnum.B2C.ToString();
+                        order.Platform = PlatformEnum.DH.ToString();
 
                         order.AddressId = CreateAddress(item["收件人"].ToString(), item["街道"].ToString(), item["城市"].ToString(), item["省"].ToString(), item["国家"].ToString(), item["国家"].ToString(), item["电话"].ToString(), item["电话"].ToString(), item["邮箱"].ToString(), item["邮编"].ToString(), 0, NSession);
 
@@ -339,7 +339,7 @@ namespace KeWeiOMS.Web
                         order.TId = foo.GoodsDataWare.TxnId;
                         order.Account = account.AccountName;
                         order.GenerateOn = foo.GoodsDataWare.PaymentDate;
-                        order.Platform = PlatformEnum.B2C.ToString();
+                        order.Platform = PlatformEnum.DH.ToString();
                         order.LogisticMode = foo.GoodsDataWare.EMS;
                         order.AddressId = CreateAddress(foo.GoodsDataWare.AddressName, foo.GoodsDataWare.AddressStreet,
                                                         foo.GoodsDataWare.AddressCity, foo.GoodsDataWare.AddressState,
