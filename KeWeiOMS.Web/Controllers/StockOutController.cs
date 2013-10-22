@@ -23,6 +23,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult Add()
+        {
+            return View();
+        }
 
         [HttpPost]
         public JsonResult Create(StockOutType obj)
@@ -33,6 +37,21 @@ namespace KeWeiOMS.Web.Controllers
                 obj.CreateOn = DateTime.Now;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
+            }
+            return Json(new { IsSuccess = true });
+        }
+
+        [HttpPost]
+        public JsonResult Add(StockOutType obj)
+        {
+            try
+            {
+                Utilities.StockOut(obj.WId, obj.SKU, obj.Qty, obj.OutType, CurrentUser.Realname, "", "", NSession);
+
             }
             catch (Exception ee)
             {
@@ -55,7 +74,7 @@ namespace KeWeiOMS.Web.Controllers
 
                         return Json(new { IsSuccess = false, Result = "该条码已经出库！" });
                     }
-                    Utilities.StockOut(w, list[0].SKU, 1, t, CurrentUser.Realname, m, o, NSession);
+
                     NSession.CreateQuery("update SKUCodeType set IsOut=1,IsSend=1,PeiOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',SendOn='" + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='扫描出库' where Code=" + s).ExecuteUpdate();
                     return Json(new { IsSuccess = true, Result = "扫描完成！产品：" + list[0].SKU + "已经出库，出数量为1!!" });
                 }

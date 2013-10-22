@@ -46,10 +46,7 @@ namespace KeWeiOMS.Web
 
         public static List<ResultInfo> ImportBySMT(AccountType account, string fileName, ISession NSession)
         {
-
-
             List<ResultInfo> results = new List<ResultInfo>();
-
             foreach (DataRow dr in GetDataTable(fileName).Rows)
             {
                 string OrderExNo = dr["订单号"].ToString();
@@ -136,6 +133,96 @@ namespace KeWeiOMS.Web
 
         }
 
+        public static List<ResultInfo> ImportByDH(AccountType account, string fileName, ISession NSession)
+        {
+            List<ResultInfo> results = new List<ResultInfo>();
+            foreach (DataRow dr in GetDataTable(fileName).Rows)
+            {
+                string OrderExNo = dr["订单号"].ToString();
+                string o = dr["订单状态"].ToString();
+                if (o != "卖家发货准备")
+                {
+                    results.Add(GetResult(OrderExNo, "订单已经发货", "导入失败"));
+                    continue;
+                }
+
+                bool isExist = IsExist(OrderExNo, NSession);
+                if (!isExist)
+                {
+                    OrderType order = new OrderType { IsMerger = 0, Enabled = 1, IsOutOfStock = 0, IsRepeat = 0, IsSplit = 0, Status = OrderStatusEnum.待处理.ToString(), IsPrint = 0, CreateOn = DateTime.Now, ScanningOn = DateTime.Now };
+                    try
+                    {
+                        order.OrderNo = Utilities.GetOrderNo(NSession);
+                        order.CurrencyCode = "USD";
+                        order.OrderExNo = OrderExNo;
+                        order.Amount = Utilities.ToDouble(dr["实收金额"].ToString().Replace("$", ""));
+                        order.BuyerMemo = dr["订单备注"].ToString();
+                        order.Country = dr["国家"].ToString();
+                        order.BuyerName = dr["买家名称"].ToString();
+                        //order.BuyerEmail = dr["买家邮箱"].ToString();
+                        order.TId = "";
+                        order.Account = account.AccountName;
+                        order.GenerateOn = Convert.ToDateTime(dr["付款时间"]);
+                        order.Platform = PlatformEnum.DH.ToString();
+                        //舍弃原来的客户表
+                        //下面地址
+                        order.AddressId = CreateAddress(dr["收货人名称"].ToString(), dr["街道地址"].ToString(), dr["城市"].ToString(), dr["州/省"].ToString(), dr["国家"].ToString(), dr["国家"].ToString(), dr["联系电话"].ToString(), "", "", dr["邮编"].ToString(), 0, NSession);
+
+                        NSession.Save(order);
+                        NSession.Flush();
+                        //
+                        //添加产品
+                        //
+                        string info = dr["产品信息"].ToString();
+                        string[] cels = info.Split(new char[] { '【' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (cels.Length == 0)
+                        {
+                            results.Add(GetResult(OrderExNo, "没有产品信息", "导入失败"));
+                            continue;//物品信息出错
+                        }
+                        for (int i = 0; i < cels.Length; i++)
+                        {
+                            string Str = cels[i];
+                            System.Text.RegularExpressions.Regex r2 = new System.Text.RegularExpressions.Regex(@"】(?<title>.*)\n", System.Text.RegularExpressions.RegexOptions.None);
+                            System.Text.RegularExpressions.Regex r4 = new System.Text.RegularExpressions.Regex(@"（属性：(?<ppp>.*)\n", System.Text.RegularExpressions.RegexOptions.None);
+                            System.Text.RegularExpressions.Regex r5 = new System.Text.RegularExpressions.Regex(@"（数量：(?<quantity>\d+)", System.Text.RegularExpressions.RegexOptions.None);
+                            System.Text.RegularExpressions.Regex r3 = new System.Text.RegularExpressions.Regex(@"（商品编号/工厂编号：(?<sku>.*)）", System.Text.RegularExpressions.RegexOptions.None);
+                            System.Text.RegularExpressions.Regex r1 = new System.Text.RegularExpressions.Regex(@"（产品编号：(?<exsku>.*)）", System.Text.RegularExpressions.RegexOptions.None);
+                            //System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"\(物流等级&买家选择物流:(?<wuliu>.+)\)", System.Text.RegularExpressions.RegexOptions.None);
+                            System.Text.RegularExpressions.Match mc2 = r2.Match(Str);
+                            System.Text.RegularExpressions.Match mc3 = r3.Match(Str);
+                            System.Text.RegularExpressions.Match mc4 = r4.Match(Str);
+                            System.Text.RegularExpressions.Match mc5 = r5.Match(Str);
+                            System.Text.RegularExpressions.Match mc1 = r1.Match(Str);
+                            order.LogisticMode = dr["买家选择物流方式"].ToString();
+                            //if (order.LogisticMode.IndexOf("\n") != -1)
+                            //{
+                            //    order.LogisticMode = order.LogisticMode.Substring(0, order.LogisticMode.IndexOf("\n"));
+                            //}
+                            NSession.Update(order);
+                            NSession.Flush();
+                            CreateOrderPruduct(mc1.Groups["exsku"].Value, mc3.Groups["sku"].Value, Utilities.ToInt(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo, NSession);
+                            results.Add(GetResult(OrderExNo, "", "导入成功"));
+                            LoggerUtil.GetOrderRecord(order, "订单导入", "导入成功", NSession);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        results.Add(GetResult(OrderExNo, ex.Message, "导入失败"));
+                    }
+
+
+                }
+                else
+                {
+                    results.Add(GetResult(OrderExNo, "订单已存在", "导入失败"));
+                }
+            }
+            return results;
+
+        }
+
         public static List<ResultInfo> ImportByAmazon(AccountType account, string fileName, ISession NSession)
         {
 
@@ -199,7 +286,7 @@ namespace KeWeiOMS.Web
 
             List<ResultInfo> results = new List<ResultInfo>();
             CsvReader csv = new CsvReader(fileName, Encoding.Default);
-
+            csv.CellSeparator = ',';
             List<Dictionary<string, string>> lsitss = csv.ReadAllData();
             Dictionary<string, int> listOrder = new Dictionary<string, int>();
             foreach (Dictionary<string, string> item in lsitss)
@@ -235,6 +322,7 @@ namespace KeWeiOMS.Web
                         order.Platform = PlatformEnum.Gmarket.ToString();
                         order.BuyerMemo = item["Memo to Seller"] + item["Options"];
                         order.AddressId = CreateAddress(item["Recipient"], item["Address"], "", "", item["Nation"], item["Nation"], item["Recipient Phone number"], item["Recipient mobile Phone number"], "", item["Postal code"], 0, NSession);
+                        order.LogisticMode = item["Tracking no."].ToString();
                         NSession.Save(order);
                         NSession.Flush();
                         CreateOrderPruduct(item["Item code"], item["Option Code"], Utilities.ToInt(item["Qty."]), item["Item"], item["Options"], 0, "", order.Id, order.OrderNo, NSession);
@@ -383,12 +471,13 @@ namespace KeWeiOMS.Web
             return new DateTime(Convert.ToInt32(DateStr.Substring(0, 4)), Convert.ToInt32(DateStr.Substring(4, 2)), Convert.ToInt32(DateStr.Substring(6, 2)), Convert.ToInt32(DateStr.Substring(8, 2)), Convert.ToInt32(DateStr.Substring(10, 2)), Convert.ToInt32(DateStr.Substring(12, 2)));
         }
 
-        public static List<ResultInfo> APIBySMT(AccountType account, DateTime st, DateTime et, ISession NSession)
+        public static List<ResultInfo> APIBySMT(AccountType account, DateTime st, DateTime et, ISession NSession, KeWeiOMS.Domain.UserType user)
         {
 
             List<ResultInfo> results = new List<ResultInfo>();
             string token = AliUtil.RefreshToken(account);
             List<CountryType> countryTypes = NSession.CreateQuery("from CountryType").List<CountryType>().ToList();
+            IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
             AliOrderListType aliOrderList = null;
             int page = 1;
             do
@@ -441,15 +530,61 @@ namespace KeWeiOMS.Web
                                 foreach (ProductList p in o.productList)
                                 {
                                     order.BuyerMemo += p.memo;
-                                }
-                                OrderMsgType[] msgTypes = AliUtil.findOrderMsgByOrderId(token, order.OrderExNo);
+                                    if (!string.IsNullOrEmpty(p.skuCode))
+                                    {
+                                        object c =
+                         NSession.CreateQuery("select count(Id) from ProductType where SKU=:p").SetString("p", p.skuCode)
+                             .UniqueResult();
+                                        if (Convert.ToInt32(c) == 0)
+                                        {
+                                            ProductType pp = new ProductType { CreateOn = DateTime.Now };
+                                            pp.SKU = p.skuCode;
 
-                                foreach (OrderMsgType orderMsgType in msgTypes)
-                                {
-                                    order.BuyerMemo += "<br/>" + orderMsgType.senderName + "  " +
-                                                       GetAliDate(orderMsgType.gmtCreate).ToString("yyyy-MM-dd HH:mm:ss") +
-                                                       ":" + orderMsgType.content + "";
+                                            pp.Status = ProductStatusEnum.销售中.ToString();
+                                            pp.ProductName = p.productName;
+                                            pp.Category = "";
+                                            pp.Standard = "";
+                                            pp.Price = Utilities.ToInt(p.productUnitPrice);
+                                            pp.PicUrl = p.productImgUrl;
+                                            pp.Weight = 0;
+                                            pp.Long = 0;
+                                            pp.Wide = 0;
+                                            pp.High = 0;
+                                            pp.Location = "";
+                                            pp.OldSKU = p.skuCode;
+                                            pp.HasBattery = 0;
+                                            pp.IsElectronic = 0;
+                                            pp.IsScan = 0;
+                                            pp.DayByStock = 10;
+                                            pp.ProductAttribute = ProductAttributeEnum.普货.ToString();
+                                            pp.Enabled = 1;
+
+                                            NSession.SaveOrUpdate(pp);
+                                            NSession.Flush();
+
+
+                                            //在仓库中添加产品库存
+                                            foreach (var item in list)
+                                            {
+
+                                                WarehouseStockType stock = new WarehouseStockType();
+                                                stock.Pic = pp.SPicUrl;
+                                                stock.WId = item.Id;
+                                                stock.Warehouse = item.WName;
+                                                stock.PId = pp.Id;
+                                                stock.SKU = pp.SKU;
+                                                stock.Title = pp.ProductName;
+                                                stock.Qty = 0;
+                                                stock.UpdateOn = DateTime.Now;
+                                                NSession.SaveOrUpdate(stock);
+                                                NSession.Flush();
+                                            }
+                                            LoggerUtil.GetProductRecord(pp, "商品创建--速卖通API", "自动创建一件商品", user, NSession);
+                                        }
+                                    }
+
                                 }
+
                                 if (!string.IsNullOrEmpty(order.BuyerMemo))
                                     order.IsLiu = 1;
 
@@ -491,6 +626,8 @@ namespace KeWeiOMS.Web
                                                        "",
                                                        order.Id,
                                                        order.OrderNo, NSession);
+
+
                                 }
                                 NSession.Clear();
                                 NSession.Update(order);
@@ -1003,13 +1140,13 @@ namespace KeWeiOMS.Web
                 }
                 else
                 {
-                    if (product.Status == "停产")
-                    {
-                        order.IsStop = 1;
-                        item.IsQue = 2;
-                        NSession.SaveOrUpdate(item);
-                        NSession.Flush();
-                    }
+                    //if (product.Status == "停产")
+                    //{
+                    //    order.IsStop = 1;
+                    //    item.IsQue = 2;
+                    //    NSession.SaveOrUpdate(item);
+                    //    NSession.Flush();
+                    //}
                 }
             }
             object obj = NSession.CreateQuery("select count(Id) from OrderType where Status<>'待处理' and OrderExNo=:p and Account=:p2 and IsSplit =0 and IsRepeat=0").SetString("p", order.OrderExNo).SetString("p2", order.Account).UniqueResult();
@@ -1022,26 +1159,26 @@ namespace KeWeiOMS.Web
             if (resultValue)
             {
                 order.IsAudit = 1;
-                SaveAmount(order, currencys, NSession);
-                if (order.IsStop == 0)
-                {
-                    SetQueOrder(order, NSession);
-                }
+                //SaveAmount(order, currencys, NSession);
+                //if (order.IsStop == 0)
+                //{
+                //    SetQueOrder(order, NSession);
+                //}
             }
 
             if (order.ErrorInfo == "")
             {
                 order.ErrorInfo = "验证成功！";
-                if (order.IsStop == 1)
-                {
-                    LoggerUtil.GetOrderRecord(order, "验证订单", "订单中有停产产品，自动设为停产订单。", NSession);
-                }
+                //if (order.IsStop == 1)
+                //{
+                //    LoggerUtil.GetOrderRecord(order, "验证订单", "订单中有停产产品，自动设为停产订单。", NSession);
+                //}
 
-                IList<EmailMessageType> messageTypes = NSession.CreateQuery("from EmailMessageType where OrderExNo='" + order.OrderExNo + "'").List<EmailMessageType>();
-                foreach (EmailMessageType emailMessageType in messageTypes)
-                {
-                    order.BuyerMemo = emailMessageType.RserverDate + " 有买家留言<br>" + order.BuyerMemo;
-                }
+                //IList<EmailMessageType> messageTypes = NSession.CreateQuery("from EmailMessageType where OrderExNo='" + order.OrderExNo + "'").List<EmailMessageType>();
+                //foreach (EmailMessageType emailMessageType in messageTypes)
+                //{
+                //    order.BuyerMemo = emailMessageType.RserverDate + " 有买家留言<br>" + order.BuyerMemo;
+                //}
             }
             NSession.Clear();
             NSession.SaveOrUpdate(order);

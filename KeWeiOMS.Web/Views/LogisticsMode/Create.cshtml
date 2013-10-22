@@ -5,12 +5,14 @@
 
 <script type="text/javascript">
     $(function () {
+
         $('#c_ParentID').combobox({
             url: '/LogisticsMode/GetLogistics',
             valueField: 'Id',
             textField: 'LogisticsName',
             required: true
         });
+
         $('#c_ParentID').combobox("setValue", '@ViewData["pid"]');
         $("#c_LogisticsName").validatebox({
             required: true,

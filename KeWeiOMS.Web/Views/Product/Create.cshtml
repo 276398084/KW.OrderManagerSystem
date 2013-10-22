@@ -28,51 +28,8 @@
         });
     });
     $(function () {
-        $('#dg_zu').datagrid({
-            url: '@Url.Action("ZuList", "Product")',
-            width: 300,
-            toolbar: [{
-                id: 'btnadd',
-                text: '添加',
-                iconCls: 'icon-add',
-                handler: function () {
-                    addp();
-                }
-            }, {
-                id: 'btndel',
-                text: '删除',
-                iconCls: 'icon-add',
-                handler: function () {
-                    if (editIndex == undefined) {
-                        return;
-                    }
-                    $('#dg_zu').datagrid('cancelEdit', editIndex)
-                            .datagrid('deleteRow', editIndex);
-                    editIndex = undefined;
-                }
-            }, {
-                id: 'btnsave',
-                text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-                    accept();
-                }
-            }],
-            onClickRow: onClickRow
-        });
-        $('#dg_pl').datagrid({
-            url: '/Product/Platform',
-            width: 300,
-            toolbar: [{
-                id: 'btnsave',
-                text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-                    acceptl();
-                }
-            }],
-            onClickRow: onClickRowl
-        });
+
+
 
 
         $('#c_IsInfraction').combobox({
@@ -94,36 +51,8 @@
             panelHeight: 50,
             data: checks
         });
-        $('#c_IsZu').combobox({
-            valueField: 0,
-            textField: 1,
-            panelHeight: 50,
-            data: checks
-        });
-        $('#c_Purchaser').combobox({
-            url: '/User/QList/' + Purchaser,
-            valueField: 'Id',
-            textField: 'Realname',
 
-            width: 200,
-            panelHeight: 'auto'
-        });
-        $('#c_Examiner').combobox({
-            url: '/User/QList/' + Examiner,
-            valueField: 'Id',
-            textField: 'Realname',
 
-            width: 200,
-            panelHeight: 'auto'
-        });
-        $('#c_Packer').combobox({
-            url: '/User/QList/' + Packer,
-            valueField: 'Id',
-            textField: 'Realname',
-
-            width: 200,
-            panelHeight: 'auto'
-        });
         $('#c_ProductAttribute').combobox({
             url: '/Home/GetProductAttributeEnum/',
             valueField: 'id',
@@ -132,7 +61,7 @@
             width: 200,
             panelHeight: 'auto'
         });
-        
+
         $('#c_Status').combobox({
             url: '/Home/ProductStatus/',
             valueField: 'id',
@@ -146,88 +75,11 @@
             required: true,
             width: 200
         });
-        $('#c_Location').combogrid({
-            panelWidth: 360,
-            idField: 'PositionsName',
-            textField: 'PositionsName',
-            url: '/WarehouseLocation/QList',
-            fit: true,
-            mode: 'remote',
-            columns: [[
-               { field: 'PositionsName', title: '库位', width: 150 },
-               { field: 'Warehouse', title: '仓库', width: 200 }
-            ]]
-        });
 
-        $('#up_file').uploadify({
-            'auto': false,
-            'buttonText': '请选择图片',
-            'swf': '@Url.Content("~/Scripts/uploadify/uploadify.swf")',
-            'uploader': '/Home/SaveFile/',
-            'multi': false,
-            'onUploadSuccess': function (file, data, response) {
-                eval("data=" + data);
-                $('#c_PicUrl').val(data.SaveName);
-
-                if (endEditing()) {
-                    $('#dg_zu').datagrid('acceptChanges');
-                }
-                $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
-
-                if (endEditingl()) {
-                    $('#dg_pl').datagrid('acceptChanges');
-                }
-                $("#rows2").val(JSON.stringify($('#dg_pl').datagrid("getRows")));
-
-                formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg', 'a');
-            },
-            onSelect: function () {
-
-                num = 1;
-            }
-        });
     });
     var num = 0;
     var editIndex = undefined;
-    function endEditing() {
-        if (editIndex == undefined) {
-            return true;
-        }
-        if ($('#dg_zu').datagrid('validateRow', editIndex)) {
-            $('#dg_zu').datagrid('endEdit', editIndex);
 
-            editIndex = undefined;
-
-            return true;
-
-        } else {
-            return false;
-        }
-    }
-    function onClickRow(index) {
-        if (editIndex != index) {
-            if (endEditing()) {
-                $('#dg_zu').datagrid('selectRow', index)
-                        .datagrid('beginEdit', index);
-                editIndex = index;
-            } else {
-                $('#dg_zu').datagrid('selectRow', editIndex);
-            }
-        }
-    }
-    function addp() {
-        if (endEditing()) {
-            $('#dg_zu').datagrid('appendRow', { Qty: 1, Price: 0 });
-            editIndex = $('#dg_zu').datagrid('getRows').length - 1;
-            $('#dg_zu').datagrid('selectRow', editIndex)
-                    .datagrid('beginEdit', editIndex);
-        }
-    }
-    function accept() {
-        if (endEditing()) {
-            $('#dg_zu').datagrid('acceptChanges');
-        }
-    }
     function addProduct() {
         $.ajax({
             type: "POST",
@@ -236,23 +88,12 @@
             success: function (msg) {
                 if (msg.IsSuccess) {
 
-                    alert(num);
-                    if (num == 0) {
 
-                        if (endEditing()) {
-                            $('#dg_zu').datagrid('acceptChanges');
-                        }
-                        $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
 
-                        if (endEditingl()) {
-                            $('#dg_pl').datagrid('acceptChanges');
-                        }
-                        $("#rows2").val(JSON.stringify($('#dg_pl').datagrid("getRows")));
 
-                        formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg', 'a');
-                    } else {
-                        $('#up_file').uploadify('upload');
-                    }
+
+                    formPost('c_form', '@Url.Action("Create", "Product")', 'c_dlg', 'dg', 'a');
+
 
                 }
                 else {
@@ -268,45 +109,7 @@
     }
 
     var editIndexl = undefined;
-    function endEditingl() {
-        if (editIndexl == undefined) {
-            return true;
-        }
-        if ($('#dg_pl').datagrid('validateRow', editIndexl)) {
-            $('#dg_pl').datagrid('endEdit', editIndexl);
 
-            editIndexl = undefined;
-
-            return true;
-
-        } else {
-            return false;
-        }
-    }
-    function onClickRowl(index) {
-        if (editIndexl != index) {
-            if (endEditingl()) {
-                $('#dg_pl').datagrid('selectRow', index)
-                        .datagrid('beginEdit', index);
-                editIndexl = index;
-            } else {
-                $('#dg_pl').datagrid('selectRow', editIndexl);
-            }
-        }
-    }
-    function addpl() {
-        if (endEditingl()) {
-            $('#dg_pl').datagrid('appendRow', { Qty: 1, Price: 0 });
-            editIndexl = $('#dg_pl').datagrid('getRows').length - 1;
-            $('#dg_pl').datagrid('selectRow', editIndexl)
-                    .datagrid('beginEdit', editIndexl);
-        }
-    }
-    function acceptl() {
-        if (endEditingl()) {
-            $('#dg_pl').datagrid('acceptChanges');
-        }
-    }
     function Ispl(value) {
         if (value == "1") {
             return "是";
@@ -364,13 +167,11 @@
                 </td>
                 <td>@Html.TextBoxFor(model => model.Status, new { @id = "c_Status" })
                 <td rowspan="2">
-                    @Html.LabelFor(model => model.PicUrl, "大图片网址:")
+                    @Html.LabelFor(model => model.PicUrl, "图片网址:")
                 </td>
                 <td rowspan="2">
-                    <input id="up_file" type="file" name="up_file" />
-                    @Html.HiddenFor(model => model.PicUrl, new { @id = "c_PicUrl" })
+                    @Html.TextBoxFor(model => model.PicUrl, new { @id = "c_PicUrl" })
                 </td>
-
             </tr>
             <tr>
                 <td>
@@ -379,7 +180,7 @@
                 <td colspan="5">
                     @Html.TextBoxFor(model => model.ProductAttribute, new { @id = "c_ProductAttribute" })
                 </td>
-                
+
 
             </tr>
 
@@ -420,12 +221,6 @@
                     @Html.TextBoxFor(model => model.High, new { @id = "c_High", @style = "width:50px" })
                     </td>
 
-                    <td>
-                        @Html.LabelFor(model => model.DayByStock, "库存天数:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.DayByStock, new { @id = "c_DayByStock" })
-                    </td>
                 </tr>
 
                 <tr>
@@ -442,20 +237,10 @@
                     <td>
                         @Html.TextBoxFor(model => model.Model, new { @id = "c_Model" })
                     </td>
-                    <td>
-                        @Html.LabelFor(model => model.Location, "库位:")
-                    </td>
-                    <td>
-                        @Html.HiddenFor(model => model.Location, new { @id = "c_Location" })
-                    </td>
+
                 </tr>
                 <tr>
-                    <td>
-                        @Html.LabelFor(model => model.PackCoefficient, "包装系数:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.PackCoefficient, new { @id = "c_PackCoefficient" })
-                    </td>
+
                     <td>
                         @Html.LabelFor(model => model.IsElectronic, "电子:")
                     </td>
@@ -469,59 +254,7 @@
                         @Html.TextBoxFor(model => model.HasBattery, new { @id = "c_HasBattery" })
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        @Html.LabelFor(model => model.Purchaser, "采购人:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.Purchaser, new { @id = "c_Purchaser" })
-                    </td>
-                    <td>
-                        @Html.LabelFor(model => model.Examiner, "验货人:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.Examiner, new { @id = "c_Examiner" })
-                    </td>
-                    <td>
-                        @Html.LabelFor(model => model.Packer, "包装人:")
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(model => model.Packer, new { @id = "c_Packer" })
-                    </td>
-                </tr>
 
-            </table>
-        </div>
-        <div title="是否侵权" style="overflow: auto; padding: 20px;">
-            <table id="dg_pl" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
-                <thead>
-                    <tr>
-                        <th field="Platform" width="80">平台
-                        </th>
-                        <th field="Isinfraction" width="100" data-options="formatter:Ispl,editor:{
-						          type:'combobox',	
-                                  options:{
-							      valueField: 0,
-                                   textField: 1,
-                                   panelHeight: 50,
-                                   data: checks,
-							      }    
-						}">是否侵权
-                        </th>
-                        <th field="Remark" width="400" data-options="editor:'text'">备注
-                        </th>
-                </thead>
-            </table>
-        </div>
-        <div title="组合产品" style="overflow: auto; padding: 20px;">
-            <table id="dg_zu" class="easyui-datagrid" rownumbers="true" singleselect="true" fit="true">
-                <thead>
-                    <tr>
-                        <th field="SrcSKU" width="80" data-options="editor:'text'">SKU
-                        </th>
-                        <th field="SrcQty" width="100" data-options="editor:'text'">Qty
-                        </th>
-                </thead>
             </table>
         </div>
 

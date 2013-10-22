@@ -27,26 +27,26 @@
 
         //新建
         function c_dlg() {
-            var url_str = '@Url.Action("Create","StockIn")';
+            var url_str = '@Url.Action("Create", "StockIn")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
         function e_dlg() {
             var id = getselectedRow();
-            var url = '@Url.Action("Edit","StockIn")/' + id;
-        if (id != undefined) {
-            showdlg(url, 'e_dlg', ajaxEdit);
+            var url = '@Url.Action("Edit", "StockIn")/' + id;
+            if (id != undefined) {
+                showdlg(url, 'e_dlg', ajaxEdit);
+            }
         }
-    }
 
-    //异步新建提交
-    function ajaxAdd() {
-        formPost('c_form', '@Url.Action("Create", "StockIn")', 'c_dlg', 'dg');
-        }
-        //异步修改提交
-        function ajaxEdit() {
-            formPost('e_form', '@Url.Action("Edit", "StockIn")', 'e_dlg', 'dg');
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "StockIn")', 'c_dlg', 'dg');
+    }
+    //异步修改提交
+    function ajaxEdit() {
+        formPost('e_form', '@Url.Action("Edit", "StockIn")', 'e_dlg', 'dg');
         }
         //删除
         function del() {
@@ -57,42 +57,42 @@
 
             }
         }
-            //获取选中行
-            function getselectedRow() {
-                var row = $('#dg').datagrid('getSelected');
-                if (row != undefined) {
-                    if (row.hasOwnProperty('Id')) {
-                        var id = row['Id'];
-                        return id;
-                    }
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
                 }
-                $.messager.show({
-                    title: '提示',
-                    msg: '请选择行',
-                    timeout: 3000,
-                    showType: 'slide'
-                });
-                return (undefined);
             }
-            function toExcel() {
-                search = getSearch();
-                $('#dg').datagrid('loading');
-                var postUrl = "/Order/ExportDown/1";
-                $.ajax({
-                    url: '@Url.Action("ToExcel", "StockIn")/',
-            type: 'post',
-            data: 'search=' + encodeURIComponent(search),
-            success: function (result) {
-                $.messager.show({
-                    title: '提示',
-                    msg: result.ErrorMsg,
-                    timeout: 0,
-                    showType: 'slide'
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function toExcel() {
+            search = getSearch();
+            $('#dg').datagrid('loading');
+            var postUrl = "/Order/ExportDown/1";
+            $.ajax({
+                url: '@Url.Action("ToExcel", "StockIn")/',
+                    type: 'post',
+                    data: 'search=' + encodeURIComponent(search),
+                    success: function (result) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: result.ErrorMsg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                        location.href = postUrl;
+                        $('#dg').datagrid('reload');
+                    }
                 });
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        });
             }
 
             function doSearch() {
@@ -108,7 +108,7 @@
 
             function showPrint(v, r) {
                 if (r.IsAudit == 1)
-                    return '<a href="javascript:void(0)" onclick="printSKU(' + v + ')">打印SKU</a> &nbsp; <a href="javascript:void(0)" onclick="del(' + v + ')">删除</a>';
+                    return '';
                 else {
                     return '<a href="javascript:void(0)" onclick="AuditIn(' + v + ')">审核</a>';
                 }
@@ -194,5 +194,5 @@
         <div id="e_dlg"></div>
 
     </div>
-    <input type="hidden" id="printdata"/>
+    <input type="hidden" id="printdata" />
 </body>

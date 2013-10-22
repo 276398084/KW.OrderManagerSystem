@@ -21,6 +21,8 @@
                     window.open('@Url.Action("Details", "Product")/' + r.Id);
                 }
             });
+            var cc = "";
+            cc.indexOf('邮政')
             $('#IsScan').combobox({
                 valueField: 0,
                 textField: 1,
@@ -40,15 +42,7 @@
           
                 width: 200
             });
-            $('#Platform').combobox({
-                url: '/Home/Platform/2',
-                valueField: 'id',
-                textField: 'text',
-                required: true,
-                width: 100,
-                panelHeight: 'auto'
-            });
-            $('#Platform').combobox("setValue", "不限");
+            
             $('#IsScan').combobox("setValue", "ALL");
             $('#SearchStatus').combobox("setValue", "所有");
             $('#SearchCategory').combobox("setValue", "所有");
@@ -121,11 +115,9 @@
                 return '<img  src=' + v + '  height="64px" width="64px" />';
             }
             function doSearch() {
-                var a = $('#Platform').combobox("getText");
+              
                 var p = "";
-                if (a != "不限") {
-                    p = a;
-                }
+            
                 search = getSearch();
                 var SearchCategory="";
                 if ($('#SearchCategory').combotree("getText") != "根目录") {
@@ -212,7 +204,7 @@
                     </th>
                     <th field="Category" width="100" sortable="true">类别
                     </th>
-                    <th field="SPicUrl" width="100" formatter='GetImg'>图片
+                    <th field="PicUrl" width="100" formatter='GetImg'>图片
                     </th>
                     <th field="ProductName" width="100">商品名称
                     </th>
@@ -249,7 +241,7 @@
             <input id="IsScan" />
             类别：<input id="SearchCategory" />
             状态：<input id="SearchStatus" />
-            侵权平台<input type="text" id="Platform" />
+           
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-splitbutton" data-options="menu:'#mm1',iconCls:'icon-edit'">修改产品状态</a><br />
             快捷查询：

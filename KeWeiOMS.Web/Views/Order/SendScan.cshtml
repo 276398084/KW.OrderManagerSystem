@@ -25,7 +25,11 @@
                 { field: 'LogisticsName', title: '名称', width: 250 },
                 { field: 'LogisticsCode', title: '代码', width: 100 },
                 { field: 'ParentID', title: '代码', width: 100 }
-            ]]
+            ]],
+            onLoadSuccess: function () {
+                var data = $('#ll').combogrid('grid').datagrid('getData');
+                $('#ll').combogrid("setValue", data.rows[0].LogisticsCode);
+            }
         });
         $('#ww').combobox({
             url: '/Warehouse/QList',
@@ -33,11 +37,12 @@
             textField: 'WName',
             required: true
         });
-        $('#ll').combogrid("setValue", "NJGH");
+
         $('#ww').combobox("setValue", "1");
+
     });
 
-    function getDataa(v,l,m) {
+    function getDataa(v, l, m) {
         $.ajax({
             url: "/Logistics/GetData/",
             type: "post",
@@ -45,7 +50,7 @@
             success: function (res) {
                 TrackCodeLength = res.CodeLength;
                 if (l != TrackCodeLength) {
-                    m = "     该订单 物流方式不能强制转换!    "+m;
+                    m = "     该订单 物流方式不能强制转换!    " + m;
                     TrackCodeLength = l;
                     progress = 0;
                     ShowMessage(m, "物流方式不能强制转换", false);
@@ -77,7 +82,7 @@
                                                     物流方式<input type="text" id="ll" />&nbsp;&nbsp;
                                                     强制<input type="checkbox" id="ckQ" />&nbsp;&nbsp;
                                                     打印报关单<input type="checkbox" id="ckBGD" />&nbsp;&nbsp;
-                                                    电子称<input type="checkbox" id="ckCheng" checked="checked" />
+                                                    电子称<input type="checkbox" id="ckCheng" onchange="alert('电子称已取消！');this.checked=false;" />
                                                 </td>
                                             </tr>
                                             <tr id="tr_ID">
@@ -218,7 +223,7 @@
         });
     }
     function OutStock(str) {
-      
+
         if (TrackCodeLength == 0) {
             if (o != str) {
                 ShowMessage("前后输入不一致，请重新输入", "等待扫描", false);

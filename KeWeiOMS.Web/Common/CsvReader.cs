@@ -21,7 +21,7 @@ namespace KeWeiOMS.Web
     /// </summary>
     public class CsvReader : StreamReader
     {
-        char m_CellSeparator = ',';
+        char m_CellSeparator = '\t';
 
         static string m_LineSeparator = Environment.NewLine;
 

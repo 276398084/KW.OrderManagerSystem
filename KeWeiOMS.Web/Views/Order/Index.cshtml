@@ -63,7 +63,7 @@
                 data: checkPrint,
                 width: 100
             });
-			
+
             $('#IsQue').combobox({
                 valueField: 0,
                 textField: 1,
@@ -479,12 +479,12 @@
                 $('#dg').datagrid("reload");
             }
         });
-        
+
     }
 
     function ExportExcel(t) {
 
-       
+
         var s_ids = getselectedRows(0);
         if (s_ids == null || s_ids.length == 0) {
             return;
@@ -493,16 +493,16 @@
         jQuery.ajax({
             url: "/Order/ExportExcel",
             type: "post",
-            data: "ids=" + s_ids.join(',')+"&t="+t,
+            data: "ids=" + s_ids.join(',') + "&t=" + t,
             success: function (res) {
                 if (res.IsError) {
                     alert(res.Message);
                 }
                 location.href = postUrl;
-                
+
             }
         });
-       
+
     }
 
     function stopLoad() {
@@ -736,7 +736,7 @@
                     search: ""
                 });
             }
-            if (v == '退货订单' ||v == '待处理' || v == '已处理' || v == '待拣货' || v == '待包装' || v == '待发货' || v == '已发货' || v == '已完成' || v == '作废订单') {
+            if (v == '退货订单' || v == '待处理' || v == '已处理' || v == '待拣货' || v == '待包装' || v == '待发货' || v == '已发货' || v == '已完成' || v == '作废订单') {
                 $('#OrderStatus').combobox("setValue", v);
                 $("#dg").datagrid("load", {
                     search: "IsAudit_ds&1^IsStop_ds&0^Status_es&" + v
@@ -758,24 +758,15 @@
                 $("#dg").datagrid("load", {
                     search: "IsAudit_ds&0^"
                 });
-                
+
             }
         }
     </script>
     <div data-options="region:'west',title:'订单类型'" style="width: 110px; padding: 10px;">
         <ul class="easyui-tree">
             <li><a href="javascript:selectlist('ALL')">所有订单</a></li>
-            <li><a href="javascript:selectlist('待处理')">待处理</a></li>
             <li><a href="javascript:selectlist('已处理')">已处理</a></li>
-            <li><a href="javascript:selectlist('待拣货')">待拣货</a></li>
-            <li><a href="javascript:selectlist('待包装')">待包装</a></li>
-            <li><a href="javascript:selectlist('待发货')">待发货</a></li>
             <li><a href="javascript:selectlist('已发货')">已发货</a></li>
-            <li><a href="javascript:selectlist('已完成')">已完成</a></li>
-  <li><a href="javascript:selectlist('退货订单')">退货订单</a></li>
-            <li><a href="javascript:selectlist('缺货订单')">缺货订单</a></li>
-            <li><a href="javascript:selectlist('停售订单')">停售订单</a></li>
-            <li><a href="javascript:selectlist('等待审核')">等待审核</a></li>
             <li><a href="javascript:selectlist('作废订单')">作废订单</a></li>
         </ul>
     </div>

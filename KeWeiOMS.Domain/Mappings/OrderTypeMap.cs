@@ -46,6 +46,9 @@ namespace KeWeiOMS.Domain
             Map(x => x.IsCanSplit);
             Map(x => x.IsOutOfStock);
             Map(x => x.IsRepeat);
+            Map(x => x.Rate);
+            Map(x => x.GoodsAmount);
+            Map(x => x.Profit);
             Map(x => x.CurrencyCode).Length(10);
             Map(x => x.Amount);
             Map(x => x.OrderCurrencyCode).Length(10);

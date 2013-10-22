@@ -1,0 +1,121 @@
+﻿@model KeWeiOMS.Domain.StockOutType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('#e_WId').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'Id',
+            textField: 'WName',
+            required: true,
+            url: '/Warehouse/QList',
+            fit: true,
+            columns: [[
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'Id', title: 'Id', width: 100 },
+                { field: 'WCode', title: '仓库代码', width: 100 },
+                { field: 'WName', title: '仓库名称', width: 100 },
+                { field: 'Address', title: '仓位地址', width: 100 }
+
+            ]]
+
+        })
+        $('#e_OutType').combobox({
+            url: '@Url.Action("GetDataByCode", "Dictionary")/StockOutType',
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 200,
+            width: 150
+        });
+        $('#e_SKU').combogrid({
+            required: true,
+            panelWidth: 410,
+            mode: 'remote',
+            idField: 'SKU',
+            textField: 'SKU',
+            required: true,
+            url: '/Product/ListQ',
+            fit: true,
+            columns: [[
+                { field: 'SKU', title: 'SKU', width: 100 },
+                { field: 'ProductName', title: 'Title', width: 200 },
+                { field: 'Standard', title: '规格', width: 100 }
+
+            ]]
+
+        })
+        $('#e_SKU').combogrid("setText", '@ViewData["sku"]');
+        $('#e_Qty').numberbox({
+            required: true,
+            onChange: function () {
+                Qtynozero();
+            }
+        });
+    });
+
+    function Qtynozero() {
+        var num = $('#e_Qty').attr("value");
+        if (num != "" & num <= 0) {
+
+            $('#e_Qty').numberbox("setValue", "1");
+        }
+    }
+</script>
+
+@using (Html.BeginForm("Create", "StockOut", FormMethod.Post, new { id = "e_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WId, "仓库:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WId, new { @id = "e_WId" })
+                </td>
+                <td style="display: none">
+                    @Html.TextBoxFor(model => model.WName, new { @id = "e_WName" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.OutType, "出库类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.OutType, new { @id = "e_OutType" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.SKU, "SKU:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.SKU, new { @id = "e_SKU" })
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Qty, "数量:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Qty, new { @id = "e_Qty" })
+                </td>
+            </tr>
+
+
+
+
+
+
+        </table>
+    </fieldset>
+}

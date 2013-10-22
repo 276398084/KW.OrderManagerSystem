@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "ResetStock";
+}
+
+<script type="text/javascript">
+    function ResetStock() {
+        var search = "data=" + $('#data').val();
+
+        jQuery.ajax({
+            url: "/WarehouseStock/ResetStock/",
+            type: "post",
+            data: search,
+            success: function (sss) {
+                alert("成功");
+            }
+        });
+    }
+</script>
+<font style="color: red">输入规则：SKU[空格]数量 中间用空格分隔</font><br/>
+<textarea style="height: 420px; width: 446px;" id="data">
+
+</textarea>
+
+<input type="button" value="重置" onclick="ResetStock()" />

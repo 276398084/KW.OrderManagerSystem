@@ -152,6 +152,21 @@ namespace KeWeiOMS.Domain
         public virtual double RMB { get; set; }
 
         /// <summary>
+        /// 汇率
+        /// </summary>
+        public virtual double Rate { get; set; }
+
+        /// <summary>
+        /// 产品总金额
+        /// </summary>
+        public virtual double GoodsAmount { get; set; }
+
+        /// <summary>
+        /// 利润
+        /// </summary>
+        public virtual double Profit { get; set; }
+
+        /// <summary>
         /// 流水交易号
         /// </summary>
         public virtual String TId { get; set; }

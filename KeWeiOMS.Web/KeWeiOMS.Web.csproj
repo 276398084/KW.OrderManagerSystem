@@ -1208,6 +1208,8 @@
     <Content Include="Views\UserSetup\Index.cshtml" />
     <Content Include="Views\Order\OrderReturnList.cshtml" />
     <Content Include="Views\Order\ReturnScan.cshtml" />
+    <Content Include="Views\WarehouseStock\ResetStock.cshtml" />
+    <Content Include="Views\StockOut\Add.cshtml" />
     <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

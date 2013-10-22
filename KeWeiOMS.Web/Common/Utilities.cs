@@ -651,13 +651,16 @@ namespace KeWeiOMS.Web
             IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).SetString("p2", sku).List<WarehouseStockType>();
             if (list.Count > 0)
             {
+                StockOutType stockOutType = new StockOutType();
                 WarehouseStockType ws = list[0];
+                stockOutType.SourceQty = ws.Qty;
                 ws.Qty = ws.Qty - num;
                 ws.UpdateOn = DateTime.Now;
                 NSession.SaveOrUpdate(ws);
                 NSession.Flush();
-                SetComposeStock(sku, NSession);
-                StockOutType stockOutType = new StockOutType();
+                //SetComposeStock(sku, NSession);
+
+
                 stockOutType.CreateBy = user;
                 stockOutType.CreateOn = DateTime.Now;
                 stockOutType.OrderNo = orderNo;
@@ -667,6 +670,10 @@ namespace KeWeiOMS.Web
                 stockOutType.SourceQty = ws.Qty + num;
                 stockOutType.WId = wid;
                 stockOutType.Memo = memo;
+                WarehouseType warehouseType = NSession.Get<WarehouseType>(stockOutType.WId);
+
+                stockOutType.WName = warehouseType.WName;
+
                 NSession.Save(stockOutType);
                 NSession.Flush();
                 return true;
@@ -711,11 +718,11 @@ namespace KeWeiOMS.Web
                     NSession.Flush();
                 }
 
-                IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Id in(select OId from OrderProductType where SKU ='" + sku + "' and IsQue=1) and IsOutOfStock=1").List<OrderType>();
-                foreach (OrderType item in orders)
-                {
-                    OrderHelper.SetQueOrder(item, NSession);
-                }
+                //IList<OrderType> orders = NSession.CreateQuery(" from OrderType where Id in(select OId from OrderProductType where SKU ='" + sku + "' and IsQue=1) and IsOutOfStock=1").List<OrderType>();
+                //foreach (OrderType item in orders)
+                //{
+                //    OrderHelper.SetQueOrder(item, NSession);
+                //}
                 return true;
             }
             return false;
@@ -816,6 +823,36 @@ namespace KeWeiOMS.Web
                 }
             }
             return where;
+        }
+
+
+
+        public static void updateCurreny()
+        {
+            ISession session = NhbHelper.OpenSession();
+            cn.com.webxml.webservice.ForexRmbRateWebService server = new cn.com.webxml.webservice.ForexRmbRateWebService();
+            DataSet ds = server.getForexRmbRate();
+
+
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                CurrencyType c = new CurrencyType();
+                c.CurrencyCode = dr["Symbol"].ToString();
+                c.CurrencyName = dr["Name"].ToString();
+                session.Delete(" from CurrencyType where CurrencyCode='" + c.CurrencyCode + "'");
+                session.Flush();
+                c.CurrencySign = "";
+                string str = dr["fBuyPrice"].ToString();
+                if (string.IsNullOrEmpty(str))
+                {
+                    str = "0";
+                }
+                c.CurrencyValue = Math.Round(Convert.ToDecimal(str) / 100, 5);
+                c.CreateOn = DateTime.Now; ;
+                session.Save(c);
+                session.Flush();
+            }
+            session.Close();
         }
     }
 

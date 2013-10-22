@@ -2,9 +2,9 @@
     ViewBag.Title = "PeiScan";
 }
 <script type="text/javascript">
-    
+
     if (document.all) {
-       
+
         document.write(' <OBJECT id="Player1"');
         document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
         document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
@@ -13,7 +13,7 @@
         document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
     }
     else {
-       
+
         document.write(' <OBJECT id="Player1"');
         document.write(' type="application/x-ms-wmp"');
         document.write(' src= "/Content/Audio/ring.wav" width=0 height=0> </OBJECT>');
@@ -23,26 +23,7 @@
     }
 </script>
 <script type="text/javascript">
-    $(function () {
-        $('#cc').combobox({
-            url: '/User/QList2/',
-            valueField: 'Realname',
-            textField: 'Realname',
-            required: true,
-            width: 200
-
-        });
-        $('#ee').combobox({
-            url: '/User/QList2/',
-            valueField: 'Realname',
-            textField: 'Realname',
-            required: true,
-            width: 200
-
-        });
-        $('#cc').combobox("setValue", "邵大姐");
-        $('#ee').combobox("setValue", "邵大姐");
-    });
+   
 </script>
 <fieldset>
     <legend>
@@ -63,12 +44,7 @@
                                 <span id="spanInfo"></span>
                             </td>
                         </tr>
-                        <tr>
-                            <td height="26" align="right"></td>
-                            <td>配货人:
-                                <input id="cc" type="text" />&nbsp;&nbsp;&nbsp;检验人:
-                                <input id="ee" type="text" /></td>
-                        </tr>
+
 
                         <tr>
                             <td height="25" width="22%">
@@ -104,8 +80,10 @@
         }
         if (keynum == 13) {
 
-            if (txt.value == "") { Reset();
-                return true;}
+            if (txt.value == "") {
+                Reset();
+                return true;
+            }
             if (progress == 0) {
                 getOrder(txt.value);
             }
@@ -128,17 +106,13 @@
             data: "orderNo=" + str,
             success: function (msg) {
                 if (msg.IsSuccess) {
-                    progress = 1;
+                    progress = 2;
                     oldstr = str;
                     ShowMessage(msg.Result, "", true);
-                    valiOrder();
-                    if (iscon) {
-                        ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
-                        progress = 2;
-                    }
-                    else {
-                        ShowMessage(null, "请扫描产品条码", true);
-                    }
+
+
+                    ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
+
                 } else {
                     progress = 0;
                     oldstr = "";
@@ -149,18 +123,15 @@
     }
 
     function OutStock(str) {
-        var p2 = $("#ee").combobox("getValue");
-        var p1 = $("#cc").combobox("getValue");
+       
         if (oldstr == str) {
             jQuery.ajax({
                 url: "/Order/OutStockByPei/",
                 type: "post",
-                data: "o=" + str + "&p1=" + p1 + "&p2=" + p2 + "&skuCode=" + skuCode.join(','),
+                data: "o=" + str,
                 success: function (msg) {
                     if (msg.IsSuccess) {
-                        skuCode = [];
-                        progress = 0;
-                        oldstr = "";
+                     
                         ShowMessage(msg.Result, "等待扫描", true);
                         Player2.controls.play();
                     } else {

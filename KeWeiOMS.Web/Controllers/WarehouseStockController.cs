@@ -25,6 +25,44 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult ResetStock()
+        {
+            return View();
+        }
+        [HttpPost]
+        public JsonResult ResetStock(string data)
+        {
+            try
+            {
+                data = data.Replace("\r", "").Replace("\t", " ").Replace("  ", " ");
+                string[] rows = data.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                string updateOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                foreach (string row in rows)
+                {
+                    string[] cels = row.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                    if (cels.Length == 2)
+                    {
+                        try
+                        {
+                            NSession.CreateSQLQuery(" update WarehouseStock set Qty=" + cels[1] + " , UpdateOn='" + updateOn + "'  where SKU='" + cels[0] +
+                                             "'").UniqueResult();
+                            NSession.Flush();
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ee)
+            {
+                return Json(new { IsSuccess = false, Message = "出错了" });
+            }
+            return Json(new { IsSuccess = true, Message = "成功！" });
+        }
+
         [HttpPost]
         public JsonResult Create(WarehouseStockType obj)
         {
@@ -39,6 +77,7 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { IsSuccess = true });
         }
+
         [HttpPost]
         public JsonResult EditReset(string o)
         {
@@ -158,30 +197,30 @@ namespace KeWeiOMS.Web.Controllers
                .SetFirstResult(rows * (page - 1))
                .SetMaxResults(rows)
                .List<WarehouseStockType>().ToList();
-            string ids = "";
-            foreach (var warehouseStockType in objList)
-            {
-                ids += warehouseStockType.SKU + ",";
-            }
-            if (ids.Length > 0)
-            {
-                ids = ids.Trim(',');
-            }
-            IList<object[]> objs =
-                NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
-            foreach (var objectse in objs)
-            {
-                WarehouseStockType warehouse =
-                objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().ToUpper());
-                if (warehouse != null)
-                {
-                    warehouse.UnPeiQty = Convert.ToInt32(objectse[1]);
-                    if (warehouse.UnPeiQty == 0)
-                    {
-                        warehouse.UnPeiQty = warehouse.Qty;
-                    }
-                }
-            }
+            //string ids = "";
+            //foreach (var warehouseStockType in objList)
+            //{
+            //    ids += warehouseStockType.SKU + ",";
+            //}
+            //if (ids.Length > 0)
+            //{
+            //    ids = ids.Trim(',');
+            //}
+            //IList<object[]> objs =
+            //    NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
+            //foreach (var objectse in objs)
+            //{
+            //    WarehouseStockType warehouse =
+            //    objList.Find(x => x.SKU.Trim().ToUpper() == objectse[0].ToString().Trim().ToUpper());
+            //    if (warehouse != null)
+            //    {
+            //        warehouse.UnPeiQty = Convert.ToInt32(objectse[1]);
+            //        if (warehouse.UnPeiQty == 0)
+            //        {
+            //            warehouse.UnPeiQty = warehouse.Qty;
+            //        }
+            //    }
+            //}
             object count = NSession.CreateQuery("select count(Id) from WarehouseStockType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }

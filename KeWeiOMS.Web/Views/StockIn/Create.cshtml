@@ -39,11 +39,11 @@
         });
         $('#c_InType').combobox({
             url: '@Url.Action("GetDataByCode", "Dictionary")/StockIntType',
-                    valueField: 'DicValue',
-                    textField: 'FullName',
-                    panelHeight: 'auto',
-                    width: 150
-                });
+            valueField: 'DicValue',
+            textField: 'FullName',
+            panelHeight: 'auto',
+            width: 150
+        });
         $('#c_InType').combobox("setValue", "坏件出库");
         $('#c_Price').numberbox({
             precision: 2,
@@ -51,27 +51,30 @@
                 nozero();
             }
         });
-        $('#c_Price').numberbox("setValue", "0");
+
+
         $('#c_Qty').numberbox({
             required: true,
             onChange: function () {
                 Qtynozero();
             }
         });
+        $('#c_Price').numberbox("setValue", "0");
+        $('#c_Qty').numberbox("setValue", "1");
 
     });
     function nozero() {
         var num = $('#c_Price').attr("value");
-        if (num != "" & num <= 0) {
-            alert("金额输入有误");
-            $('#c_Price').numberbox("setValue", "");
+        if (num == "" || num < 0) {
+            $('#c_Price').numberbox("setValue", "0");
+
+           
         }
     }
     function Qtynozero() {
         var num = $('#c_Qty').attr("value");
-        if (num != "" & num <= 0) {
-            alert("数量输入有误");
-            $('#c_Qty').numberbox("setValue", "");
+        if (num == "" || num < 0) {
+            $('#c_Qty').numberbox("setValue", "1");
         }
     }
 
@@ -82,8 +85,6 @@
 {
     <fieldset>
         <table class="editForm">
-            
-
             <tr>
                 <td>
                     @Html.LabelFor(model => model.WId, "入库仓库:")
@@ -131,7 +132,7 @@
                 </td>
             </tr>
 
-     
+
 
 
             <tr>

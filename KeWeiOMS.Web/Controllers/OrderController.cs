@@ -305,12 +305,11 @@ namespace KeWeiOMS.Web.Controllers
                         results = OrderHelper.ImportByAmazon(account, file, NSession);
                         break;
                     case PlatformEnum.DH:
-                        //results = OrderHelper.ImportByB2C(account, file, NSession);
+                        results = OrderHelper.ImportByDH(account, file, NSession);
                         break;
                     case PlatformEnum.Gmarket:
                         results = OrderHelper.ImportByGmarket(account, file, NSession);
                         break;
-
                     default:
                         break;
                 }
@@ -411,7 +410,7 @@ namespace KeWeiOMS.Web.Controllers
                     results = OrderHelper.APIByB2C(account, st, et, NSession);
                     break;
                 case PlatformEnum.SMT:
-                    results = OrderHelper.APIBySMT(account, st, et, NSession);
+                    results = OrderHelper.APIBySMT(account, st, et, NSession, GetCurrentAccount());
                     break;
                 case PlatformEnum.Amazon:
                 case PlatformEnum.Gmarket:
@@ -915,7 +914,7 @@ namespace KeWeiOMS.Web.Controllers
                         Utilities.StockIn(1, orderProductType.SKU.Trim(), orderProductType.Qty, 0, "重新发货",
                                           CurrentUser.Realname, "", NSession, true);
                     }
-                    orderType.Status = OrderStatusEnum.待发货.ToString();
+                    orderType.Status = OrderStatusEnum.已处理.ToString();
                     NSession.Save(orderType);
                     NSession.Flush();
                 }
@@ -1029,7 +1028,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
             if (t == 2)
             {
                 sql = @"select  TrackCode as '运单码',C.CCountry as '寄达国家（中文）',O.Country as '寄达国家（英文）',OA.Province as '州名',OA.City as '城市名',
-isnull(oa.Street,'')+','+isnull(oa.City,'')+','+isnull(OA.Province,'')+','+isnull(OA.Country,'')+','+isnull(OA.PostCode,'') as '收件人详细地址',OA.Addressee as '收件人姓名',isnull(oa.Phone,'')+'('+isnull(oa.Tel,'')+')' as '收件人电话','KeXin Road 28, Ningbo, ZheJiang,China' as '寄件人详细地址（英文）','胡启雄' as '寄件人姓名','87910330' as '寄件人电话','1' as '内件类型代码' from Orders O
+isnull(oa.Street,'')+','+isnull(oa.City,'')+','+isnull(OA.Province,'')+','+isnull(OA.Country,'')+','+isnull(OA.PostCode,'') as '收件人详细地址',OA.Addressee as '收件人姓名',isnull(oa.Phone,'')+'('+isnull(oa.Tel,'')+')' as '收件人电话','MEI LIN EAST ROAD' as '寄件人详细地址（英文）','吴' as '寄件人姓名','65299551' as '寄件人电话','1' as '内件类型代码' from Orders O
 left join OrderAddress OA on O.AddressId=OA.Id
 left join Country C On O.Country=C.ECountry";
                 sql2 = @"select TrackCode as '跟踪号','物品' as '物品中文名称',OP.Title as '物品英文名称(不能超过50个字符）',OP.Qty as '数量',o.weight as '单件重量',10 as '单价','China' as '原产地' from Orders O
@@ -1312,8 +1311,7 @@ where O.Id in(" + ids + ")";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待发货.ToString() ||
-                    order.Status == OrderStatusEnum.待包装.ToString())
+                if ((!Config.IsJi && order.Status == OrderStatusEnum.已处理.ToString()))
                 {
                     if (order.IsAudit == 0)
                     {
@@ -1330,52 +1328,54 @@ where O.Id in(" + ids + ")";
                         if (list.Count > 0)
                             length = list[0].CodeLength;
 
-                        string html = "订单:" + order.OrderNo + ", 当前状态：待发货，可以发货。<br>发货方式：" +
+                        string html = "订单:" + order.OrderNo + ", 当前状态：已处理，可以发货。<br>发货方式：" +
                                       "<s id='logisticsMode'>" + order.LogisticMode + "</s>";
                         List<OrderProductType> orderProductTypes =
                            NSession.CreateQuery("from OrderProductType where OId=" + order.Id).List<OrderProductType>().ToList();
-                        if (string.IsNullOrEmpty(w) || orderProductTypes.Count == 1)
-                        {
-                            if (orderProductTypes[0].Qty == 1)
-                            {
-                                List<ProductType> product =
-                            NSession.CreateQuery("from ProductType where SKU='" + orderProductTypes[0].SKU + "'").List<ProductType>().ToList();
-                                if (product.Count > 0)
-                                {
+                        //产品重量验证 去除
+                        //if (string.IsNullOrEmpty(w) || orderProductTypes.Count == 1)
+                        //{
+                        //    if (orderProductTypes[0].Qty == 1)
+                        //    {
+                        //        List<ProductType> product =
+                        //    NSession.CreateQuery("from ProductType where SKU='" + orderProductTypes[0].SKU + "'").List<ProductType>().ToList();
+                        //        if (product.Count > 0)
+                        //        {
 
-                                    if (product[0].MinWeight != 0 && product[0].MaxWeight != 0)
-                                    {
-                                        if (product[0].MinWeight > Convert.ToDouble(w) ||
-                                            product[0].MaxWeight < Convert.ToDouble(w))
-                                        {
-                                            html =
-                                                string.Format("<span style='color:red'>产品:{0} 重量在{1}--{2} 之间，现在重量为{3},请检查包裹</span><br/>", product[0].SKU, product[0].MinWeight, product[0].MaxWeight, w) + html;
-                                        }
+                        //            if (product[0].MinWeight != 0 && product[0].MaxWeight != 0)
+                        //            {
+                        //                if (product[0].MinWeight > Convert.ToDouble(w) ||
+                        //                    product[0].MaxWeight < Convert.ToDouble(w))
+                        //                {
+                        //                    html =
+                        //                        string.Format("<span style='color:red'>产品:{0} 重量在{1}--{2} 之间，现在重量为{3},请检查包裹</span><br/>", product[0].SKU, product[0].MinWeight, product[0].MaxWeight, w) + html;
+                        //                }
 
-                                    }
-                                }
-                            }
-                        }
-                        string desc = "";
-                        foreach (OrderProductType p in orderProductTypes)
-                        {
-                            IList<ProductType> products =
-                                NSession.CreateQuery("from ProductType where SKU=:p").SetString("p", p.SKU.Trim()).
-                                    SetMaxResults(1).List<ProductType>();
-                            if (products.Count > 0)
-                            {
-                                if (products[0].ProductAttribute != "普货" && products[0].ProductAttribute != "电子")
-                                {
-                                    desc += "   " + products[0].SKU + ":" + products[0].ProductAttribute;
-                                }
+                        //            }
+                        //        }
+                        //    }
+                        //}
 
-                            }
+                        //string desc = "";
+                        //foreach (OrderProductType p in orderProductTypes)
+                        //{
+                        //    IList<ProductType> products =
+                        //        NSession.CreateQuery("from ProductType where SKU=:p").SetString("p", p.SKU.Trim()).
+                        //            SetMaxResults(1).List<ProductType>();
+                        //    if (products.Count > 0)
+                        //    {
+                        //        if (products[0].ProductAttribute != "普货" && products[0].ProductAttribute != "电子")
+                        //        {
+                        //            desc += "   " + products[0].SKU + ":" + products[0].ProductAttribute;
+                        //        }
 
-                        }
-                        if (desc.Length > 0)
-                        {
-                            html = "<div><h3>订单中包含：" + desc + " 的产品</h3></div>" + html;
-                        }
+                        //    }
+
+                        //}
+                        //if (desc.Length > 0)
+                        //{
+                        //    html = "<div><h3>订单中包含：" + desc + " 的产品</h3></div>" + html;
+                        //}
 
                         return Json(new { IsSuccess = true, Result = html, Code = length });
                     }
@@ -1397,8 +1397,7 @@ where O.Id in(" + ids + ")";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待发货.ToString() ||
-                  order.Status == OrderStatusEnum.待包装.ToString())
+                if ((!Config.IsJi && order.Status == OrderStatusEnum.已处理.ToString()))
                 {
                     order.TrackCode = t;
                     order.Weight = Convert.ToInt32(w);
@@ -1594,9 +1593,13 @@ where O.Id in(" + ids + ")";
                 if (o != null)
                 {
                     o.Freight = Convert.ToDouble(OrderHelper.GetFreight(o.Weight, o.LogisticMode, o.Country, session));
+                    object obj = session.CreateSQLQuery(
+               "select SUM(OP.Qty*p.Price) from OrderProducts OP left join Products  P On OP.SKU=p.SKU where OId=" + o.Id).
+               UniqueResult();
+                    o.GoodsAmount = Convert.ToInt32(obj);
                     session.SaveOrUpdate(o);
                     session.Flush();
-                    OrderHelper.UpdateAmount(o, session);
+                    // OrderHelper.UpdateAmount(o, session);
                     //上传挂号条码
                     UploadTrackCode(o);
                 }
@@ -1664,7 +1667,7 @@ where O.Id in(" + ids + ")";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString())
+                if (order.Status == OrderStatusEnum.已处理.ToString())
                 {
                     if (order.IsOutOfStock != 1)
                     {
@@ -1714,7 +1717,7 @@ where O.Id in(" + ids + ")";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString())
+                if (order.Status == OrderStatusEnum.已处理.ToString())
                 {
                     LoggerUtil.GetOrderRecord(order, "缺货扫描", CurrentUser.Realname + "将订单添加到 添加到缺货订单中！", CurrentUser,
                                               NSession);
@@ -1763,7 +1766,7 @@ where O.Id in(" + ids + ")";
             {
                 OrderType order = orders[0];
 
-                if (order.Status == OrderStatusEnum.待拣货.ToString() ||
+                if (
                     (!Config.IsJi && order.Status == OrderStatusEnum.已处理.ToString()))
                 {
                     if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
@@ -1877,65 +1880,61 @@ where O.Id in(" + ids + ")";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
-        public JsonResult OutStockByPei(string p1, string p2, string o, string skuCode)
+        public JsonResult OutStockByPei(string o)
         {
             List<OrderType> orders =
                 NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
-                {
-                    bool iscon = false;
-                    var orderPeiRecord = new OrderPeiRecordType
-                                             {
-                                                 OrderNo = order.OrderNo,
-                                                 PeiBy = p1,
-                                                 ValiBy = p2,
-                                                 CreateOn = DateTime.Now,
-                                                 OId = order.Id,
-                                                 ScanBy = CurrentUser.Realname
-                                             };
-                    NSession.Save(orderPeiRecord);
-                    NSession.Flush();
-                    order.Status = OrderStatusEnum.待包装.ToString();
-                    if (order.IsOutOfStock == 1)
-                    {
-                        iscon = true;
-                    }
-                    order.IsCanSplit = 0;
-                    order.IsOutOfStock = 0;
-                    NSession.Update(order);
-                    NSession.Flush();
-                    NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + order.Id).ExecuteUpdate();
-                    if (skuCode != "")
-                        NSession.CreateQuery("update SKUCodeType set IsOut=1,PeiOn='" +
-                                             DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "',OrderNo='" +
-                                             order.OrderNo + "' where Code in ('" + skuCode.Replace(",", "','") + "')").
-                            ExecuteUpdate();
-                    string html = "订单：" + order.OrderNo + " 配货完成！";
-                    if (iscon)
-                    {
-                        LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描，订单的缺货状态删除！", CurrentUser, NSession);
-                        IList<OrderOutRecordType> list =
-                            NSession.CreateQuery("from OrderOutRecordType where OId='" + order.Id + "'").List
-                                <OrderOutRecordType>();
-                        foreach (OrderOutRecordType orderOutRecordType in list)
-                        {
-                            orderOutRecordType.IsRestoration = 1;
-                            orderOutRecordType.RestorationBy = CurrentUser.Realname;
-                            orderOutRecordType.RestorationOn = DateTime.Now;
-                            NSession.Update(orderOutRecordType);
-                            NSession.Flush();
-                        }
-                    }
-                    else
-                    {
-                        LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描！", CurrentUser, NSession);
-                    }
+                //if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
+                //{
+                //    bool iscon = false;
+                //    var orderPeiRecord = new OrderPeiRecordType
+                //                             {
+                //                                 OrderNo = order.OrderNo,
+                //                                 PeiBy = "",
+                //                                 ValiBy = "",
+                //                                 CreateOn = DateTime.Now,
+                //                                 OId = order.Id,
+                //                                 ScanBy = CurrentUser.Realname
+                //                             };
+                //    NSession.Save(orderPeiRecord);
+                //    NSession.Flush();
+                //    order.Status = OrderStatusEnum.待包装.ToString();
+                //    if (order.IsOutOfStock == 1)
+                //    {
+                //        iscon = true;
+                //    }
+                //    order.IsCanSplit = 0;
+                //    order.IsOutOfStock = 0;
+                //    NSession.Update(order);
+                //    NSession.Flush();
+                //    NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + order.Id).ExecuteUpdate();
 
-                    return Json(new { IsSuccess = true, Result = html });
-                }
+                //    string html = "订单：" + order.OrderNo + " 配货完成！";
+                //    if (iscon)
+                //    {
+                //        LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描，订单的缺货状态删除！", CurrentUser, NSession);
+                //        IList<OrderOutRecordType> list =
+                //            NSession.CreateQuery("from OrderOutRecordType where OId='" + order.Id + "'").List
+                //                <OrderOutRecordType>();
+                //        foreach (OrderOutRecordType orderOutRecordType in list)
+                //        {
+                //            orderOutRecordType.IsRestoration = 1;
+                //            orderOutRecordType.RestorationBy = CurrentUser.Realname;
+                //            orderOutRecordType.RestorationOn = DateTime.Now;
+                //            NSession.Update(orderOutRecordType);
+                //            NSession.Flush();
+                //        }
+                //    }
+                //    else
+                //    {
+                //        LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描！", CurrentUser, NSession);
+                //    }
+
+                //  return Json(new { IsSuccess = true, Result = html });
+                // }
                 return
                     Json(new { IsSuccess = false, Result = "订单状态不符！现在的订单状态为：" + order.Status + " 将订单状态设置为“已处理”才能配货扫描！" });
             }
@@ -1949,7 +1948,7 @@ where O.Id in(" + ids + ")";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
+                if ((order.Status == OrderStatusEnum.已处理.ToString()))
                 {
                     order.Status = "待拣货";
                     NSession.Update(order);
@@ -2039,16 +2038,16 @@ where O.Id in(" + ids + ")";
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待包装.ToString())
-                {
-                    LoggerUtil.GetOrderRecord(order, "订单计件扫描！", "将订单 包装疾计件！", CurrentUser, NSession);
-                    order.Status = OrderStatusEnum.待发货.ToString();
-                    NSession.Update(order);
-                    NSession.Flush();
-                    SaveRecord(order, p);
-                    string html = "订单： " + order.OrderNo + "计件成功！包装人：" + p;
-                    return Json(new { IsSuccess = true, Result = html });
-                }
+                //if (order.Status == OrderStatusEnum.待包装.ToString())
+                //{
+                //    LoggerUtil.GetOrderRecord(order, "订单计件扫描！", "将订单 包装疾计件！", CurrentUser, NSession);
+                //    order.Status = OrderStatusEnum.待发货.ToString();
+                //    NSession.Update(order);
+                //    NSession.Flush();
+                //    SaveRecord(order, p);
+                //    string html = "订单： " + order.OrderNo + "计件成功！包装人：" + p;
+                //    return Json(new { IsSuccess = true, Result = html });
+                //}
                 return Json(new { IsSuccess = false, Result = " 无法出库！ 当前状态为：" + order.Status + "，需要订单状态为“待发货”方可扫描！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });

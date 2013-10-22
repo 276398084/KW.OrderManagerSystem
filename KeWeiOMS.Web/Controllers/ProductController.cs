@@ -182,6 +182,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                     p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
                     p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
                     p.ProductAttribute = dt.Rows[i]["产品属性"].ToString();
+                    p.PicUrl = dt.Rows[i]["图片"].ToString();
                     p.Enabled = 1;
                     if (!HasExsit(p.SKU))
                     {
@@ -278,36 +279,12 @@ select Name from a").List<object>();
                 string filePath = Server.MapPath("~");
                 obj.CreateOn = DateTime.Now;
                 string pic = obj.PicUrl;
-                if (!string.IsNullOrEmpty(pic))
-                {
-                    obj.PicUrl = Utilities.BPicPath + obj.SKU + ".jpg";
-                    obj.SPicUrl = Utilities.SPicPath + obj.SKU + ".png";
 
-                    Utilities.DrawImageRectRect(pic, filePath + obj.PicUrl, 310, 310);
-                    Utilities.DrawImageRectRect(pic, filePath + obj.SPicUrl, 64, 64);
-                }
 
-                List<ProductComposeType> list1 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductComposeType>>(obj.rows);
-                if (list1.Count > 0)
-                    obj.IsZu = 1;
+
                 obj.Enabled = 1;
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
-                foreach (ProductComposeType productCompose in list1)
-                {
-                    productCompose.SKU = obj.SKU;
-                    productCompose.PId = obj.Id;
-                    NSession.Save(productCompose);
-                    NSession.Flush();
-                }
-                List<ProductIsInfractionType> list2 = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ProductIsInfractionType>>(obj.rows2);
-                foreach (ProductIsInfractionType item in list2)
-                {
-                    item.OldSKU = obj.OldSKU;
-                    item.SKU = obj.SKU;
-                    NSession.Save(item);
-                    NSession.Flush();
-                }
 
                 AddToWarehouse(obj);
                 LoggerUtil.GetProductRecord(obj, "商品创建", "创建一件商品", CurrentUser, NSession);
@@ -322,7 +299,6 @@ select Name from a").List<object>();
         private void AddToWarehouse(ProductType obj)
         {
             IList<WarehouseType> list = NSession.CreateQuery(" from WarehouseType").List<WarehouseType>();
-
             //
             //在仓库中添加产品库存
             //

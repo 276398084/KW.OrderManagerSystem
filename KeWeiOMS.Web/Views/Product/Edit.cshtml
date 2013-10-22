@@ -33,51 +33,7 @@
             width: 1200,
             height: 280
         });
-        $('#dg_zu').datagrid({
-            url: '@Url.Action("ZuList", "Product")/@Model.SKU',
-            width: 300,
-            toolbar: [{
-                id: 'btnadd',
-                text: '添加',
-                iconCls: 'icon-add',
-                handler: function () {
-                    addp();
-                }
-            }, {
-                id: 'btndel',
-                text: '删除',
-                iconCls: 'icon-add',
-                handler: function () {
-                    if (editIndex == undefined) {
-                        return;
-                    }
-                    $('#dg_zu').datagrid('cancelEdit', editIndex)
-                            .datagrid('deleteRow', editIndex);
-                    editIndex = undefined;
-                }
-            }, {
-                id: 'btnsave',
-                text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-                    accept();
-                }
-            }],
-            onClickRow: onClickRow
-        });
-        $('#dg_pl').datagrid({
-            url: '@Url.Action("PlList", "Product")/@Model.SKU',
-            width: 300,
-            toolbar: [{
-                id: 'btnsave',
-                text: '保存',
-                iconCls: 'icon-save',
-                handler: function () {
-                    acceptl();
-                }
-            }],
-            onClickRow: onClickRowl
-        });
+
 
 
         $('#e_IsInfraction').combobox({
@@ -105,36 +61,7 @@
             panelHeight: 50,
             data: checks
         });
-        $('#e_IsZu').combobox({
-            valueField: 0,
-            textField: 1,
-            panelHeight: 50,
-            data: checks
-        });
-        $('#e_Purchaser').combobox({
-            url: '/User/QList/' + Purchaser,
-            valueField: 'Id',
-            textField: 'Realname',
 
-            width: 200,
-            panelHeight: 'auto'
-        });
-        $('#e_Examiner').combobox({
-            url: '/User/QList/' + Examiner,
-            valueField: 'Id',
-            textField: 'Realname',
-
-            width: 200,
-            panelHeight: 'auto'
-        });
-        $('#e_Packer').combobox({
-            url: '/User/QList/' + Packer,
-            valueField: 'Id',
-            textField: 'Realname',
-
-            width: 200,
-            panelHeight: 'auto'
-        });
         $('#e_Status').combobox({
             url: '/Home/ProductStatus/',
             valueField: 'id',
@@ -156,122 +83,26 @@
             width: 200,
             panelHeight: 'auto'
         });
-        $('#e_Location').combogrid({
-            panelWidth: 360,
-            idField: 'PositionsName',
-            textField: 'PositionsName',
-            url: '/WarehouseLocation/QList',
-            fit: true,
-            mode: 'remote',
-            columns: [[
-               { field: 'PositionsName', title: '库位', width: 150 },
-               { field: 'Warehouse', title: '仓库', width: 200 }
-            ]]
-        });
+
 
     });
 
     var editIndex = undefined;
-    function endEditing() {
-        if (editIndex == undefined) {
-            return true;
-        }
-        if ($('#dg_zu').datagrid('validateRow', editIndex)) {
-            $('#dg_zu').datagrid('endEdit', editIndex);
 
-            editIndex = undefined;
-
-            return true;
-
-        } else {
-            return false;
-        }
-    }
-    function onClickRow(index) {
-        if (editIndex != index) {
-            if (endEditing()) {
-                $('#dg_zu').datagrid('selectRow', index)
-                        .datagrid('beginEdit', index);
-                editIndex = index;
-            } else {
-                $('#dg_zu').datagrid('selectRow', editIndex);
-            }
-        }
-    }
-    function addp() {
-        if (endEditing()) {
-            $('#dg_zu').datagrid('appendRow', { Qty: 1, Price: 0 });
-            editIndex = $('#dg_zu').datagrid('getRows').length - 1;
-            $('#dg_zu').datagrid('selectRow', editIndex)
-                    .datagrid('beginEdit', editIndex);
-        }
-    }
-    function accept() {
-        if (endEditing()) {
-            $('#dg_zu').datagrid('acceptChanges');
-        }
-    }
 
 
     function addProduct() {
 
-        if (endEditing()) {
-            $('#dg_zu').datagrid('acceptChanges');
-        }
-        $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
-
-        if (endEditingl()) {
-            $('#dg_pl').datagrid('acceptChanges');
-        }
-        $("#rows2").val(JSON.stringify($('#dg_pl').datagrid("getRows")));
         formPost('e_form', '@Url.Action("Edit", "Product")', 'e_dlg', 'dg', 'a');
 
     }
 
 
-    var editIndexl = undefined;
-    function endEditingl() {
-        if (editIndexl == undefined) {
-            return true;
-        }
-        if ($('#dg_pl').datagrid('validateRow', editIndexl)) {
-            $('#dg_pl').datagrid('endEdit', editIndexl);
 
-            editIndexl = undefined;
-
-            return true;
-
-        } else {
-            return false;
-        }
-    }
-    function onClickRowl(index) {
-        if (editIndexl != index) {
-            if (endEditingl()) {
-                $('#dg_pl').datagrid('selectRow', index)
-                        .datagrid('beginEdit', index);
-                editIndexl = index;
-            } else {
-                $('#dg_pl').datagrid('selectRow', editIndexl);
-            }
-        }
-    }
-    function addpl() {
-        if (endEditingl()) {
-            $('#dg_pl').datagrid('appendRow', { Qty: 1, Price: 0 });
-            editIndexl = $('#dg_pl').datagrid('getRows').length - 1;
-            $('#dg_pl').datagrid('selectRow', editIndexl)
-                    .datagrid('beginEdit', editIndexl);
-        }
-    }
-    function acceptl() {
-        if (endEditingl()) {
-            $('#dg_pl').datagrid('acceptChanges');
-        }
-    }
     function Ispl(value) {
         if (value == "1") {
-            return "是"
+            return "是";
+            return "是";
         }
         else
             return "否";
@@ -341,7 +172,7 @@
 
 
             </tr>
-              <tr>
+            <tr>
                 <td>
                     @Html.LabelFor(model => model.ProductAttribute, "产品属性:")
                 </td>
@@ -464,13 +295,13 @@
                     <td>
                         @Html.TextBoxFor(model => model.TotalWeight, new { @id = "e_TotalWeight", @class = "easyui-validatebox", @required = "true" })
                     </td>
-                     <td>
+                    <td>
                         @Html.LabelFor(model => model.Packer, "最小重量:")
                     </td>
                     <td>
                         @Html.TextBoxFor(model => model.MinWeight, new { @id = "e_MinWeight" })
                     </td>
-                     <td>
+                    <td>
                         @Html.LabelFor(model => model.Packer, "最大重量:")
                     </td>
                     <td>

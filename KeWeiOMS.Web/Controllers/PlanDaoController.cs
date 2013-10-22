@@ -78,7 +78,7 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     //obj.DaoOn = DateTime.Now;
                     obj.IsAudit = 1;
-                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo, NSession);
+                    //obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo, NSession);
 
                     NSession.SaveOrUpdate(obj);
                     NSession.Flush();

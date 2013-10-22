@@ -30,11 +30,11 @@ namespace KeWeiOMS.Web.Controllers
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status != OrderStatusEnum.退货订单.ToString())
-                {
-                    string html = "<b>订单:{0}  <br/>平台:{5} <br/>账户:{6} <br/>下单时间:{1} <br/>发货时间:{2} <br/>发货渠道:{3} <br/>发货条码:{4}</b>";
-                    return Json(new { IsSuccess = true, Result = string.Format(html, order.OrderNo, order.CreateOn, order.ScanningOn, order.LogisticMode, order.TrackCode, order.Platform, order.Account) });
-                }
+                //if (order.Status != OrderStatusEnum.退货订单.ToString())
+                //{
+                //    string html = "<b>订单:{0}  <br/>平台:{5} <br/>账户:{6} <br/>下单时间:{1} <br/>发货时间:{2} <br/>发货渠道:{3} <br/>发货条码:{4}</b>";
+                //    return Json(new { IsSuccess = true, Result = string.Format(html, order.OrderNo, order.CreateOn, order.ScanningOn, order.LogisticMode, order.TrackCode, order.Platform, order.Account) });
+                //}
                 return Json(new { IsSuccess = false, Result = "该订单已经退货！请不要重复扫描！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
@@ -47,35 +47,35 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
             if (orders.Count > 0)
             {
-                OrderType order = orders[0];
-                order.Status = OrderStatusEnum.退货订单.ToString();
-                order.BuyerMemo = p + "  " + order.BuyerMemo;
-                NSession.Update(order);
-                NSession.Flush();
-                OrderReturnRecordType record = new OrderReturnRecordType();
-                record.Account = order.Account;
-                record.Platform = order.Platform;
-                record.ReturnLogisticsMode = order.LogisticMode;
-                record.OrderExNO = order.OrderExNo;
-                record.OrderNo = order.OrderNo;
-                record.OrderSendOn = order.ScanningOn;
-                record.ReturnType = p;
-                record.OldTrackCode = order.TrackCode;
-                record.CreateOn = DateTime.Now;
-                record.Country = order.Country;
-                record.CurrencyCode = order.CurrencyCode;
-                record.Amount = order.Amount;
-                record.BuyerName = order.BuyerName;
-                record.OrderCreateOn = order.CreateOn;
-                record.OId = order.Id;
+                //OrderType order = orders[0];
+                //order.Status = OrderStatusEnum.退货订单.ToString();
+                //order.BuyerMemo = p + "  " + order.BuyerMemo;
+                //NSession.Update(order);
+                //NSession.Flush();
+                //OrderReturnRecordType record = new OrderReturnRecordType();
+                //record.Account = order.Account;
+                //record.Platform = order.Platform;
+                //record.ReturnLogisticsMode = order.LogisticMode;
+                //record.OrderExNO = order.OrderExNo;
+                //record.OrderNo = order.OrderNo;
+                //record.OrderSendOn = order.ScanningOn;
+                //record.ReturnType = p;
+                //record.OldTrackCode = order.TrackCode;
+                //record.CreateOn = DateTime.Now;
+                //record.Country = order.Country;
+                //record.CurrencyCode = order.CurrencyCode;
+                //record.Amount = order.Amount;
+                //record.BuyerName = order.BuyerName;
+                //record.OrderCreateOn = order.CreateOn;
+                //record.OId = order.Id;
 
 
-                NSession.Save(record);
-                NSession.Flush();
+                //NSession.Save(record);
+                //NSession.Flush();
 
-                LoggerUtil.GetOrderRecord(order, "订单退货扫描！", "订单设置为退货", CurrentUser, NSession);
+                //LoggerUtil.GetOrderRecord(order, "订单退货扫描！", "订单设置为退货", CurrentUser, NSession);
 
-                return Json(new { IsSuccess = true, Result = "订单：" + order.OrderNo + "  已经添加到退货~！" });
+                //return Json(new { IsSuccess = true, Result = "订单：" + order.OrderNo + "  已经添加到退货~！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
