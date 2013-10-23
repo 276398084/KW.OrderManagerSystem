@@ -1,0 +1,165 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.SendPackageType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "SendPackage")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+
+        });
+
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "SendPackage")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+
+        //编辑框
+        function e_dlg() {
+            var url = '@Url.Action("Edit", "SendPackage")/' + id;
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "SendPackage")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "SendPackage")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "SendPackage")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "SendPackage")/' + id;
+
+                delData(url, 'dg');
+
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+
+        function GetOP(v, r, i) {
+            return '<a href="javascript:void(0)" onclick="show(' + v + ')">添加</a> <a href="javascript:void(0)" onclick="show2(' + v + ')">查看明细订单</a>';
+
+        }
+        var pack = 0;
+        function show(i) {
+            pack = i;
+            $('#dlgAdd').dialog('open');
+        }
+
+        function show2(i) {
+            window.open("/SendPackageOrder/Index/" + i);
+        }
+
+        function createSendOrder() {
+            jQuery.ajax({
+                url: "/SendPackage/PackageAddOrder/",
+                type: "post",
+                data: "ids=" + $('#txtOrderNo').val() + "&p=" + pack,
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        alert("添加完成！成功：" + res.c + " 已经存在：" + res.e + " 不存在：" + res.t);
+                    }
+                    $('#dg').datagrid("reload");
+                    $('#txtOrderNo').val('');
+                    $('#dlgAdd').dialog('close');
+                }
+            });
+        }
+    </script>
+    <div region="center">
+        <table id="dg"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="Id" width="100" formatter="GetOP">操作
+                    </th>
+
+                    <th field="PackageName" width="100">PackageName
+                    </th>
+
+                    <th field="CreateOn" width="100" formatter="getDate">CreateOn
+                    </th>
+
+                    <th field="CreateBy" width="100">CreateBy
+                    </th>
+
+                    <th field="PCount" width="100">PCount
+                    </th>
+
+                    <th field="PWeight" width="100">PWeight
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'PackageName'">PackageName</div>
+            <div data-options="name:'CreateBy'">CreateBy</div>
+        </div>
+        <div id="c_dlg"></div>
+
+
+
+    </div>
+
+    <div id="dlgAdd" class="easyui-dialog" title="添加订单" style="width: 400px; height: 300px; padding: 10px" closed="true">
+        <table>
+            <tr>
+                <td>订单(一行一个)</td>
+                <td>
+                    <textarea id="txtOrderNo" style="width: 300px; height: 200px;"></textarea></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <input type="button" value="确定" onclick="createSendOrder()" /></td>
+            </tr>
+        </table>
+    </div>
+</body>

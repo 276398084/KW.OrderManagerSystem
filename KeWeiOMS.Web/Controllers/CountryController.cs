@@ -35,8 +35,8 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                if(IsCreateOk(obj.ECountry))
-                return Json(new { errorMsg = "编号已经存在" });
+                if (IsCreateOk(obj.ECountry))
+                    return Json(new { errorMsg = "编号已经存在" });
                 NSession.SaveOrUpdate(obj);
                 NSession.Flush();
             }
@@ -44,7 +44,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         private bool IsCreateOk(string s)
@@ -88,7 +88,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             try
             {
-                if (IsOk(obj.Id,obj.ECountry))
+                if (IsOk(obj.Id, obj.ECountry))
                     return Json(new { errorMsg = "编号已经存在" });
                 NSession.Update(obj);
                 NSession.Flush();
@@ -97,7 +97,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         private bool IsOk(int p, string s)
@@ -138,7 +138,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows, string sort, string order, string search)
@@ -159,6 +159,30 @@ namespace KeWeiOMS.Web.Controllers
             IList<CountryType> objList = NSession.CreateQuery("from CountryType where ECountry like '%" + q + "%' order by ECountry asc")
                 .List<CountryType>();
             return Json(new { total = objList.Count, rows = objList });
+        }
+
+        public JsonResult ListALLC()
+        {
+            IList<object> objList = NSession.CreateSQLQuery("select CCountry from Country group by CCountry order by CCountry asc")
+                .List<object>();
+            List<object> list = new List<object>();
+            foreach (var item in objList)
+            {
+                list.Add(new { id = item, text = item });
+            }
+            return Json(list);
+        }
+
+        public ContentResult ListByC(string c)
+        {
+            IList<CountryType> objList = NSession.CreateQuery("from CountryType where CCountry = '" + c + "'")
+                .List<CountryType>();
+            string str = "";
+            foreach (var item in objList)
+            {
+                str += "," + item.ECountry;
+            }
+            return Content(str);
         }
 
     }

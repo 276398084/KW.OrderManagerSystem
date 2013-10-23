@@ -2,9 +2,9 @@
     ViewBag.Title = "PeiScan";
 }
 <script type="text/javascript">
-    
+
     if (document.all) {
-       
+
         document.write(' <OBJECT id="Player1"');
         document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
         document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
@@ -13,7 +13,7 @@
         document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
     }
     else {
-       
+
         document.write(' <OBJECT id="Player1"');
         document.write(' type="application/x-ms-wmp"');
         document.write(' src= "/Content/Audio/ring.wav" width=0 height=0> </OBJECT>');
@@ -104,8 +104,10 @@
         }
         if (keynum == 13) {
 
-            if (txt.value == "") { Reset();
-                return true;}
+            if (txt.value == "") {
+                Reset();
+                return true;
+            }
             if (progress == 0) {
                 getOrder(txt.value);
             }

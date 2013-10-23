@@ -74,7 +74,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.ScanningBy).Length(40);
             Map(x => x.Account).Length(40);
             Map(x => x.Platform).Length(40);
-
+            Map(x => x.IsHai);
+            Map(x => x.Location).Length(100);
         }
     }
 }

@@ -141,7 +141,11 @@ namespace KeWeiOMS.Web.Controllers
                 .List<StockOutType>();
 
             object count = NSession.CreateQuery("select count(Id) from StockOutType " + where).UniqueResult();
-            return Json(new { total = count, rows = objList });
+            object total = NSession.CreateQuery("select sum(Qty*Price) from StockOutType " + where).UniqueResult();
+            List<object> foot = new List<object>();
+            foot.Add(new { Price = Math.Round(Convert.ToDouble(total), 2) });
+
+            return Json(new { total = count, rows = objList, footer = foot });
         }
         public JsonResult ToExcel(string search)
         {

@@ -1,0 +1,29 @@
+﻿@model KeWeiOMS.Domain.SendPackageType
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+    });
+
+</script>
+
+@using (Html.BeginForm("Create", "SendPackage", FormMethod.Post, new { id = "c_form" }))
+{
+    <fieldset>
+        <table class="editForm">
+
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.PackageName, "包裹名称:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.PackageName, new { @id = "c_PackageName" })
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}

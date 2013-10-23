@@ -60,6 +60,11 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult KPICount()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult OrderCount(DateTime st, DateTime et, string a, string p, string i)
         {
@@ -832,7 +837,74 @@ where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and 
             List<string> strData = new List<string>();
             StringBuilder sb = new StringBuilder();
             strData.Add("人员");
-            sb.Append("select [PeiBy] as '扫描人',");
+            sb.Append("select [PeiBy] as '配货人',");
+            DateTime date = st;
+            while (date <= et)
+            {
+                string week = GetWeek("zh", date);
+                strData.Add(date.ToString("MMdd"));
+
+                sb.Append("SUM(case  when convert(varchar(10),[CreateOn],120)='" + date.ToString("yyyy-MM-dd") + "' then  rcount else 0 end  ) as '" + date.ToString("MM.dd") + "(" + week + ")' ,");
+                date = date.AddDays(1);
+            }
+            sb = sb.Remove(sb.Length - 1, 1);
+            sb.Append("from  (select [PeiBy] ,convert(varchar(10),[CreateOn],120) [CreateOn] ,COUNT(1) as 'rcount'  from BeforePeiScan where [CreateOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PeiBy] ,convert(varchar(10),[CreateOn],120)) as tbl1  group by [PeiBy]");
+            IList<object[]> objectses = NSession.CreateSQLQuery(sb.ToString()).List<object[]>();
+            StringBuilder jsonBuilder = new StringBuilder();
+
+            jsonBuilder.Append("[");//转换成多个model的形式
+            for (int i = 0; i < objectses.Count; i++)
+            {
+                jsonBuilder.Append("{");
+                for (int j = 0; j < strData.Count; j++)
+                {
+                    jsonBuilder.Append("\"");
+                    jsonBuilder.Append(strData[j]);
+                    jsonBuilder.Append("\":\"");
+                    jsonBuilder.Append(objectses[i][j]);
+
+                    jsonBuilder.Append("\",");
+                }
+                jsonBuilder.Remove(jsonBuilder.Length - 1, 1);
+                jsonBuilder.Append("},");
+            }
+            jsonBuilder.Remove(jsonBuilder.Length - 1, 1);
+            jsonBuilder.Append("]");
+            StringBuilder jsonBuilder2 = new StringBuilder();
+
+            jsonBuilder2.Append("[{");
+            for (int j = 1; j < strData.Count; j++)
+            {
+                int sum = 0;
+
+                jsonBuilder2.Append("\"");
+                jsonBuilder2.Append(strData[j]);
+                jsonBuilder2.Append("\":\"");
+                for (int i = 0; i < objectses.Count; i++)
+                {
+                    sum += Convert.ToInt32(objectses[i][j]);
+
+
+                }
+                jsonBuilder2.Append(sum.ToString());
+                jsonBuilder2.Append("\",");
+
+
+            }
+            jsonBuilder2.Remove(jsonBuilder2.Length - 1, 1);
+            jsonBuilder2.Append("}]");
+            string json = "{\"total\":" + objectses.Count + ",\"rows\":" + jsonBuilder.ToString() + ",\"footer\":" + jsonBuilder2.ToString() + "}";
+            return json;
+        }
+
+        [HttpPost]
+        public String ValiCount(DateTime st, DateTime et)
+        {
+
+            List<string> strData = new List<string>();
+            StringBuilder sb = new StringBuilder();
+            strData.Add("人员");
+            sb.Append("select [ValiBy] as '人员',");
             DateTime date = st;
 
             while (date <= et)
@@ -844,7 +916,7 @@ where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and 
                 date = date.AddDays(1);
             }
             sb = sb.Remove(sb.Length - 1, 1);
-            sb.Append("from  (select [PeiBy] ,convert(varchar(10),[CreateOn],120) [CreateOn] ,COUNT(1) as 'rcount'  from OrderPeiRecord where [CreateOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [PeiBy] ,convert(varchar(10),[CreateOn],120)) as tbl1  group by [PeiBy]");
+            sb.Append("from  (select [ValiBy] ,convert(varchar(10),[CreateOn],120) [CreateOn] ,COUNT(1) as 'rcount'  from OrderPeiRecord where [CreateOn] between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + " 23:59:59' group by [ValiBy] ,convert(varchar(10),[CreateOn],120)) as tbl1  group by [ValiBy]");
             IList<object[]> objectses = NSession.CreateSQLQuery(sb.ToString()).List<object[]>();
             StringBuilder jsonBuilder = new StringBuilder();
 
@@ -1035,6 +1107,162 @@ where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and 
                 where += " and Account='" + a + "'";
             }
             return where;
+        }
+
+
+
+        public ActionResult GetKPIData(DateTime st, DateTime et)
+        {
+            //select  PeiBy,COUNT(1) from BeforePeiScan  where CreateOn {0} group by PeiBy
+
+            //select ValiBy,SUM(rcount) from (select ValiBy,(select COUNT(1) from SKUCode where SKUCode.OrderNo=OrderPeiRecord.OrderNo) as rcount from OrderPeiRecord where CreateOn {0}) as tbl group by ValiBy
+
+
+            //select  PackBy,sum(PackCoefficient) from OrderPackRecord where  PackOn {0} group by PackBy
+
+            //select  ScanningBy,LogisticMode,COUNT(1) from Orders where Status='已发货' and  ScanningOn {0} group by ScanningBy,LogisticMode
+
+            //select CreateBy,COUNT(1) From StockIn where CreateOn {0} group by CreateBy
+
+            //select CreateBy,COUNT(1) From SoresAdd where CreateOn {0} group by CreateBy
+            //select Worker,SUM(Sore) From SoresAdd where CreateOn {0} group by Worker
+
+            string sqldate = "between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd 23:59:59") + "'";
+
+            string sqlpei = "select  PeiBy,COUNT(1) from BeforePeiScan  where CreateOn {0} group by PeiBy";
+            string sqlvali = "select ValiBy,SUM(rcount) from (select ValiBy,(select COUNT(1) from SKUCode where SKUCode.OrderNo=OrderPeiRecord.OrderNo) as rcount from OrderPeiRecord where CreateOn {0}) as tbl group by ValiBy";
+            string sqlpack = "select  PackBy,sum(PackCoefficient) from OrderPackRecord where  PackOn {0} group by PackBy";
+            string sqlscan = "select  ScanningBy,LogisticMode,COUNT(1) from Orders where Status='已发货' and  ScanningOn {0} group by ScanningBy,LogisticMode";
+            string sqlstockIn = "select CheckBy,COUNT(1) From PlanDao where DaoOn {0} group by CheckBy";
+            string sqladd = "select Worker,SUM(Sore) From SoresAdd where CreateOn {0} group by Worker";
+            string sqlreturn = "select CreateBy,COUNT(1) from OrderReturnRecord where CreateOn {0}  group by CreateBy ";
+            Dictionary<string, KeWeiOMS.Web.Common.KPIData> kpis = new Dictionary<string, KeWeiOMS.Web.Common.KPIData>();
+
+            ///配货积分 1.5/单
+            IList<object[]> objectes = NSession.CreateSQLQuery(string.Format(sqlpei, sqldate)).List<object[]>();
+            foreach (object[] item in objectes)
+            {
+                if (ExistKPI(kpis, item))
+                {
+                    KeWeiOMS.Web.Common.KPIData kpi = kpis[item[0].ToString()];
+                    kpi.PeiPoint = Convert.ToDouble(item[1]) * 1.5;
+                }
+            }
+            /// 验货订单 1/单
+            objectes = NSession.CreateSQLQuery(string.Format(sqlvali, sqldate)).List<object[]>();
+            foreach (object[] item in objectes)
+            {
+                if (ExistKPI(kpis, item))
+                {
+                    KeWeiOMS.Web.Common.KPIData kpi = kpis[item[0].ToString()];
+                    kpi.ValiPoint = Math.Round(Convert.ToDouble(item[1]) * 0.4, 2);
+                }
+            }
+
+            /****
+             * "服装类:1/单
+                其它类别：2/单
+                拆包:+10/单
+                包含以下SKU的订单：10/单
+                3227
+                8564
+                8155
+                8153
+                8470
+                8471
+                8422
+                8554
+                8638
+                8656
+                8686
+                8735
+                3155			
+             * 
+             * 
+             ***/
+
+            objectes = NSession.CreateSQLQuery(string.Format(sqlpack, sqldate)).List<object[]>();
+            foreach (object[] item in objectes)
+            {
+                if (ExistKPI(kpis, item))
+                {
+                    KeWeiOMS.Web.Common.KPIData kpi = kpis[item[0].ToString()];
+                    kpi.PackPoint = Math.Round(Convert.ToDouble(item[1]), 2);
+                }
+            }
+
+            /**
+             * 杭州、温州、EUB、BLS：0.5/单
+                宁波：1/单
+                其它：5/单
+             * 
+             * 
+             */
+            objectes = NSession.CreateSQLQuery(string.Format(sqlscan, sqldate)).List<object[]>();
+            foreach (object[] item in objectes)
+            {
+                if (ExistKPI(kpis, item))
+                {
+                    KeWeiOMS.Web.Common.KPIData kpi = kpis[item[0].ToString()];
+                    string l = item[1].ToString();
+                    if (l.IndexOf("EUB") != -1 || l.IndexOf("温") != -1 || l.IndexOf("WZ") != -1 || l.IndexOf("BLS") != -1 || l.IndexOf("HZ") != -1)
+                        kpi.ScanPoint += Math.Round(Convert.ToDouble(item[2]) * 0.5, 2);
+                    else if (l.IndexOf("NB") != -1 || l.IndexOf("平") != -1)
+                        kpi.ScanPoint += Math.Round(Convert.ToDouble(item[2]) * 1, 2);
+                    else
+                        kpi.ScanPoint += Math.Round(Convert.ToDouble(item[2]) * 5, 2);
+                }
+            }
+
+            objectes = NSession.CreateSQLQuery(string.Format(sqlstockIn, sqldate)).List<object[]>();
+            foreach (object[] item in objectes)
+            {
+                if (ExistKPI(kpis, item))
+                {
+                    KeWeiOMS.Web.Common.KPIData kpi = kpis[item[0].ToString()];
+                    kpi.SotckInPoint = Math.Round(Convert.ToDouble(item[1]) * 10, 2);
+                }
+            }
+
+            objectes = NSession.CreateSQLQuery(string.Format(sqladd, sqldate)).List<object[]>();
+            foreach (object[] item in objectes)
+            {
+                if (ExistKPI(kpis, item))
+                {
+                    KeWeiOMS.Web.Common.KPIData kpi = kpis[item[0].ToString()];
+                    kpi.AddPoint = Math.Round(Convert.ToDouble(item[1]), 2);
+                }
+            }
+
+            objectes = NSession.CreateSQLQuery(string.Format(sqlreturn, sqldate)).List<object[]>();
+            foreach (object[] item in objectes)
+            {
+                if (ExistKPI(kpis, item))
+                {
+                    KeWeiOMS.Web.Common.KPIData kpi = kpis[item[0].ToString()];
+                    kpi.ReturnPoint = Math.Round(Convert.ToDouble(item[1]) * 0.5, 2);
+                }
+            }
+
+            List<KeWeiOMS.Web.Common.KPIData> list = kpis.Values.ToList<KeWeiOMS.Web.Common.KPIData>();
+
+            return Json(new { rows = list.OrderByDescending(f => f.TotalPoint), total = list.Count });
+        }
+
+        private static bool ExistKPI(Dictionary<string, KeWeiOMS.Web.Common.KPIData> kpis, object[] item)
+        {
+            if (item[0] == null)
+            {
+                return false;
+
+            }
+            if (!kpis.ContainsKey(item[0].ToString()))
+            {
+                KeWeiOMS.Web.Common.KPIData foo = new Common.KPIData();
+                foo.PeopleName = item[0].ToString();
+                kpis.Add(foo.PeopleName, foo);
+            }
+            return true;
         }
 
 

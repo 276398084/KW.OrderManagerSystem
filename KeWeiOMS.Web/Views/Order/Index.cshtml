@@ -63,7 +63,7 @@
                 data: checkPrint,
                 width: 100
             });
-			
+
             $('#IsQue').combobox({
                 valueField: 0,
                 textField: 1,
@@ -79,6 +79,13 @@
                 width: 100
             });
             $('#IsCanSplit').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsHai').combobox({
                 valueField: 0,
                 textField: 1,
                 panelHeight: 'auto',
@@ -266,6 +273,9 @@
             if (r.IsStop == 1) {
                 html += "(停售订单)";
             }
+            if (r.IsHai == 1) {
+                html += "(海外仓:" + r.Location + ")";
+            }
             html += "<br/>";
             if (r.IsPrint >= 1)
                 html += "<img src='/Content/imgs/Print.gif'> ";
@@ -325,6 +335,15 @@
                     search += "IsError_si&1^";
                 } else {
                     search += "IsError_ei&0^";
+                }
+            }
+
+            var ishai = $('#IsHai').combobox("getValue");
+            if (ishai != "ALL" && ishai != "" && ishai != "0") {
+                if (ishai == "1") {
+                    search += "IsHai_si&1^";
+                } else {
+                    search += "IsHai_ei&0^";
                 }
             }
             var t = $('#orderdateType').combobox("getValue");
@@ -479,12 +498,12 @@
                 $('#dg').datagrid("reload");
             }
         });
-        
+
     }
 
     function ExportExcel(t) {
 
-       
+
         var s_ids = getselectedRows(0);
         if (s_ids == null || s_ids.length == 0) {
             return;
@@ -493,16 +512,16 @@
         jQuery.ajax({
             url: "/Order/ExportExcel",
             type: "post",
-            data: "ids=" + s_ids.join(',')+"&t="+t,
+            data: "ids=" + s_ids.join(',') + "&t=" + t,
             success: function (res) {
                 if (res.IsError) {
                     alert(res.Message);
                 }
                 location.href = postUrl;
-                
+
             }
         });
-       
+
     }
 
     function stopLoad() {
@@ -736,7 +755,7 @@
                     search: ""
                 });
             }
-            if (v == '退货订单' ||v == '待处理' || v == '已处理' || v == '待拣货' || v == '待包装' || v == '待发货' || v == '已发货' || v == '已完成' || v == '作废订单') {
+            if (v == '退货订单' || v == '待处理' || v == '已处理' || v == '待拣货' || v == '待包装' || v == '待发货' || v == '已发货' || v == '已完成' || v == '作废订单') {
                 $('#OrderStatus').combobox("setValue", v);
                 $("#dg").datagrid("load", {
                     search: "IsAudit_ds&1^IsStop_ds&0^Status_es&" + v
@@ -758,7 +777,7 @@
                 $("#dg").datagrid("load", {
                     search: "IsAudit_ds&0^"
                 });
-                
+
             }
         }
     </script>
@@ -772,7 +791,7 @@
             <li><a href="javascript:selectlist('待发货')">待发货</a></li>
             <li><a href="javascript:selectlist('已发货')">已发货</a></li>
             <li><a href="javascript:selectlist('已完成')">已完成</a></li>
-  <li><a href="javascript:selectlist('退货订单')">退货订单</a></li>
+            <li><a href="javascript:selectlist('退货订单')">退货订单</a></li>
             <li><a href="javascript:selectlist('缺货订单')">缺货订单</a></li>
             <li><a href="javascript:selectlist('停售订单')">停售订单</a></li>
             <li><a href="javascript:selectlist('等待审核')">等待审核</a></li>
@@ -840,6 +859,7 @@
             拦截:<input type="text" id="IsError" />
             留言:<input type="text" id="IsLiu" />
             可拆:<input type="text" id="IsCanSplit" />
+            海外仓:<input type="text" id="IsHai" />
             时间类型:<input type="text" id="orderdateType" />
             开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
             结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />

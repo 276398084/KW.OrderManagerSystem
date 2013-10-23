@@ -20,7 +20,7 @@
             url: '@Url.Action("ScanCount", "Statistics")',
             queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
             showFooter: true,
-            
+
             width: 1200,
             striped: true
 
@@ -46,9 +46,21 @@
             striped: true
 
         });
-       
+
+        $('#dg4').datagrid({
+            title: "验货统计",
+            rownumbers: true,
+            singleselect: true,
+            url: '@Url.Action("ValiCount", "Statistics")',
+            queryParams: { "st": $('#cc').combobox("getValue"), "et": $('#cc2').combobox("getValue") },
+            showFooter: true,
+            width: 1200,
+            striped: true
+
+        });
+
     });
-   
+
 
     function myparser(s) {
         if (!s) return new Date();
@@ -74,17 +86,19 @@
                 var options = $("#dg").datagrid("options");                   //取出当前datagrid的配置 
                 var options2 = $("#dg2").datagrid("options");
                 var options3 = $("#dg3").datagrid("options");
+                var options4 = $("#dg4").datagrid("options");
                 options.columns = arr;
                 options2.columns = arr;
                 options3.columns = arr;       //添加服务器端返回的columns配置信息
+                options4.columns = arr;
                 //添加查询参数  
                 $("#dg").datagrid(options);
-                
+
                 $('#dg').datagrid("load", {
                     st: $('#cc').combobox("getValue"),
                     et: $('#cc2').combobox("getValue")
                 });
-                
+
                 $("#dg2").datagrid(options2);
                 $('#dg2').datagrid("load", {
                     st: $('#cc').combobox("getValue"),
@@ -94,7 +108,13 @@
                 $('#dg3').datagrid("load", {
                     st: $('#cc').combobox("getValue"),
                     et: $('#cc2').combobox("getValue")
-                   
+
+                });
+                $("#dg4").datagrid(options4);
+                $('#dg4').datagrid("load", {
+                    st: $('#cc').combobox("getValue"),
+                    et: $('#cc2').combobox("getValue")
+
                 });
             }
         });
@@ -131,6 +151,17 @@
     <tr>
         <td>
             <table id="dg3">
+                <thead>
+                    <tr>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            <table id="dg4">
                 <thead>
                     <tr>
                     </tr>

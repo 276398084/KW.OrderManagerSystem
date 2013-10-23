@@ -15,35 +15,37 @@
             height: 100%;
         }
     </style>
-   
+
 </head>
-    <body style="margin: 0; overflow: hidden" scroll="no" onload="window_onload()">
-        <div>如果打印报表无法，显示或者显示错误请下载 <a href="/Scripts/grbsctl5.exe">控件</a> 安装后重启浏览器. </div>
-        <script language="javascript">
+<body style="margin: 0; overflow: hidden" scroll="no" onload="window_onload()">
+    <div>如果打印报表无法，显示或者显示错误请下载 <a href="/Scripts/grbsctl5.exe">控件</a> 安装后重启浏览器. </div>
+    <script language="javascript">
 
-            function window_onload() {
-                //最后用UpdateToolbar方法更新显示。RemoveToolbarControl中的//隐藏插件工具栏上的部分按钮与菜单项。首先用RemoveToolbarControl方法指定要隐藏的项参数指定要隐藏的按钮与
-                //菜单项，对应的常数值请查帮助中枚举 GRToolControlType 的定义。
-                //加一个自定义按钮: 首先加一个分隔栏; 然后加自定义按钮,参数1为按钮标识号,第二个为按钮
-                //图像文件(必须为16*16,256色的bmp位图，背景为纯黑色), 第三个参数为按钮提示文字。
-                //按钮点击后触发CustomButtonClick事件
+        function window_onload() {
+            //最后用UpdateToolbar方法更新显示。RemoveToolbarControl中的//隐藏插件工具栏上的部分按钮与菜单项。首先用RemoveToolbarControl方法指定要隐藏的项参数指定要隐藏的按钮与
+            //菜单项，对应的常数值请查帮助中枚举 GRToolControlType 的定义。
+            //加一个自定义按钮: 首先加一个分隔栏; 然后加自定义按钮,参数1为按钮标识号,第二个为按钮
+            //图像文件(必须为16*16,256色的bmp位图，背景为纯黑色), 第三个参数为按钮提示文字。
+            //按钮点击后触发CustomButtonClick事件
 
-                // ReportViewer.AddToolbarControl(1);
-                // ReportViewer.AddToolbarCustomButton(1, "/Content/images/Design.gif", "设计");
-                // ReportViewer.AddToolbarCustomButton(3, "/Content/images/data.gif", "数据");
-                //最后更新显示
-                //ReportViewer.UpdateToolbar();
-                ReportViewer.Start();
+            // ReportViewer.AddToolbarControl(1);
+            // ReportViewer.AddToolbarCustomButton(1, "/Content/images/Design.gif", "设计");
+            // ReportViewer.AddToolbarCustomButton(3, "/Content/images/data.gif", "数据");
+            //最后更新显示
+            //ReportViewer.UpdateToolbar();
+            ReportViewer.Start();
 
-            }
 
-            var obj = window.opener.document.getElementById('printdata').value;
-            var Report = "/Home/PrintGrf/@ViewData["grf"]";
-            //CreatePrintViewer("/Scripts/asd.grf", "");
+        }
 
-            CreatePrintViewer(Report, "/Home/PrintData/" + obj);
-        </script>
-        @* <script language="JavaScript" for="ReportViewer" event="CustomButtonClick(BtnID)">
+        var obj = window.opener.document.getElementById('printdata').value;
+
+        var Report = "/Home/PrintGrf/@ViewData["grf"]";
+        //CreatePrintViewer("/Scripts/asd.grf", "");
+        CreatePrintViewer(Report, "/Home/PrintData/" + obj);
+
+    </script>
+    @* <script language="JavaScript" for="ReportViewer" event="CustomButtonClick(BtnID)">
         if (BtnID == 1) {
             location = "/Home/PrintDesign/@ViewData["grf"]";
         }
@@ -54,5 +56,5 @@
     </script>*@
 
 
-    </body>
+</body>
 </html>

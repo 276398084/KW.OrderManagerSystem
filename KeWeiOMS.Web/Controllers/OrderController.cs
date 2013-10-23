@@ -46,6 +46,10 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+        public ActionResult HaiIndex()
+        {
+            return View();
+        }
         public ActionResult UnHandle()
         {
             return View();
@@ -123,6 +127,12 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        public ActionResult EditOrder()
+        {
+            return View();
+        }
+
+
 
         #endregion
 
@@ -1095,7 +1105,7 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                 {
                     sql += " where O.IsError =0 and  O.Enabled=1 and   O." + dd + " between '" +
                            st + "' and '" + et + "'";
-                    if (a != "")
+                    if (!string.IsNullOrEmpty(a))
                     {
                         sql += "and O.Account='" + a + "'";
                     }
@@ -1132,7 +1142,7 @@ where O.Id in(" + ids + ")";
             {
 
             }
-            DataSet ds = GetOrderExport(sql,1);
+            DataSet ds = GetOrderExport(sql, 1);
 
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
@@ -1236,6 +1246,88 @@ where O.Id in(" + ids + ")";
             OrderHelper.SplitProduct(orders, NSession);
             return Json(new { IsSuccess = true });
         }
+        [HttpPost]
+        public ActionResult EditOrderStatusBySend(int o)
+        {
+            OrderType order = NSession.Get<OrderType>(o);
+            order.Status = OrderStatusEnum.已发货.ToString();
+            NSession.SaveOrUpdate(order);
+            NSession.Flush();
+            LoggerUtil.GetOrderRecord(order, "订单手动发货！", "将订单设置为已发货！", NSession);
+            return Json(new { IsSuccess = true });
+        }
+
+        [HttpPost]
+        public ActionResult EditOrderStatusByPack(int o)
+        {
+            OrderType order = NSession.Get<OrderType>(o);
+            order.Status = OrderStatusEnum.待包装.ToString();
+            NSession.SaveOrUpdate(order);
+            NSession.Flush();
+            LoggerUtil.GetOrderRecord(order, "订单手动设置为待包装！", "将订单设置为待包装！", NSession);
+            return Json(new { IsSuccess = true });
+        }
+
+        [HttpPost]
+        public ActionResult EditSetHai(int o)
+        {
+            OrderType order = NSession.Get<OrderType>(o);
+            order.IsHai = 1;
+            NSession.SaveOrUpdate(order);
+            NSession.Flush();
+            LoggerUtil.GetOrderRecord(order, "海外仓订单！", "将订单设置为海外仓订单！", NSession);
+            return Json(new { IsSuccess = true });
+        }
+
+        [HttpPost]
+        public ActionResult EditSetLocal(int o)
+        {
+            OrderType order = NSession.Get<OrderType>(o);
+            order.IsHai = 0;
+            NSession.SaveOrUpdate(order);
+            NSession.Flush();
+            LoggerUtil.GetOrderRecord(order, "本地订单！", "将订单设置为本地订单！", NSession);
+            return Json(new { IsSuccess = true });
+        }
+
+
+        [HttpPost]
+        public ActionResult EditSendOrder(string str, string t)
+        {
+            string[] strs = str.Replace("\r", "").Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            string o = "";
+            foreach (var foo in strs)
+            {
+                string[] f = foo.Replace("\t", " ").Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+                if (f.Length == 2)
+                {
+                    if (!dic.ContainsKey(f[0]))
+                    {
+                        dic.Add(f[0], f[1]);
+                        o += f[0] + ",";
+                    }
+                }
+            }
+            o = o.Trim(',');
+            o = o.Replace(",", "','");
+
+            IList<OrderType> orders =
+                NSession.CreateQuery("from OrderType where OrderNo In ('" + o + "')").List<OrderType>();
+            foreach (var order in orders)
+            {
+                if (dic.ContainsKey(order.OrderNo))
+                {
+                    string code = dic[order.OrderNo];
+                    NSession.CreateSQLQuery(" update Orders set " + t + "='" + code + "' where Id=" + order.Id).UniqueResult();
+                    LoggerUtil.GetOrderRecord(order, "订单修改！", "将订单的" + t + " 设置为" + code + "！", GetCurrentAccount(), NSession);
+                }
+
+            }
+
+
+            return Json(new { Result = "成功！" });
+        }
 
         /// <summary>
         /// 修改订单属性
@@ -1269,9 +1361,11 @@ where O.Id in(" + ids + ")";
                     content = "将订单状态设置为已处理，并标记订单正常";
                     break;
                 case 3:
-                    set = "Status='" + OrderStatusEnum.作废订单.ToString() + "', IsAudit=0,SellerMemo='" + c + "'";
+                    set = "Status='" + OrderStatusEnum.作废订单.ToString() + "', IsAudit=1,SellerMemo='" + c + "'";
                     type = "订单作废";
+
                     content = "将订单状态设置为作废订单";
+
                     break;
             }
             int count = NSession.CreateQuery(" Update OrderType set " + set + " where Id in(" + o + ")").ExecuteUpdate();
@@ -1279,7 +1373,14 @@ where O.Id in(" + ids + ")";
             foreach (OrderType orderType in orders)
             {
                 if (t == 3)
+                {
                     SetQuestionOrder("作废订单-重置包裹入库", orderType);
+                    NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + orderType.Id).ExecuteUpdate();
+                    orderType.IsOutOfStock = 0;
+                    NSession.Update(orderType);
+                    NSession.Flush();
+                    LoggerUtil.GetOrderRecord(orderType, "订单作废！", "订单作废，订单的缺货状态删除！", CurrentUser, NSession);
+                }
                 LoggerUtil.GetOrderRecord(orderType, type, content, CurrentUser, NSession);
             }
             if (count > 0)
@@ -1378,7 +1479,7 @@ where O.Id in(" + ids + ")";
                             html = "<div><h3>订单中包含：" + desc + " 的产品</h3></div>" + html;
                         }
 
-                        return Json(new { IsSuccess = true, Result = html, Code = length });
+                        return Json(new { IsSuccess = true, Result = html, Code = length, Country = order.Country });
                     }
                     else
                     {
@@ -1423,8 +1524,6 @@ where O.Id in(" + ids + ")";
                                          DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + "' where OrderNo ='" +
                                          order.OrderNo + "'").ExecuteUpdate();
                     LoggerUtil.GetOrderRecord(order, "订单扫描发货！", "将订单扫描发货了！", CurrentUser, NSession);
-
-
                     string html = "订单： " + order.OrderNo + "已经发货! 发货方式：" + l + "  重量：" + w;
                     try
                     {
@@ -1940,6 +2039,7 @@ where O.Id in(" + ids + ")";
                     string html = "订单：" + order.OrderNo + " 配货完成！";
                     if (iscon)
                     {
+
                         LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描，订单的缺货状态删除！", CurrentUser, NSession);
                         IList<OrderOutRecordType> list =
                             NSession.CreateQuery("from OrderOutRecordType where OId='" + order.Id + "'").List

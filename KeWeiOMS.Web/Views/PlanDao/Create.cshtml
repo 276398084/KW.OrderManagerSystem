@@ -22,8 +22,8 @@
             width: 120,
             panelHeight: 'auto'
         });
-        $('#c_CheckBy').combobox("setValue", "王凯");
-        $('#c_ValiBy').combobox("setValue", "王凯");
+       
+       
         $('#c_PassRate').numberbox({
             min: 0,
             max: 100
@@ -150,7 +150,7 @@
     <script type="text/javascript">
         function alldao() {
 
-            $('#c_RealQty').numberbox("setValue",'@plan.Qty-@plan.DaoQty');
+            $('#c_RealQty').numberbox("setValue", '@plan.Qty-@plan.DaoQty');
             $('#c_Status').combobox("setValue", "已收到");
         }
     </script>
@@ -161,13 +161,13 @@
                 <td>
                     @Html.LabelFor(model => model.RealQty, "实际到货数量:")
                 </td>
-                <td >
+                <td>
                     @Html.TextBoxFor(model => model.RealQty, new { @id = "c_RealQty" }) <a href="javascript:void(0);" onclick="alldao()">全部到货</a>
                 </td>
-                <td >
-                     @Html.LabelFor(model => model.WId, "入库仓库:")
+                <td>
+                    @Html.LabelFor(model => model.WId, "入库仓库:")
                 </td>
-                <td >
+                <td>
                     @Html.TextBoxFor(model => model.WId, new { @id = "c_WId" })
                 </td>
             </tr>
@@ -192,12 +192,8 @@
                 <td>
                     @Html.TextBoxFor(model => model.PassRate, new { @id = "c_PassRate" })%
                 </td>
-                <td>
-                    @Html.LabelFor(model => model.ValiBy, "产品检验人:")
-                </td>
-                <td>
-                    @Html.TextBoxFor(model => model.ValiBy, new { @id = "c_ValiBy" })
-                </td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td>

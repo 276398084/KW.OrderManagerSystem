@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "OrderExport";
+}
+<script type="text/javascript">
+    function setAttr() {
+        $.messager.confirm("提示", "确定要设置吗?一旦设置无法变成原样!", function (r) {
+            if (r) {
+                var search = "str=" + $('#data').val() + "&" + "&t=" + $('#state').combobox("getValue");
+                jQuery.ajax({
+                    url: "/Order/EditSendOrder/",
+                    type: "post",
+                    data: search,
+                    success: function (sss) {
+                        alert(sss.Result);
+                    }
+                });
+            }
+        });
+    }
+</script>
+!
+格式:订单号[空格]值<br />
+一行一个订单.<br />
+注意:一旦设置无法变成原样!<br />
+<textarea style="height: 420px; width: 446px;" id="data">
+
+</textarea>
+<br />
+<select class="easyui-combobox" id="state" style="width: 200px;">
+    <option value="TrackCode" selected="selected">挂号</option>
+    <option value="LogisticMode">物流方式</option>
+</select>
+<input type="button" value="设置" onclick="setAttr()" />
+
+

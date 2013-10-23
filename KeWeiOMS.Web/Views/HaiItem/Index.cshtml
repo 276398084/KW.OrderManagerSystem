@@ -1,0 +1,124 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.HaiItemType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "HaiItem")',
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100]
+            });
+            $('#txtLocation').combobox({
+                url: '@Url.Action("GetDataByCode", "Dictionary")/HaiLocation',
+                valueField: 'FullName',
+                textField: 'FullName',
+                panelHeight: 'auto',
+                editable: false
+            });
+            var data = $('#txtLocation').combobox('getData');
+            $("#txtLocation ").combobox('select', data[0].FullName);
+        });
+
+
+
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "HaiItem")/' + id;
+                delData(url, 'dg');
+
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+        function AddItemId() {
+            jQuery.ajax({
+                url: "/HaiItem/Create/",
+                type: "post",
+                data: "ids=" + $('#txtOrderNo').val() + "&l=" + $('#txtLocation').combobox("getValues"),
+                success: function (res) {
+                    if (res.IsSuccess) {
+                        alert("添加完成！");
+                    }
+                    $('#dg').datagrid("reload");
+                    $('#txtOrderNo').val('');
+                    $('#dlgAdd').dialog('close');
+                }
+            });
+        }
+
+    </script>
+    <div region="center">
+        <table id="dg" class="easyui-datagrid"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+                    <th field="ItemId" width="100">ItemId
+                    </th>
+                    <th field="Location" width="100">Location
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="$('#dlgAdd').dialog('open');">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+        </div>
+        <div id="mm" style="width: 120px">
+
+            <div data-options="name:'ItemId'">ItemId</div>
+
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="dlgAdd" class="easyui-dialog" title="添加ItemID" style="width: 430px; height: 400px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>ItemId(一行一个)</td>
+                    <td>
+                        <textarea id="txtOrderNo" style="width: 300px; height: 200px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td>海外仓地址</td>
+                    <td>
+                        <input type="text" id="txtLocation" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="AddItemId()" /></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>

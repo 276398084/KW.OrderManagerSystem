@@ -78,7 +78,7 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     //obj.DaoOn = DateTime.Now;
                     obj.IsAudit = 1;
-                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo, NSession);
+                    obj.SKUCode = Utilities.CreateSKUCode(obj.SKU, obj.RealQty, obj.PlanNo, obj.WId, obj.WName, NSession);
 
                     NSession.SaveOrUpdate(obj);
                     NSession.Flush();
@@ -140,12 +140,12 @@ namespace KeWeiOMS.Web.Controllers
                     dr[4] = plan.BuyBy;
                     dr[5] = plan.PlanNo;
                     dr[6] = skuCodeType.Code;
-                    dt.Rows.Add(dr);  
+                    dt.Rows.Add(dr);
                     i++;
                 }
                 DataSet ds = new DataSet();
                 ds.Tables.Add(dt);
-                if(plan.ExpectReceiveOn <(new DateTime(2000, 1, 1)))
+                if (plan.ExpectReceiveOn < (new DateTime(2000, 1, 1)))
                 {
                     plan.ExpectReceiveOn = new DateTime(2000, 1, 1);
                 }

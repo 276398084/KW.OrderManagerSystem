@@ -270,5 +270,9 @@ namespace KeWeiOMS.Domain
         public virtual string rows { get; set; }
 
         public virtual int qty { get; set; }
+
+        public virtual int IsHai { get; set; }
+
+        public virtual String Location { get; set; }
     }
 }

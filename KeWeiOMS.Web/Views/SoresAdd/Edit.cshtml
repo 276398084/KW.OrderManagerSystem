@@ -39,7 +39,8 @@
                 Calculate();
             },
             required: true,
-            width: 150
+            width: 150,
+            editable: false
         });
     });
     function Calculate() {
@@ -102,7 +103,7 @@
             @Html.LabelFor(model => model.Sore,"分数:")
 		</td>
 		<td>
-            @Html.TextBoxFor(model => model.Sore,new{@id="e_Sore"})
+            @Html.TextBoxFor(model => model.Sore,new{@id="e_Sore", @readonly = "readonly"})
 		</td>
 	</tr>
 

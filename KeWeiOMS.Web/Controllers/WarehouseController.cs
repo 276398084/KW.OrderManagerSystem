@@ -34,7 +34,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
 
         }
 
@@ -94,7 +94,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(string sort, string order, string search)
@@ -105,7 +105,7 @@ namespace KeWeiOMS.Web.Controllers
 
                 .List<WarehouseType>();
 
-          
+
             //object count = NSession.CreateQuery("select count(Id) from WarehouseType ").UniqueResult();
             return Json(new { total = objList.Count, rows = objList });
         }
@@ -117,6 +117,16 @@ namespace KeWeiOMS.Web.Controllers
                 .List<WarehouseType>();
 
             // object count = NSession.CreateQuery("select count(Id) from WarehouseType ").UniqueResult();
+            return Json(objList);
+        }
+
+        public JsonResult ALLList()
+        {
+            IList<WarehouseType> objList = NSession.CreateQuery("from WarehouseType")
+
+                .List<WarehouseType>();
+
+            objList.Insert(0, new WarehouseType { Id = 0, WName = "全部" });
             return Json(objList);
         }
     }

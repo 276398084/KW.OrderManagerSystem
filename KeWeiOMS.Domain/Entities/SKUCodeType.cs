@@ -83,6 +83,14 @@ namespace KeWeiOMS.Domain
         /// OrderNo
         /// </summary>
         public virtual string OrderNo { get; set; }
+        /// <summary>
+        /// OrderNo
+        /// </summary>
+        public virtual int WId { get; set; }
+        /// <summary>
+        /// OrderNo
+        /// </summary>
+        public virtual string WName { get; set; }
 
 
 

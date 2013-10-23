@@ -61,6 +61,11 @@ namespace KeWeiOMS.Domain
         public virtual int SourceQty { get; set; }
 
         /// <summary>
+        /// 原有库存
+        /// </summary>
+        public virtual double Price { get; set; }
+
+        /// <summary>
         /// 仓库ID
         /// </summary>
         public virtual int WId { get; set; }

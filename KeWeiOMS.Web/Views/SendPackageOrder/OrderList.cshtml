@@ -1,0 +1,85 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.SendPackageOrderType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("OrderList", "SendPackageOrder")',
+                queryParams: { "p": @ViewData["Id"] },
+            });
+
+        });
+
+
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "SendPackageOrder")/' + id;
+                alert(1);
+                delData(url, 'dg');
+
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+
+    </script>
+    <div region="center">
+        <table id="dg"
+            toolbar="#toolbar"
+            rownumbers="true" fitcolumns="true" singleselect="true" fit="true">
+            <thead>
+                <tr>
+                 
+                    <th field="OrderNo" width="100">OrderNo
+                    </th>
+
+                   
+
+                    <th field="PackageName" width="500">PackageName
+                    </th>
+
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+        </div>
+        <div id="mm" style="width: 120px">
+
+            <div data-options="name:'OrderNo'">OrderNo</div>
+
+
+        </div>
+
+
+    </div>
+</body>

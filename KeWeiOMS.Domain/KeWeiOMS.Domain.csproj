@@ -69,6 +69,7 @@
     <Compile Include="Entities\EmailTemplateType.cs" />
     <Compile Include="Entities\EmailType.cs" />
     <Compile Include="Entities\GMarketType.cs" />
+    <Compile Include="Entities\HaiItemType.cs" />
     <Compile Include="Entities\LogisticsAllocationType.cs" />
     <Compile Include="Entities\LogisticsAreaCountryType.cs" />
     <Compile Include="Entities\LogisticsAreaType.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Entities\WarehouseType.cs" />
     <Compile Include="Entities\OrderOutRecord.cs" />
     <Compile Include="Entities\PrintDataType.cs" />
+    <Compile Include="Entities\SendPackageOrderType.cs" />
     <Compile Include="Mappings\AccountEmailTypeMap.cs" />
     <Compile Include="Mappings\AccountFeeTypeMap.cs" />
     <Compile Include="Mappings\AccountTypeMap.cs" />
@@ -150,6 +152,7 @@
     <Compile Include="Mappings\EmailTemplateTypeMap.cs" />
     <Compile Include="Mappings\EmailTypeMap.cs" />
     <Compile Include="Mappings\GMarketTypeMap.cs" />
+    <Compile Include="Mappings\HaiItemTypeMap.cs" />
     <Compile Include="Mappings\LogisticsAllocationTypeMap.cs" />
     <Compile Include="Mappings\LogisticsAreaCountryTypeMap.cs" />
     <Compile Include="Mappings\LogisticsAreaTypeMap.cs" />
@@ -211,7 +214,14 @@
     <Compile Include="Mappings\WarehouseTypeMap.cs" />
     <Compile Include="Mappings\OrderOutRecordTypeMap.cs" />
     <Compile Include="Mappings\PrintDataTypeMapMap.cs" />
+    <Compile Include="Mappings\SendPackageOrderTypeMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\SendPackageType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Mappings\SendPackageTypeMap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

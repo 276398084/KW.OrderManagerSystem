@@ -114,7 +114,7 @@ namespace KeWeiOMS.Web
             }
         }
 
-        public static int CreateSKUCode(string sku, int count, string planNo, ISession NSession)
+        public static int CreateSKUCode(string sku, int count, string planNo, int wid, string Wname, ISession NSession)
         {
             int code = GetSKUCode(count, NSession);
             string create = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
@@ -127,6 +127,8 @@ namespace KeWeiOMS.Web
                     SKUCode.SKU = sku;
                     SKUCode.IsOut = 0;
                     SKUCode.IsNew = 1;
+                    SKUCode.WId = wid;
+                    SKUCode.WName = Wname;
                     SKUCode.IsSend = 0;
                     SKUCode.IsScan = 0;
                     SKUCode.CreateOn = create;
@@ -649,6 +651,7 @@ namespace KeWeiOMS.Web
         {
 
             IList<WarehouseStockType> list = NSession.CreateQuery(" from WarehouseStockType where WId=:p1 and SKU=:p2").SetInt32("p1", wid).SetString("p2", sku).List<WarehouseStockType>();
+            IList<ProductType> Products = NSession.CreateQuery(" from ProductType where SKU=:p2").SetString("p2", sku).List<ProductType>();
             if (list.Count > 0)
             {
                 WarehouseStockType ws = list[0];
@@ -659,6 +662,10 @@ namespace KeWeiOMS.Web
                 SetComposeStock(sku, NSession);
                 StockOutType stockOutType = new StockOutType();
                 stockOutType.CreateBy = user;
+                if (Products.Count > 0)
+                {
+                    stockOutType.Price = Products[0].Price;
+                }
                 stockOutType.CreateOn = DateTime.Now;
                 stockOutType.OrderNo = orderNo;
                 stockOutType.Qty = num;

@@ -176,6 +176,21 @@ namespace KeWeiOMS.Web.Controllers
             LogisticsAreaCountryType logcountry = new LogisticsAreaCountryType { CountryCode = id, AreaCode = tid };
             NSession.Save(logcountry);
         }
+
+
+        [HttpPost]
+        public ContentResult GetCountryByCode(int c)
+        {
+            IList<CountryType> list = NSession.CreateQuery("from CountryType c where c.Id in (select CountryCode from LogisticsAreaCountryType where AreaCode=:cid)")
+             .SetInt32("cid", c)
+             .List<CountryType>();
+            string str = "";
+            foreach (var item in list)
+            {
+                str += "," + item.ECountry;
+            }
+            return Content(str);
+        }
     }
 }
 

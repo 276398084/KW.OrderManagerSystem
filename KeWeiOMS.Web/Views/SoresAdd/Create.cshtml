@@ -7,7 +7,7 @@
 
     $(function () {
         $('#c_WorkDate').datebox({
-            required:true,
+            required: true,
             width: 150
         });
         $('#c_Worker').combobox({
@@ -40,11 +40,11 @@
                 Calculate();
             },
             required: true,
-            width: 150
+            width: 150,
+            editable: false
         });
     });
-    function Calculate()
-    {
+    function Calculate() {
         var type = $('#c_WorkType').combobox("getValue");
         var hours = $('#c_Hours').numberbox("getValue");
         var sore = type * hours;
@@ -54,51 +54,51 @@
 
 @using (Html.BeginForm("Create", "SoresAdd", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
-    	<tr>
-		<td>
-            @Html.LabelFor(model => model.WorkDate,"日期时间:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WorkDate,new{@id="c_WorkDate"})
-		</td>
-	</tr>
+    <fieldset>
+        <table class="editForm">
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WorkDate, "日期时间:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WorkDate, new { @id = "c_WorkDate" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Worker,"人员:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Worker,new{@id="c_Worker"})
-		</td>
-	</tr>
-    <tr>
-		<td>
-            @Html.LabelFor(model => model.WorkType,"类型:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.WorkType,new{@id="c_WorkType"})
-		</td>
-	</tr>
-    	<tr>
-		<td>
-            @Html.LabelFor(model => model.Hours,"小时:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Hours,new{@id="c_Hours"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Worker, "人员:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Worker, new { @id = "c_Worker" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.WorkType, "类型:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.WorkType, new { @id = "c_WorkType" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Hours, "小时/件数:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Hours, new { @id = "c_Hours" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.Sore,"分数:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.Sore,new{@id="c_Sore"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.Sore, "分数:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Sore, new { @id = "c_Sore", @readonly = "readonly" })
+                </td>
+            </tr>
 
-</table>
-</fieldset>
+        </table>
+    </fieldset>
 }

@@ -12,6 +12,13 @@
                 pageList: [20, 40, 60, 80, 100]
             });
 
+            $('#w').combobox({
+                url: '/Warehouse/ALLList',
+                valueField: 'Id',
+                textField: 'WName',
+                required: true
+            });
+
         });
 
 
@@ -82,6 +89,11 @@
 
         function doSearch() {
             search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($("#w").combobox('getValue') == "" || $("#w").combobox('getValue') == 0) {
+
+            } else {
+                search += "WId&" + $("#w").combobox('getValue') + "^";
+            }
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -116,7 +128,7 @@
                     </th>
                     <th field="Pic" width="100" formatter="GetImg">Pic
                     </th>
-                    <th field="SKU" width="100"  sortable="true">商品SKU
+                    <th field="SKU" width="100" sortable="true">商品SKU
                     </th>
 
                     <th field="Title" width="100">商品名称
@@ -125,7 +137,7 @@
                     @*<th field="Qty" width="100">数量
                         
                     </th>*@
-                    <th field="UnPeiQty" width="100"  sortable="true">未配货数量
+                    <th field="UnPeiQty" width="100" sortable="true">未配货数量
                         
                     </th>
 
@@ -140,6 +152,7 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>*@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="exportdt();">导出</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#dlgError').dialog('open');$('#ErrorDesc').val('');">重置包裹</a>
+            仓库显示：<input type="text" id="w" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
         </div>
         <div id="mm" style="width: 120px">
@@ -159,7 +172,7 @@
                 <tr>
 
                     <td colspan="2">
-                        <textarea id="ErrorDesc" style="width: 500px;height: 250px"></textarea></td>
+                        <textarea id="ErrorDesc" style="width: 500px; height: 250px"></textarea></td>
                 </tr>
                 <tr>
                     <td></td>

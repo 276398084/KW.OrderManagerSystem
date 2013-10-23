@@ -1,0 +1,635 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.OrderType>
+@{
+    ViewBag.Title = "停售订单";
+}
+<script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
+<body class="easyui-layout">
+    <script type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "Order")',
+                pageNumber: 1,
+                nowrap: false,
+                queryParams: { "search": "IsHai_ds&1^" },
+                pageSize: 20,
+                height: 500,
+                pageList: [20, 40, 60, 80, 100, 200],
+                view: detailview,
+                onDblClickRow: function (i, r) {
+                    window.open('@Url.Action("Details", "Order")/' + r.Id);
+                },
+                detailFormatter: function (index, row) {
+                    var html = '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                    html += '<div  style="padding:5px 0"><b>留言:' + row.BuyerMemo + '<br/> 拦截留言：' + row.CutOffMemo + '</b></div>';
+                    return html;
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).panel({
+                        border: false,
+                        cache: false,
+                        href: '@Url.Action("GetProduct", "OrderProduct")' + "/" + row.Id,
+                        onLoad: function () {
+                            $('#dg').datagrid('fixDetailRowHeight', index);
+                        }
+                    });
+                    $('#dg').datagrid('fixDetailRowHeight', index);
+                }
+            });
+
+            $('#Platform').combobox({
+                url: '/Home/Platform/1',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto',
+                onChange: changePlatform
+            });
+            $('#OrderStatus').combobox({
+                url: '/Home/OrderStatus/1',
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 100,
+                panelHeight: 'auto'
+            });
+
+            $('#IsPrint').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checkPrint,
+                width: 100
+            });
+            $('#IsQue').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsChai').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsChong').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#IsError').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+
+            $('#IsLiu').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+
+            $('#orderdateType').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: orderDateType,
+                width: 100
+            });
+
+            $('#Location').combobox({
+                url: '@Url.Action("GetDataByCode", "Dictionary")/HaiLocation',
+                valueField: 'FullName',
+                textField: 'FullName',
+                panelHeight: 'auto',
+                editable: false
+            });
+
+
+            $('#ErrorType').combobox({
+                url: '@Url.Action("GetDataByCode", "Dictionary")/ErrorType',
+                valueField: 'FullName',
+                textField: 'FullName',
+                panelHeight: 'auto',
+                width: 300
+            });
+
+
+            $('#OrderStatus').combobox("setValue", "ALL");
+            $('#IsPrint').combobox("setValue", "ALL");
+            $('#orderdateType').combobox("setValue", "CreateOn");
+            $('#IsQue').combobox("setValue", "ALL");
+            $('#IsChai').combobox("setValue", "ALL");
+            $('#IsChong').combobox("setValue", "ALL");
+            $('#IsError').combobox("setValue", "ALL");
+            $('#Platform').combobox("setValue", "ALL");
+
+            $('#CreateOn_st').datebox("setValue", getStartDate(60));
+            $('#CreateOn_et').datebox("setValue", getStartDate(-1));
+        });
+
+        $('#Platform').combobox({
+            url: '/Home/Platform',
+            valueField: 'id',
+            textField: 'text',
+            required: true,
+            width: 150,
+            panelHeight: 'auto'
+        });
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+
+        function getselectedRows() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                $.messager.alert("请选择一条数据");
+                return s_ids;
+            }
+            return s_ids;
+        }
+
+        function GetOrder(v, r, i) {
+            return v + "<br/>" + r.OrderExNo;
+        }
+
+        function GeStatus(v, r, i) {
+            var html = v;
+            if (r.IsError == 1) {
+                html += "(问题订单)";
+            }
+            if (r.IsAudit == 0) {
+                html += "(等待审核)";
+            }
+            if (r.IsStop == 1) {
+                html += "(停售订单)";
+            }
+            if (r.IsHai == 1) {
+                html += "(海外仓:" + r.Location + ")";
+            }
+            html += "<br/>";
+            if (r.IsPrint >= 1)
+                html += "<img src='/Content/imgs/Print.gif'> ";
+            if (r.IsMerger == 1)
+                html += "<img src='/Content/imgs/Merger.gif'> ";
+            if (r.IsSplit == 1)
+                html += "<img src='/Content/imgs/Split.gif'> ";
+            if (r.IsOutOfStock == 1)
+                html += "<img src='/Content/imgs/OutOfStock.gif'> ";
+            if (r.IsRepeat == 1)
+                html += "<img src='/Content/imgs/Repeat.gif'> ";
+
+            return html;
+        }
+
+        function GetAmount(v, r, i) {
+            var html = v + ":" + r.Amount;
+            return html;
+        }
+
+        function GetBuyer(v, r, i) {
+            var html = v + "<br />" + r.BuyerEmail;
+            return html;
+        }
+
+        function getAccount(v, r, i) {
+
+            var html = v + "<br />" + r.Platform;
+            return html;
+        }
+
+        function doSearch() {
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            search += "IsHai_ds&1^";
+            var a = $('#Account').combobox("getText");
+            if (a != "ALL" && a != "") {
+                search += "Account_es&" + a + "^";
+            }
+            var b = $('#Platform').combobox("getText");
+            if (b != "ALL" && b != "") {
+                search += "Platform_es&" + b + "^";
+            }
+            var c = $('#OrderStatus').combobox("getText");
+            if (c != "ALL" && c != "") {
+                search += "Status_es&" + c + "^";
+            }
+            var d = $('#IsPrint').combobox("getValue");
+            if (d != "ALL" && d != "" && d != "0") {
+                if (d == "1") {
+                    search += "IsPrint_ei&0^";
+                } else {
+                    search += "IsPrint_si&1^";
+                }
+            }
+            var u = $('#IsError').combobox("getValue");
+            if (u != "ALL" && u != "" && u != "0") {
+                if (u == "1") {
+                    search += "IsError_si&1^";
+                } else {
+                    search += "IsError_ei&0^";
+                }
+            }
+            var t = $('#orderdateType').combobox("getValue");
+            var e = $('#CreateOn_st').combobox("getValue");
+            if (e != "ALL" && e != "" && e != "0") {
+                search += t + "_st&" + e + "^";
+            }
+            var f = $('#CreateOn_et').combobox("getValue");
+            if (f != "ALL" && f != "" && f != "0") {
+                search += t + "_et&" + f + "^";
+            }
+            var g = $('#IsQue').combobox("getValue");
+            if (g != "ALL" && g != "") {
+                if (g == "1") {
+                    search += "IsOutOfStock_ds&1^";
+                } else {
+                    search += "IsOutOfStock_dsi&0^";
+                }
+            }
+            var q = $('#IsChai').combobox("getValue");
+            if (q != "ALL" && q != "") {
+                if (q == "1") {
+                    search += "IsSplit_ds&1^";
+                } else {
+                    search += "IsSplit_ds&0^";
+                }
+            }
+            var w = $('#IsChong').combobox("getValue");
+            if (w != "ALL" && w != "") {
+                if (w == "1") {
+                    search += "IsRepeat_ds&1^";
+                } else {
+                    search += "IsRepeat_ds&0^";
+                }
+            }
+
+            var Location = $('#Location').combobox("getValue");
+            if (Location != "ALL" && Location != "") {
+                search += "Location&" + Location + "^";
+            }
+
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "Order")', 's_dlg', 'dg');
+        }
+
+        function showEdit() {
+            var s_ids = getselectedRows();
+
+            $('#s_dlg').show();
+            $("#s_dlg").dialog({
+                title: '替换',
+                modal: true,
+                loadingMessage: '正在加载...',
+                buttons: [{
+                    text: '提交',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        jQuery.ajax({
+                            url: "/Order/OrderReplace/",
+                            type: "post",
+                            data: "ids=" + s_ids.join(',') + "&oldField=" + $('#txtOld').val() + "&newField=" + $('#txtNew').combogrid("getValue") + "&FieldName=" + $('#cc').combobox("getValue"),
+                            success: function () {
+                                $('#s_dlg').dialog('close');
+                                $('#dg').datagrid("reload");
+                            }
+                        });
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#s_dlg').dialog('close');
+                    }
+                }]
+            }).dialog('open');
+        }
+
+        function e_order() {
+            var id = getselectedRow();
+            window.open('@Url.Action("Edit", "Order")/' + id);
+        }
+
+        function reSend() {
+            var s_ids = getselectedRows();
+            $.messager.confirm("提示", "确定要重新发货吗？一共是" + s_ids.length + "条订单", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/ReSend",
+                        type: "post",
+                        data: "o=" + s_ids.join(','),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+        }
+
+        function exportZM() {
+            $('#dg').datagrid("loading");
+            var s_ids = getselectedRows();
+            var postUrl = "/Order/ExportDown";
+            jQuery.ajax({
+                url: "/Order/ExportZM",
+                type: "post",
+                data: "o=" + s_ids.join(','),
+                success: function (sss) {
+                    location.href = postUrl;
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+
+        function exportZM() {
+            $('#dg').datagrid("loading");
+            var s_ids = getselectedRows(0);
+            var postUrl = "/Order/ExportDown";
+            jQuery.ajax({
+                url: "/Order/ExportZM",
+                type: "post",
+                data: "o=" + s_ids.join(','),
+                success: function (res) {
+                    if (res.IsError) {
+                        alert(res.Message);
+                    }
+                    location.href = postUrl;
+                    $('#dg').datagrid("reload");
+                }
+            });
+
+        }
+
+        function ExportExcel(t) {
+
+
+            var s_ids = getselectedRows(0);
+            if (s_ids == null || s_ids.length == 0) {
+                return;
+            }
+            var postUrl = "/Order/ExportDown";
+            jQuery.ajax({
+                url: "/Order/ExportExcel",
+                type: "post",
+                data: "ids=" + s_ids.join(',') + "&t=" + t,
+                success: function (res) {
+                    if (res.IsError) {
+                        alert(res.Message);
+                    }
+                    location.href = postUrl;
+
+                }
+            });
+
+        }
+        function exportOrder() {
+            $('#dg').datagrid("loading");
+            var s_ids = getselectedRows();
+            var search = "";
+            if (s_ids.length == 0) {
+
+                var e = $('#CreateOn_st').combobox("getValue");
+                if (e != "ALL" && e != "" && e != "0") {
+                    search += "&st=" + e + "";
+                } else {
+                    alert("请选择开始时间！"); return;
+                }
+                var f = $('#CreateOn_et').combobox("getValue");
+                if (f != "ALL" && f != "" && f != "0") {
+                    search += "&et=" + f + "";
+                } else {
+                    alert("请选择结束时间！"); return;
+                }
+                var c = $('#OrderStatus').combobox("getText");
+                if (c != "") {
+                    if (c != "ALL")
+                        search += "&s=" + c + "";
+                } else {
+                    alert("请选择订单状态！"); return;
+                }
+                var a = $('#Account').combobox("getText");
+                if (a != "ALL" && a != "") {
+                    search += "&a=" + a + "";
+                } else {
+                    alert("请选择账户！"); return;
+                }
+                var b = $('#Platform').combobox("getText");
+                if (b != "ALL" && b != "") {
+                    search += "&p=" + b + "";
+                } else {
+                    alert("请选择平台！");
+                }
+                if (search.length == 0) {
+                    alert("不选订单，也选个时间啊！");
+                    return;
+                }
+
+            }
+            var t = $('#orderdateType').combobox("getValue");
+
+            var postUrl = "/Order/ExportDown/1";
+            jQuery.ajax({
+                url: "/Order/ExportOrder/",
+                type: "post",
+                data: "o=" + s_ids.join(',') + search + "&dd=" + t,
+                success: function (sss) {
+                    location.href = postUrl;
+                    $('#dg').datagrid("reload");
+                }
+            });
+        }
+
+        function o_Error() {
+            var rows = $('#dg').datagrid('getSelections');
+            var s_ids = getselectedRows();
+            $.messager.confirm("提示", "确定要作废这" + s_ids.length + "条订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/EditOrderProperty",
+                        type: "post",
+                        data: "o=" + s_ids.join(',') + "&t=3" + "&c=" + $("#ErrorType").combobox("getValue") + "  " + $("#ErrorDesc").val(),
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+        }
+
+        function changeTo() {
+            var rows = $('#dg').datagrid('getSelections');
+            var s_ids = getselectedRows();
+            $.messager.confirm("提示", "确定要修正这" + s_ids.length + "条订单为正常订单吗？", function (r) {
+                if (r) {
+                    jQuery.ajax({
+                        url: "/Order/EditOrderProperty",
+                        type: "post",
+                        data: "o=" + s_ids.join(',') + "&t=0",
+                        success: function (sss) {
+                            $('#dg').datagrid("reload");
+                        }
+                    });
+                }
+            });
+        }
+
+
+        function changePlatform(n, o) {
+            $('#Account').combotree({
+                url: '/Home/AccountList/' + n,
+                valueField: 'id',
+                textField: 'text',
+                required: true,
+                width: 150
+            });
+        }
+        function getOrderDate(v, r, i) {
+            var html = "";
+            html += "同:<b>" + getDate(r.CreateOn) + "</b>";
+            if (r.Status == "已发货")
+                html += "<br/>扫:" + getDate(r.ScanningOn);
+            return html;
+        }
+
+        function showPrint() {
+            var rows = $('#dg').datagrid('getSelections');
+            var ids = [];
+            for (var i = 0; i < rows.length; i++) {
+                ids.push(rows[i]["OrderNo"]);
+            }
+            jQuery.ajax({
+                url: "/Home/PostData",
+                type: "post",
+                data: "ids=" + ids.join(','),
+                success: function (sss) {
+                    window.open('/Home/PrintSetup2/');
+                }
+            });
+        }
+
+
+    </script>
+    <div region="center">
+        <table id="dg"
+            toolbar="#toolbar" rownumbers="true" pagination="true">
+            <thead>
+                <tr>
+                    <th field="Id" width="60" checkbox="true"></th>
+                    <th field="OrderNo" width="100" formatter="GetOrder">订单编号
+                    </th>
+                    <th field="Status" width="150" formatter="GeStatus">订单状态
+                    </th>
+                    <th field="CurrencyCode" width="100" formatter="GetAmount">货币
+                    </th>
+                    <th field="BuyerName" width="130" formatter="GetBuyer">买家
+                    </th>
+                    <th field="Country" width="80">国家
+                    </th>
+                    <th field="LogisticMode" width="100">发货方式
+                    </th>
+                    <th field="TrackCode" width="100">Code
+                    </th>
+                    <th field="Weight" width="100">Weight
+                    </th>
+                    <th field="GenerateOn" width="200" formatter="getOrderDate">时间
+                    </th>
+                    <th field="Account" width="100" formatter="getAccount">账户
+                    </th>
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint()">打印</a>
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-redo'">导出</a>
+            <div id="mm1" style="width: 150px;">
+                <div data-options="iconCls:'icon-redo'" onclick="exportZM();">中美导出</div>
+                <div data-options="iconCls:'icon-redo'" onclick="exportOrder();">订单导出</div>
+                <div data-options="iconCls:'icon-redo'" onclick="ExportExcel(0);">德国导出</div>
+                <div data-options="iconCls:'icon-redo'" onclick="alert('暂时不开放');">澳大利亚导出</div>
+            </div>
+            <br />
+            平台<input type="text" id="Platform" />
+            账户<input type="text" id="Account" />
+            状态<input type="text" id="OrderStatus" />
+            打印状态:<input type="text" id="IsPrint" />
+            缺货:<input type="text" id="IsQue" />
+            拆包:<input type="text" id="IsChai" />
+            重发:<input type="text" id="IsChong" />
+            拦截:<input type="text" id="IsError" />
+            留言:<input type="text" id="IsLiu" />
+            海外仓:<input type="text" id="Location" />
+            时间类型:<input type="text" id="orderdateType" />
+            开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
+            结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'OrderExNo'">外部编号</div>
+            <div data-options="name:'TId'">流水交易号</div>
+            <div data-options="name:'SKU_OrderProduct'">SKU</div>
+            <div data-options="name:'BuyerName'">买家</div>
+            <div data-options="name:'BuyerEmail'">买家邮箱</div>
+            <div data-options="name:'LogisticMode'">发货方式</div>
+            <div data-options="name:'TrackCode'">追踪号</div>
+            <div data-options="name:'Country'">国家</div>
+            <div data-options="name:'ScanningBy'">扫描人</div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="o_dlg"></div>
+
+        <div id="dlgError" class="easyui-dialog" title="作废订单" style="width: 400px; height: 250px; padding: 10px" closed="true">
+            <table>
+                <tr>
+                    <td>原因:</td>
+                    <td>
+                        <input type="text" id="ErrorType" /></td>
+                </tr>
+                <tr>
+                    <td>描述</td>
+                    <td>
+                        <textarea id="ErrorDesc" style="width: 300px;"></textarea></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" value="确定" onclick="o_Error()" /></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</body>

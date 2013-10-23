@@ -55,6 +55,13 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult PrintSetup2(string ids, string type)
+        {
+            ViewData["ids"] = Session["ids"];
+            return View();
+        }
+        
         public ActionResult GetEbayLogistics()
         {
             List<string> list = new List<string>();
@@ -318,8 +325,13 @@ Left Join Products P ON OP.SKU=P.SKU
 left join ReturnAddress R On r.Id=" + r;
 
 
-            //2013.9.22 添加 sal不打印,直接硬编码.--> 看后期是否可以变成过滤模块吧，
-            sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "') and O.LogisticMode not like '%sal%' and O.Account not in ('wunderschoen_dream')";
+            //2013.9.22 添加 sal不打印,直接硬编码.
+            //2013.10.16 添加 海外仓订单不打印
+            if (t != "de")
+                sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "') and O.LogisticMode not like '%sal%' and isHai <> 1 ";
+            else
+                sql += " where O.IsAudit=1 and  O.OrderNo IN('" + d.Replace(",", "','") + "') ";
+
             DataSet ds = new DataSet();
             IDbCommand command = NSession.Connection.CreateCommand();
             command.CommandText = sql;
@@ -349,9 +361,8 @@ left join ReturnAddress R On r.Id=" + r;
             DataTable dt = ds.Tables[0].DefaultView.ToTable();
             dt.Columns.Add("PrintName");
             dt.Columns.Add("AreaName");
-
             List<string> list2 = new List<string>();
-          
+
             foreach (DataRow dr in dt.Rows)
             {
                 dr["PrintName"] = CurrentUser.Realname;
@@ -360,7 +371,7 @@ left join ReturnAddress R On r.Id=" + r;
                     dr["TrackCode"] = "1372100" + dr["OrderNo"].ToString();
                 }
 
-                object obj = NSession.CreateSQLQuery("select top 1 AreaName from [LogisticsArea] where LId = (select top 1 ParentID from LogisticsMode where LogisticsCode='" + dr["LogisticMode"] + "')  and Id =(select top 1 AreaCode from LogisticsAreaCountry where [LogisticsArea].Id=AreaCode  and CountryCode in (select ID from Country where ECountry='" + dr["Country"] + "') )").UniqueResult();
+                object obj = NSession.CreateSQLQuery("select top 1 AreaName from [LogisticsArea] where LId = (select top 1 ParentID from LogisticsMode where LogisticsCode='" + dr["LogisticMode"] + "')  and Id =(select top 1 AreaCode from LogisticsAreaCountry where [LogisticsArea].Id=AreaCode  and CountryCode in (select ID from Country where ECountry=N'" + dr["Country"] + "') )").UniqueResult();
                 dr["AreaName"] = obj;
                 if (list2.Contains(dr["OrderNo"].ToString()))
                 {
@@ -369,11 +380,11 @@ left join ReturnAddress R On r.Id=" + r;
                 {
                     LoggerUtil.GetOrderRecord(Convert.ToInt32(dr["Id"]), dr["OrderNo"].ToString(), "订单打印", CurrentUser.Realname + "订单打印！", CurrentUser, NSession);
                     list2.Add(dr["OrderNo"].ToString());
-               
+
                 }
             }
             //标记打印
-            NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where  IsAudit=1 and  OrderNo IN('" + d.Replace(",", "','") + "') and LogisticMode not like '%sal%'").ExecuteUpdate();
+            NSession.CreateQuery("update OrderType set IsPrint=IsPrint+1 where  IsAudit=1 and  OrderNo IN('" + d.Replace(",", "','") + "') and LogisticMode not like '%sal%' and isHai<> 1").ExecuteUpdate();
             ds.Tables.Clear();
             ds.Tables.Add(dt);
             if (NotPrint != "")

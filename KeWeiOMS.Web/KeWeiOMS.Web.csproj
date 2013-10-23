@@ -120,6 +120,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Statistics\KPIData.cs" />
     <Compile Include="Common\Utils\AliUtil.cs" />
     <Compile Include="Common\Ali\AliOrderListType.cs" />
     <Compile Include="Common\AudioHelper.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\GMarketController.cs" />
+    <Compile Include="Controllers\HaiItemController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LogisticsAllocationController.cs" />
     <Compile Include="Controllers\LogisticsController.cs" />
@@ -215,6 +217,8 @@
     <Compile Include="Controllers\RefundAmountController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\SendPackageOrderController.cs" />
+    <Compile Include="Controllers\SendPackageController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
     <Compile Include="Controllers\SoresAddController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
@@ -641,6 +645,7 @@
     <Content Include="product\images\loginInputWrapbg.gif" />
     <Content Include="product\images\logo_login.png" />
     <Content Include="Scripts\CreateControl.js" />
+    <Content Include="Scripts\jquery.form.js" />
     <Content Include="Scripts\js\common.js" />
     <Content Include="Scripts\easyUI\datagrid-detailview.js" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
@@ -1208,6 +1213,19 @@
     <Content Include="Views\UserSetup\Index.cshtml" />
     <Content Include="Views\Order\OrderReturnList.cshtml" />
     <Content Include="Views\Order\ReturnScan.cshtml" />
+    <Content Include="Views\WarehouseStock\StockMove.cshtml" />
+    <Content Include="Views\Statistics\KPICount.cshtml" />
+    <Content Include="Views\SendPackageOrder\Index.cshtml" />
+    <Content Include="Views\SendPackage\Create.cshtml" />
+    <Content Include="Views\SendPackage\Delete.cshtml" />
+    <Content Include="Views\SendPackage\Details.cshtml" />
+    <Content Include="Views\SendPackage\Edit.cshtml" />
+    <Content Include="Views\SendPackage\Index.cshtml" />
+    <Content Include="Views\SendPackageOrder\OrderList.cshtml" />
+    <Content Include="Views\Order\HaiIndex.cshtml" />
+    <Content Include="Views\HaiItem\Index.cshtml" />
+    <Content Include="Views\Order\EditOrder.cshtml" />
+    <Content Include="Views\Home\PrintSetup2.cshtml" />
     <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

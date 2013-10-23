@@ -457,7 +457,12 @@ namespace KeWeiOMS.Web
                                 order.OrderFees = 0;
                                 order.OrderCurrencyCode = "";
                                 order.Account = account.AccountName;
-                                order.GenerateOn = GetAliDate(ot.gmtPaySuccess);
+                                if (string.IsNullOrEmpty(ot.gmtPaySuccess))
+                                {
+                                    order.GenerateOn = DateTime.Now;
+                                }
+                                else
+                                    order.GenerateOn = GetAliDate(ot.gmtPaySuccess);
                                 order.Platform = PlatformEnum.SMT.ToString();
                                 order.AddressId = CreateAddress(ot.receiptAddress.contactPerson,
                                                                 ot.receiptAddress.detailAddress + "  " + ot.receiptAddress.address2,
@@ -942,11 +947,10 @@ namespace KeWeiOMS.Web
         #region 订单验证
         public static bool ValiOrder(OrderType order, List<CountryType> countrys, List<ProductType> products, List<CurrencyType> currencys, List<LogisticsModeType> logistics, ISession NSession)
         {
-
-
             bool resultValue = true;
             order.Products = NSession.CreateQuery("from OrderProductType where OId='" + order.Id + "'").List<OrderProductType>().ToList();
             order.ErrorInfo = "";
+            bool ishai = true;
             if (order.Country != null)
             {
                 if (
@@ -986,29 +990,50 @@ namespace KeWeiOMS.Web
                 resultValue = false;
                 order.ErrorInfo += "金额不能为0 ";
             }
-            foreach (var item in order.Products)
+            if (order.Products == null || order.Products.Count == 0)
             {
-                if (item.SKU == null)
+                resultValue = false;
+                order.ErrorInfo += "订单必须有产品";
+            }
+            else
+            {
+                foreach (var item in order.Products)
                 {
-                    resultValue = false;
-                    order.ErrorInfo += "SKU不符";
-                    break;
-                }
-                ProductType product = products.Find(p => p.SKU.Trim().ToUpper() == item.SKU.Trim().ToUpper());
-                if (product == null)
-                {
-                    resultValue = false;
-                    order.ErrorInfo += "SKU不符";
-                    break;
-                }
-                else
-                {
-                    if (product.Status == "停产")
+                    if (item.SKU == null)
                     {
-                        order.IsStop = 1;
-                        item.IsQue = 2;
-                        NSession.SaveOrUpdate(item);
-                        NSession.Flush();
+                        resultValue = false;
+                        order.ErrorInfo += "SKU不符";
+                        break;
+                    }
+                    ProductType product = products.Find(p => p.SKU.Trim().ToUpper() == item.SKU.Trim().ToUpper());
+                    if (product == null)
+                    {
+                        resultValue = false;
+                        order.ErrorInfo += "SKU不符";
+                        break;
+                    }
+                    else
+                    {
+                        if (product.Status == "停产")
+                        {
+                            order.IsStop = 1;
+                            item.IsQue = 2;
+                            NSession.SaveOrUpdate(item);
+                            NSession.Flush();
+                        }
+                    }
+                    //验证海外订单
+                    if (ishai)
+                    {
+                        string c = ExistsHaiItem(item.ExSKU, NSession);
+                        if (string.IsNullOrEmpty(c))
+                        {
+                            ishai = false;
+                        }
+                        else
+                        {
+                            order.Location = c;
+                        }
                     }
                 }
             }
@@ -1026,6 +1051,11 @@ namespace KeWeiOMS.Web
                 if (order.IsStop == 0)
                 {
                     SetQueOrder(order, NSession);
+                }
+                //硬编码了。
+                if (order.Account == "wunderschoen_dream" || ishai)
+                {
+                    order.IsHai = 1;
                 }
             }
 
@@ -1289,6 +1319,13 @@ namespace KeWeiOMS.Web
             return Query.ExecuteUpdate() > 0;
         }
         #endregion
+
+
+        public static string ExistsHaiItem(string item, ISession NSession)
+        {
+            object obj = NSession.CreateQuery("select Location from HaiItemType where ItemId='" + item + "'").SetMaxResults(1).UniqueResult();
+            return obj == null || obj.ToString() == "null" ? string.Empty : obj.ToString();
+        }
 
         public static void SplitProduct(OrderProductType orderProduct, List<ProductComposeType> productComposes, ISession NSession)
         {

@@ -14,7 +14,7 @@ namespace KeWeiOMS.Web.Controllers
     {
         public ViewResult Index(int id)
         {
-             Session["lid"]= id;
+            Session["lid"] = id;
             return View();
         }
 
@@ -36,7 +36,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  LogisticsAreaType GetById(int Id)
+        public LogisticsAreaType GetById(int Id)
         {
             LogisticsAreaType obj = NSession.Get<LogisticsAreaType>(Id);
             if (obj == null)
@@ -69,7 +69,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult Edit(LogisticsAreaType obj)
         {
             obj.LId = int.Parse(Session["lid"].ToString());
-           
+
             try
             {
                 NSession.Update(obj);
@@ -79,14 +79,14 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
-           
+            return Json(new { IsSuccess = true });
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 LogisticsAreaType obj = GetById(id);
@@ -97,7 +97,7 @@ namespace KeWeiOMS.Web.Controllers
             {
                 return Json(new { IsSuccess = false, ErrorMsg = "出错了" });
             }
-            return Json(new { IsSuccess = true  });
+            return Json(new { IsSuccess = true });
         }
 
         public JsonResult List(int page, int rows)
@@ -106,7 +106,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<LogisticsAreaType>();
-			
+
             object count = NSession.CreateQuery("select count(Id) from LogisticsAreaType ").UniqueResult();
             return Json(new { total = count, rows = objList });
         }
@@ -118,9 +118,23 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult GetByLId()
         {
             IList<LogisticsAreaType> objList = NSession.CreateQuery("from LogisticsAreaType c where c.LId=:lid")
-                .SetInt32("lid",int.Parse(Session["lid"].ToString()))
+                .SetInt32("lid", int.Parse(Session["lid"].ToString()))
                 .List<LogisticsAreaType>();
-            return Json(objList,JsonRequestBehavior.AllowGet);
+            return Json(objList, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 根据LId获取
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        
+        public JsonResult GetByIdL(int id)
+        {
+            IList<LogisticsAreaType> objList = NSession.CreateQuery("from LogisticsAreaType c where c.LId=:lid")
+                .SetInt32("lid", id)
+                .List<LogisticsAreaType>();
+            return Json(objList, JsonRequestBehavior.AllowGet);
         }
 
     }

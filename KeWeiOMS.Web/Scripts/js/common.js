@@ -1,8 +1,4 @@
-﻿if (typeof (JSON) == 'undefined') {
-    $('head').append($("<script type='text/javascript' src='/Scripts/json2.js'>"));
-} else {
-
-}
+﻿
 
 
 Date.prototype.format = function (format) {
@@ -71,13 +67,18 @@ var Pei = 8;
 var Purchaser = 9;
 
 function formPost(form, url, dlg, dg, t, r) {
-    $('#' + form).form('submit', {
+
+
+    $('#' + form).ajaxSubmit({
         url: url,
-        onSubmit: function () {
-            return $(this).form('validate');
+        beforeSubmit: function () {
+            if ($(form).form('validate') != true) {
+                return false;
+            }
+            return true;
         },
         success: function (result) {
-             result = eval('(' + result + ')');
+
             if (result.IsSuccess) {
                 alert("操作成功");
                 if (dlg) {
@@ -103,6 +104,10 @@ function formPost(form, url, dlg, dg, t, r) {
             }
         }
     });
+
+
+    return false;
+
 }
 
 function delData(url, dg, t) {
@@ -205,4 +210,12 @@ $.fn.panel.defaults.onBeforeDestroy = function () {
     } catch (e) {
     }
 };
+
+function defaultSelect(id,t) {
+    if (t == 0) {
+       
+    } else if (t == 1) {
+
+    }
+}
 

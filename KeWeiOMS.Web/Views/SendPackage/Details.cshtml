@@ -1,0 +1,53 @@
+﻿@model KeWeiOMS.Domain.SendPackageTypeType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.SendPackageTypeType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.SendPackageTypeType</legend>
+    <div class="display-label">Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">PackageName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PackageName)
+    </div>
+
+    <div class="display-label">CreateOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">CreateBy</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateBy)
+    </div>
+
+    <div class="display-label">PCount</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PCount)
+    </div>
+
+    <div class="display-label">PWeight</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.PWeight)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

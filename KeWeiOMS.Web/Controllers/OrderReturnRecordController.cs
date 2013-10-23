@@ -68,7 +68,7 @@ namespace KeWeiOMS.Web.Controllers
                 record.BuyerName = order.BuyerName;
                 record.OrderCreateOn = order.CreateOn;
                 record.OId = order.Id;
-
+                record.CreateBy = GetCurrentAccount().Realname;
 
                 NSession.Save(record);
                 NSession.Flush();

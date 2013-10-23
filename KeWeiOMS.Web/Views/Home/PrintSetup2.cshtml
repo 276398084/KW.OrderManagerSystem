@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "PrintSetup";
+}
+<script>
+
+    $(function () {
+
+    })
+
+
+    function showPrintWindow() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/SetPrintData",
+            data: "m=42" + "&d=" + $("#txtData").val() + "&t=de&r=2",
+            success: function (msg) {
+                if (msg.IsSuccess != "") {
+                    $('#printdata').val(msg.Result);
+                    window.open('/Home/PrintDetail/42');
+                }
+            }
+        });
+    }
+</script>
+<input type="hidden" id="printdata" />
+<table>
+    <tr>
+        <td>Data</td>
+        <td>
+            <textarea style="width: 600px; height: 300px;" id="txtData">@ViewData["ids"]</textarea></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>
+            <input type="button" onclick="showPrintWindow()" value="打印" />
+        </td>
+    </tr>
+</table>
+

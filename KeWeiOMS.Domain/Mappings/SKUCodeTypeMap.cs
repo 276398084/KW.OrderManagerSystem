@@ -39,8 +39,10 @@ namespace KeWeiOMS.Domain
             Map(x => x.IsScan);
             Map(x => x.OrderNo).Length(20);
             Map(x => x.PeiOn).Length(30); ;
-            Map(x => x.CreateOn).Length(30); ;
-            Map(x => x.PlanNo).Length(30); ;
+            Map(x => x.CreateOn).Length(30);
+            Map(x => x.WId).Length(30); ;
+            Map(x => x.WName).Length(30); ;
+            Map(x => x.PlanNo).Length(30);
         }
     }
 }

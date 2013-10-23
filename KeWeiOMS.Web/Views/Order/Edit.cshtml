@@ -137,10 +137,12 @@
         })
 
         $('#dg_connect').datagrid({
-            url: '@Url.Action("Connect","Order")/@ViewData["id"]',
-                    width: 1250,
-                    height: 240
-                })
+            url: '@Url.Action("Connect", "Order")/@ViewData["id"]',
+            width: 1250,
+            height: 240
+        });
+
+        initbtn();
     });
 
     function changeCountry(v) {
@@ -301,7 +303,7 @@
                     alert("请输入重发原因！");
                     return;
                 }
-               
+
                 effectRow["rows"] = JSON.stringify($('#dg_p').datagrid("getSelections"));
                 $.post("/Order/EditReOrder/", effectRow, function (rsp) {
                     $('#dlg').dialog('close');
@@ -323,7 +325,7 @@
             width: 700,
             onClickRow: onClickRow1
         });
-       
+
         $('#dlg').dialog({
             width: 750,
             title: title,
@@ -374,18 +376,133 @@
         var html = v + ":" + r.Amount;
         return html;
     }
+    function initbtn() {
+
+
+
+
+        if ("@Model.Status" != "待包装") {
+            $("#btnSend").linkbutton("disable");
+        }
+        if ("@Model.Status" == "已处理" || "@Model.Status" == "待拣货") {
+
+        } else {
+            $("#btnQue").linkbutton("disable");
+        }
+
+        if ("@Model.Status" != "已发货") {
+            $("#btnReOrder").linkbutton("disable");
+        } else {
+            $("#btnSetSend").linkbutton("disable");
+        }
+
+        if ("@Model.Status" != "待发货") {
+            $("#btnSetPack").linkbutton("disable");
+        }
+
+        if ("@Model.IsHai" == "1") {
+            $("#btnSetHai").linkbutton("disable");
+        } else {
+            $("#btnSetLocal").linkbutton("disable");
+        }
+        if ("@Model.Status" == "待处理") {
+            $("#btnSetLocal").linkbutton("disable");
+            $("#btnSetHai").linkbutton("disable");
+            $("#btnSetSend").linkbutton("disable");
+            $("#btnQue").linkbutton("disable");
+            $("#btnReOrder").linkbutton("disable");
+            $("#btnSend").linkbutton("disable");
+            $("#btnSetPack").linkbutton("disable");
+        }
+
+    }
+
+    function sethai() {
+        $.messager.confirm("提示", "确定要将这个订单设置为海外仓？", function (r) {
+            if (r) {
+                jQuery.ajax({
+                    url: "/Order/EditSetHai",
+                    type: "post",
+                    data: "o=@Model.Id",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            alert('设置成功'); location.reload();
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
+    function setlocal() {
+        $.messager.confirm("提示", "确定要将这个订单设置为本地订单？", function (r) {
+            if (r) {
+                jQuery.ajax({
+                    url: "/Order/EditSetLocal",
+                    type: "post",
+                    data: "o=@Model.Id",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            alert('设置成功');
+                            location.reload();
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
+    function setpack() {
+        $.messager.confirm("提示", "确定要将这个订单设置为待包装？", function (r) {
+            if (r) {
+                jQuery.ajax({
+                    url: "/Order/EditOrderStatusByPack/",
+                    type: "post",
+                    data: "o=@Model.Id",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            alert('设置成功'); location.reload();
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
+    function setsend() {
+        $.messager.confirm("提示", "确定要将这个订单设置为已发货？", function (r) {
+            if (r) {
+                jQuery.ajax({
+                    url: "/Order/EditOrderStatusBySend/",
+                    type: "post",
+                    data: "o=@Model.Id",
+                    success: function (res) {
+                        if (res.IsSuccess) {
+                            alert('设置成功'); location.reload();
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
 </script>
 
 
 @using (Html.BeginForm("Create", "Order", FormMethod.Post, new { id = "e_form" }))
 {
-    <a href="#" class="easyui-linkbutton" onclick="addOrder();">保存</a>  
-    <a href="#" class="easyui-linkbutton" onclick="splitOrder(0);">缺货拆分</a>  
-    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">发货拆分</a>  
-    <a href="#" class="easyui-linkbutton" onclick="reOrder();">新建重发订单</a>@*  
-    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">重新发货</a>
-    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">标记作废</a>
-    <a href="#" class="easyui-linkbutton" onclick="splitOrder(1);">标记正常</a>*@
+    <a href="#" id="btnSave" class="easyui-linkbutton" onclick="addOrder();">保存</a>  
+    <a href="#" id="btnQue" class="easyui-linkbutton" onclick="splitOrder(0);">缺货拆分</a>  
+    <a href="#" id="btnSend" class="easyui-linkbutton" onclick="splitOrder(1);">发货拆分</a>  
+    <a href="#" id="btnReOrder" class="easyui-linkbutton" onclick="reOrder();">新建重发订单</a> 
+    <a href="#" id="btnSetSend" class="easyui-linkbutton" onclick="setsend();">设为已发货</a>
+    <a href="#" id="btnSetPack" class="easyui-linkbutton" onclick="setpack();">设为待包装</a>
+    <a href="#" id="btnSetHai" class="easyui-linkbutton" onclick="sethai();">设为海外仓</a>
+    <a href="#" id="btnSetLocal" class="easyui-linkbutton" onclick="setlocal();">设为本地订单</a>
 
     <fieldset>
         <legend>订单信息</legend>
@@ -484,7 +601,6 @@
                                     { field: 'SKU', title: 'SKU', width: 100 },
                                     { field: 'ProductName', title: 'Title', width: 200 },
                                     { field: 'Standard', title: '规格', width: 100 }
-
                                 ]]
 							}
 						}
@@ -637,28 +753,28 @@
             </table>
 
         </div>
-             <div title="关联订单" style="padding:20px;">  
-        <table id="dg_connect" class="easyui-datagrid" rownumbers="true" singleselect="true" >
-            <thead>
-                <tr>
-                    <th field="OrderNo" width="150" >订单编号
-                    </th>
-                    <th field="Status" width="150">订单状态
-                    </th>
-                    <th field="CurrencyCode" width="150" formatter="GetAmount">货币
-                    </th> 
-                    <th field="Weight" width="100" >重量
-                    </th>
-                    <th field="LogisticMode" width="300" formatter="Logistic">发货方式
-                    </th>
-                    <th field="IsSplit" width="100" formatter="split">关联方式
-                    </th>
-                    <th field="CreateOn" width="200" formatter="dealtime">处理时间
-                    </th>
-                </tr>
-            </thead>
-        </table>
-</div>
+        <div title="关联订单" style="padding: 20px;">
+            <table id="dg_connect" class="easyui-datagrid" rownumbers="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="OrderNo" width="150">订单编号
+                        </th>
+                        <th field="Status" width="150">订单状态
+                        </th>
+                        <th field="CurrencyCode" width="150" formatter="GetAmount">货币
+                        </th>
+                        <th field="Weight" width="100">重量
+                        </th>
+                        <th field="LogisticMode" width="300" formatter="Logistic">发货方式
+                        </th>
+                        <th field="IsSplit" width="100" formatter="split">关联方式
+                        </th>
+                        <th field="CreateOn" width="200" formatter="dealtime">处理时间
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
     </div>
 }
 
@@ -680,6 +796,9 @@
             </tr>
         </thead>
     </table>
-    <div id="divm"><h3>重发原因:</h3><textarea id="m" rows="3" style="width:700px;"></textarea></div>
+    <div id="divm">
+        <h3>重发原因:</h3>
+        <textarea id="m" rows="3" style="width: 700px;"></textarea>
+    </div>
 </div>
 

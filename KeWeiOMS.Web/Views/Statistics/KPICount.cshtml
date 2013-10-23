@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "OutCount";
+}
+
+<script>
+
+    $(function () {
+        var dt = new Date().getFullYear() + '/' + (new Date().getMonth() + 1) + '/' + new Date().getDate();
+        $('#dg').datagrid({
+            url: '@Url.Action("GetKPIData", "Statistics")',
+            queryParams: { "st": dt, "et": dt },
+            showFooter: true,
+            height: 500,
+            width: 1300,
+            striped: true
+
+        });
+        $("#cc").datebox({
+            parser: myparser
+        });
+        $("#cc2").datebox({
+            parser: myparser
+        });
+        $('#cc').datebox("setValue", getStartDate(0));
+        $('#cc2').datebox("setValue", getStartDate(0));
+
+
+    });
+
+    function onSelect1() {
+        $('#dg').datagrid("load", {
+            st: $('#cc').combobox("getValue"),
+            et: $('#cc2').combobox("getValue")
+
+        });
+    }
+
+    function myparser(s) {
+        if (!s) return new Date();
+        var ss = s.split('-');
+        var y = parseInt(ss[0], 10);
+        var m = parseInt(ss[1], 10);
+        var d = parseInt(ss[2], 10);
+        if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+            return new Date(y, m - 1, d);
+        } else {
+            return new Date();
+        }
+    }
+
+</script>
+开始<input id="cc" type="text">
+结束<input id="cc2" type="text">
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" onclick="onSelect1();">查询</a>
+
+<table>
+    <tr>
+        <td>
+            <table id="dg" class="easyui-datagrid" title="KPI数据"
+                rownumbers="true" singleselect="true">
+                <thead>
+                    <tr>
+                        <th field="PeopleName" width="80">名称
+                        </th>
+                        <th field="PeiPoint" width="190">配货
+                        </th>
+                        <th field="ValiPoint" width="100">验货
+                        </th>
+                        <th field="PackPoint" width="100">包装
+                        </th>
+                        <th field="ScanPoint" width="100">扫描
+                        </th>
+                        <th field="SotckInPoint" width="100">入库
+                        </th>
+                        <th field="ReturnPoint" width="100">退件
+                        </th>
+                        <th field="AddPoint" width="100">补分
+                        </th>
+                        <th field="TotalPoint" width="100">总分
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </td>
+    </tr>
+</table>
+<div>
+    <div id="chart2div">
+    </div>
+</div>
+
