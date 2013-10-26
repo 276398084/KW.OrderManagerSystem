@@ -132,15 +132,15 @@ namespace KeWeiOMS.Web.Controllers
                 string cid = type.Substring(type.LastIndexOf("~") + 1);
                 if (pid == "待处理消息")
                 {
-
                     if (!string.IsNullOrEmpty(where))
                     {
-                        where += "and ( ReplayOnlyBy is null ";
-                        where += " or ReplayOnlyBy ='" + CurrentUser.Realname + "')";
+                        //where += " and ( ReplayOnlyBy is null ";
+                        //where += " or ReplayOnlyBy ='" + CurrentUser.Realname + "')";
                     }
                     else
                     {
-                        where = " where ReplayOnlyBy ='" + CurrentUser.Realname + "'";
+                        //where = " where ReplayOnlyBy ='" + CurrentUser.Realname + "'";
+                        where = " where ";
                     }
                     string account = FindAccount();
                     if (account != "")
@@ -238,21 +238,27 @@ namespace KeWeiOMS.Web.Controllers
 
         private string FindAccount()
         {
-            string where = "";
+            string where = " Shop in (";
             string name = CurrentUser.Realname;
             IList<EbayReplayType> ac = NSession.CreateQuery("from EbayReplayType where ReplayBy='" + name + "'").List<EbayReplayType>();
-
+            // where += string.Join("','", ac.ToLis);
             foreach (var item in ac)
             {
-                if (where == "")
-                {
-                    where += " Shop='" + item.ReplayAccount + "' ";
-                }
-                else
-                {
-                    where += " or Shop='" + item.ReplayAccount + "' ";
-                }
+                where += "'" + item.ReplayAccount + "',";
+                //if (where == "")
+                //{
+                //    where += " Shop='" + item.ReplayAccount + "' ";
+                //}
+                //else
+                //{
+                //    where += " or Shop='" + item.ReplayAccount + "' ";
+                //}
             }
+            if (ac.Count == 0)
+            {
+                where += "''";
+            }
+            where = where.Trim(',') + ")";
             return where;
         }
 

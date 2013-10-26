@@ -42,7 +42,7 @@ namespace KeWeiOMS.Web.Controllers
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
-        public  BeforePeiScanType GetById(int Id)
+        public BeforePeiScanType GetById(int Id)
         {
             BeforePeiScanType obj = NSession.Get<BeforePeiScanType>(Id);
             if (obj == null)
@@ -66,7 +66,7 @@ namespace KeWeiOMS.Web.Controllers
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(BeforePeiScanType obj)
         {
-           
+
             try
             {
                 NSession.Update(obj);
@@ -77,13 +77,13 @@ namespace KeWeiOMS.Web.Controllers
                 return Json(new { errorMsg = "出错了" });
             }
             return Json(new { IsSuccess = "true" });
-           
+
         }
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
         {
-          
+
             try
             {
                 BeforePeiScanType obj = GetById(id);
@@ -97,7 +97,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-		public JsonResult List(int page, int rows, string sort, string order, string search)
+        public JsonResult List(int page, int rows, string sort, string order, string search)
         {
             string where = "";
             string orderby = " order by Id desc ";
@@ -119,7 +119,7 @@ namespace KeWeiOMS.Web.Controllers
                 .SetMaxResults(rows)
                 .List<BeforePeiScanType>();
 
-            object count = NSession.CreateQuery("select count(Id) from BeforePeiScanType " + where ).UniqueResult();
+            object count = NSession.CreateQuery("select count(Id) from BeforePeiScanType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
         public JsonResult ToExcel(string search)

@@ -1391,6 +1391,37 @@ where O.Id in(" + ids + ")";
             }
         }
 
+        public ActionResult SetOrderError()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SetOrderError(string o, string c)
+        {
+
+            o = o.Replace(" ", "").Replace("\r", "").Trim().Replace("\n", "','").Replace("''", "");
+            IList<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo In ('" + o + "')").List<OrderType>();
+            foreach (OrderType orderType in orders)
+            {
+
+                SetQuestionOrder("作废订单-重置包裹入库", orderType);
+                NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + orderType.Id).ExecuteUpdate();
+                orderType.IsOutOfStock = 0;
+                orderType.Status = OrderStatusEnum.作废订单.ToString();
+                orderType.SellerMemo = c;
+                orderType.IsAudit = 1;
+                NSession.Update(orderType);
+                NSession.Flush();
+                LoggerUtil.GetOrderRecord(orderType, "订单作废！", "订单作废，订单的缺货状态删除！", CurrentUser, NSession);
+
+                LoggerUtil.GetOrderRecord(orderType, "订单作废", "订单作废:" + c, CurrentUser, NSession);
+            }
+
+            return Json(new { Result = "成功！" });
+
+        }
+
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(string o)
@@ -1621,7 +1652,7 @@ where O.Id in(" + ids + ")";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where ScanningOn>'2013-09-20 07:00:00'  and Status='已发货'")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where IsOutOfStock=1")
                 //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
              .List<OrderType>();
             foreach (OrderType orderType in objList)
@@ -1629,8 +1660,8 @@ where O.Id in(" + ids + ")";
                 // OrderHelper.SetQueOrder(orderType, NSession);
                 try
                 {
-                    UploadTrackCode(orderType);
-                    //OrderHelper.SetQueOrder(orderType, NSession);
+                    //UploadTrackCode(orderType);
+                    OrderHelper.SetQueOrder(orderType, NSession);
                 }
                 catch (Exception)
                 {
@@ -1644,10 +1675,8 @@ where O.Id in(" + ids + ")";
                 //OrderHelper.SaveAmount(orderType, NSession);
             }
             // TimeJi();
-
             //IList<AccountType> accounts =
             //    NSession.CreateQuery("from AccountType where Id in(16,21,27,24,26)").List<AccountType>();
-
             //foreach (AccountType accountType in accounts)
             //{
             //    OrderHelper.APIByEbayFee(accountType, DateTime.Now.AddDays(-88), DateTime.Now, NSession);

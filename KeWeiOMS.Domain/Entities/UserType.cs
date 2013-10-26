@@ -181,6 +181,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String CreateBy { get; set; }
 
+        public virtual int IsHai { get; set; }
+
+        public virtual String Location { get; set; }
+
         /// <summary>
         /// 菜单模块
         /// </summary>

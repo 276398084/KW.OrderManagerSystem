@@ -1226,6 +1226,7 @@
     <Content Include="Views\HaiItem\Index.cshtml" />
     <Content Include="Views\Order\EditOrder.cshtml" />
     <Content Include="Views\Home\PrintSetup2.cshtml" />
+    <Content Include="Views\Order\SetOrderError.cshtml" />
     <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

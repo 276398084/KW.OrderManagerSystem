@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "SetOrderrError";
+}
+<script type="text/javascript">
+    function setAttr() {
+        $.messager.confirm("提示", "确定要设置吗?一旦设置无法变成原样!", function (r) {
+            if (r) {
+                var search = "o=" + $('#data').val() + "&c=" + $('#content').val();
+                jQuery.ajax({
+                    url: "/Order/SetOrderError/",
+                    type: "post",
+                    data: search,
+                    success: function (sss) {
+                        alert(sss.Result);
+                    }
+                });
+            }
+        });
+    }
+</script>
+一行一个订单.<br />
+注意:一旦设置无法变成原样!<br />
+<textarea style="height: 420px; width: 446px;" id="data">
+
+</textarea>
+<br />
+<textarea style="height: 80px; width: 446px;" id="content">
+
+</textarea>
+<br />
+<input type="button" value="设置" onclick="setAttr()" />
+
+

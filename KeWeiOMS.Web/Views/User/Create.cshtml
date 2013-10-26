@@ -31,7 +31,22 @@
             valueField: 'Id',
             textField: 'FullName',
             required: true
-           
+
+        });
+        $('#c_IsHai').combobox({
+            valueField: 0,
+            textField: 1,
+            panelHeight: 'auto',
+            data: checksall,
+            width: 100
+
+        });
+        $('#c_Location').combobox({
+            url: '/Organize/RootList',
+            valueField: 'Id',
+            textField: 'FullName',
+            required: true
+
         });
         $('#c_DId').combotree();
         $('#c_RoleId').combobox("setValue", "销售职员");
@@ -39,7 +54,7 @@
         $('#c_DId').combotree({
             url: '/Organize/BuMenList/1',
             required: true,
-            width:200
+            width: 200
         });
     });
 
@@ -120,6 +135,21 @@
                 </td>
             </tr>
 
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.IsHai, "海外账户:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.IsHai, new { @id = "c_IsHai" })
+                </td>
+                <td>
+                    <div>@Html.LabelFor(model => model.DId, "海外地址:")</div>
+
+                </td>
+                <td>
+                    <div>@Html.TextBoxFor(model => model.Location, new { @id = "c_Location" })</div>
+                </td>
+            </tr>
 
 
 
