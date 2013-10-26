@@ -570,14 +570,15 @@ select Name from a").List<object>();
 
             }
             IList<object[]> objs = NSession.CreateSQLQuery(string.Format(@"select * from (
-select *,(Qty-BuyQty-UnPeiQty) as NeedQty,(SQty-BuyQty-UnPeiQty) as SNeedQty from( select * ,(select COUNT(Id) from SKUCode where IsOut=0 and SKUCode.SKU=tbl1.SKU) as UnPeiQty,
-isnull((select SUM(Qty) from   Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and O.Enabled=1 and O.Status in ('已处理','待拣货') and OP.IsQue=1 and OP.SKU=tbl1.SKU),0) as 'SQty'
+select *,(Qty-BuyQty-UnPeiQty) as NeedQty,(SQty-BuyQty-UnPeiQty) as SNeedQty from( select * ,
+isnull((select SUM(Qty) from   Orders O left join OrderProducts OP On O.Id=OP.OId where O.IsOutOfStock=1 and O.Enabled=1 and O.Status in ('已处理','待拣货','待包装','待发货') and OP.IsQue=1 and OP.SKU=tbl1.SKU),0) as 'SQty'
 from (
 select OP.SKU,SUM(OP.Qty) as Qty,MIN(O.CreateOn) as MinDate,P.Standard,
 (select isnull(SUM(Qty-DaoQty),0) from PurchasePlan 
-where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU ) as BuyQty
+where Status<>'异常' and Status<>'已收到' and  SKU=OP.SKU ) as BuyQty,SUM(WS.Qty) as UnPeiQty  
 from Orders O left join OrderProducts OP On O.Id=OP.OId 
 left join Products P on OP.SKU=P.SKU 
+left join WarehouseStock WS On OP.SKU=WS.SKU
 where  O.Enabled=1 and O.IsStop=0 and O.Status in ('已处理','待拣货') and OP.SKU is not null {0} group by OP.SKU,P.Standard)
  as tbl1 ) as tbl2 ) as tbl3 where SQty>0 or (Qty-UnPeiQty)>0 {1} {2}", s, sqlss, orderby)).List<object[]>();
             List<QueCount> list = new List<QueCount>();

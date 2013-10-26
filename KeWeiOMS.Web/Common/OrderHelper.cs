@@ -188,12 +188,15 @@ namespace KeWeiOMS.Web
                             System.Text.RegularExpressions.Regex r5 = new System.Text.RegularExpressions.Regex(@"（数量：(?<quantity>\d+)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r3 = new System.Text.RegularExpressions.Regex(@"（商品编号/工厂编号：(?<sku>.*)）", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r1 = new System.Text.RegularExpressions.Regex(@"（产品编号：(?<exsku>.*)）", System.Text.RegularExpressions.RegexOptions.None);
+                            System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"（产品备注：(?<pppp>.*)）", System.Text.RegularExpressions.RegexOptions.None);
+
                             //System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"\(物流等级&买家选择物流:(?<wuliu>.+)\)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Match mc2 = r2.Match(Str);
                             System.Text.RegularExpressions.Match mc3 = r3.Match(Str);
                             System.Text.RegularExpressions.Match mc4 = r4.Match(Str);
                             System.Text.RegularExpressions.Match mc5 = r5.Match(Str);
                             System.Text.RegularExpressions.Match mc1 = r1.Match(Str);
+                            System.Text.RegularExpressions.Match mc6 = r6.Match(Str);
                             order.LogisticMode = dr["买家选择物流方式"].ToString();
                             //if (order.LogisticMode.IndexOf("\n") != -1)
                             //{
@@ -201,7 +204,7 @@ namespace KeWeiOMS.Web
                             //}
                             NSession.Update(order);
                             NSession.Flush();
-                            CreateOrderPruduct(mc1.Groups["exsku"].Value, mc3.Groups["sku"].Value, Utilities.ToInt(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", ""), 0, "", order.Id, order.OrderNo, NSession);
+                            CreateOrderPruduct(mc1.Groups["exsku"].Value, mc3.Groups["sku"].Value, Utilities.ToInt(mc5.Groups["quantity"].Value.Trim(')').Trim()), mc2.Groups["title"].Value, mc4.Groups["ppp"].Value.Replace("(产品属性: ", "").Replace(")", "") + mc4.Groups["pppp"].Value.Replace(")", ""), 0, "", order.Id, order.OrderNo, NSession);
                             results.Add(GetResult(OrderExNo, "", "导入成功"));
                             LoggerUtil.GetOrderRecord(order, "订单导入", "导入成功", NSession);
                         }
@@ -1159,7 +1162,8 @@ namespace KeWeiOMS.Web
             if (resultValue)
             {
                 order.IsAudit = 1;
-                //SaveAmount(order, currencys, NSession);
+                order.Status = OrderStatusEnum.已处理.ToString();
+                // SaveAmount(order, currencys, NSession);
                 //if (order.IsStop == 0)
                 //{
                 //    SetQueOrder(order, NSession);

@@ -1057,8 +1057,23 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                     }
                     dt.Rows.Add(item.ItemArray);
                 }
-                dt.TableName = "Sheet2";
-                ds.Tables.Add(dt);
+
+                DataTable dt3 = dt.Clone();
+                dt3.TableName = "Sheet2";
+                List<string> strTrackCodes = new List<string>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    if (strTrackCodes.Contains(row["跟踪号"].ToString()))
+                    {
+
+                    }
+                    else
+                    {
+                        dt3.Rows.Add(row.ItemArray);
+                        strTrackCodes.Add(row["跟踪号"].ToString());
+                    }
+                }
+                ds.Tables.Add(dt3);
                 ds.Tables[0].TableName = "Sheet1";
 
             }
@@ -1402,6 +1417,7 @@ where O.Id in(" + ids + ")";
                     order.TrackCode = t;
                     order.Weight = Convert.ToInt32(w);
                     if (l != "")
+                    if (l != "")
                     {
                         order.LogisticMode = l;
                     }
@@ -1427,7 +1443,7 @@ where O.Id in(" + ids + ")";
                     try
                     {
 
-                        new Thread(TrackCodeUpLoad) { IsBackground = true }.Start(order);
+                      //  new Thread(TrackCodeUpLoad) { IsBackground = true }.Start(order);
                     }
                     catch (System.Exception ex)
                     {

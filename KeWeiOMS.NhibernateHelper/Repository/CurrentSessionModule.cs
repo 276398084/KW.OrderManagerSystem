@@ -33,7 +33,7 @@ namespace KeWeiOMS.NhibernateHelper
                 || app.Request.CurrentExecutionFilePathExtension == ".css")
                 return;
 
-            ManagedWebSessionContext.Bind(HttpContext.Current, NhbHelper.SessionFactory.OpenSession());
+           ManagedWebSessionContext.Bind(HttpContext.Current, NhbHelper.SessionFactory.OpenSession());
         }
 
         private void Application_EndRequest(object sender, EventArgs e)
