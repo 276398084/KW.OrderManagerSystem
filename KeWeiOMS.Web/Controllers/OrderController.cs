@@ -1652,7 +1652,7 @@ where O.Id in(" + ids + ")";
 
 
             //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where IsOutOfStock=1")
+            IList<OrderType> objList = NSession.CreateQuery("from OrderType where Status='已发货' and CreateOn>'2013-10-01'")
                 //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
              .List<OrderType>();
             foreach (OrderType orderType in objList)
@@ -1660,8 +1660,8 @@ where O.Id in(" + ids + ")";
                 // OrderHelper.SetQueOrder(orderType, NSession);
                 try
                 {
-                    //UploadTrackCode(orderType);
-                    OrderHelper.SetQueOrder(orderType, NSession);
+                    UploadTrackCode(orderType);
+                    // OrderHelper.SetQueOrder(orderType, NSession);
                 }
                 catch (Exception)
                 {

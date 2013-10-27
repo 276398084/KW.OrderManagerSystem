@@ -238,6 +238,8 @@ namespace KeWeiOMS.Web.Controllers
 
         private string FindAccount()
         {
+            string roleName = CurrentUser.RoleName;
+            if (roleName == "运营经理助理" || roleName == "运营经理") { return string.Empty; }
             string where = " Shop in (";
             string name = CurrentUser.Realname;
             IList<EbayReplayType> ac = NSession.CreateQuery("from EbayReplayType where ReplayBy='" + name + "'").List<EbayReplayType>();
