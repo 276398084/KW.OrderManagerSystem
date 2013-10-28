@@ -95,7 +95,7 @@ namespace KeWeiOMS.Web
             return productTypes;
         }
 
-    
+
 
         [WebMethod]
         public List<KeyValue> GetStockBySKU(string[] skus)
@@ -112,14 +112,14 @@ namespace KeWeiOMS.Web
                 ids += "" + item + ",";
             }
             ids = ids.Trim(',');
-         
+
             IList<object[]> objectes =
                  NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
 
             foreach (object[] objs in objectes)
             {
                 dic.Add(new KeyValue { Key = objs[0].ToString(), Value = objs[1].ToString() });
-              
+
             }
 
             return dic;

@@ -1417,10 +1417,10 @@ where O.Id in(" + ids + ")";
                     order.TrackCode = t;
                     order.Weight = Convert.ToInt32(w);
                     if (l != "")
-                    if (l != "")
-                    {
-                        order.LogisticMode = l;
-                    }
+                        if (l != "")
+                        {
+                            order.LogisticMode = l;
+                        }
                     order.ScanningOn = DateTime.Now;
                     order.Status = OrderStatusEnum.已发货.ToString();
                     order.ScanningBy = CurrentUser.Realname;
@@ -1443,7 +1443,7 @@ where O.Id in(" + ids + ")";
                     try
                     {
 
-                      //  new Thread(TrackCodeUpLoad) { IsBackground = true }.Start(order);
+                        //  new Thread(TrackCodeUpLoad) { IsBackground = true }.Start(order);
                     }
                     catch (System.Exception ex)
                     {
