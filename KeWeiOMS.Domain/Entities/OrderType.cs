@@ -274,5 +274,7 @@ namespace KeWeiOMS.Domain
         public virtual int IsHai { get; set; }
 
         public virtual String Location { get; set; }
+
+        public virtual String PayEmail { get; set; }
     }
 }

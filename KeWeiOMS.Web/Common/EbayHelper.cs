@@ -113,19 +113,58 @@ namespace KeWeiOMS.Web
 
         #endregion
 
+        public static string GetpayEmail(string txnId)
+        {
+
+            com.paypal.soap.api.GetTransactionDetailsResponseType transactionDetails = AppSettingHelper.GetTransactionDetails(txnId, CreateAPIProfile(listpay[0]));
+            if (transactionDetails.Ack == com.paypal.soap.api.AckCodeType.Success || transactionDetails.Ack == com.paypal.soap.api.AckCodeType.SuccessWithWarning)
+            {
+                return "gamesalor.com@hotmail.com";
+            }
+            else
+            {
+                transactionDetails = AppSettingHelper.GetTransactionDetails(txnId, CreateAPIProfile(listpay[1]));
+                if (transactionDetails.Ack == com.paypal.soap.api.AckCodeType.Success || transactionDetails.Ack == com.paypal.soap.api.AckCodeType.SuccessWithWarning)
+                {
+                    return "gamesalor.com@hotmail.com";
+                }
+                else
+                {
+                    transactionDetails = AppSettingHelper.GetTransactionDetails(txnId, CreateAPIProfile(listpay[2]));
+                    if (transactionDetails.Ack == com.paypal.soap.api.AckCodeType.Success || transactionDetails.Ack == com.paypal.soap.api.AckCodeType.SuccessWithWarning)
+                    {
+                        return "chp1986@hotmail.com";
+                    }
+                }
+            }
+            return "";
+        }
 
 
+        static List<PaypalAccount> listpay = new List<PaypalAccount>();
+        public static void InitPay()
+        {
+            listpay.Clear();
+            listpay.Add(new PaypalAccount { ApiKey = "gamesalor.com_api1.hotmail.com", ApiPwd = "FPWEY6L4LG8E5576", ApiToken = "AFcWxV21C7fd0v3bYYYRCpSSRl31AEJlCG6KFjxf2K969F45Dzq86WV9" });
+            listpay.Add(new PaypalAccount { ApiKey = "gamesalorlimited_api1.hotmail.com", ApiPwd = "TCQYETLUQ78ZU3L2", ApiToken = "AFcWxV21C7fd0v3bYYYRCpSSRl31ArY-VU0-NOuYzZ.sZa6wIjX3TZ.t" });
+            listpay.Add(new PaypalAccount { ApiKey = "chp1986_api1.hotmail.com", ApiPwd = "TKU849C5BYTUZHAW", ApiToken = "ALm0ldPS4XGNCEySGAvT1M.6yiYkAe6D3SukfJbpyOR2XrQcnAd05HM1" });
+        }
 
 
         #region paypal ’Àªß
-        //public IAPIProfile CreateAPIProfile(OMS.Core.DoMain.PaypalAccountType entity)
-        //{
-
-        //    IAPIProfile payPalAPI = CreateAPIProfile(entity.APIKEY, entity.APIPWD, entity.ApiToken); ;
-        //    return payPalAPI;
-
-        //}
+        public static IAPIProfile CreateAPIProfile(PaypalAccount paypalAccount)
+        {
+            IAPIProfile paypal = CreateAPIProfile(paypalAccount.ApiKey, paypalAccount.ApiPwd, paypalAccount.ApiToken); ;
+            return paypal;
+        }
         #endregion paypal ’Àªß
 
+    }
+
+    public class PaypalAccount
+    {
+        public String ApiKey;
+        public String ApiPwd;
+        public String ApiToken;
     }
 }

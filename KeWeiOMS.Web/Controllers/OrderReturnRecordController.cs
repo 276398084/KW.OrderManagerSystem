@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -164,6 +167,21 @@ namespace KeWeiOMS.Web.Controllers
 
             object count = NSession.CreateQuery("select count(Id) from OrderReturnRecordType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
+        }
+
+        [HttpPost]
+        public ActionResult Export(DateTime st, DateTime et)
+        {
+            StringBuilder sb = new StringBuilder();
+            string sql = "select  * from OrderReturnRecord where CreateOn between '" + st.ToString("yyyy-MM-dd") + "' and '" + et.ToString("yyyy-MM-dd") + "'";
+            DataSet ds = new DataSet();
+            IDbCommand command = NSession.Connection.CreateCommand();
+            command.CommandText = sql;
+            SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
+            da.Fill(ds);
+            // 设置编码和附件格式 
+            Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
+            return Json(new { IsSuccess = true });
         }
 
     }

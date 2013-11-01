@@ -44,6 +44,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\eBay.Service.dll</HintPath>
     </Reference>
+    <Reference Include="eBay.Service.SDK.Attribute">
+      <HintPath>..\Lib\eBay.Service.SDK.Attribute.dll</HintPath>
+    </Reference>
     <Reference Include="FluentNHibernate, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\FluentNHibernate.dll</HintPath>

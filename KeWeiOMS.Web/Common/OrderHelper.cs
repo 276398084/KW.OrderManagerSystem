@@ -11,6 +11,7 @@ using KeWeiOMS.Domain;
 using KeWeiOMS.NhibernateHelper;
 using NHibernate;
 using Newtonsoft.Json;
+using eBay.Service.Call;
 using eBay.Service.Core.Sdk;
 using eBay.Service.Core.Soap;
 using OrderType = KeWeiOMS.Domain.OrderType;
@@ -609,6 +610,8 @@ namespace KeWeiOMS.Web
                     }
                     //查看是不是在订单系统里面存在
                     bool isExist = IsExist(ot.OrderID, NSession);
+        
+
                     if (!isExist)
                     {
                         OrderType order = new OrderType
@@ -639,6 +642,7 @@ namespace KeWeiOMS.Web
                         order.Account = account.AccountName;
                         order.GenerateOn = ot.PaidTime;
                         order.Platform = PlatformEnum.Ebay.ToString();
+
 
                         order.AddressId = CreateAddress(ot.ShippingAddress.Name,
                                                         (string.IsNullOrEmpty(ot.ShippingAddress.Street)

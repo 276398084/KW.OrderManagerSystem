@@ -61,7 +61,7 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["ids"] = Session["ids"];
             return View();
         }
-        
+
         public ActionResult GetEbayLogistics()
         {
             List<string> list = new List<string>();

@@ -1649,31 +1649,51 @@ where O.Id in(" + ids + ")";
             //NSession.SaveOrUpdate(order);
             //NSession.Flush();
             //OrderHelper.SaveAmount(order, NSession);
-
-
-            //计算利润
-            IList<OrderType> objList = NSession.CreateQuery("from OrderType where Status='已发货' and CreateOn>'2013-10-01'")
+            ////计算利润
+            IList<object[]> objList = NSession.CreateSQLQuery("select Id,TId  from Orders where  CreateOn>'2013-09-01' and CreateOn<'2013-10-31' and Platform='EBay' and PayEmail is null")
                 //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
-             .List<OrderType>();
-            foreach (OrderType orderType in objList)
+             .List<object[]>();
+            AppSettingHelper.InitPay();
+            foreach (object[] objectse in objList)
             {
-                // OrderHelper.SetQueOrder(orderType, NSession);
                 try
                 {
-                    UploadTrackCode(orderType);
-                    // OrderHelper.SetQueOrder(orderType, NSession);
+                    string tid = objectse[1].ToString();
+                    if (tid.IndexOf("|") != -1)
+                    {
+                        tid = tid.Substring(0, tid.IndexOf("|"));
+                    }
+                    string s = AppSettingHelper.GetpayEmail(tid);
+                    OrderType order = NSession.Get<OrderType>(objectse[0]);
+                    order.PayEmail = s;
+                    NSession.Update(order);
+                    NSession.Flush();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     continue;
                 }
-
-                //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
-                //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
-                //NSession.SaveOrUpdate(orderType);
-                //NSession.Flush();
-                //OrderHelper.SaveAmount(orderType, NSession);
             }
+            //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and CreateOn>'2013-10-29'")
+            // .List<OrderType>();
+            //foreach (OrderType orderType in objList)
+            //{
+
+            //    try
+            //    {
+            //        UploadTrackCode(orderType);
+            //    }
+            //    catch (Exception)
+            //    {
+            //        continue;
+            //    }
+            //}
+            //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
+            //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
+            //NSession.SaveOrUpdate(orderType);
+            //NSession.Flush();
+            //OrderHelper.SaveAmount(orderType, NSession);
+            // }
             // TimeJi();
             //IList<AccountType> accounts =
             //    NSession.CreateQuery("from AccountType where Id in(16,21,27,24,26)").List<AccountType>();

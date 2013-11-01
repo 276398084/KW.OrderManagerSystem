@@ -206,6 +206,10 @@ namespace KeWeiOMS.Web
             g.DrawImage(imageFrom, new Rectangle(0, 0, width, height), new Rectangle(X, Y, bitmapWidth, bitmapHeight), GraphicsUnit.Pixel);
             try
             {
+                if (File.Exists(newImgPath))
+                {
+                    File.Delete(newImgPath);
+                }
                 //经测试 .jpg 格式缩略图大小与质量等最优 
                 bmp.Save(newImgPath, ImageFormat.Jpeg);
             }
