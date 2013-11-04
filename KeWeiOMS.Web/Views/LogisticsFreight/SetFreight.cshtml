@@ -1,12 +1,11 @@
 ﻿@model KeWeiOMS.Domain.LogisticsFreightType
-
 @{
     Layout = null;
 }
 
 <script type="text/javascript">
 
-    $(function() {
+    $(function () {
         $('#dgFeright').datagrid({
             url: '/LogisticsFreight/GetFreight',
             title: '运费设置',
@@ -31,7 +30,7 @@
                     title: '全部打折',
                     width: 80,
                     editor: { type: 'checkbox', options: { on: '1', off: '' } },
-                    formatter: function(value) {
+                    formatter: function (value) {
                         if (value == "1")
                             return "是";
                         else
@@ -84,8 +83,7 @@
                     .datagrid('beginEdit', editIndex);
         }
     }
-    function remove() {
-        var ids = [];
+    function romm() {
         var rows = $('#dgFeright').datagrid('getSelections');
         for (var i = 0; i < rows.length; i++) {
             $.ajax({
@@ -100,14 +98,15 @@
         }
     }
 </script>
-        <div id="dlgFreight" class="easyui-dialog" title="设置运费" data-options="iconCls:'icon-save'" style="width: 800px; height: 400px; padding: 10px" closed="true">
-        <div>
-            <table id="dgFeright" toolbar="#tbFreight">
-            </table>
-        </div>
+<div id="dlgFreight" class="easyui-dialog" title="设置运费" data-options="iconCls:'icon-save'" style="width: 800px; height: 400px; padding: 10px" closed="true">
+    <div>
+        <table id="dgFeright" toolbar="#tbFreight">
+        </table>
     </div>
-        <div id="tbFreight">
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true" onclick="append()">添加</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="remove()">删除</a>
-        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true" onclick="accept()">保存</a>
-    </div>
+</div>
+<div id="tbFreight">
+    <a href="javascript:void(0)" onclick="append()">添加</a>
+
+    <a href="javascript:void(0)" onclick="accept()">保存</a>
+    <a href="javascript:void(0)" onclick="romm()">删除</a>
+</div>

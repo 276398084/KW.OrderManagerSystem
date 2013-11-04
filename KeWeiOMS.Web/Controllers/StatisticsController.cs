@@ -281,7 +281,7 @@ namespace KeWeiOMS.Web.Controllers
         [HttpPost]
         public ActionResult SellCount(DateTime st, DateTime et, string a, string p, string s, int page, int rows)
         {
-            var list = GetSellCount(st, et, a, p, s,page,rows);
+            var list = GetSellCount(st, et, a, p, s, page, rows);
             List<object> footers = new List<object>();
             var sqlWhere = SqlWhere(st, et, a, p, s);
             if (sqlWhere.Length > 3)
@@ -295,7 +295,7 @@ namespace KeWeiOMS.Web.Controllers
             object obj = NSession.CreateSQLQuery(string.Format(
                           "select COUNT(1) from ( select SKU from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU ) as tbl",
                           sqlWhere)).UniqueResult();
-          return Json(new { rows = list.OrderByDescending(f => f.Qty), total = obj });
+            return Json(new { rows = list.OrderByDescending(f => f.Qty), total = obj });
         }
         public JsonResult GetOrder(string id)
         {
@@ -352,7 +352,7 @@ namespace KeWeiOMS.Web.Controllers
         }
 
         [HttpPost]
-        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string s, int page=0, int rows=0)
+        private List<ProductData> GetSellCount(DateTime st, DateTime et, string a, string p, string s, int page = 0, int rows = 0)
         {
             var sqlWhere = SqlWhere(st, et, a, p, s);
             if (sqlWhere.Length > 3)
@@ -377,10 +377,11 @@ namespace KeWeiOMS.Web.Controllers
                 NSession.CreateSQLQuery(
                     string.Format(
                         "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
-                        sqlWhere)).            
+                        sqlWhere)).
             List<object[]>();
             }
-            else{
+            else
+            {
                 objs =
                 NSession.CreateSQLQuery(
                     string.Format(
