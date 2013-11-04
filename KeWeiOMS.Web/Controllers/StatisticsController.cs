@@ -366,7 +366,7 @@ namespace KeWeiOMS.Web.Controllers
             IList<object[]> objs =
                 NSession.CreateSQLQuery(
                     string.Format(
-                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
+                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts OP right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
                         sqlWhere))
               .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows).
