@@ -61,6 +61,38 @@ namespace KeWeiOMS.Web.Common
         /// 声明发货
         /// </summary>
         public const string ApisellerShipment = "sellerShipment";
+
+        /// <summary>
+        /// 查询留言
+        /// </summary>
+        public const string ApiquerySellerEvaluationOrderList = "evaluation.querySellerEvaluationOrderList";
+
+        /// <summary>
+        /// 评价留言
+        /// </summary>
+        public const string ApisaveSellerFeedback = "evaluation.saveSellerFeedback";
+
+        /// <summary>
+        /// 查询站内信
+        /// </summary>
+        public const string ApiqueryMessageList = "queryMessageList";
+
+        /// <summary>
+        ///  添加站内信
+        /// </summary>
+        public const string ApiaddMessage = "addMessage";
+
+        /// <summary>
+        ///  查询订单留言
+        /// </summary>
+        public const string ApiqueryOrderMsgList = "queryOrderMsgList";
+
+        /// <summary>
+        ///  添加订单留言
+        /// </summary>
+        public const string ApiaddOrderMessage = "addOrderMessage";
+
+
         #endregion
 
 

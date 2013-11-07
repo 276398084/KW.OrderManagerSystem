@@ -193,7 +193,7 @@
                 html += "(停售订单)";
             }
             if (r.IsHai == 1) {
-                html += "(Overseas:" + r.Location + ")";
+                html += "(海外仓:" + r.Location + ")";
             }
             html += "<br/>";
             if (r.IsPrint >= 1)
@@ -515,9 +515,9 @@
         }
         function getOrderDate(v, r, i) {
             var html = "";
-            html += "Syn:<b>" + getDate(r.CreateOn) + "</b>";
+            html += "同:<b>" + getDate(r.CreateOn) + "</b>";
             if (r.Status == "已发货")
-                html += "<br/>Scan:" + getDate(r.ScanningOn);
+                html += "<br/>扫:" + getDate(r.ScanningOn);
             return html;
         }
 
@@ -545,60 +545,60 @@
             <thead>
                 <tr>
                     <th field="Id" width="60" checkbox="true"></th>
-                    <th field="OrderNo" width="100" formatter="GetOrder">Order Number
+                    <th field="OrderNo" width="100" formatter="GetOrder">订单编号
                     </th>
-                    <th field="Status" width="150" formatter="GeStatus">Order Status
+                    <th field="Status" width="150" formatter="GeStatus">订单状态
                     </th>
-                    <th field="CurrencyCode" width="100" formatter="GetAmount">Currency
+                    <th field="CurrencyCode" width="100" formatter="GetAmount">货币
                     </th>
-                    <th field="BuyerName" width="130" formatter="GetBuyer">Buyers
+                    <th field="BuyerName" width="130" formatter="GetBuyer">买家
                     </th>
-                    <th field="Country" width="80">Country
+                    <th field="Country" width="80">国家
                     </th>
-                    <th field="LogisticMode" width="100">typ of Delivery
+                    <th field="LogisticMode" width="100">发货方式
                     </th>
                     <th field="TrackCode" width="100">Code
                     </th>
                     <th field="Weight" width="100">Weight
                     </th>
-                    <th field="GenerateOn" width="200" formatter="getOrderDate">Date
+                    <th field="GenerateOn" width="200" formatter="getOrderDate">时间
                     </th>
-                    <th field="Account" width="100" formatter="getAccount">Account
+                    <th field="Account" width="100" formatter="getAccount">账户
                     </th>
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
 
-            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint()">Print</a>
-           @* <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-redo'">Export</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint()">打印</a>
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-redo'">导出</a>
             <div id="mm1" style="width: 150px;">
                 <div data-options="iconCls:'icon-redo'" onclick="exportZM();">中美导出</div>
                 <div data-options="iconCls:'icon-redo'" onclick="exportOrder();">订单导出</div>
                 <div data-options="iconCls:'icon-redo'" onclick="ExportExcel(0);">德国导出</div>
                 <div data-options="iconCls:'icon-redo'" onclick="alert('暂时不开放');">澳大利亚导出</div>
-            </div>*@
+            </div>
             <br />
-            Platform:<input type="text" id="Platform" />
-            Account:<input type="text" id="Account" />
-            Status:<input type="text" id="OrderStatus" />
-            Print Status:<input type="text" id="IsPrint" />
-            Out of stock:<input type="text" id="IsQue" />
-            Unpacking:<input type="text" id="IsChai" />
-            Retransmission:<input type="text" id="IsChong" />
-            Intercept:<input type="text" id="IsError" />
-            Leave a message:<input type="text" id="IsLiu" />
-            Overseas warehouse:<input type="text" id="Location" />
-            Time Type:<input type="text" id="orderdateType" />
-            Start：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
-            End：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
-            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'',searcher:doSearch,menu:'#mm'"></input>
+            平台<input type="text" id="Platform" />
+            账户<input type="text" id="Account" />
+            状态<input type="text" id="OrderStatus" />
+            打印状态:<input type="text" id="IsPrint" />
+            缺货:<input type="text" id="IsQue" />
+            拆包:<input type="text" id="IsChai" />
+            重发:<input type="text" id="IsChong" />
+            拦截:<input type="text" id="IsError" />
+            留言:<input type="text" id="IsLiu" />
+            海外仓:<input type="text" id="Location" />
+            时间类型:<input type="text" id="orderdateType" />
+            开始：<input type="text" id="CreateOn_st" class="easyui-datetimebox" style="width: 150px" />
+            结束：<input type="text" id="CreateOn_et" class="easyui-datetimebox" style="width: 150px" />
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
 
         </div>
         <div id="mm" style="width: 120px">
-            <div data-options="name:'OrderNo'">Order Number</div>
-            <div data-options="name:'OrderExNo'">Order Ex Number</div>
-            <div data-options="name:'TId'">TId</div>
+            <div data-options="name:'OrderNo'">订单编号</div>
+            <div data-options="name:'OrderExNo'">外部编号</div>
+            <div data-options="name:'TId'">流水交易号</div>
             <div data-options="name:'SKU_OrderProduct'">SKU</div>
             <div data-options="name:'BuyerName'">买家</div>
             <div data-options="name:'BuyerEmail'">买家邮箱</div>

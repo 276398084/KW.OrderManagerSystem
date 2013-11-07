@@ -104,6 +104,32 @@ namespace KeWeiOMS.Web
             return c;
         }
 
+        public static AliMessageList QueryMessageList(string token, int pageIndex)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+
+            dic.Add("pageSize", "50");
+            dic.Add("currentPage", pageIndex.ToString());
+            dic.Add(SMTConfig.fieldAccessToken, token);
+            dic.Add("_aop_signature", SMTConfig.Sign(SMTConfig.Url + SMTConfig.ApiqueryMessageList, dic));
+            string c = PostWebRequest(SMTConfig.IP2 + SMTConfig.Url + SMTConfig.ApiqueryMessageList + "/" + Config.AliAppKey, SMTConfig.GetParamUrl(dic));
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AliMessageList>(c);
+        }
+
+        public static AliMessageList queryOrderMsgList(string token, int pageIndex)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+
+            dic.Add("pageSize", "50");
+            dic.Add("currentPage", pageIndex.ToString());
+           
+            dic.Add(SMTConfig.fieldAccessToken, token);
+            dic.Add("_aop_signature", SMTConfig.Sign(SMTConfig.Url + SMTConfig.ApiqueryOrderMsgList, dic));
+            string c = PostWebRequest(SMTConfig.IP2 + SMTConfig.Url + SMTConfig.ApiqueryOrderMsgList + "/" + Config.AliAppKey, SMTConfig.GetParamUrl(dic));
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<AliMessageList>(c);
+        }
+
+
         public static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
         {   // 总是接受    
             return true;

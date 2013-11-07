@@ -131,7 +131,10 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
-
+        public ActionResult PackMove()
+        {
+            return View();
+        }
 
 
         #endregion
@@ -1026,7 +1029,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult ExportOrder2(string ids, string s, int t)
         {
             string sql =
-                @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderCurrencyCode,OrderFees,OrderCurrencyCode2,OrderFees2,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.Freight,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发',O.BuyerName   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+                @" select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderCurrencyCode,OrderFees,OrderCurrencyCode2,OrderFees2,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.Freight,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,O.PayEmail,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发',O.BuyerName   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
             string sql2 = "";
             if (t == 1)
@@ -1650,31 +1653,135 @@ where O.Id in(" + ids + ")";
             //NSession.Flush();
             //OrderHelper.SaveAmount(order, NSession);
             ////计算利润
-            IList<object[]> objList = NSession.CreateSQLQuery("select Id,TId  from Orders where  CreateOn>'2013-09-01' and CreateOn<'2013-10-31' and Platform='EBay' and PayEmail is null")
-                //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
-             .List<object[]>();
-            AppSettingHelper.InitPay();
-            foreach (object[] objectse in objList)
+            //IList<object[]> objList = NSession.CreateSQLQuery("select Id,TId  from Orders where  CreateOn>'2013-09-01' and CreateOn<'2013-10-31' and Platform='EBay' and PayEmail is null")
+            //    //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
+            // .List<object[]>();
+            //AppSettingHelper.InitPay();
+            //foreach (object[] objectse in objList)
+            //{
+            //    try
+            //    {
+            //        string tid = objectse[1].ToString();
+            //        if (tid.IndexOf("|") != -1)
+            //        {
+            //            tid = tid.Substring(0, tid.IndexOf("|"));
+            //        }
+            //        string s = AppSettingHelper.GetpayEmail(tid);
+            //        OrderType order = NSession.Get<OrderType>(objectse[0]);
+            //        order.PayEmail = s;
+            //        NSession.Update(order);
+            //        NSession.Flush();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        continue;
+            //    }
+            //}
+
+            IList<AccountType> objList = NSession.CreateQuery("from AccountType where Platform='SMT'").List<AccountType>();
+            foreach (AccountType acc in objList)
             {
-                try
+                acc.ApiSecret = AliUtil.RefreshToken(acc);
+                AliMessageList messages = null;
+                int page = 1;
+                do
                 {
-                    string tid = objectse[1].ToString();
-                    if (tid.IndexOf("|") != -1)
+                    messages = AliUtil.queryOrderMsgList(acc.ApiSecret, page);
+
+                    if (messages.success)
                     {
-                        tid = tid.Substring(0, tid.IndexOf("|"));
+                        foreach (AliMessage t in messages.msgList)
+                        {
+                            AliMessageType m = new AliMessageType();
+                            m.Content = t.content;
+                            m.MId = t.id;
+                            m.ReceiverName = t.receiverName;
+                            m.ReceiverLoginId = t.receiverLoginId;
+                            m.CreateOn = OrderHelper.GetAliDate(t.gmtCreate);
+                            m.FileUrl = t.fileUrl;
+                            m.HaveFile = t.haveFile;
+                            m.IsRead = t.read;
+                            m.IsReplay = false;
+                            m.IsUpload = false;
+                            m.MessageType = t.messageType;
+                            m.OrderId = t.orderId.ToString();
+                            m.OrderUrl = t.orderUrl;
+                            m.ProductId = t.productId;
+                            m.ProductName = t.productName;
+                            m.ProductUrl = t.productUrl;
+                            m.RelationId = t.relationId;
+                            m.SenderLoginId = t.senderLoginId;
+                            m.SenderName = t.senderName;
+                            m.TypeId = t.typeId.ToString();
+                            m.Shop = acc.AccountName;
+                            m.SynOn = DateTime.Now;
+                            m.UploadOn = DateTime.Now;
+                            m.ReplayOn = DateTime.Now;
+                            object count = NSession.CreateQuery("select count(Id) from AliMessageType where MId='" + m.MId + "' ").UniqueResult();
+                            if (Convert.ToInt32(count) == 0)
+                            {
+                                NSession.Save(m);
+                                NSession.Flush();
+                            }
+                        }
                     }
-                    string s = AppSettingHelper.GetpayEmail(tid);
-                    OrderType order = NSession.Get<OrderType>(objectse[0]);
-                    order.PayEmail = s;
-                    NSession.Update(order);
-                    NSession.Flush();
-                }
-                catch (Exception ex)
+                    page++;
+                } while (messages.total > page * 50);
+                page = 1;
+                do
                 {
-                    continue;
-                }
+                    messages = AliUtil.QueryMessageList(acc.ApiSecret, page);
+
+                    if (messages.success)
+                    {
+                        foreach (AliMessage t in messages.msgList)
+                        {
+                            AliMessageType m = new AliMessageType();
+                            m.Content = t.content;
+                            m.MId = t.id;
+                            m.ReceiverName = t.receiverName;
+                            m.ReceiverLoginId = t.receiverLoginId;
+                            m.CreateOn = OrderHelper.GetAliDate(t.gmtCreate);
+                            m.FileUrl = t.fileUrl;
+                            m.HaveFile = t.haveFile;
+                            m.IsRead = t.read;
+                            m.IsReplay = false;
+                            m.IsUpload = false;
+                            m.MessageType = t.messageType;
+                            m.OrderId = t.orderId.ToString();
+                            m.OrderUrl = t.orderUrl;
+                            m.ProductId = t.productId;
+                            m.ProductName = t.productName;
+                            m.ProductUrl = t.productUrl;
+                            m.RelationId = t.relationId;
+                            m.SenderLoginId = t.senderLoginId;
+                            m.SenderName = t.senderName;
+                            m.TypeId = t.typeId.ToString();
+                            m.Shop = acc.AccountName;
+                            m.SynOn = DateTime.Now;
+                            m.UploadOn = DateTime.Now;
+                            m.ReplayOn = DateTime.Now;
+                            object count = NSession.CreateQuery("select count(Id) from AliMessageType where MId='" + m.MId + "' ").UniqueResult();
+                            if (Convert.ToInt32(count) == 0)
+                            {
+                                NSession.Save(m);
+                                NSession.Flush();
+                            }
+                        }
+
+                    }
+                    page++;
+                } while (messages.total > page * 50);
+
+                NSession.Save(acc);
+                NSession.Flush();
             }
-            //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and CreateOn>'2013-10-29'")
+
+
+
+
+
+            //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and CreateOn>'2013-10-31'")
             // .List<OrderType>();
             //foreach (OrderType orderType in objList)
             //{
@@ -2062,7 +2169,7 @@ where O.Id in(" + ids + ")";
                     var orderPeiRecord = new OrderPeiRecordType
                                              {
                                                  OrderNo = order.OrderNo,
-                                                 PeiBy = p1,
+                                                 PackBy = p1,
                                                  ValiBy = p2,
                                                  CreateOn = DateTime.Now,
                                                  OId = order.Id,
@@ -2223,6 +2330,28 @@ where O.Id in(" + ids + ")";
                     return Json(new { IsSuccess = true, Result = html });
                 }
                 return Json(new { IsSuccess = false, Result = " 无法出库！ 当前状态为：" + order.Status + "，需要订单状态为“待发货”方可扫描！" });
+            }
+            return Json(new { IsSuccess = false, Result = "找不到该订单" });
+        }
+
+        public JsonResult OutStockByPackMove(string p, string o)
+        {
+            List<OrderType> orders =
+                NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
+            if (orders.Count > 0)
+            {
+
+                OrderType order = orders[0];
+                if (order.Status == OrderStatusEnum.待包装.ToString())
+                {
+                    LoggerUtil.GetOrderRecord(order, "转移指定包装人！", "指定包装人转移至:" + p, CurrentUser, NSession);
+
+                    NSession.CreateSQLQuery("Update OrderPeiRecord set PackBy='" + p + "' where OId='" + order.Id + "'").UniqueResult();
+
+                    string html = "订单： " + order.OrderNo + " 指定包装人转移成功,转移至" + p;
+                    return Json(new { IsSuccess = true, Result = html });
+                }
+                return Json(new { IsSuccess = false, Result = " 无法出库！ 当前状态为：" + order.Status + "，需要订单状态为“待包装”方可扫描！" });
             }
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }

@@ -1,0 +1,158 @@
+﻿@model KeWeiOMS.Domain.AliMessageTypeType
+
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>KeWeiOMS.Domain.AliMessageTypeType</title>
+</head>
+<body>
+<fieldset>
+    <legend>KeWeiOMS.Domain.AliMessageTypeType</legend>
+    <div class="display-label">Id</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Id)
+    </div>
+
+    <div class="display-label">MId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MId)
+    </div>
+
+    <div class="display-label">HaveFile</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.HaveFile)
+    </div>
+
+    <div class="display-label">OrderUrl</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderUrl)
+    </div>
+
+    <div class="display-label">OrderId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.OrderId)
+    </div>
+
+    <div class="display-label">ReceiverLoginId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReceiverLoginId)
+    </div>
+
+    <div class="display-label">ReceiverName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReceiverName)
+    </div>
+
+    <div class="display-label">FileUrl</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.FileUrl)
+    </div>
+
+    <div class="display-label">ProductId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductId)
+    </div>
+
+    <div class="display-label">Content</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Content)
+    </div>
+
+    <div class="display-label">SenderName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SenderName)
+    </div>
+
+    <div class="display-label">SenderLoginId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SenderLoginId)
+    </div>
+
+    <div class="display-label">ProductUrl</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductUrl)
+    </div>
+
+    <div class="display-label">ProductName</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ProductName)
+    </div>
+
+    <div class="display-label">IsRead</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsRead)
+    </div>
+
+    <div class="display-label">TypeId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.TypeId)
+    </div>
+
+    <div class="display-label">MessageType</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.MessageType)
+    </div>
+
+    <div class="display-label">RelationId</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.RelationId)
+    </div>
+
+    <div class="display-label">CreateOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.CreateOn)
+    </div>
+
+    <div class="display-label">SynOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SynOn)
+    </div>
+
+    <div class="display-label">Shop</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Shop)
+    </div>
+
+    <div class="display-label">ReplayBy</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReplayBy)
+    </div>
+
+    <div class="display-label">IsReplay</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsReplay)
+    </div>
+
+    <div class="display-label">ReplayContent</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReplayContent)
+    </div>
+
+    <div class="display-label">ReplayOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ReplayOn)
+    </div>
+
+    <div class="display-label">IsUpload</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsUpload)
+    </div>
+
+    <div class="display-label">UploadOn</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UploadOn)
+    </div>
+
+
+</fieldset>
+<p>
+    @Html.ActionLink("编辑", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("返回列表", "Index")
+</p>
+</body>
+</html>

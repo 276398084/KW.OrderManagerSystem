@@ -1,0 +1,283 @@
+﻿@model KeWeiOMS.Domain.AliMessageTypeType
+
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+
+    $(function () {
+
+		
+        $('#c_CreateOn').datebox();
+
+
+        $('#c_SynOn').datebox();
+
+        $('#c_ReplayBy').combobox({
+          url: 'User/UserSrc',
+          editable: true
+      });
+
+
+        $('#c_ReplayOn').datebox();
+
+
+        $('#c_UploadOn').datebox();
+
+
+    });
+    
+</script>
+
+@using (Html.BeginForm("Create", "AliMessageType", FormMethod.Post, new { id = "c_form" }))
+{
+<fieldset>
+<table class="editForm">
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Id,"Id:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Id,new{@id="c_Id"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MId,"MId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MId,new{@id="c_MId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.HaveFile,"HaveFile:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.HaveFile,new{@id="c_HaveFile"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderUrl,"OrderUrl:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderUrl,new{@id="c_OrderUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.OrderId,"OrderId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.OrderId,new{@id="c_OrderId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReceiverLoginId,"ReceiverLoginId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReceiverLoginId,new{@id="c_ReceiverLoginId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReceiverName,"ReceiverName:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReceiverName,new{@id="c_ReceiverName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.FileUrl,"FileUrl:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.FileUrl,new{@id="c_FileUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductId,"ProductId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductId,new{@id="c_ProductId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Content,"Content:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Content,new{@id="c_Content"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SenderName,"SenderName:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SenderName,new{@id="c_SenderName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SenderLoginId,"SenderLoginId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SenderLoginId,new{@id="c_SenderLoginId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductUrl,"ProductUrl:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductUrl,new{@id="c_ProductUrl"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ProductName,"ProductName:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ProductName,new{@id="c_ProductName"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsRead,"IsRead:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsRead,new{@id="c_IsRead"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.TypeId,"TypeId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.TypeId,new{@id="c_TypeId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.MessageType,"MessageType:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.MessageType,new{@id="c_MessageType"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.RelationId,"RelationId:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.RelationId,new{@id="c_RelationId"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.CreateOn,"CreateOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.CreateOn,new{@id="c_CreateOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.SynOn,"SynOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.SynOn,new{@id="c_SynOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.Shop,"Shop:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.Shop,new{@id="c_Shop"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplayBy,"ReplayBy:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayBy,new{@id="c_ReplayBy"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsReplay,"IsReplay:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsReplay,new{@id="c_IsReplay"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplayContent,"ReplayContent:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayContent,new{@id="c_ReplayContent"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.ReplayOn,"ReplayOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.ReplayOn,new{@id="c_ReplayOn"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.IsUpload,"IsUpload:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.IsUpload,new{@id="c_IsUpload"})
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+            @Html.LabelFor(model => model.UploadOn,"UploadOn:")
+		</td>
+		<td>
+            @Html.TextBoxFor(model => model.UploadOn,new{@id="c_UploadOn"})
+		</td>
+	</tr>
+
+
+</table>
+</fieldset>
+}

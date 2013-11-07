@@ -60,5 +60,10 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual String ScanBy { get; set; }
 
+        /// <summary>
+        /// 指定包装人
+        /// </summary>
+        public virtual String PackBy { get; set; }
+
     }
 }

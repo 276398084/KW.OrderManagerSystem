@@ -24,7 +24,7 @@ namespace KeWeiOMS.Domain
     /// <date></date>
     /// </author>
     /// </summary>
-    public class OrderPeiRecordTypeMap : ClassMap<OrderPeiRecordType> 
+    public class OrderPeiRecordTypeMap : ClassMap<OrderPeiRecordType>
     {
         public OrderPeiRecordTypeMap()
         {
@@ -36,6 +36,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.PeiBy).Length(50);
             Map(x => x.ValiBy).Length(50);
             Map(x => x.ScanBy).Length(50);
+            Map(x => x.PackBy).Length(50);
         }
     }
 }

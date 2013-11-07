@@ -13,7 +13,6 @@
         document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
     }
     else {
-
         document.write(' <OBJECT id="Player1"');
         document.write(' type="application/x-ms-wmp"');
         document.write(' src= "/Content/Audio/ring.wav" width=0 height=0> </OBJECT>');
@@ -30,7 +29,6 @@
             textField: 'Realname',
             required: true,
             width: 200
-
         });
         $('#ee').combobox({
             url: '/User/QList2/',
@@ -38,10 +36,8 @@
             textField: 'Realname',
             required: true,
             width: 200
-
         });
-        $('#cc').combobox("setValue", "邵大姐");
-        $('#ee').combobox("setValue", "邵大姐");
+
     });
 </script>
 <fieldset>
@@ -65,9 +61,9 @@
                         </tr>
                         <tr>
                             <td height="26" align="right"></td>
-                            <td>配货人:
-                                <input id="cc" type="text" />&nbsp;&nbsp;&nbsp;检验人:
-                                <input id="ee" type="text" /></td>
+                            <td>检验人:
+                                <input id="ee" type="text" />&nbsp;&nbsp;&nbsp;指定包装人:
+                                <input id="cc" type="text" /></td>
                         </tr>
 
                         <tr>

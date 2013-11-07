@@ -22,7 +22,7 @@
             $("#txtStartDate").datebox("setValue", getStartDate(7));
         });
         //新建
-        function c_dlg(){
+        function c_dlg() {
             var url_str = '@Url.Action("Create", "OrderPeiRecord")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
@@ -73,7 +73,7 @@
         function doSearch() {
             search = getSearch();
             $("#dg").datagrid("load", {
-                    search: search
+                search: search
             });
         }
 
@@ -114,13 +114,13 @@
                     </th>
                     <th field="PeiBy" width="100">配货人
                     </th>
-
                     <th field="ValiBy" width="100">检验人
                     </th>
 
                     <th field="ScanBy" width="100">扫描人
                     </th>
-
+                    <th field="PackBy" width="100">指定包装人
+                    </th>
                     <th field="CreateOn" width="100" formatter="getDate">扫描时间
                     </th>
                 </tr>
