@@ -293,7 +293,7 @@ namespace KeWeiOMS.Web.Controllers
                 sqlWhere = " where SKU is not null ";
             }
             object obj = NSession.CreateSQLQuery(string.Format(
-                          "select COUNT(1) from ( select SKU from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU ) as tbl",
+                          "select COUNT(1) from ( select SKU from OrderProducts OP right join Orders on OId=Orders.Id   {0} group by SKU ) as tbl",
                           sqlWhere)).UniqueResult();
             return Json(new { rows = list.OrderByDescending(f => f.Qty), total = obj });
         }
@@ -357,16 +357,16 @@ namespace KeWeiOMS.Web.Controllers
             var sqlWhere = SqlWhere(st, et, a, p, s);
             if (sqlWhere.Length > 3)
             {
-                sqlWhere += " and SKU is not null ";
+                sqlWhere += " and OP.SKU is not null ";
             }
             else
             {
-                sqlWhere = " where SKU is not null ";
+                sqlWhere = " where OP.SKU is not null ";
             }
             IList<object[]> objs =
                 NSession.CreateSQLQuery(
                     string.Format(
-                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts OP right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
+                        "select OP.SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts OP right join Orders on OId=Orders.Id   {0} group by OP.SKU Order By sQty desc",
                         sqlWhere))
               .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows).
@@ -376,7 +376,7 @@ namespace KeWeiOMS.Web.Controllers
                 objs =
                 NSession.CreateSQLQuery(
                     string.Format(
-                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
+                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts OP right join Orders on OId=Orders.Id   {0} group by OP.SKU Order By sQty desc",
                         sqlWhere)).
             List<object[]>();
             }
@@ -385,7 +385,7 @@ namespace KeWeiOMS.Web.Controllers
                 objs =
                 NSession.CreateSQLQuery(
                     string.Format(
-                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts right join Orders on OId=Orders.Id   {0} group by SKU Order By sQty desc",
+                        "select SKU,SUM(Qty) as sQty,count(Orders.Id) as Qty from OrderProducts OP right join Orders on OId=Orders.Id   {0} group by OP.SKU Order By sQty desc",
                         sqlWhere))
               .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows).
