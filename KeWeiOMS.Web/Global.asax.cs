@@ -16,7 +16,7 @@ namespace KeWeiOMS.Web
 {
     // 注意: 有关启用 IIS6 或 IIS7 经典模式的说明，
     // 请访问 http://go.microsoft.com/?LinkId=9394801
-     
+
     public class MvcApplication : System.Web.HttpApplication
     {
         public static void RegisterRoutes(RouteCollection routes)
@@ -39,6 +39,21 @@ namespace KeWeiOMS.Web
             AreaRegistration.RegisterAllAreas();
 
             RegisterRoutes(RouteTable.Routes);
+
+            // 在应用程序启动时运行的代码
+            System.Timers.Timer myTimer = new System.Timers.Timer();
+            myTimer.Elapsed += new System.Timers.ElapsedEventHandler(OnTimedEvent);
+            myTimer.Interval = 40000;
+            myTimer.Enabled = true;
+        }
+
+        private static void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e)
+        {
+            if (DateTime.Now.Hour == 20 && DateTime.Now.Minute == 3)
+            {
+                //更新汇率和库存
+                Utilities.updateCurreny();
+            }
         }
 
     }

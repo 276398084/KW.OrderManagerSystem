@@ -120,7 +120,7 @@ namespace KeWeiOMS.Web.Controllers
         }
         public JsonResult GetAccount()
         {
-            IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform='Ebay'").List<AccountType>();
+            IList<AccountType> list = NSession.CreateQuery("from AccountType where Platform in('Ebay','SMT')").List<AccountType>();
 
             return Json(list,JsonRequestBehavior.AllowGet);
         }

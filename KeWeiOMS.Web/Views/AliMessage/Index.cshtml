@@ -1,0 +1,239 @@
+﻿@model IEnumerable<KeWeiOMS.Domain.AliMessageType>
+@{
+    ViewBag.Title = "Index";
+}
+<body class="easyui-layout">
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List", "AliMessage")',
+                pageNumber: 1,
+                pageSize: 20,
+
+                pageList: [20, 40, 60, 80, 100],
+                onDblClickRow: function (index, row) {
+                    if (row.IsRead) {
+                        $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                            if (r) {
+                                window.open('@Url.Action("Edit", "AliMessage")/' + row.Id);
+                            }
+                        });
+                    } else {
+                        window.open('@Url.Action("Edit", "AliMessage")/' + row.Id);
+                    }
+                }
+
+
+            });
+            $('#tt1').tree({
+                onClick: function (node) {
+                    tmpNode = node;
+                    treeOnclick(node.id, node.text, node.target);
+                }
+            });
+            $('#aa').combobox({
+                url: '/Home/AccountList/SMT',
+                valueField: 'id',
+                textField: 'text',
+                width: 250
+            });
+            $('#aa').combobox("setValue", "ALL");
+            $("#txtEndDate").datebox("setValue", getStartDate(-1));
+            $("#txtStartDate").datebox("setValue", getStartDate(30));
+        });
+
+        function treeOnclick(id, text, target) {
+            search = "";
+            var root = $('#tt1').tree("getRoot").id;
+
+            if ($('#aa').combobox("getText") != "ALL") {
+                search += "Shop&" + $('#aa').combobox("getText") + "^";
+            }
+            search += "CreateOn_st&" + $('#txtStartDate').datebox("getValue") + "^CreateOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($('#messageType').combobox("getValue") != "ALL") {
+                search += "MessageType&" + $('#messageType').combobox("getValue") + "^";
+            }
+            if (text == "待处理信息") {
+
+                search += "IsReplay_ds&0^IsNew_ds&1^IsOurs_ds&0^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            } else if (text == "已处理信息") {
+                search += "IsReplay_ds&1^";
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            } else if (text == "所有信息") {
+
+                $("#dg").datagrid("load", {
+                    search: search
+                });
+            }
+            else if (text == "未分配信息") {
+                $("#dg").datagrid("load", {
+                    search: search,
+                    s: "un"
+                });
+            }
+        }
+
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        function doSearch() {
+            search = "";
+            if ($('#aa').combobox("getText") != "ALL") {
+                search += "Shop&" + $('#aa').combobox("getText") + "^";
+            }
+            search += "CreateOn_st&" + $('#txtStartDate').datebox("getValue") + "^CreateOn_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            if ($('#messageType').combobox("getValue") != "ALL") {
+                search += "MessageType&" + $('#messageType').combobox("getValue") + "^";
+            }
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function ShowAdvanced() {
+            showSrarch('@Url.Action("Search", "AliMessage")', 's_dlg', 'dg');
+        }
+
+    </script>
+    <div data-options="region:'west',split:true,title:'分类'" style="width: 150px; padding: 10px;">
+        <ul id="tt1" class="easyui-tree">
+            <li>
+                <span>所有信息</span>
+                <ul>
+                    <li>
+                        <span>待处理信息</span>
+
+                    </li>
+                    <li>
+                        <span>已处理信息</span>
+
+                    </li>
+                    <li>
+                        <span>所有信息</span>
+
+                    </li>
+                    <li>
+                        <span>未分配信息</span>
+
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+    <div region="center">
+
+        <table id="dg"
+            toolbar="#toolbar"
+            rownumbers="true" singleselect="true" pagination="true" fit="true">
+            <thead>
+                <tr>
+
+                    <th field="OrderId" width="100">OrderExNo
+                    </th>
+
+                    <th field="SenderName" width="100">SenderName
+                    </th>
+
+                    <th field="Content" width="200">Content
+                    </th>
+
+                    <th field="IsRead" width="100">IsRead
+                    </th>
+                    <th field="MessageType" width="100">MessageType
+                    </th>
+
+                    <th field="CreateOn" width="100" formatter="getDate">CreateOn
+                    </th>
+
+                    <th field="SynOn" width="100" formatter="getDate">SynOn
+                    </th>
+
+                    <th field="Shop" width="100">Shop
+                    </th>
+
+                    <th field="ReplayBy" width="100">ReplayBy
+                    </th>
+
+                    <th field="IsReplay" width="100">IsReplay
+                    </th>
+
+                    <th field="ReplayOn" width="100" formatter="getDate">ReplayOn
+                    </th>
+
+                    <th field="IsUpload" width="100">IsUpload
+                    </th>
+                    <th field="UploadOn" width="100" formatter="getDate">UploadOn
+                    </th>
+
+                </tr>
+            </thead>
+        </table>
+        <div id="toolbar">
+            账户<input id="aa" type="text">
+            MessageType
+            <select class="easyui-combobox" name="state" style="width: 100px;" id="messageType">
+                <option value="ALL">ALL</option>
+                <option value="order">order</option>
+                <option value="product">product</option>
+                <option value="member">member</option>
+                <option value="store">store</option>
+            </select>
+            开始时间：<input type="text" id="txtStartDate" class="easyui-datebox" style="width: 100px" readonly="readonly" />&nbsp;
+            结束时间：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width: 100px" />&nbsp;&nbsp;
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Id'">Id</div>
+            <div data-options="name:'MId'">MId</div>
+            <div data-options="name:'HaveFile'">HaveFile</div>
+            <div data-options="name:'OrderUrl'">OrderUrl</div>
+            <div data-options="name:'OrderId'">OrderId</div>
+            <div data-options="name:'ReceiverLoginId'">ReceiverLoginId</div>
+            <div data-options="name:'ReceiverName'">ReceiverName</div>
+            <div data-options="name:'FileUrl'">FileUrl</div>
+            <div data-options="name:'ProductId'">ProductId</div>
+            <div data-options="name:'Content'">Content</div>
+            <div data-options="name:'SenderName'">SenderName</div>
+            <div data-options="name:'SenderLoginId'">SenderLoginId</div>
+            <div data-options="name:'ProductUrl'">ProductUrl</div>
+            <div data-options="name:'ProductName'">ProductName</div>
+            <div data-options="name:'IsRead'">IsRead</div>
+            <div data-options="name:'TypeId'">TypeId</div>
+            <div data-options="name:'MessageType'">MessageType</div>
+            <div data-options="name:'RelationId'">RelationId</div>
+            <div data-options="name:'CreateOn'">CreateOn</div>
+            <div data-options="name:'SynOn'">SynOn</div>
+            <div data-options="name:'Shop'">Shop</div>
+            <div data-options="name:'ReplayBy'">ReplayBy</div>
+            <div data-options="name:'IsReplay'">IsReplay</div>
+            <div data-options="name:'ReplayContent'">ReplayContent</div>
+            <div data-options="name:'ReplayOn'">ReplayOn</div>
+            <div data-options="name:'IsUpload'">IsUpload</div>
+            <div data-options="name:'UploadOn'">UploadOn</div>
+
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+
+    </div>
+</body>

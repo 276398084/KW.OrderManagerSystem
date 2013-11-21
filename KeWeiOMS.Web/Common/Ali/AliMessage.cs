@@ -24,7 +24,7 @@ namespace KeWeiOMS.Web
         public object typeId { get; set; }
         public string productName { get; set; }
         public object orderId { get; set; }
-        public int relationId { get; set; }
+        public string relationId { get; set; }
     }
 
     public class AliMessageList

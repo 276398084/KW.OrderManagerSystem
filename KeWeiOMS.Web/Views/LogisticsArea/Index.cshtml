@@ -1,13 +1,12 @@
-﻿
-@model IEnumerable<KeWeiOMS.Domain.LogisticsAreaType>
+﻿@model IEnumerable<KeWeiOMS.Domain.LogisticsAreaType>
 @{
     ViewBag.Title = "Index";
 }
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("GetByLId","LogisticsArea")',
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("GetByLId", "LogisticsArea")',
             toolbar: '#toolbar',
             rownumbers: true,
             fitColumns: true,
@@ -27,18 +26,18 @@
     });
 
 
-	//新建
-        function c_dlg() {
-            var url_str = '@Url.Action("Create","LogisticsArea")';
+    //新建
+    function c_dlg() {
+        var url_str = '@Url.Action("Create", "LogisticsArea")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
         //编辑框
-    function e_dlg() {
-        var id = getselectedRow();
-            var url = '@Url.Action("Edit","LogisticsArea")/' + id;
-            if (id != undefined) {
-                var url = '@Url.Action("Edit", "LogisticsArea")/' + id;
+        function e_dlg() {
+            var id = getselectedRow();
+            var url = '@Url.Action("Edit", "LogisticsArea")/' + id;
+        if (id != undefined) {
+            var url = '@Url.Action("Edit", "LogisticsArea")/' + id;
                 showdlg(url, 'e_dlg', ajaxEdit)
             }
         }
@@ -48,40 +47,38 @@
             formPost('c_form', '@Url.Action("Create", "LogisticsArea")', 'c_dlg', 'dg');
         }
         //异步修改提交
-    function ajaxEdit() {
-        formPost('e_form', '@Url.Action("Edit", "LogisticsArea")', 'e_dlg', 'dg');
-        }
-        //删除
-        function del() {
-            var id = getselectedRow();
-            if (id != undefined) {
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "LogisticsArea")', 'e_dlg', 'dg');
+    }
+    //删除
+    function del() {
+        var id = getselectedRow();
+        if (id != undefined) {
 
-                var url = '@Url.Action("Delete", "LogisticsArea")/' + id;
-            
+            var url = '@Url.Action("Delete", "LogisticsArea")/' + id;
+
                 delData(url, 'dg');
 
             }
         }
 
-    function delArea(id)
-    {
-        var url = '@Url.Action("Delete", "LogisticsArea")/' + id;
+        function delArea(id) {
+            var url = '@Url.Action("Delete", "LogisticsArea")/' + id;
         delData(url, 'dg');
     }
-    function refrshCountry(id)
-    {
-        var url_str = '@Url.Action("SetCountry","LogisticsAreaCountry")/'+id;
+    function refrshCountry(id) {
+        var url_str = '@Url.Action("SetCountry", "LogisticsAreaCountry")/' + id;
         $('#setc_dlg').load(url_str, function () {
             $(this).dialog({
                 title: '设置国家',
-                iconCls:'icon-save',
+                iconCls: 'icon-save',
                 modal: true,
                 loadingMessage: '正在加载...',
             });
         }).dialog('open');
     }
     function GetFreightList(id) {
-        var url_str = '@Url.Action("SetFreight","LogisticsFreight")/' + id;
+        var url_str = '@Url.Action("SetFreight", "LogisticsFreight")/' + id;
         $('#setf_dlg').load(url_str, function () {
             $(this).dialog({
                 title: '设置运费',
@@ -109,11 +106,11 @@
         });
         return (undefined);
     }
-   
-</script>
-<div region="center">
-<table id="dg">  
-@*        <thead>  
+
+    </script>
+    <div region="center">
+        <table id="dg">
+            @*        <thead>  
         <tr>
             <th field="Id" width="100">
                 主键
@@ -130,17 +127,17 @@
 
     	</tr>
 		</thead>*@
-		</table>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-       @* <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
-        </div> 
-        
-    <div id="c_dlg"></div>
-     <div id="e_dlg"></div>
-    <div id="setc_dlg"></div>
-    <div id="setf_dlg"></div>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            @* <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a>  *@
+        </div>
 
-</div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
+        <div id="setc_dlg"></div>
+        <div id="setf_dlg"></div>
+
+    </div>
 </body>

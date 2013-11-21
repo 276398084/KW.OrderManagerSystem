@@ -610,7 +610,7 @@ namespace KeWeiOMS.Web
                     }
                     //查看是不是在订单系统里面存在
                     bool isExist = IsExist(ot.OrderID, NSession);
-        
+
 
                     if (!isExist)
                     {
@@ -1052,14 +1052,15 @@ namespace KeWeiOMS.Web
             {
                 order.IsAudit = 1;
                 SaveAmount(order, currencys, NSession);
-                if (order.IsStop == 0)
-                {
-                    SetQueOrder(order, NSession);
-                }
+
                 //硬编码了。
                 if (order.Account == "wunderschoen_dream" || ishai)
                 {
                     order.IsHai = 1;
+                }
+                if (order.IsStop == 0 && order.IsHai == 0)
+                {
+                    SetQueOrder(order, NSession);
                 }
             }
 
@@ -1427,17 +1428,34 @@ namespace KeWeiOMS.Web
                             {
                                 if (logisticsFreight.IsDiscountALL == 1)
                                 {
-                                    ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) + decimal.Parse(logisticsFreight.ProcessingFee.ToString()) + Math.Ceiling((Convert.ToDecimal(weight) - decimal.Parse(logisticsFreight.FristWeight.ToString())) / decimal.Parse(logisticsFreight.IncrementWeight.ToString())) * decimal.Parse(logisticsFreight.IncrementFreight.ToString())) * decimal.Parse(discount.ToString());
+                                    if (logisticsFreight.IncrementWeight == 0)
+                                    {
+                                        ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) +
+                                                      decimal.Parse(logisticsFreight.ProcessingFee.ToString())) * decimal.Parse(discount.ToString());
+                                    }
+                                    else
+                                    {
+                                        ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) + decimal.Parse(logisticsFreight.ProcessingFee.ToString()) + Math.Ceiling((Convert.ToDecimal(weight) - decimal.Parse(logisticsFreight.FristWeight.ToString())) / decimal.Parse(logisticsFreight.IncrementWeight.ToString())) * decimal.Parse(logisticsFreight.IncrementFreight.ToString())) * decimal.Parse(discount.ToString());
+                                    }
+
                                 }
                                 else
                                 {
-                                    ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) +
-                                                     (Convert.ToDecimal(weight) -
-                                                      decimal.Parse(logisticsFreight.FristWeight.ToString())) /
-                                                     decimal.Parse(logisticsFreight.IncrementWeight.ToString()) *
-                                                     decimal.Parse(logisticsFreight.IncrementFreight.ToString())) *
-                                                    decimal.Parse(discount.ToString()) +
-                                                    decimal.Parse(logisticsFreight.ProcessingFee.ToString());
+                                    if (logisticsFreight.IncrementWeight == 0)
+                                    {
+                                        ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) +
+                                                        decimal.Parse(logisticsFreight.ProcessingFee.ToString()));
+                                    }
+                                    else
+                                    {
+                                        ReturnFreight = (decimal.Parse(logisticsFreight.FristFreight.ToString()) +
+                                                         (Convert.ToDecimal(weight) -
+                                                          decimal.Parse(logisticsFreight.FristWeight.ToString())) /
+                                                         decimal.Parse(logisticsFreight.IncrementWeight.ToString()) *
+                                                         decimal.Parse(logisticsFreight.IncrementFreight.ToString())) *
+                                                        decimal.Parse(discount.ToString()) +
+                                                        decimal.Parse(logisticsFreight.ProcessingFee.ToString());
+                                    }
                                 }
 
                             }

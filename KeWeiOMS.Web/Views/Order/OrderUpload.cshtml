@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "OrderUpload";
+}
+<script type="text/javascript">
+
+    $(function () {
+        $('#et').datebox("setValue", getStartDate(-1));
+        $('#st').datebox("setValue", getStartDate(1));
+    });
+    function exportexcel() {
+        var search = "st=" + $('#st').datebox("getValue") + "&et=" + $('#et').datebox("getValue");
+        jQuery.ajax({
+            url: "/Order/UploadTrack/",
+            type: "post",
+            data: search,
+            success: function (res) {
+                alert("上传完成")
+            }
+        });
+    }
+</script>
+@using (Html.BeginForm("ScanExport", "Order", FormMethod.Post, new { id = "c_form", enctype = "multipart/form-data" }))
+{
+    <div>
+        开始：<input type="text" id="st" name="st" class="easyui-datebox" style="width: 150px" />
+        结束：<input type="text" id="et" name="et" class="easyui-datebox" style="width: 150px" />
+        <input type="button" value="上传挂号" onclick="exportexcel()" />
+    </div>
+}
+

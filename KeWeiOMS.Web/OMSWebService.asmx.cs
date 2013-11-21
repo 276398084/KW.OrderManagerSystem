@@ -71,7 +71,6 @@ namespace KeWeiOMS.Web
                 p.OId = order.Id;
                 p.OrderNo = order.OrderNo;
                 OrderHelper.CreateOrderPruduct(p, NSession);
-
             }
             return true;
         }
@@ -95,7 +94,7 @@ namespace KeWeiOMS.Web
             return productTypes;
         }
 
-    
+
 
         [WebMethod]
         public List<KeyValue> GetStockBySKU(string[] skus)
@@ -112,14 +111,14 @@ namespace KeWeiOMS.Web
                 ids += "" + item + ",";
             }
             ids = ids.Trim(',');
-         
+
             IList<object[]> objectes =
                  NSession.CreateQuery("select SKU,COUNT(Id) from SKUCodeType where SKU in('" + ids.Replace(",", "','") + "') and IsOut=0 group by SKU ").List<object[]>();
 
             foreach (object[] objs in objectes)
             {
                 dic.Add(new KeyValue { Key = objs[0].ToString(), Value = objs[1].ToString() });
-              
+
             }
 
             return dic;
@@ -371,6 +370,80 @@ namespace KeWeiOMS.Web
             return NSession.CreateQuery("from OrderType where Platform='" + platform + "' and IsUpload=0 and Status='已发货'").List<OrderType>().ToList();
 
         }
+
+
+        [WebMethod]
+        public bool HasExistByAliMessageId(int MessageId)
+        {
+            object obj = NSession.CreateQuery("select count(Id) from AliMessageType where MId=" + MessageId).UniqueResult();
+            if (Convert.ToInt32(obj) > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        [WebMethod]
+        public List<AliMessageType> GetAliUnUplod()
+        {
+            List<AliMessageType> account = NSession.CreateQuery("from AliMessageType where IsUpload =0 and IsReplay=1 and IsOurs=0").List<AliMessageType>().ToList();
+            return account;
+        }
+
+
+
+        [WebMethod]
+        public string CreateByAliMessage(AliMessageType obj)
+        {
+            try
+            {
+                if (HasExistByAliMessageId(obj.MId))
+                {
+                    return "该条邮件已同步！";
+                }
+                else
+                {
+                    object cc = NSession.CreateSQLQuery("update AliMessage set IsNew=0 where TypeId='" + obj.TypeId + "' and SenderLoginId='" + obj.SenderLoginId + "'").UniqueResult();
+                    NSession.Save(obj);
+                    NSession.Flush();
+                    return "同步一条邮件！";
+                }
+            }
+            catch (Exception ex)
+            {
+                return "保存失败" + ex.Message;
+            }
+        }
+
+        [WebMethod]
+        public string SetUploadByAliMessage(int Id)
+        {
+            try
+            {
+                object cc = NSession.CreateSQLQuery("update AliMessage set IsUpload=1 where Id=" + Id).UniqueResult();
+                return cc.ToString();
+            }
+            catch (Exception ex)
+            {
+                return "保存失败" + ex.Message;
+            }
+        }
+
+        [WebMethod]
+        public string SaveByAccount(AccountType account)
+        {
+            try
+            {
+                NSession.Update(account);
+                NSession.Flush();
+                return "保存成功！";
+            }
+            catch (Exception ex)
+            {
+                return "保存失败" + ex.Message;
+            }
+        }
+
 
     }
 }

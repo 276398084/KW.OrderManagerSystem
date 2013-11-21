@@ -27,6 +27,12 @@ namespace KeWeiOMS.Web.Controllers
             return View();
         }
 
+
+        public ViewResult OrderUpload()
+        {
+            return View();
+        }
+
         public ActionResult Details(int id)
         {
             OrderType obj = GetById(id);
@@ -1029,7 +1035,7 @@ namespace KeWeiOMS.Web.Controllers
         public ActionResult ExportOrder2(string ids, string s, int t)
         {
             string sql =
-                @" select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderCurrencyCode,OrderFees,OrderCurrencyCode2,OrderFees2,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.Freight,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,O.PayEmail,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发',O.BuyerName   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
+                @"select '' as '记录号',  O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderCurrencyCode,OrderFees,OrderCurrencyCode2,OrderFees2,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,p.Price,OP.Standard,0.00 as 'TotalPrice',O.Freight,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,O.PayEmail,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发',O.BuyerName   from Orders O left join OrderProducts OP ON O.Id =OP.OId 
 left join Products P On OP.SKU=P.SKU ";
             string sql2 = "";
             if (t == 1)
@@ -1046,9 +1052,10 @@ left join OrderAddress OA on O.AddressId=OA.Id";
 isnull(oa.Street,'')+','+isnull(oa.City,'')+','+isnull(OA.Province,'')+','+isnull(OA.Country,'')+','+isnull(OA.PostCode,'') as '收件人详细地址',OA.Addressee as '收件人姓名',isnull(oa.Phone,'')+'('+isnull(oa.Tel,'')+')' as '收件人电话','KeXin Road 28, Ningbo, ZheJiang,China' as '寄件人详细地址（英文）','胡启雄' as '寄件人姓名','87910330' as '寄件人电话','1' as '内件类型代码' from Orders O
 left join OrderAddress OA on O.AddressId=OA.Id
 left join Country C On O.Country=C.ECountry";
-                sql2 = @"select TrackCode as '跟踪号','物品' as '物品中文名称',OP.Title as '物品英文名称(不能超过50个字符）',OP.Qty as '数量',o.weight as '单件重量',10 as '单价','China' as '原产地' from Orders O
+                sql2 = @"select TrackCode as '跟踪号',P.ProductName as '物品中文名称',OP.Title as '物品英文名称(不能超过50个字符）',OP.Qty as '数量',o.weight as '单件重量',10 as '单价','China' as '原产地' from Orders O
 left join OrderProducts OP on O.Id=OP.OId
-left join OrderAddress OA on O.AddressId=OA.Id";
+left join OrderAddress OA on O.AddressId=OA.Id 
+left join Products P on OP.SKU=P.SKU";
                 //运单码	寄达国家（中文）	寄达国家（英文）	州名	城市名	收件人详细地址	收件人姓名	收件人电话	寄件人详细地址（英文）	寄件人姓名	寄件人电话	内件类型代码
                 //
                 //
@@ -1075,25 +1082,99 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                 dt.TableName = "Sheet2";
                 ds.Tables.Add(dt);
                 ds.Tables[0].TableName = "Sheet1";
+                //-----
 
+                Random rd = new Random();
+                string[] addressList = System.IO.File.ReadAllLines(this.Server.MapPath("\\Views\\Order\\address.txt"));
+                foreach (DataRow item in ds.Tables[0].Rows)
+                {
+                    //如果发现非英文地址，就随机找一英文代替
+                    string 收件人姓名 = item["收件人姓名"] + "";
+                    string 收件人详细地址 = item["收件人详细地址"] + "";
+                    if (!是否英文(收件人姓名) || !是否英文(收件人详细地址))
+                    {
+                    a001:
+                        string l = addressList[rd.Next(0, addressList.Length)];
+                        string[] tt = l.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                        if (tt.Length != 2) { goto a001; }
+                        item["收件人姓名"] = tt[0];
+                        item["收件人详细地址"] = tt[1];
+                    }
+                    //收件人电话不能为空字符
+                    string 收件人电话 = item["收件人电话"] + "";
+                    收件人电话 = System.Text.RegularExpressions.Regex.Replace(收件人电话, @"\D", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                    if (string.IsNullOrEmpty(收件人电话))
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            收件人电话 += rd.Next(0, 9);
+                        }
+                        item["收件人电话"] = 收件人电话;
+                    }
+                    //item["收件人电话"] = 收件人电话;
+                    //胡启雄用拼音代替
+                    item["寄件人姓名"] = "HuQiXun";
+
+                    string 城市名 = item["城市名"] + "";
+                    if (string.IsNullOrEmpty(城市名))
+                    {
+                        item["城市名"] = item["州名"];
+                    }
+                    //如果 州名 为空，就用寄达国家（英文）代替
+                    string 州名 = item["州名"] + "";
+                    if (州名 + "" == "")
+                    {
+                        item["州名"] = item["寄达国家（英文）"];
+                        州名 = item["州名"] + "";
+                    }
+                    if (州名.ToLower().Trim() == "russian federation" || 州名.ToLower() == "russia" || 州名.ToLower() == "rassia")
+                    {
+                        item["州名"] = "Moscow";
+                    }
+                }
+                addressList = null;
+                foreach (DataRow item in ds.Tables[1].Rows)
+                {
+                    string 物品英文名称 = item["物品英文名称(不能超过50个字符）"] + "";
+                    if (string.IsNullOrEmpty(物品英文名称))
+                    {
+                        物品英文名称 = "New USB CABLE FOR KODAK EASYSHARE Camera U8 #";
+                    }
+                    if (物品英文名称.Length >= 50)
+                    {
+                        物品英文名称 = 物品英文名称.Remove(0, 50);
+                    }
+                    item["物品英文名称(不能超过50个字符）"] = 物品英文名称;
+                }
             }
+
 
             // 设置编码和附件格式 
             Session["ExportDown"] = ExcelHelper.GetExcelXml(ds);
             return Json(new { IsSuccess = true });
         }
-
+        private bool 是否英文(string ch)
+        {
+            foreach (char item in ch)
+            {
+                byte[] byte_len = System.Text.Encoding.UTF8.GetBytes(item + "");
+                if (byte_len.Length > 1) { return false; }
+            }
+            return true;
+        }
         [HttpPost]
-        public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p, string dd)
+        public ActionResult ExportOrder(string o, string st, string et, string s, string a, string p, string dd, string que)
         {
             var sb = new StringBuilder();
             string sql =
-                @"select '' as '记录号',O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderCurrencyCode,OrderFees,OrderCurrencyCode2,OrderFees2,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,0.00 as 'Price',OP.Standard,0.00 as 'TotalPrice',O.Freight,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发' ,O.BuyerName from Orders O left join OrderProducts OP ON O.Id =OP.OId ";
+                @"select '' as '记录号',O.OrderNo,OrderExNo,CurrencyCode,Amount,OrderCurrencyCode,OrderFees,OrderCurrencyCode2,OrderFees2,TId,BuyerName,BuyerEmail,LogisticMode,Country,O.Weight,TrackCode,OP.SKU,OP.Qty,0.00 as 'Price',OP.Standard,0.00 as 'TotalPrice',O.Freight,O.CreateOn,O.ScanningOn,O.ScanningBy,O.Account,cast(O.IsSplit as nvarchar) as '拆分',cast(O.IsRepeat as nvarchar) as '重发' ,O.BuyerName,(select top 1 AreaName from [LogisticsArea] where LId = 
+(select top 1 ParentID from LogisticsMode where LogisticsCode=O.LogisticMode)  
+and Id =(select top 1 AreaCode from LogisticsAreaCountry where [LogisticsArea].Id=AreaCode 
+ and CountryCode in (select ID from Country where ECountry=O.Country))) as 'AreaName' from Orders O left join OrderProducts OP ON O.Id =OP.OId ";
             if (string.IsNullOrEmpty(o))
             {
                 if (!string.IsNullOrEmpty(s))
                 {
-
                     sql += " where O.IsError =0 and  O.Enabled=1 and O.Status='" + s + "'  and  O." + dd + " between '" + st + "' and '" + et + "'";
                     if (!string.IsNullOrEmpty(a))
                     {
@@ -1103,6 +1184,10 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                     {
                         sql += "and O.Platform='" + p + "'";
                     }
+                    if (!string.IsNullOrEmpty(que))
+                    {
+                        sql += "and O.IsOutOfStock='" + que + "'";
+                    }
                 }
                 else
                 {
@@ -1111,6 +1196,10 @@ left join OrderAddress OA on O.AddressId=OA.Id";
                     if (!string.IsNullOrEmpty(a))
                     {
                         sql += "and O.Account='" + a + "'";
+                    }
+                    if (!string.IsNullOrEmpty(que))
+                    {
+                        sql += "and O.IsOutOfStock='" + que + "'";
                     }
                 }
             }
@@ -1254,6 +1343,10 @@ where O.Id in(" + ids + ")";
         {
             OrderType order = NSession.Get<OrderType>(o);
             order.Status = OrderStatusEnum.已发货.ToString();
+            object obj = NSession.CreateSQLQuery(
+               "select SUM(OP.Qty*p.Weight) from OrderProducts OP left join Products  P On OP.SKU=p.SKU where OId=" + order.Id).
+               UniqueResult();
+            order.Weight = Convert.ToInt32(obj);
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             LoggerUtil.GetOrderRecord(order, "订单手动发货！", "将订单设置为已发货！", NSession);
@@ -1276,6 +1369,8 @@ where O.Id in(" + ids + ")";
         {
             OrderType order = NSession.Get<OrderType>(o);
             order.IsHai = 1;
+            order.IsOutOfStock = 0;
+            NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + order.Id).ExecuteUpdate();
             NSession.SaveOrUpdate(order);
             NSession.Flush();
             LoggerUtil.GetOrderRecord(order, "海外仓订单！", "将订单设置为海外仓订单！", NSession);
@@ -1289,7 +1384,9 @@ where O.Id in(" + ids + ")";
             order.IsHai = 0;
             NSession.SaveOrUpdate(order);
             NSession.Flush();
+            OrderHelper.SetQueOrder(order, NSession);
             LoggerUtil.GetOrderRecord(order, "本地订单！", "将订单设置为本地订单！", NSession);
+
             return Json(new { IsSuccess = true });
         }
 
@@ -1332,13 +1429,13 @@ where O.Id in(" + ids + ")";
             return Json(new { Result = "成功！" });
         }
 
-        /// <summary>
-        /// 修改订单属性
-        /// </summary>
-        /// <param name="o">订单集合</param>
-        /// <param name="t">类型 0：撤销停售，1：撤销缺货，2：订单重置，3：作废订单</param>
-        /// <param name="c"></param>
-        /// <returns></returns>
+        ///<summary>
+        ///修改订单属性
+        ///</summary>
+        ///<param name="o">订单集合</param>
+        ///<param name="t">类型 0：撤销停售，1：撤销缺货，2：订单重置，3：作废订单</param>
+        ///<param name="c"></param>
+        ///<returns></returns>
         [HttpPost]
         public ActionResult EditOrderProperty(string o, int t, string c)
         {
@@ -1479,13 +1576,14 @@ where O.Id in(" + ids + ")";
                                 if (product.Count > 0)
                                 {
 
-                                    if (product[0].MinWeight != 0 && product[0].MaxWeight != 0)
+                                    if (product[0].MaxWeight != 0)
                                     {
-                                        if (product[0].MinWeight > Convert.ToDouble(w) ||
+                                        if (
                                             product[0].MaxWeight < Convert.ToDouble(w))
                                         {
                                             html =
-                                                string.Format("<span style='color:red'>产品:{0} 重量在{1}--{2} 之间，现在重量为{3},请检查包裹</span><br/>", product[0].SKU, product[0].MinWeight, product[0].MaxWeight, w) + html;
+                                                string.Format("<span style='color:red'>产品:{0} 重量在{1}--{2} 之间，现在重量为{3},请检查包裹（最小重量暂时不使用）</span><br/>", product[0].SKU, product[0].MinWeight, product[0].MaxWeight, w) + html;
+                                            return Json(new { IsSuccess = false, Result = html });
                                         }
 
                                     }
@@ -1678,123 +1776,25 @@ where O.Id in(" + ids + ")";
             //    }
             //}
 
-            IList<AccountType> objList = NSession.CreateQuery("from AccountType where Platform='SMT'").List<AccountType>();
-            foreach (AccountType acc in objList)
+
+
+
+
+
+            IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and ScanningOn>'2013-11-10'")
+             .List<OrderType>();
+            foreach (OrderType orderType in objList)
             {
-                acc.ApiSecret = AliUtil.RefreshToken(acc);
-                AliMessageList messages = null;
-                int page = 1;
-                do
+
+                try
                 {
-                    messages = AliUtil.queryOrderMsgList(acc.ApiSecret, page);
-
-                    if (messages.success)
-                    {
-                        foreach (AliMessage t in messages.msgList)
-                        {
-                            AliMessageType m = new AliMessageType();
-                            m.Content = t.content;
-                            m.MId = t.id;
-                            m.ReceiverName = t.receiverName;
-                            m.ReceiverLoginId = t.receiverLoginId;
-                            m.CreateOn = OrderHelper.GetAliDate(t.gmtCreate);
-                            m.FileUrl = t.fileUrl;
-                            m.HaveFile = t.haveFile;
-                            m.IsRead = t.read;
-                            m.IsReplay = false;
-                            m.IsUpload = false;
-                            m.MessageType = t.messageType;
-                            m.OrderId = t.orderId.ToString();
-                            m.OrderUrl = t.orderUrl;
-                            m.ProductId = t.productId;
-                            m.ProductName = t.productName;
-                            m.ProductUrl = t.productUrl;
-                            m.RelationId = t.relationId;
-                            m.SenderLoginId = t.senderLoginId;
-                            m.SenderName = t.senderName;
-                            m.TypeId = t.typeId.ToString();
-                            m.Shop = acc.AccountName;
-                            m.SynOn = DateTime.Now;
-                            m.UploadOn = DateTime.Now;
-                            m.ReplayOn = DateTime.Now;
-                            object count = NSession.CreateQuery("select count(Id) from AliMessageType where MId='" + m.MId + "' ").UniqueResult();
-                            if (Convert.ToInt32(count) == 0)
-                            {
-                                NSession.Save(m);
-                                NSession.Flush();
-                            }
-                        }
-                    }
-                    page++;
-                } while (messages.total > page * 50);
-                page = 1;
-                do
+                    UploadTrackCode(orderType);
+                }
+                catch (Exception)
                 {
-                    messages = AliUtil.QueryMessageList(acc.ApiSecret, page);
-
-                    if (messages.success)
-                    {
-                        foreach (AliMessage t in messages.msgList)
-                        {
-                            AliMessageType m = new AliMessageType();
-                            m.Content = t.content;
-                            m.MId = t.id;
-                            m.ReceiverName = t.receiverName;
-                            m.ReceiverLoginId = t.receiverLoginId;
-                            m.CreateOn = OrderHelper.GetAliDate(t.gmtCreate);
-                            m.FileUrl = t.fileUrl;
-                            m.HaveFile = t.haveFile;
-                            m.IsRead = t.read;
-                            m.IsReplay = false;
-                            m.IsUpload = false;
-                            m.MessageType = t.messageType;
-                            m.OrderId = t.orderId.ToString();
-                            m.OrderUrl = t.orderUrl;
-                            m.ProductId = t.productId;
-                            m.ProductName = t.productName;
-                            m.ProductUrl = t.productUrl;
-                            m.RelationId = t.relationId;
-                            m.SenderLoginId = t.senderLoginId;
-                            m.SenderName = t.senderName;
-                            m.TypeId = t.typeId.ToString();
-                            m.Shop = acc.AccountName;
-                            m.SynOn = DateTime.Now;
-                            m.UploadOn = DateTime.Now;
-                            m.ReplayOn = DateTime.Now;
-                            object count = NSession.CreateQuery("select count(Id) from AliMessageType where MId='" + m.MId + "' ").UniqueResult();
-                            if (Convert.ToInt32(count) == 0)
-                            {
-                                NSession.Save(m);
-                                NSession.Flush();
-                            }
-                        }
-
-                    }
-                    page++;
-                } while (messages.total > page * 50);
-
-                NSession.Save(acc);
-                NSession.Flush();
+                    continue;
+                }
             }
-
-
-
-
-
-            //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and CreateOn>'2013-10-31'")
-            // .List<OrderType>();
-            //foreach (OrderType orderType in objList)
-            //{
-
-            //    try
-            //    {
-            //        UploadTrackCode(orderType);
-            //    }
-            //    catch (Exception)
-            //    {
-            //        continue;
-            //    }
-            //}
             //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
             //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
             //NSession.SaveOrUpdate(orderType);
@@ -1839,6 +1839,27 @@ where O.Id in(" + ids + ")";
             //    new System.Threading.Thread(TrackCodeUpLoad) { IsBackground = true }.Start(orderType);
             //}
             //return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public ActionResult UploadTrack(DateTime st, DateTime et)
+        {
+            IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and CreateOn>'" + st.ToString("yyyy-MM-dd") + "' and CreateOn < '" + et.ToString("yyyy-MM-dd") + "'")
+            .List<OrderType>();
+            foreach (OrderType orderType in objList)
+            {
+
+                try
+                {
+                    UploadTrackCode(orderType);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+            return Json(new { IsSuccess = true });
         }
 
         private void TrackCodeUpLoad(object oo)

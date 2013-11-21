@@ -31,6 +31,8 @@ namespace KeWeiOMS.Domain
             Table("AliMessage");
             Id(x => x.Id);
             Map(x => x.MId);
+            Map(x => x.IsNew);
+            Map(x => x.IsOurs);
             Map(x => x.HaveFile);
             Map(x => x.OrderUrl).Length(400);
             Map(x => x.OrderId).Length(100);

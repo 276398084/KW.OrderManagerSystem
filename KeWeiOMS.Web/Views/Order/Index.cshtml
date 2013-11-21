@@ -564,6 +564,14 @@
             } else {
                 //alert("请选择平台！"); stopLoad(); return;
             }
+            var g = $('#IsQue').combobox("getValue");
+            if (g != "ALL" && g != "") {
+                if (g == "1") {
+                    search += "&que=1";
+                } else {
+                    search += "&que=0";
+                }
+            }
             if (search.length == 0) {
                 alert("不选订单，也选个时间啊！");
                 stopLoad(); return;
@@ -580,7 +588,6 @@
                     alert(res.Message);
                 }
                 location.href = postUrl;
-
             }
         });
     }

@@ -164,7 +164,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountEmailController.cs" />
     <Compile Include="Controllers\AccountFeeController.cs" />
-    <Compile Include="Controllers\AliMessageTypeController.cs" />
+    <Compile Include="Controllers\AliMessageController.cs" />
     <Compile Include="Controllers\AttendController.cs" />
     <Compile Include="Controllers\BeforePeiScanController.cs" />
     <Compile Include="Controllers\CountryController.cs" />
@@ -1198,6 +1198,7 @@
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
+    <Content Include="Views\Order\address.txt" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1234,12 +1235,11 @@
     <Content Include="Views\Order\SetOrderError.cshtml" />
     <Content Include="Views\Order\副本 HaiIndex.cshtml" />
     <Content Include="Views\Order\SendScan2.cshtml" />
-    <Content Include="Views\AliMessageType\Create.cshtml" />
-    <Content Include="Views\AliMessageType\Delete.cshtml" />
-    <Content Include="Views\AliMessageType\Details.cshtml" />
-    <Content Include="Views\AliMessageType\Edit.cshtml" />
-    <Content Include="Views\AliMessageType\Index.cshtml" />
+    <Content Include="Views\AliMessage\Edit.cshtml" />
+    <Content Include="Views\AliMessage\Index.cshtml" />
+    <Content Include="XMLFile1.xml" />
     <None Include="Views\Order\PackMove.cshtml" />
+    <Content Include="Views\Order\OrderUpload.cshtml" />
     <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

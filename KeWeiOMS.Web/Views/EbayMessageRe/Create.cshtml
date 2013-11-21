@@ -290,7 +290,7 @@
         $.ajax({
             type: 'post',
             url: "@Url.Action("EditProcessed", "EbayMessageRe")/",
-            data: "Id=@ViewData["mid"]",
+            data: "m=@ViewData["mid"]",
             success: function (result) {
                 alert("标记成功!");
                 window.close();

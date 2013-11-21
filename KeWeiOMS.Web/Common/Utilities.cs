@@ -828,6 +828,53 @@ namespace KeWeiOMS.Web
             }
             return where;
         }
+
+        public static void updateCurreny()
+        {
+            ISession session = NhbHelper.OpenSession();
+            cn.com.webxml.webservice.ForexRmbRateWebService server = new cn.com.webxml.webservice.ForexRmbRateWebService();
+            DataSet ds = server.getForexRmbRate();
+
+
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                CurrencyType c = new CurrencyType();
+                c.CurrencyCode = dr["Symbol"].ToString();
+                c.CurrencyName = dr["Name"].ToString();
+                session.Delete(" from CurrencyType where CurrencyCode='" + c.CurrencyCode + "'");
+                session.Flush();
+                c.CurrencySign = "";
+                string str = dr["fBuyPrice"].ToString();
+                if (string.IsNullOrEmpty(str))
+                {
+                    str = "0";
+                }
+                c.CurrencyValue = Math.Round(Convert.ToDecimal(str) / 100, 5);
+                c.CreateOn = DateTime.Now; ;
+                session.Save(c);
+                session.Flush();
+            }
+            string sql = @"update Products set SevenDay =(select SUM(op.Qty) from Orders O
+left join OrderProducts OP on O.Id= OP.OId
+where O.CreateOn between dateadd(day,-7,GETDATE()) and GETDATE()
+and  op.sku=Products.SKU group by op.SKU)
+ 
+ --15天
+update Products set Fifteen =(select SUM(op.Qty) from Orders O
+left join OrderProducts OP on O.Id= OP.OId
+where O.CreateOn between dateadd(day,-15,GETDATE()) and GETDATE()
+and  op.sku=Products.SKU group by op.SKU)
+select dateadd(day,-15,GETDATE())
+
+--30天。
+ update Products set ThirtyDay =(select SUM(op.Qty) from Orders O
+left join OrderProducts OP on O.Id= OP.OId
+where O.CreateOn between dateadd(MONTH,-1,GETDATE()) and GETDATE()
+and  op.sku=Products.SKU group by op.SKU)";
+
+            session.CreateSQLQuery(sql).UniqueResult();
+            session.Close();
+        }
     }
 
 

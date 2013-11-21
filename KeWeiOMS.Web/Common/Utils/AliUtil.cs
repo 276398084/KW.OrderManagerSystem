@@ -40,7 +40,7 @@ namespace KeWeiOMS.Web
             dic.Add("redirect_uri", "http://127.0.0.1/");
             dic.Add("state", "sss");
             dic.Add("_aop_signature", SMTConfig.Sign("", dic, false));
-           // System.Diagnostics.Process.Start(url + SMTConfig.GetParamUrl(dic));
+            // System.Diagnostics.Process.Start(url + SMTConfig.GetParamUrl(dic));
 
             return url + SMTConfig.GetParamUrl(dic);
         }
@@ -89,13 +89,13 @@ namespace KeWeiOMS.Web
             return Newtonsoft.Json.JsonConvert.DeserializeObject<OrderMsgType[]>(c);
         }
 
-        public static string sellerShipment(string token, string orderExNo, string trackCode, string serviceName,bool isALL=false)
+        public static string sellerShipment(string token, string orderExNo, string trackCode, string serviceName, bool isALL = false)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
             dic.Add(SMTConfig.fieldAccessToken, token);
             dic.Add("serviceName", serviceName);
             dic.Add("logisticsNo", trackCode);
-            if(isALL)
+            if (isALL)
                 dic.Add("sendType", "all");
             else
                 dic.Add("sendType", "part");
@@ -107,7 +107,10 @@ namespace KeWeiOMS.Web
         public static AliMessageList QueryMessageList(string token, int pageIndex)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
-
+            dic.Add("startTime", DateTime.Now.AddDays(-11).ToString("MM/dd/yyyy HH:mm:ss"));
+            dic.Add("endTime", DateTime.Now.AddDays(1).ToString("MM/dd/yyyy HH:mm:ss"));
+            //dic.Add("startTime", "11/01/2013 00:00:00");
+            //dic.Add("endTime", "11/14/2013 00:00:00");
             dic.Add("pageSize", "50");
             dic.Add("currentPage", pageIndex.ToString());
             dic.Add(SMTConfig.fieldAccessToken, token);
@@ -119,14 +122,39 @@ namespace KeWeiOMS.Web
         public static AliMessageList queryOrderMsgList(string token, int pageIndex)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
-
+            dic.Add("startTime", DateTime.Now.AddDays(-11).ToString("MM/dd/yyyy HH:mm:ss"));
+            dic.Add("endTime", DateTime.Now.AddDays(1).ToString("MM/dd/yyyy HH:mm:ss"));
+            //dic.Add("startTime", "11/01/2013 00:00:00");
+            //dic.Add("endTime", "11/14/2013 00:00:00");
             dic.Add("pageSize", "50");
             dic.Add("currentPage", pageIndex.ToString());
-           
+
             dic.Add(SMTConfig.fieldAccessToken, token);
             dic.Add("_aop_signature", SMTConfig.Sign(SMTConfig.Url + SMTConfig.ApiqueryOrderMsgList, dic));
             string c = PostWebRequest(SMTConfig.IP2 + SMTConfig.Url + SMTConfig.ApiqueryOrderMsgList + "/" + Config.AliAppKey, SMTConfig.GetParamUrl(dic));
             return Newtonsoft.Json.JsonConvert.DeserializeObject<AliMessageList>(c);
+        }
+
+        public static string AddMessage(string token, string buyerId, string content)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("buyerId", buyerId);
+            dic.Add("content", content);
+            dic.Add(SMTConfig.fieldAccessToken, token);
+            dic.Add("_aop_signature", SMTConfig.Sign(SMTConfig.Url + SMTConfig.ApiaddMessage, dic));
+            string c = PostWebRequest(SMTConfig.IP2 + SMTConfig.Url + SMTConfig.ApiaddMessage + "/" + Config.AliAppKey, SMTConfig.GetParamUrl(dic));
+            return c;
+        }
+
+        public static string AddOrderMessage(string token, string orderId, string content)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>();
+            dic.Add("orderId", orderId);
+            dic.Add("content", content);
+            dic.Add(SMTConfig.fieldAccessToken, token);
+            dic.Add("_aop_signature", SMTConfig.Sign(SMTConfig.Url + SMTConfig.ApiaddOrderMessage, dic));
+            string c = PostWebRequest(SMTConfig.IP2 + SMTConfig.Url + SMTConfig.ApiaddOrderMessage + "/" + Config.AliAppKey, SMTConfig.GetParamUrl(dic));
+            return c;
         }
 
 
@@ -136,7 +164,7 @@ namespace KeWeiOMS.Web
         }
         public static string PostWebRequest(string postUrl, string paramData, bool isFile = false, byte[] stream = null)
         {
-            string ret = string.Empty;
+            string ret = "";
             try
             {
                 byte[] byteArray = Encoding.UTF8.GetBytes(paramData); //转化
