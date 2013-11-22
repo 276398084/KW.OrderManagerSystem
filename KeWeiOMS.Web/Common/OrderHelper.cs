@@ -1054,7 +1054,7 @@ namespace KeWeiOMS.Web
                 SaveAmount(order, currencys, NSession);
 
                 //硬编码了。
-                if (order.Account == "wunderschoen_dream" || ishai)
+                if (order.Account == "wunderschoen_dream" || order.Account == "yybabyshop" || order.Account == "online24order" || ishai)
                 {
                     order.IsHai = 1;
                 }

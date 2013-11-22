@@ -2,9 +2,9 @@
     ViewBag.Title = "BeforePeiScan";
 }
 <script type="text/javascript">
-    
+
     if (document.all) {
-       
+
         document.write(' <OBJECT id="Player1"');
         document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
         document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
@@ -50,6 +50,14 @@
                         <tr>
                             <td colspan="2">
                                 <span id="spanInfo"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="25" width="22%">
+                                <h2>
+                                    <b>选项</b></h2>
+                            </td>
+                            <td width="78%">覆盖<input type="checkbox" id="ckF" />
                             </td>
                         </tr>
                         <tr>
@@ -106,12 +114,17 @@
         }
         return true;
     }
-
+    iscon = 0;
     function getOrder(str) {
+        if ($("#ckF").attr("checked")) {
+            iscon = 1;
+        } else {
+            iscon = 0;
+        }
         jQuery.ajax({
             url: "/Order/GetOrderByBeforePei/",
             type: "post",
-            data: "orderNo=" + str,
+            data: "orderNo=" + str + "&f=" + iscon,
             success: function (msg) {
                 if (msg.IsSuccess) {
                     progress = 1;
@@ -129,12 +142,17 @@
     }
 
     function OutStock(str) {
+        if ($("#ckF").attr("checked")) {
+            iscon = 1;
+        } else {
+            iscon = 0;
+        }
         var p1 = $("#cc").combobox("getValue");
         if (oldstr == str) {
             jQuery.ajax({
                 url: "/Order/OutStockByBeforePei/",
                 type: "post",
-                data: "o=" + str + "&p1=" + p1,
+                data: "o=" + str + "&p1=" + p1 + "&f=" + iscon,
                 success: function (msg) {
                     if (msg.IsSuccess) {
                         progress = 0;

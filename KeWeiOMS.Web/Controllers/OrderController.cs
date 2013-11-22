@@ -2123,14 +2123,14 @@ where O.Id in(" + ids + ")";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
-        public JsonResult GetOrderByBeforePei(string orderNo)
+        public JsonResult GetOrderByBeforePei(string orderNo, int f)
         {
             List<OrderType> orders =
                 NSession.CreateQuery("from OrderType where OrderNo='" + orderNo + "'").List<OrderType>().ToList();
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.已处理.ToString())
+                if (order.Status == OrderStatusEnum.已处理.ToString() || (order.Status == OrderStatusEnum.待拣货.ToString() && f == 1))
                 {
                     if (order.IsError == 1 || !string.IsNullOrEmpty(order.CutOffMemo))
                     {
@@ -2145,7 +2145,7 @@ where O.Id in(" + ids + ")";
 
                     string html = @"  <table width='100%' class='dataTable'>
                                                         <tr class='dataTableHead'>
-                                                            <th width='300px' >图片</th><td width='200px'>SKU*数量</td><td>规格</td>
+                                                            <th width='300px' >图片</th><td widt  h='200px'>SKU*数量</td><td>规格</td>
                                                         </tr>";
                     string html2 =
                         @"<tr style='font-weight:bold; font-size:30px;' name='tr_{0}' code='{3}' qty='{1}' cqty='{4}'><td><img width='220px' src='/imgs/pic/{0}/1.jpg' /></td><td>{0}*{1}</td><td>{2}</td><td><span></td></tr>";
@@ -2216,7 +2216,6 @@ where O.Id in(" + ids + ")";
                     string html = "订单：" + order.OrderNo + " 配货完成！";
                     if (iscon)
                     {
-
                         LoggerUtil.GetOrderRecord(order, "订单配货扫描！", "将订单配货扫描，订单的缺货状态删除！", CurrentUser, NSession);
                         IList<OrderOutRecordType> list =
                             NSession.CreateQuery("from OrderOutRecordType where OId='" + order.Id + "'").List
@@ -2243,17 +2242,18 @@ where O.Id in(" + ids + ")";
             return Json(new { IsSuccess = false, Result = "找不到该订单" });
         }
 
-        public JsonResult OutStockByBeforePei(string p1, string o)
+        public JsonResult OutStockByBeforePei(string p1, string o, int f)
         {
             List<OrderType> orders =
                 NSession.CreateQuery("from OrderType where OrderNo='" + o + "'").List<OrderType>().ToList();
             if (orders.Count > 0)
             {
                 OrderType order = orders[0];
-                if (order.Status == OrderStatusEnum.待拣货.ToString() || (order.Status == OrderStatusEnum.已处理.ToString()))
+                if ((order.Status == OrderStatusEnum.待拣货.ToString() && f == 1) || (order.Status == OrderStatusEnum.已处理.ToString()))
                 {
                     order.Status = "待拣货";
                     NSession.Update(order);
+                    NSession.Delete(" from BeforePeiScanType where OId=" + order.Id);
                     NSession.Flush();
                     var obj = new BeforePeiScanType
                                   {
