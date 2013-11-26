@@ -38,7 +38,7 @@ namespace KeWeiOMS.Web
             //循环加载第一层
             foreach (var functionType in list)
             {
-                MenuItem mi = new MenuItem() { icon = functionType.ImageIndex, menuid = functionType.Id, menuname = functionType.FullName, url = functionType.NavigateUrl };
+                MenuItem mi = new MenuItem() { icon = functionType.ImageIndex, menuid = functionType.Id, menuname =Language.GetString( functionType.FullName), url = functionType.NavigateUrl };
 
                 //从all中加载自己的子菜单
                 List<ModuleType> subs = all.Where(p => p.ParentId == mi.menuid).OrderByDescending(f => f.SortCode).ToList();
@@ -50,7 +50,7 @@ namespace KeWeiOMS.Web
                     foreach (var subtype in subs)
                     {
                         MenuItem submi = new MenuItem() { icon = subtype.ImageIndex,
-                             menuid = subtype.Id, menuname = subtype.FullName, url = subtype.NavigateUrl };
+                             menuid = subtype.Id, menuname = Language.GetString(subtype.FullName), url = subtype.NavigateUrl };
                         subitems.Add(submi);
                     }
                     mi.menus = subitems;

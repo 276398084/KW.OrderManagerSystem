@@ -216,6 +216,11 @@ namespace KeWeiOMS.Web.Controllers
         {
             EbayMessageType ebayMessage = NSession.Get<EbayMessageType>(id);
             IList<OrderType> list = NSession.CreateQuery("from OrderType where BuyerName='" + ebayMessage.SenderID + "' order by Id desc").List<OrderType>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                list[i].Status = Language.GetString(list[i].Status);
+                list[i].ErrorInfo = Language.GetString(list[i].ErrorInfo);
+            }
             return Json(list, JsonRequestBehavior.AllowGet);
 
         }
@@ -223,7 +228,11 @@ namespace KeWeiOMS.Web.Controllers
         public JsonResult GetOldMail(string id)
         {
             IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where SenderID='" + id + "' order by Id desc").List<EbayMessageType>();
-            return Json(list);
+            for (int i = 0; i < list.Count; i++)
+            {
+                list[i].MessageStatus = Language.GetString(list[i].MessageStatus);
+                list[i].MessageType = Language.GetString(list[i].MessageType);
+            }
         }
 
         public JsonResult GetOld(string id)

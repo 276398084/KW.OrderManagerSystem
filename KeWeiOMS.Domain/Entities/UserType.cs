@@ -199,8 +199,9 @@ namespace KeWeiOMS.Domain
         /// 账户权限
         /// </summary>
         public virtual List<AccountType> Accounts { get; set; }
-
-
-
+        /// <summary>
+        /// 界面语言
+        /// </summary>
+        public virtual string Language { get; set; }
     }
 }

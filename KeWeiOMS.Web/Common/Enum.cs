@@ -15,7 +15,6 @@ namespace KeWeiOMS.Web
         已发货 = 5,
         已完成 = 6,
         作废订单 = 7,
-        停售订单 = 8,
         退货订单 = 9
     }
 
@@ -35,9 +34,8 @@ namespace KeWeiOMS.Web
         SMT = 9999998,
         Ebay = 9999997,
         Amazon = 9999996,
-        B2C = 9999995,
         Gmarket = 9999994,
-        LT = 9999993
+        DH = 9999993
     }
 
     public enum ResourceCategoryEnum

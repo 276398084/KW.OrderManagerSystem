@@ -102,10 +102,11 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
-        public JsonResult List(int page, int rows, string sort, string order, string search)
+        public JsonResult ListEbayMessage(int page, int rows, string sort, string order, string search)
         {
             string type = "";
             string where = "";
+            //排序
             string orderby = " order by Id desc ";
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
@@ -121,7 +122,6 @@ namespace KeWeiOMS.Web.Controllers
                 {
                     where = "where  " + where;
                 }
-
             }
 
 
@@ -184,7 +184,11 @@ namespace KeWeiOMS.Web.Controllers
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)
                 .List<EbayMessageType>();
-
+            for (int i = 0; i < objList.Count; i++)
+            {
+                objList[i].MessageStatus = Language.GetString(objList[i].MessageStatus);
+                objList[i].MessageType = Language.GetString(objList[i].MessageType);
+            }
             object count = NSession.CreateQuery("select count(Id) from EbayMessageType " + where).UniqueResult();
             return Json(new { total = count, rows = objList });
         }
@@ -309,33 +313,48 @@ namespace KeWeiOMS.Web.Controllers
             }
             return Json(new { Msg = 1 });
         }
-
+        /// <summary>
+        /// 读取分类目录树
+        /// </summary>
+        /// <returns></returns>
         public JsonResult GetTree()
         {
+            //读取数据字典
             IList<DictionaryType> objList = NSession.CreateQuery("from DictionaryType").List<DictionaryType>();
+            //读取数据字典中的 Ebay邮件分类
             IList<DictionaryType> fristList = objList.Where(p => p.DicCode == "EbayType").ToList();
             List<SystemTree> trees = new List<SystemTree>();
-            SystemTree tree = new SystemTree { id = "0", text = "分类信息" };
+            
+            //SystemTree tree = new SystemTree { id = "0", text = Language.GetString("分类信息") };
+            //trees.Add(new SystemTree() { id="", text=Language.GetString("全部信息") });
             foreach (DictionaryType item in fristList)
             {
+                //读取数据字典中的 Ebay消息分类
                 List<DictionaryType> fooList = objList.Where(p => p.DicCode == "MessageType").ToList();
-                List<SystemTree> tree2 = ConvertToTree(fooList);
-                tree.children.Add(new SystemTree { id = item.DicValue, text = item.FullName, children = tree2 });
+                List<SystemTree> tree2 = new List<SystemTree>();
+                foreach (DictionaryType item2 in fooList)
+                {//呈现Ebay消息分类
+                    //id= 上层text+本层text+本层DicValue
+                    tree2.Add(new SystemTree { id = item.FullName+"~"+item2.FullName+"~"+ item2.DicValue, text = Language.GetString(item2.FullName) });
+                }
+                //List<SystemTree> tree2 = ConvertToTree(fooList);
+                //呈现Ebay邮件分类
+                trees.Add(new SystemTree { id = item.FullName + "~~", text = Language.GetString(item.FullName), children = tree2 });
             }
-            trees.Add(tree);
+            //trees.Add(tree);
             return Json(trees);
         }
 
-        public List<SystemTree> ConvertToTree(List<DictionaryType> fooList)
-        {
-            List<SystemTree> tree = new List<SystemTree>();
-            foreach (DictionaryType item in fooList)
-            {
-                tree.Add(new SystemTree { id = item.DicValue, text = item.FullName });
-            }
-            return tree;
+        //public List<SystemTree> ConvertToTree(List<DictionaryType> fooList)
+        //{
+        //    List<SystemTree> tree = new List<SystemTree>();
+        //    foreach (DictionaryType item in fooList)
+        //    {
+        //        tree.Add(new SystemTree { id = item.DicValue, text = Language.GetString(item.FullName) });
+        //    }
+        //    return tree;
 
-        }
+        //}
     }
 }
 

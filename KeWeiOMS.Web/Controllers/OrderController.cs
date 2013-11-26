@@ -323,14 +323,13 @@ namespace KeWeiOMS.Web.Controllers
                     case PlatformEnum.Amazon:
                         results = OrderHelper.ImportByAmazon(account, file, NSession);
                         break;
-                    case PlatformEnum.B2C:
-                        results = OrderHelper.ImportByB2C(account, file, NSession);
+                    case PlatformEnum.DH:
+                        //results = OrderHelper.ImportByB2C(account, file, NSession);
                         break;
                     case PlatformEnum.Gmarket:
                         results = OrderHelper.ImportByGmarket(account, file, NSession);
                         break;
-                    case PlatformEnum.LT:
-                        break;
+
                     default:
                         break;
                 }
@@ -427,7 +426,7 @@ namespace KeWeiOMS.Web.Controllers
                 case PlatformEnum.Ebay:
                     results = OrderHelper.APIByEbay(account, st, et, NSession);
                     break;
-                case PlatformEnum.B2C:
+                case PlatformEnum.DH:
                     results = OrderHelper.APIByB2C(account, st, et, NSession);
                     break;
                 case PlatformEnum.SMT:
@@ -435,7 +434,7 @@ namespace KeWeiOMS.Web.Controllers
                     break;
                 case PlatformEnum.Amazon:
                 case PlatformEnum.Gmarket:
-                case PlatformEnum.LT:
+
                 default:
                     return Json(new { IsSuccess = false, ErrorMsg = "该平台没有同步功能！" });
             }
@@ -1890,30 +1889,7 @@ where O.Id in(" + ids + ")";
 
         private void UploadTrackCode(OrderType o)
         {
-            if (o.Platform == PlatformEnum.B2C.ToString())
-            {
-                try
-                {
-                    using (
-                        var connection =
-                            new SqlConnection("server=97.74.123.157;database=FeiduGS;uid=sa;pwd=`1q2w3e4r"))
-                    {
-                        string sql = "update GS_Order set ems='" + o.TrackCode + "' , ShippingStauts=1 where OrderNo='" +
-                                     o.OrderExNo + "'";
-                        var sqlCommand = new SqlCommand(sql, connection);
-                        connection.Open();
-                        sqlCommand.ExecuteNonQuery();
-                        connection.Close();
-                        connection.Dispose();
-                        new WebClient().DownloadString("http://sendmail.gamesalor.com.cn/SendMailMessage.ashx?txnId=" +
-                                                       o.OrderExNo + "&ems=" + o.TrackCode + "&mail=" + o.BuyerEmail);
-                    }
-                }
-                catch (Exception)
-                {
-                    return;
-                }
-            }
+
 
             if (o.Platform == PlatformEnum.Ebay.ToString())
             {

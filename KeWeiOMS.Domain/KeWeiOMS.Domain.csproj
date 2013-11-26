@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Entities\AccountEmailType.cs" />
     <Compile Include="Entities\AccountFeeType.cs" />
+    <Compile Include="Entities\LanguageType.cs" />
     <Compile Include="Entities\AccountType.cs" />
     <Compile Include="Entities\AliMessageType.cs" />
     <Compile Include="Entities\AttendType.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Entities\SendPackageOrderType.cs" />
     <Compile Include="Mappings\AccountEmailTypeMap.cs" />
     <Compile Include="Mappings\AccountFeeTypeMap.cs" />
+    <Compile Include="Mappings\LanguageTypeMap.cs" />
     <Compile Include="Mappings\AccountTypeMap.cs" />
     <Compile Include="Mappings\AliMessageTypeMap.cs" />
     <Compile Include="Mappings\AttendTypeMap.cs" />
