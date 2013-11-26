@@ -102,6 +102,7 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = "true" });
         }
 
+        [HttpPost]
         public JsonResult ListEbayMessage(int page, int rows, string sort, string order, string search)
         {
             string type = "";

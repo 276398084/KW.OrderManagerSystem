@@ -233,6 +233,7 @@ namespace KeWeiOMS.Web.Controllers
                 list[i].MessageStatus = Language.GetString(list[i].MessageStatus);
                 list[i].MessageType = Language.GetString(list[i].MessageType);
             }
+            return Json(list);
         }
 
         public JsonResult GetOld(string id)

@@ -21,6 +21,11 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
+    <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +48,9 @@
     <Reference Include="eBay.Service, Version=3.735.0.0, Culture=neutral, PublicKeyToken=1d9d786a5932eaf0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Lib\eBay.Service.dll</HintPath>
+    </Reference>
+    <Reference Include="eBay.Service.SDK.Attribute">
+      <HintPath>..\Lib\eBay.Service.SDK.Attribute.dll</HintPath>
     </Reference>
     <Reference Include="FluentNHibernate, Version=1.3.0.0, Culture=neutral, PublicKeyToken=8aa435e3cb308880, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,6 +79,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -119,11 +128,19 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< HEAD
+    <Compile Include="Common\Ali\AliMessage.cs" />
+    <Compile Include="Common\Statistics\KPIData.cs" />
+=======
+    <Compile Include="Common\Language.cs" />
+>>>>>>> kewei/master
+    <Compile Include="Common\Utils\AliUtil.cs" />
+    <Compile Include="Common\Ali\AliOrderListType.cs" />
     <Compile Include="Common\AudioHelper.cs" />
     <Compile Include="Common\BaseController.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\Config.cs" />
+    <Compile Include="Common\Config\Config.cs" />
     <Compile Include="Common\Config\SMTConfig.cs" />
     <Compile Include="Common\easyui\CheckBoxListHelper.cs" />
     <Compile Include="Common\CsvReader.cs" />
@@ -136,6 +153,7 @@
     <Compile Include="Common\FunctionMenu.cs" />
     <Compile Include="Common\LoggerUtil.cs" />
     <Compile Include="Common\MenuItem.cs" />
+    <Compile Include="Common\Statistics\AccountFreightCount.cs" />
     <Compile Include="Common\Statistics\AmountCount.cs" />
     <Compile Include="Common\Statistics\DisputeCount.cs" />
     <Compile Include="Common\Statistics\LeveData.cs" />
@@ -151,9 +169,11 @@
     <Compile Include="Common\Statistics\Sores.cs" />
     <Compile Include="Common\SupportFilter.cs" />
     <Compile Include="Common\Utilities.cs" />
+    <Compile Include="Common\Utils\KeyValue.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountEmailController.cs" />
     <Compile Include="Controllers\AccountFeeController.cs" />
+    <Compile Include="Controllers\AliMessageController.cs" />
     <Compile Include="Controllers\AttendController.cs" />
     <Compile Include="Controllers\BeforePeiScanController.cs" />
     <Compile Include="Controllers\CountryController.cs" />
@@ -170,12 +190,15 @@
     <Compile Include="Controllers\EmailReturnController.cs" />
     <Compile Include="Controllers\EmailTemplateController.cs" />
     <Compile Include="Controllers\GMarketController.cs" />
+    <Compile Include="Controllers\HaiItemController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogisticsAllocationController.cs" />
     <Compile Include="Controllers\LogisticsController.cs" />
     <Compile Include="Controllers\LogisticsAreaController.cs" />
     <Compile Include="Controllers\LogisticsAreaCountryController.cs" />
     <Compile Include="Controllers\LogisticsFreightController.cs" />
     <Compile Include="Controllers\LogisticsModeController.cs" />
+    <Compile Include="Controllers\logisticsSetupController.cs" />
     <Compile Include="Controllers\MachineController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Controllers\NewGuideController.cs" />
@@ -188,6 +211,7 @@
     <Compile Include="Controllers\OrderPeiRecordController.cs" />
     <Compile Include="Controllers\OrderProductController.cs" />
     <Compile Include="Controllers\OrderRecordController.cs" />
+    <Compile Include="Controllers\OrderReturnRecordController.cs" />
     <Compile Include="Controllers\OrganizeController.cs" />
     <Compile Include="Controllers\PaypalAccountController.cs" />
     <Compile Include="Controllers\PermissionController.cs" />
@@ -207,6 +231,8 @@
     <Compile Include="Controllers\RefundAmountController.cs" />
     <Compile Include="Controllers\ReturnAddressController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\SendPackageOrderController.cs" />
+    <Compile Include="Controllers\SendPackageController.cs" />
     <Compile Include="Controllers\SerialNumberController.cs" />
     <Compile Include="Controllers\SoresAddController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
@@ -215,7 +241,9 @@
     <Compile Include="Controllers\SupplierController.cs" />
     <Compile Include="Controllers\SuppliersProductController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="Controllers\UserRoleController.cs" />
+    <Compile Include="Controllers\UserSetupController.cs" />
     <Compile Include="Controllers\WarehouseController.cs" />
     <Compile Include="Controllers\WarehouseLocationController.cs" />
     <Compile Include="Controllers\WarehouseStockController.cs" />
@@ -482,8 +510,57 @@
     <Content Include="Scripts\easyUI\themes\metro-red\validatebox.css" />
     <Content Include="Scripts\easyUI\themes\metro-red\window.css" />
     <Content Include="Scripts\easyUI\themes\portal.css" />
+    <Content Include="Scripts\FusionCharts\Area2D.swf" />
+    <Content Include="Scripts\FusionCharts\Bar2D.swf" />
+    <Content Include="Scripts\FusionCharts\Bubble.swf" />
+    <Content Include="Scripts\FusionCharts\Column2D.swf" />
+    <Content Include="Scripts\FusionCharts\Column3D.swf" />
+    <Content Include="Scripts\FusionCharts\Doughnut2D.swf" />
+    <Content Include="Scripts\FusionCharts\Doughnut3D.swf" />
+    <Content Include="Scripts\FusionCharts\FCExporter.swf" />
+    <Content Include="Scripts\FusionCharts\Funnel.swf" />
+    <Content Include="Scripts\FusionCharts\FusionCharts.js" />
+    <Content Include="Scripts\FusionCharts\InverseMSArea.swf" />
+    <Content Include="Scripts\FusionCharts\InverseMSColumn2D.swf" />
+    <Content Include="Scripts\FusionCharts\InverseMSLine.swf" />
+    <Content Include="Scripts\FusionCharts\Line.swf" />
+    <Content Include="Scripts\FusionCharts\LogMSColumn2D.swf" />
+    <Content Include="Scripts\FusionCharts\LogMSLine.swf" />
+    <Content Include="Scripts\FusionCharts\MSArea.swf" />
+    <Content Include="Scripts\FusionCharts\MSBar2D.swf" />
+    <Content Include="Scripts\FusionCharts\MSBar3D.swf" />
+    <Content Include="Scripts\FusionCharts\MSColumn2D.swf" />
+    <Content Include="Scripts\FusionCharts\MSColumn3D.swf" />
+    <Content Include="Scripts\FusionCharts\MSColumn3DLineDY.swf" />
+    <Content Include="Scripts\FusionCharts\MSColumnLine3D.swf" />
+    <Content Include="Scripts\FusionCharts\MSCombi2D.swf" />
+    <Content Include="Scripts\FusionCharts\MSCombi3D.swf" />
+    <Content Include="Scripts\FusionCharts\MSCombiDY2D.swf" />
+    <Content Include="Scripts\FusionCharts\MSLine.swf" />
+    <Content Include="Scripts\FusionCharts\MSSpline.swf" />
+    <Content Include="Scripts\FusionCharts\MSSplineArea.swf" />
+    <Content Include="Scripts\FusionCharts\MSStackedColumn2D.swf" />
+    <Content Include="Scripts\FusionCharts\MSStackedColumn2DLineDY.swf" />
+    <Content Include="Scripts\FusionCharts\Pie2D.swf" />
+    <Content Include="Scripts\FusionCharts\Pie3D.swf" />
+    <Content Include="Scripts\FusionCharts\Pyramid.swf" />
+    <Content Include="Scripts\FusionCharts\Scatter.swf" />
+    <Content Include="Scripts\FusionCharts\ScrollArea2D.swf" />
+    <Content Include="Scripts\FusionCharts\ScrollColumn2D.swf" />
+    <Content Include="Scripts\FusionCharts\ScrollCombi2D.swf" />
+    <Content Include="Scripts\FusionCharts\ScrollCombiDY2D.swf" />
+    <Content Include="Scripts\FusionCharts\ScrollLine2D.swf" />
+    <Content Include="Scripts\FusionCharts\ScrollStackedColumn2D.swf" />
+    <Content Include="Scripts\FusionCharts\Spline.swf" />
+    <Content Include="Scripts\FusionCharts\SplineArea.swf" />
+    <Content Include="Scripts\FusionCharts\SSGrid.swf" />
+    <Content Include="Scripts\FusionCharts\StackedArea2D.swf" />
+    <Content Include="Scripts\FusionCharts\StackedBar2D.swf" />
+    <Content Include="Scripts\FusionCharts\StackedBar3D.swf" />
+    <Content Include="Scripts\FusionCharts\StackedColumn2D.swf" />
+    <Content Include="Scripts\FusionCharts\StackedColumn3D.swf" />
+    <Content Include="Scripts\FusionCharts\StackedColumn3DLineDY.swf" />
     <Content Include="Scripts\grbsctl5.cab" />
-    <Content Include="Scripts\grbsctl5.exe" />
     <Content Include="Scripts\GRInstall.js" />
     <Content Include="Scripts\images\Data.gif" />
     <Content Include="Scripts\images\Data.png" />
@@ -582,7 +659,8 @@
     <Content Include="product\images\loginInputWrapbg.gif" />
     <Content Include="product\images\logo_login.png" />
     <Content Include="Scripts\CreateControl.js" />
-    <Content Include="Scripts\date.js" />
+    <Content Include="Scripts\jquery.form.js" />
+    <Content Include="Scripts\js\common.js" />
     <Content Include="Scripts\easyUI\datagrid-detailview.js" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
     <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
@@ -1129,6 +1207,7 @@
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Nav.cshtml" />
+    <Content Include="Views\Order\address.txt" />
     <Content Include="Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1137,7 +1216,40 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </Content>
-    <Content Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
+    <Content Include="Views\logisticsSetup\Create.cshtml" />
+    <Content Include="Views\logisticsSetup\Delete.cshtml" />
+    <Content Include="Views\logisticsSetup\Details.cshtml" />
+    <Content Include="Views\logisticsSetup\Edit.cshtml" />
+    <Content Include="Views\logisticsSetup\Index.cshtml" />
+    <Content Include="Views\UserSetup\Create.cshtml" />
+    <Content Include="Views\UserSetup\Delete.cshtml" />
+    <Content Include="Views\UserSetup\Details.cshtml" />
+    <Content Include="Views\UserSetup\Edit.cshtml" />
+    <Content Include="Views\UserSetup\Index.cshtml" />
+    <Content Include="Views\Order\OrderReturnList.cshtml" />
+    <Content Include="Views\Order\ReturnScan.cshtml" />
+    <Content Include="Views\WarehouseStock\StockMove.cshtml" />
+    <Content Include="Views\Statistics\KPICount.cshtml" />
+    <Content Include="Views\SendPackageOrder\Index.cshtml" />
+    <Content Include="Views\SendPackage\Create.cshtml" />
+    <Content Include="Views\SendPackage\Delete.cshtml" />
+    <Content Include="Views\SendPackage\Details.cshtml" />
+    <Content Include="Views\SendPackage\Edit.cshtml" />
+    <Content Include="Views\SendPackage\Index.cshtml" />
+    <Content Include="Views\SendPackageOrder\OrderList.cshtml" />
+    <Content Include="Views\Order\HaiIndex.cshtml" />
+    <Content Include="Views\HaiItem\Index.cshtml" />
+    <Content Include="Views\Order\EditOrder.cshtml" />
+    <Content Include="Views\Home\PrintSetup2.cshtml" />
+    <Content Include="Views\Order\SetOrderError.cshtml" />
+    <Content Include="Views\Order\副本 HaiIndex.cshtml" />
+    <Content Include="Views\Order\SendScan2.cshtml" />
+    <Content Include="Views\AliMessage\Edit.cshtml" />
+    <Content Include="Views\AliMessage\Index.cshtml" />
+    <Content Include="XMLFile1.xml" />
+    <None Include="Views\Order\PackMove.cshtml" />
+    <Content Include="Views\Order\OrderUpload.cshtml" />
+    <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1147,14 +1259,15 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.wsdl" />
-    <Content Include="Web References\cn.com.webxml.webservice\Reference.map">
+    <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.wsdl" />
+    <None Include="Web References\cn.com.webxml.webservice\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Common\json\" />
     <Folder Include="Models\" />
     <Folder Include="upload\" />
   </ItemGroup>
@@ -1485,7 +1598,6 @@
     <Content Include="Content\grf\Shortcut.grf" />
     <Content Include="Content\grf\ymxDE.grf" />
     <Content Include="Content\grf\zm.grf" />
-    <None Include="Properties\PublishProfiles\keweiOMs.pubxml" />
     <Content Include="Views\Home\PrintDetail.cshtml" />
     <Content Include="Views\Home\PrintSetup.cshtml" />
     <Content Include="Views\Order\TodayIndex.cshtml" />
@@ -1590,11 +1702,6 @@
     <Content Include="Views\EbayReplay\Details.cshtml" />
     <Content Include="Views\EbayReplay\Edit.cshtml" />
     <Content Include="Views\EbayReplay\Index.cshtml" />
-    <Content Include="Scripts\easyUI\themes\metro-blue\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-gray\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-green\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-orange\images\Thumbs.db" />
-    <Content Include="Scripts\easyUI\themes\metro-red\images\Thumbs.db" />
     <Content Include="Views\ProductIsInfraction\Create.cshtml" />
     <Content Include="Views\ProductIsInfraction\Delete.cshtml" />
     <Content Include="Views\ProductIsInfraction\Details.cshtml" />
@@ -1640,20 +1747,32 @@
     <Content Include="Views\EmailMessage\Details.cshtml" />
     <Content Include="Views\EmailMessage\Edit.cshtml" />
     <Content Include="Views\EmailMessage\Index.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\OrderAmount\FreightStatistics.cshtml" />
     <Content Include="Scripts\asd.grf" />
-=======
     <Content Include="Views\BeforePeiScan\Create.cshtml" />
     <Content Include="Views\BeforePeiScan\Delete.cshtml" />
     <Content Include="Views\BeforePeiScan\Details.cshtml" />
     <Content Include="Views\BeforePeiScan\Edit.cshtml" />
     <Content Include="Views\BeforePeiScan\Index.cshtml" />
     <Content Include="Views\Order\BeforePeiScan.cshtml" />
->>>>>>> kewei/ttt
+    <Content Include="Views\OrderAmount\FreightCount.cshtml" />
+    <Content Include="Views\Dispute\EmailDispute.cshtml" />
+    <Content Include="Views\UserLogin\Create.cshtml" />
+    <Content Include="Views\UserLogin\Delete.cshtml" />
+    <Content Include="Views\UserLogin\Details.cshtml" />
+    <Content Include="Views\UserLogin\Edit.cshtml" />
+    <Content Include="Views\UserLogin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\web.pubxml" />
+    <Content Include="Views\LogisticsAllocation\Create.cshtml" />
+    <Content Include="Views\LogisticsAllocation\Delete.cshtml" />
+    <Content Include="Views\LogisticsAllocation\Details.cshtml" />
+    <Content Include="Views\LogisticsAllocation\Edit.cshtml" />
+    <Content Include="Views\LogisticsAllocation\Index.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -1669,16 +1788,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
-          <AutoAssignPort>False</AutoAssignPort>
-          <DevelopmentServerPort>60496</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:60496/</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
