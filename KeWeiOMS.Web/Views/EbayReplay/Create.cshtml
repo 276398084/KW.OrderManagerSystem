@@ -1,48 +1,47 @@
 ﻿@model KeWeiOMS.Domain.EbayReplayType
-
 @{
     Layout = null;
 }
 
 <script type="text/javascript">
     $(function () {
-        $('#c_ReplayBy').combobox({
+     @*   $('#c_ReplayBy').combobox({
             url: '@Url.Action("GetUsers", "EbayReplay")',
             valueField: "Realname",
             textField: "Realname",
-        });
+        });*@
         $('#c_ReplayAccount').combobox({
             url: '@Url.Action("GetAccount", "EbayReplay")',
             valueField: "AccountName",
             textField: "AccountName",
         });
     });
-    
+
 </script>
 
 @using (Html.BeginForm("Create", "EbayReplay", FormMethod.Post, new { id = "c_form" }))
 {
-<fieldset>
-<table class="editForm">
+    <fieldset>
+        <table class="editForm">
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ReplayBy,"回复人员:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ReplayBy,new{@id="c_ReplayBy"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ReplayBy, "回复人员:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ReplayBy, new { @id = "c_ReplayBy" })
+                </td>
+            </tr>
 
-	<tr>
-		<td>
-            @Html.LabelFor(model => model.ReplayAccount,"回复账号:")
-		</td>
-		<td>
-            @Html.TextBoxFor(model => model.ReplayAccount,new{@id="c_ReplayAccount"})
-		</td>
-	</tr>
+            <tr>
+                <td>
+                    @Html.LabelFor(model => model.ReplayAccount, "回复账号:")
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.ReplayAccount, new { @id = "c_ReplayAccount" })
+                </td>
+            </tr>
 
-</table>
-</fieldset>
+        </table>
+    </fieldset>
 }

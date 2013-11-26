@@ -41,7 +41,8 @@
         });
 
         $('#oldmail').datagrid({
-            url: '@Url.Action("GetOldMail", "EbayMessageRe")/@ViewData["buyer"]'
+            url: '@Url.Action("GetOldMail", "EbayMessageRe")',
+            queryParams: { "id": "@ViewData["buyer"]" }
 
         });
 

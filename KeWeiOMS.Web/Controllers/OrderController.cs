@@ -209,7 +209,7 @@ namespace KeWeiOMS.Web.Controllers
         {
             IList<OrderType> orderTypes =
                 NSession.CreateQuery(
-                    "from OrderType where Status='待处理' and Platform='Ebay' and Enabled=1 and BuyerName in (select BuyerName from OrderType where Status='待处理'  and Platform='Ebay' and Enabled=1   group by BuyerName,Country,Account having count (BuyerName)>1)")
+                    "from OrderType where Status='待处理' and Platform in ('Ebay','SMT') and Enabled=1 and BuyerName in (select BuyerName from OrderType where Status='待处理'  and Platform='Ebay' and Enabled=1   group by BuyerName,Country,Account having count (BuyerName)>1)")
                     .List<OrderType>();
             string ids = "";
             foreach (OrderType order in orderTypes)
@@ -1751,26 +1751,46 @@ where O.Id in(" + ids + ")";
             //NSession.Flush();
             //OrderHelper.SaveAmount(order, NSession);
             ////计算利润
-            //IList<object[]> objList = NSession.CreateSQLQuery("select Id,TId  from Orders where  CreateOn>'2013-09-01' and CreateOn<'2013-10-31' and Platform='EBay' and PayEmail is null")
-            //    //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
-            // .List<object[]>();
-            //AppSettingHelper.InitPay();
-            //foreach (object[] objectse in objList)
+            IList<object[]> objList = NSession.CreateSQLQuery("select Id,TId  from Orders where  CreateOn>'2013-11-01' and CreateOn<'2013-11-30' and Platform='EBay' and PayEmail is null")
+                //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status in ('已处理','待拣货') ")
+             .List<object[]>();
+            AppSettingHelper.InitPay();
+            foreach (object[] objectse in objList)
+            {
+                try
+                {
+                    string tid = objectse[1].ToString();
+                    if (tid.IndexOf("|") != -1)
+                    {
+                        tid = tid.Substring(0, tid.IndexOf("|"));
+                    }
+                    string s = AppSettingHelper.GetpayEmail(tid);
+                    OrderType order = NSession.Get<OrderType>(objectse[0]);
+                    order.PayEmail = s;
+                    NSession.Update(order);
+                    NSession.Flush();
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+
+
+
+
+
+
+            //IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and ScanningOn>'2013-11-10'")
+            // .List<OrderType>();
+            //foreach (OrderType orderType in objList)
             //{
+
             //    try
             //    {
-            //        string tid = objectse[1].ToString();
-            //        if (tid.IndexOf("|") != -1)
-            //        {
-            //            tid = tid.Substring(0, tid.IndexOf("|"));
-            //        }
-            //        string s = AppSettingHelper.GetpayEmail(tid);
-            //        OrderType order = NSession.Get<OrderType>(objectse[0]);
-            //        order.PayEmail = s;
-            //        NSession.Update(order);
-            //        NSession.Flush();
+            //        UploadTrackCode(orderType);
             //    }
-            //    catch (Exception ex)
+            //    catch (Exception)
             //    {
             //        continue;
             //    }
@@ -1778,23 +1798,6 @@ where O.Id in(" + ids + ")";
 
 
 
-
-
-
-            IList<OrderType> objList = NSession.CreateQuery(@"from OrderType where Status='已发货' and ScanningOn>'2013-11-10'")
-             .List<OrderType>();
-            foreach (OrderType orderType in objList)
-            {
-
-                try
-                {
-                    UploadTrackCode(orderType);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
             //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
             //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
             //NSession.SaveOrUpdate(orderType);

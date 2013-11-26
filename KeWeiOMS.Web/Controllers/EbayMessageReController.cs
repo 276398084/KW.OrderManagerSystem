@@ -219,11 +219,11 @@ namespace KeWeiOMS.Web.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
 
         }
-
+        [HttpPost]
         public JsonResult GetOldMail(string id)
         {
             IList<EbayMessageType> list = NSession.CreateQuery("from EbayMessageType where SenderID='" + id + "' order by Id desc").List<EbayMessageType>();
-            return Json(list, JsonRequestBehavior.AllowGet);
+            return Json(list);
         }
 
         public JsonResult GetOld(string id)

@@ -48,6 +48,23 @@ namespace KeWeiOMS.Web
                 return null;
             }
         }
+
+        [WebMethod]
+        public OrderType GetOrderByOrderNo(string OrderNo)
+        {
+            IList<OrderType> orderTypes =
+                NSession.CreateQuery("from OrderType where OrderNo='" + OrderNo + "'").List<OrderType>();
+            if (orderTypes.Count > 0)
+            {
+                orderTypes[0].Products = NSession.CreateQuery("from OrderProductType where OId='" + orderTypes[0].Id + "'").List<OrderProductType>().ToList<OrderProductType>();
+                return orderTypes[0];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         [WebMethod]
         public bool UpdateOrder(OrderType order)
         {
