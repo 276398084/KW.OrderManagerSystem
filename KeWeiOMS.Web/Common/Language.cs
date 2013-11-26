@@ -25,7 +25,7 @@ namespace KeWeiOMS.Web
             NSession.Dispose();
             return true;
         }
-  
+
         /// <summary>
         /// 支持两层
         /// </summary>
@@ -51,6 +51,9 @@ namespace KeWeiOMS.Web
                 //没有指定显示语言的情况下
                 language = System.Web.HttpContext.Current.Request.UserLanguages.Length > 0 ? System.Web.HttpContext.Current.Request.UserLanguages[0] : nativeLanguage;
             }
+            //System.Web.UI.Page page=System.Web.HttpContext.Current.CurrentHandler  as System.Web.UI.Page;
+            //page.ClientScript.RegisterClientScriptBlock(page.GetType(), "language", "alert('sss')", true);
+            if (string.IsNullOrWhiteSpace(nativeText)) { nativeText = string.Empty; } else { nativeText = nativeText.Trim(); }
             if (language.Equals(nativeLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 //如果是默认语言，则返回母语

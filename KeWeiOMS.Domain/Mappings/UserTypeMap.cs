@@ -59,6 +59,7 @@ namespace KeWeiOMS.Domain
             Map(x => x.CreateOn);
             Map(x => x.CreateUserId).Length(50);
             Map(x => x.CreateBy).Length(50);
+            Map(x => x.Language).Length(255);
         }
     }
 }

@@ -4,7 +4,7 @@
         initLeftMenu();
 
         tabCloseEven();
-        addTab('主页', '@Url.Action("Default", "Home")', "false");
+        addTab('@Html.Language("主页")', '@Url.Action("Default", "Home")', "false");
 
         $('#loginOut').click(function () {
             $.messager.confirm('@Html.Language("系统提示")', '@Html.Language("您确定要退出本次登录吗")?', function (r) {
@@ -16,6 +16,7 @@
         // changeTheme(getCookie("easyuiThemeName"));
         //$('#mainframe').layout('collapse', 'east');
         var lang = $.cookie('Language');
+        //alert(lang);
         showLanguage(lang);
 
     });
@@ -229,7 +230,7 @@
                 <a href="#" id="loginOut" class="easyui-menubutton" data-options="iconCls:'icon-back'">@Html.Language("安全退出")</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
             <div id="layout_north_Language" style="width: 120px; display: none;">
-                <div l="zh-Hans" onclick="changeLanguage('zh-Hans');" class="accordion-expand">简体中文</div>
+                <div l="zh-Hans" onclick="changeLanguage('zh-Hans');">简体中文</div>
                 <div l="en-US" onclick="changeLanguage('en-US');">English</div>
             </div>
             <div id="layout_north_pfMenu" style="width: 120px; display: none;">

@@ -1,6 +1,6 @@
-﻿@model IEnumerable<KeWeiOMS.Domain.EbayMessageType>
+﻿@*@model IEnumerable<KeWeiOMS.Domain.EbayMessageType>*@
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "eBay 邮件";
 }
 <body class="easyui-layout">
     <script language="javascript" type="text/javascript">
@@ -9,7 +9,7 @@
         $(function () {
             chec = null;
             $('#dg').datagrid({
-                url: '@Url.Action("List", "EbayMessage")',
+                url: '@Url.Action("ListEbayMessage", "EbayMessage")',
                 pageNumber: 1,
                 nowrap: false,
                 toolbar: '#toolbar',
@@ -19,10 +19,10 @@
                     var value = row.Id;
                     $.ajax({
                         url: '@Url.Action("IsRead", "EbayMessage")/' + value,
-                        success: function(result) {
+                        success: function (result) {
                             if (result) {
                                 if (result.Msg != '0') {
-                                    $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function(r) {
+                                    $.messager.confirm('@Html.Language("确认")', '@Html.Language("该邮件已经回复过，是否进入再次回复")?', function (r) {
                                         if (r) {
                                             window.open('@Url.Action("Create", "EbayMessageRe")/' + value);
                                         }
@@ -33,13 +33,13 @@
                             }
                         }
                     });
-            },
+                },
                 pageSize: 20,
                 pageList: [20, 40, 60, 80, 100]
             });
             $("#txtEndDate").datebox("setValue", getStartDate(-1));
             $("#txtStartDate").datebox("setValue", getStartDate(7));
-            $('#tt1').tree({
+            $('#uitree').tree({
                 url: '@Url.Action("GetTree", "EbayMessage")',
                 state: closed,
                 onClick: function (node) {
@@ -47,84 +47,63 @@
                     treeOnclick(node.id, node.text, node.target);
                 }
             });
-            $('#aa').combobox({
+            $('#txtStore').combobox({
                 url: '/Home/AccountList/Ebay',
                 valueField: 'id',
                 textField: 'text',
                 width: 150
             });
-            $('#aa').combobox("setValue", "ALL");
+            $('#txtStore').combobox("setValue", "ALL");
         });
 
         function treeOnclick(id, text, target) {
-            search = "";
-        var root = $('#tt1').tree("getRoot").id;
-        if (id == root) {
-            alert("根目录！");
+            //var root = $('#uitree').tree("getRoot").id;
+            //if (id == root) {
+            //    alert("根目录！");
+            //}
+            //else {
+            //if ($('#uitree').tree("getParent", target).text == "未分配消息") {
+            //    chec = "1";
+            //}
+            search = getSearch();
+            $("#dg").datagrid("load", {
+                search: search
+            });
+            //}
         }
-        else {
-            if ($('#tt1').tree("getParent", target).id != root) {
-                if ($('#tt1').tree("getParent", target).text == "未分配消息") {
-                    chec = "1";
-                }
-                // IsStop_ds&0^
-                if ($('#aa').combobox("getText") != "ALL") {
-                    search += "Shop&" + $('#aa').combobox("getText") + "^";
-                }
-                search += "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
-                search += $('#tt1').tree("getParent", target).text + "~" + text + "~" + id;
-                $("#dg").datagrid("load", {
-                    search: search
-                });
-            }
-            else {
-                if (text == "未分配消息") {
-                    chec = "1";
-                }
-                if ($('#aa').combobox("getText") != "ALL") {
-                    search += "Shop&" + $('#aa').combobox("getText") + "^";
-                }
-                search += "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
-                search += text + "~~";
-                $("#dg").datagrid("load", {
-                    search: search
-                });
-            }
+
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "EbayMessageRe")';
+            showdlg(url_str, 'c_dlg', ajaxAdd);
         }
-    }
 
-    //新建
-    function c_dlg() {
-        var url_str = '@Url.Action("Create", "EbayMessageRe")';
-        showdlg(url_str, 'c_dlg', ajaxAdd);
-    }
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "EbayMessageRe")', 'c_dlg', 'dg');
+        }
 
-    //异步新建提交
-    function ajaxAdd() {
-        formPost('c_form', '@Url.Action("Create", "EbayMessageRe")', 'c_dlg', 'dg');
-    }
+        function toExcel() {
+            search = getSearch();
+            $('#dg').datagrid('loading');
+            var postUrl = "/Order/ExportDown/1";
+            $.ajax({
+                url: '@Url.Action("ToExcel", "EbayMessage")/',
+                type: 'post',
+                data: 'search=' + encodeURIComponent(search),
+                success: function (result) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.ErrorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                    location.href = postUrl;
+                    $('#dg').datagrid('reload');
+                }
+            });
+        }
 
-    function toExcel() {
-        search = getSearch();
-        $('#dg').datagrid('loading');
-        var postUrl = "/Order/ExportDown/1";
-        $.ajax({
-            url: '@Url.Action("ToExcel", "EbayMessage")/',
-            type: 'post',
-            data: 'search=' + encodeURIComponent(search),
-            success: function (result) {
-                $.messager.show({
-                    title: '提示',
-                    msg: result.ErrorMsg,
-                    timeout: 0,
-                    showType: 'slide'
-                });
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        });
-    }
-    
         function doSearch() {
             if (tmpNode) {
                 treeOnclick(tmpNode.id, tmpNode.text, tmpNode.target);
@@ -135,206 +114,223 @@
                 });
             }
         }
-
-    function getSearch() {
-      
-        search = "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
-        return search;
-    }
-
-    function syn() {
-        $('#dg').datagrid("loading");
-        $.ajax({
-            url: '@Url.Action("Syn", "EbayMessage")',
-            success: function(result) {
-                if (result.IsSuccess) {
-                    $.messager.show({
-                        title: '提示',
-                        msg: result.Msg,
-                        timeout: 0,
-                        showType: 'slide'
-                    });
-                } else {
-                    $.messager.show({
-                        title: '提示',
-                        msg: result.Msg,
-                        timeout: 0,
-                        showType: 'slide'
-                    });
-                }
-                $('#dg').datagrid('reload');
+        //获得查询条件
+        function getSearch() {
+            var search = "";
+            if ($('#txtStore').combobox("getText") != "ALL") {
+                search += "Shop&" + $('#txtStore').combobox("getText") + "^";
             }
-        });
-    }
-    function url(v, r, i) {
-        return v.substr(0, 30)+"...";
-    }
-   
-    function time(v, r, i) {
-        return "创建时间：<br>" + getDate(v) + "<br>同步时间：<br>" + getDate(r.CreateOn);
-    }
-    function replay(v, r, i) {
-        var rby = r.ReplayBy;
-        if (rby == null) {
-            rby = "";
+            search += "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
+            //search += $('#uitree').tree("getParent", target).text + "~" + text + "~" + id;
+            var node = $('#uitree').tree('getSelected');
+            search += node.id;
+            //alert(search);
+            return search;
         }
-        return "回复时间：<br>" + datecheck(v) + "<br>回复人：<br>" + rby;
-    }
-    function opeart(v, r, i) {
-        var reb = "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'re(" + v.Id + ")\'>回复</a>";
-        if (chec != null) {
-            return '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'toby(' + v.Id + ')\'>分配</a>';
-        }
-        else {
-            return reb + '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(' + v.Id + ')\'>详细</a>';
-
-        }
-    }
-    function toby() {
-        var s_ids = [];
-        var rows = $('#dg').datagrid('getSelections');
-        for (var i = 0; i < rows.length; i++) {
-            s_ids.push(rows[i]["Id"]);
-        }
-        if (s_ids.length == 0) {
-            alert("请选择数据!");
-            return;
-        }
-        
-        $('#dd').dialog({
-            buttons: [{
-                text: '确定',
-                iconCls: 'icon-ok',
-                handler: function () {
-                    forwarding( s_ids.join(","));
-                }
-            }, {
-                text: '取消',
-                handler: function () {
-                    $('#dd').dialog('close');
-                }
-            }]
-        });
-        function forwarding(v) {
+        //同步
+        function syn() {
+            $('#dg').datagrid("loading");
             $.ajax({
-                type:'post',
-                url: "@Url.Action("Forward", "EbayMessage")/",
-                data: "ids="+v+ "&t=" + $('#forname').combobox("getValue") + "&m=",
-                success: function(result) {
+                url: '@Url.Action("Syn", "EbayMessage")',
+                success: function (result) {
+                    if (result.IsSuccess) {
+                        $.messager.show({
+                            title: '提示',
+                            msg: result.Msg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $.messager.show({
+                            title: '提示',
+                            msg: result.Msg,
+                            timeout: 0,
+                            showType: 'slide'
+                        });
+                    }
+                    $('#dg').datagrid('reload');
+                }
+            });
+        }
+        function url(v, r, i) {
+            return v.substr(0, 30) + "...";
+        }
+
+        function time(v, r, i) {
+            return "创建时间：<br>" + getDate(v) + "<br>同步时间：<br>" + getDate(r.CreateOn);
+        }
+        function replay(v, r, i) {
+            var rby = r.ReplayBy;
+            if (rby == null) {
+                rby = "";
+            }
+            return "回复时间：<br>" + datecheck(v) + "<br>回复人：<br>" + rby;
+        }
+        //function opeart(v, r, i) {
+        //    var reb = "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'re(" + v.Id + ")\'>回复</a>";
+        //    if (chec != null) {
+        //        return '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'toby(' + v.Id + ')\'>分配</a>';
+        //    }
+        //    else {
+        //        return reb + '&nbsp&nbsp<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(' + v.Id + ')\'>详细</a>';
+
+        //    }
+        //}
+        //分配
+        function toby() {
+            var s_ids = [];
+            var rows = $('#dg').datagrid('getSelections');
+            for (var i = 0; i < rows.length; i++) {
+                s_ids.push(rows[i]["Id"]);
+            }
+            if (s_ids.length == 0) {
+                alert("请选择数据!");
+                return;
+            }
+
+            $('#dd').dialog({
+                buttons: [{
+                    text: '确定',
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        forwarding(s_ids.join(","));
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        $('#dd').dialog('close');
+                    }
+                }]
+            });
+            function forwarding(v) {
+                $.ajax({
+                    type: 'post',
+                    url: "@Url.Action("Forward", "EbayMessage")/",
+                    data: "ids=" + v + "&t=" + $('#forname').combobox("getValue") + "&m=",
+                    success: function (result) {
+                        if (result) {
+                            if (result.Msg != '0') {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: '分配出错',
+                                    timeout: 2000,
+                                    showType: 'slide'
+                                });
+                            } else {
+                                alert("分配成功！");
+                                $('#dg').datagrid('reload');
+                                $('#dd').dialog('close');
+                            }
+                        }
+                    }
+                });
+            }
+
+            $('#forname').combobox({
+                url: '@Url.Action("GetUsers", "EbayReplay")',
+                valueField: "Realname",
+                textField: "Realname",
+            });
+        }
+
+        function re(value) {
+            $.ajax({
+                url: '@Url.Action("IsRead", "EbayMessage")/' + value,
+                success: function (result) {
                     if (result) {
                         if (result.Msg != '0') {
-                            $.messager.show({
-                                title: '提示',
-                                msg: '分配出错',
-                                timeout: 2000,
-                                showType: 'slide'
+                            $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                                if (r) {
+                                    window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
+                                }
                             });
                         } else {
-                            alert("分配成功！");
-                            $('#dg').datagrid('reload');
-                            $('#dd').dialog('close');
+                            window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
                         }
                     }
                 }
             });
         }
+        function detail(value) {
+            var url_str = '@Url.Action("Edit", "EbayMessage")/' + value;
+            $('#c_dlg').load(url_str, function () {
+                $(this).dialog({
+                    title: '详细信息',
+                    width: '800',
+                    modal: true,
+                    loadingMessage: '正在加载...',
+                    buttons: [{
+                        text: '关闭',
+                        handler: function () {
+                            $('#c_dlg').dialog('close');
+                        }
+                    }]
+                });
+            }).dialog('open');
+        }
 
-        $('#forname').combobox({
-            url: '@Url.Action("GetUsers", "EbayReplay")',
-            valueField: "Realname",
-            textField: "Realname",
-        });
-    }
-
-    function re(value) {
-        $.ajax({
-            url: '@Url.Action("IsRead", "EbayMessage")/' + value,
-            success: function(result) {
-                if (result) {
-                    if (result.Msg != '0') {
-                        $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function(r) {
-                            if (r) {
-                                window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
-                            }
-                        });
-                    } else {
-                        window.open('@Url.Action("Create", "EbayMessageRe")/' + value)
-                    }
-                }
-            }
-        });
-    }
-    function detail(value) {
-        var url_str = '@Url.Action("Edit", "EbayMessage")/' + value;
-        $('#c_dlg').load(url_str, function () {
-            $(this).dialog({
-                title: '详细信息',
-                width: '800',
-                modal: true,
-                loadingMessage: '正在加载...',
-                buttons: [{
-                    text: '关闭',
-                    handler: function () {
-                        $('#c_dlg').dialog('close');
-                    }
-                }]
-            });
-        }).dialog('open');
-    }
-
-    function datecheck(value) {
-        var day = new Date("2000-01-02");
-        var date = new Date(getOnlyDate(value));
-        if (date < day)
-            return "";
-        return getDate(value);
-    }
+        function datecheck(value) {
+            var day = new Date("2000-01-02");
+            var date = new Date(getOnlyDate(value));
+            if (date < day)
+                return "";
+            return getDate(value);
+        }
     </script>
-  
+
     <div data-options="region:'west',split:true,title:'@Html.Language("分类")'" style="width: 150px; padding: 10px;">
-        <ul id="tt1" class="easyui-tree"></ul>
+        <ul id="uitree" class="easyui-tree"></ul>
     </div>
     <div region="center">
         <table id="dg">
             <thead>
                 <tr>
                     <th field="Id" width="60" checkbox="true"></th>
-                    <th field="MessageType" width="150" sortable="true">@Html.Language("消息类型")
+                    <th field="MessageType" width="150" sortable="true">
+                        @Html.Language("消息类型")
                     </th>
-                      <th field="Shop" width="140"  sortable="true">@Html.Language("店铺")
+                    <th field="Shop" width="140" sortable="true">
+                        @Html.Language("店铺")
                     </th>
-                    <th field="SenderID" width="140" sortable="true">@Html.Language("买家信息")
-                    </th>
-
-                    <th field="Subject" width="140" formatter="url" sortable="true">@Html.Language("消息主题")
-                    </th>
-
-                    <th field="MessageStatus" width="50" sortable="true">@Html.Language("消息状态")
+                    <th field="SenderID" width="140" sortable="true">
+                        @Html.Language("买家信息")
                     </th>
 
-                    <th field="CreationDate" width="160" formatter="getDate" sortable="true">@Html.Language("创建")
+                    <th field="Subject" width="140" formatter="url" sortable="true">
+                        @Html.Language("消息主题")
                     </th>
-                      <th field="ReplayBy" width="100"  sortable="true">@Html.Language("回复人")
+
+                    <th field="MessageStatus" width="50" sortable="true">
+                        @Html.Language("消息状态")
                     </th>
-                     <th field="CreateOn" width="160" formatter="getDate" sortable="true">@Html.Language("同步")
+
+                    <th field="CreationDate" width="160" formatter="getDate" sortable="true">
+                        @Html.Language("创建")
                     </th>
-                    
-                    <th field="ReplayOn" width="160" formatter="getDate" sortable="true">@Html.Language("回复信息")
+                    <th field="ReplayBy" width="100" sortable="true">
+                        @Html.Language("回复人")
                     </th>
-                    
+                    <th field="CreateOn" width="160" formatter="getDate" sortable="true">
+                        @Html.Language("同步")
+                    </th>
+
+                    <th field="ReplayOn" width="160" formatter="getDate" sortable="true">
+                        @Html.Language("回复信息")
+                    </th>
+
 
                 </tr>
             </thead>
         </table>
         <div id="toolbar">
-              @Html.Language("账户")<input id="aa" type="text">
+            @Html.Language("账户")<input id="txtStore" type="text">
             @Html.Language("开始时间")：<input type="text" id="txtStartDate" class="easyui-datebox" style="width: 100px" readonly="readonly" />&nbsp;
             @Html.Language("结束时间")：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width: 100px" />&nbsp;&nbsp;
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'@Html.Language("查询关键字")',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">@Html.Language("导出数据")</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="toby();">@Html.Language("分配")</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="syn();">@Html.Language("同步")</a>
-            
+
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'MessageType'">@Html.Language("消息类型")</div>

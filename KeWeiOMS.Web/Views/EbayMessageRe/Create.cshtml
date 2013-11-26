@@ -4,13 +4,12 @@
 }
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <script type="text/javascript">
-
     $(function () {
         $('#c_MessageId').attr("value", '@ViewData["mid"]');
         $('#dg').datagrid({
             singleSelect: true,
             onClickRow: function (index, row) {
-                $.getJSON("/Email/getEmailTempDetail/" + row.Id, function(json) {
+                $.getJSON("/Email/getEmailTempDetail/" + row.Id, function (json) {
                     $('#c_BodyRe').attr('value', json[0].Content);
                 });
             }
@@ -26,7 +25,7 @@
             },
             onDblClickRow: function (i, r) {
                 window.open('@Url.Action("Edit", "Order")/' + r.Id);
-              },
+            },
             onExpandRow: function (index, row) {
                 $('#ddv-' + index).panel({
                     border: false,
@@ -44,51 +43,51 @@
             url: '@Url.Action("GetOldMail", "EbayMessageRe")/@ViewData["buyer"]'
 
         });
-      
+
         $('#dd').dialog('close');
     });
     function send() {
         if ($('#c_BodyRe').attr("value") == "") {
-            alert("回复顶不能为空！");
+            alert('@Html.Language("回复顶不能为空！")');
         }
         else {
 
             $.ajax({
                 url: '@Url.Action("IsRead", "EbayMessage")/@ViewData["mid"]',
-                success: function(result) {
+                success: function (result) {
                     if (result) {
                         if (result.Msg != '0') {
-                            $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function(r) {
+                            $.messager.confirm('@Html.Language("确认")', '@Html.Language("该邮件已经回复过，是否进入再次回复")?', function (r) {
                                 if (r) {
                                     $('#c_form').form('submit', {
                                         url: '@Url.Action("Create", "EbayMessageRe")',
-                                        onSubmit: function() {
+                                        onSubmit: function () {
                                             return $(this).form('validate');
                                         },
-                                        success: function(msg) {
+                                        success: function (msg) {
                                             var result = $.parseJSON(msg);
                                             if (result.IsSuccess) {
                                                 $.ajax({
                                                     url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
-                                                    success: function(result) {
+                                                    success: function (result) {
                                                         if (result) {
                                                             if (result.Msg != '0') {
                                                                 $.messager.show({
-                                                                    title: '提示',
-                                                                    msg: '已进入下一封未读！',
+                                                                    title: '@Html.Language("提示")',
+                                                                    msg: '@Html.Language("已进入下一封未读")！',
                                                                     timeout: 2000,
                                                                     showType: 'slide'
                                                                 });
                                                                 window.location = "/EbayMessageRe/Create/" + result.Msg;
                                                             } else {
-                                                                alert("已经到最后一封未读，点击“确定”关闭！");
+                                                                alert('@Html.Language("已经到最后一封未读，点击“确定”关闭！")');
                                                                 window.close();
                                                             }
                                                         }
                                                     }
                                                 });
                                             } else {
-                                                alert("保存失败!");
+                                                alert("@Html.Language("保存失败")!");
                                             }
                                         }
                                     });
@@ -97,26 +96,26 @@
                         } else {
                             $('#c_form').form('submit', {
                                 url: '@Url.Action("Create", "EbayMessageRe")',
-                                onSubmit: function() {
+                                onSubmit: function () {
                                     return $(this).form('validate');
                                 },
-                                success: function(msg) {
+                                success: function (msg) {
                                     var result = $.parseJSON(msg);
                                     if (result.IsSuccess) {
                                         $.ajax({
                                             url: '@Url.Action("GetNext", "EbayMessageRe")/@ViewData["mid"]',
-                                            success: function(result) {
+                                            success: function (result) {
                                                 if (result) {
                                                     if (result.Msg != '0') {
                                                         $.messager.show({
-                                                            title: '提示',
-                                                            msg: '已进入下一封未读！',
+                                                            title: '@Html.Language("提示")',
+                                                            msg: '@Html.Language("已进入下一封未读")！',
                                                             timeout: 2000,
                                                             showType: 'slide'
                                                         });
                                                         window.location = "/EbayMessageRe/Create/" + result.Msg;
                                                     } else {
-                                                        alert("已经到最后一封未读，点击“确定”关闭！");
+                                                        alert("@Html.Language("已经到最后一封未读，点击“确定”关闭")！");
                                                         window.close();
                                                     }
                                                 }
@@ -124,7 +123,7 @@
                                             }
                                         });
                                     } else {
-                                        alert("保存失败!");
+                                        alert("@Html.Language("保存失败")!");
                                     }
                                 }
                             });
@@ -140,7 +139,7 @@
     }
     function onlySend() {
         if ($('#c_BodyRe').attr("value") == "") {
-            alert("回复顶不能为空！");
+            alert("@Html.Language("回复顶不能为空")！");
         }
         else {
 
@@ -149,7 +148,7 @@
                 success: function (result) {
                     if (result) {
                         if (result.Msg != '0') {
-                            $.messager.confirm('确认', '该邮件已经回复过，是否进入再次回复?', function (r) {
+                            $.messager.confirm('@Html.Language("确认")', '@Html.Language("该邮件已经回复过，是否进入再次回复")?', function (r) {
                                 if (r) {
                                     $('#c_form').form('submit', {
                                         url: '@Url.Action("Create", "EbayMessageRe")',
@@ -159,11 +158,11 @@
                                         success: function (msg) {
                                             var result = $.parseJSON(msg);
                                             if (result.IsSuccess) {
-                                                alert("回复成功！");
+                                                alert("@Html.Language("回复成功")！");
                                                 $('#c_BodyRe').attr("value", "")
                                             }
                                             else {
-                                                alert("保存失败!");
+                                                alert("@Html.Language("保存失败")!");
                                             }
                                         }
                                     });
@@ -179,26 +178,23 @@
                                 success: function (msg) {
                                     var result = $.parseJSON(msg);
                                     if (result.IsSuccess) {
-                                        alert("回复成功！");
+                                        alert("@Html.Language("回复成功")！");
                                         $('#c_BodyRe').attr("value", "")
                                     }
                                     else {
-                                        alert("保存失败!");
+                                        alert("@Html.Language("保存失败")!");
                                     }
                                 }
                             });
-
-
                         }
                     }
-
                 }
             })
         }
     }
 
     function olddetail(v, r, i) {
-        return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(" + v + ")\'>详细</a>"
+        return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'detail(" + v + ")\'>@Html.Language("详细")</a>"
     }
     function detail(value) {
 
@@ -262,17 +258,17 @@
             html += "<img src='/Content/imgs/Repeat.gif'> ";
         return html;
     }
-   
+
     function forward() {
         $('#dd').dialog({
             buttons: [{
-                text: '确定',
+                text: '@Html.Language("确定")',
                 iconCls: 'icon-ok',
                 handler: function () {
                     forwarding();
                 }
             }, {
-                text: '取消',
+                text: '@Html.Language("取消")',
                 handler: function () {
                     $('#dd').dialog('close');
                 }
@@ -292,10 +288,10 @@
             url: "@Url.Action("EditProcessed", "EbayMessageRe")/",
             data: "Id=@ViewData["mid"]",
             success: function (result) {
-                alert("标记成功!");
+                alert("@Html.Language("标记成功")!");
                 window.close();
-       }
-   });
+            }
+        });
     }
     function forwarding() {
         if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
@@ -303,17 +299,17 @@
                 type: 'post',
                 url: "@Url.Action("Forward", "EbayMessage")/",
                 data: "ids= @ViewData["mid"]&t=" + $('#forname').combobox("getValue") + "&m=" + $('#forqu').attr("value"),
-                success: function(result) {
+                success: function (result) {
                     if (result) {
                         if (result.Msg != '0') {
                             $.messager.show({
-                                title: '提示',
-                                msg: '转发出错',
+                                title: '@Html.Language("提示")',
+                                msg: '@Html.Language("转发出错")',
                                 timeout: 2000,
                                 showType: 'slide'
                             });
                         } else {
-                            alert("转发成功！");
+                            alert("@Html.Language("转发成功")！");
                             window.close();
                         }
                     }
@@ -322,151 +318,160 @@
             });
         }
         else {
-            alert("回复人员、转发原因不能为空！！");
+            alert("@Html.Language("回复人员、转发原因不能为空")！！");
         }
     }
-
 </script>
 
-<body >
-
-
+<body>
     <div class="easyui-layout" style="width:100%;height:1500px;">
         <div data-options="region:'north'" style="height:400px">
             <div style="background-color:lightgray">
-                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账号:&nbsp;@ViewData["buyer"] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>提问时间:&nbsp;@ViewData["creation"]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店铺名称:&nbsp;@ViewData["Shop"]&nbsp; </p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>标题:&nbsp;@ViewData["sub"]</p></label>
-                </div>
-                <div>
-                    <table >
-                      
-                        <tr>
-                            <td valign="top">&nbsp;&nbsp;<label>邮件内容:</label>
-                            </td>
-                            <td colspan="9"  valign="top">
-                                <div style="height:300px;overflow-y:auto; width:880px;" id="r-div">
-                                     
-                                    @{WriteLiteral(ViewData["bod"]);}
-</div>
-                               
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-        </div>
-   
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("账号"):&nbsp;@ViewData["buyer"] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("提问时间"):&nbsp;@ViewData["creation"]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("店铺名称"):&nbsp;@ViewData["Shop"]&nbsp; </p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("标题"):&nbsp;@ViewData["sub"]</p></label>
+            </div>
+            <div>
+                <table>
 
-        <div data-options="region:'east',split:true"  style="width:250px;">
-            <table id="dg" class="easyui-datagrid" style="width: 430px; height: 500px"
-                    singleselect="true" data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
-                    <thead>
-                        <tr>
-                            <th data-options="field:'Id',hidden:true" ></th>
-                            <th data-options="field:'Title',width:150">情况名称</th>
-                            <th data-options="field:'Content',width:280">回复内容</th>
-                        </tr>
-                    </thead>
+                    <tr>
+                        <td valign="top">
+                            &nbsp;&nbsp;<label>@Html.Language("邮件内容"):</label>
+                        </td>
+                        <td colspan="9" valign="top">
+                            <div style="height:300px;overflow-y:auto; width:880px;" id="r-div">
+
+                                @{WriteLiteral(ViewData["bod"]);}
+                            </div>
+
+                        </td>
+                    </tr>
                 </table>
+            </div>
         </div>
-       
+
+
+        <div data-options="region:'east',split:true" style="width:250px;">
+            <table id="dg" class="easyui-datagrid" style="width: 430px; height: 500px"
+                   singleselect="true" data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
+                <thead>
+                    <tr>
+                        <th data-options="field:'Id',hidden:true"></th>
+                        <th data-options="field:'Title',width:150">@Html.Language("情况名称")</th>
+                        <th data-options="field:'Content',width:280">@Html.Language("回复内容")</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
 
         <div data-options="region:'center',iconCls:'icon-ok'">
             @using (Html.BeginForm("Create", "EbayMessageRe", FormMethod.Post, new { id = "c_form" }))
-                {
-                    <fieldset style="border: 0">
-                        <table class="editForm">
-                            <tr>
-                                <td style="display: none">
-                                    @Html.TextBoxFor(model => model.MessageId, new { @id = "c_MessageId", @readOnly = "readOnly", style = "width:700px;" })
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @Html.LabelFor(model => model.BodyRe, "回复内容:")
-                                </td>
-                                <td>
-                                    @Html.TextAreaFor(model => model.BodyRe, new { @id = "c_BodyRe", style = "width:700px;height:150px;resize:none; font-size: 12px;" })
-                                </td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td align="center">
-                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="onlySend()">回复</a>
-                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">回复并进入下一封未读</a>
-                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="forward()">转发</a>
-                                    <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="EditProcessed()">标记已处理</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </fieldset>
-                }
-             
-               <fieldset>
-                <legend>往来邮件</legend>
+            {
+                <fieldset style="border: 0">
+                    <table class="editForm">
+                        <tr>
+                            <td style="display: none">
+                                @Html.TextBoxFor(model => model.MessageId, new { @id = "c_MessageId", @readOnly = "readOnly", style = "width:700px;" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.LabelFor(model => model.BodyRe, @Html.Language("回复内容") + ":")
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(model => model.BodyRe, new { @id = "c_BodyRe", style = "width:700px;height:150px;resize:none; font-size: 12px;" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td align="center">
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="onlySend()">@Html.Language("回复")</a>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="send()">@Html.Language("回复并进入下一封未读")</a>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="forward()">@Html.Language("转发")</a>
+                                <a href="javascript:void(0)" class="easyui-linkbutton" iconcls='icon-ok' onclick="EditProcessed()">@Html.Language("标记已处理")</a>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            }
+
+            <fieldset>
+                <legend>@Html.Language("往来邮件")</legend>
                 <table id="oldmail" class="easyui-datagrid" style="width: 1000px; height:150px">
                     <thead>
                         <tr>
                             <th data-options="field:'Id',width:40" style="display: none" formatter="olddetail"></th>
-                            <th data-options="field:'ItemId',width:100">商品编号</th>
-                           
-                            <th data-options="field:'MessageStatus',width:100">状态</th>
-                            <th data-options="field:'CreationDate',width:130" formatter="getDate">时间</th>
+                            <th data-options="field:'ItemId',width:100">@Html.Language("商品编号")</th>
+
+                            <th data-options="field:'MessageStatus',width:100">@Html.Language("状态")</th>
+                            <th data-options="field:'CreationDate',width:130" formatter="getDate">@Html.Language("时间")</th>
                         </tr>
                     </thead>
                 </table>
-               </fieldset>
-              <fieldset>
-                <legend>关联订单</legend>
-           <table id="order" class="datagrid-cell" style="width: 1000px; height: 150px"    >
-                <thead>
-                    <tr>
-                        <th field="OrderNo" width="100" formatter="GetOrder">订单编号
+            </fieldset>
+            <fieldset>
+                <legend>@Html.Language("关联订单")</legend>
+                <table id="order" class="datagrid-cell" style="width: 1000px; height: 150px">
+                    <thead>
+                        <tr>
+                            <th field="OrderNo" width="100" formatter="GetOrder">
+                                @Html.Language("订单编号")
+                        </th>
+                        <th field="Status" width="150" formatter="GeStatus">
+                            @Html.Language("订单状态")
                     </th>
-                        <th field="Status" width="150" formatter="GeStatus">订单状态
-                    </th>
-                        <th field="CurrencyCode" width="100" formatter="GetAmount">货币
-                    </th>
-                        <th field="BuyerName" width="130" formatter="GetBuyer">买家
-                    </th>
-                        <th field="Country" width="80">国家
-                    </th>
-                        <th field="LogisticMode" width="100">发货方式
-                    </th>
-                        <th field="TrackCode" width="100">Code
-                    </th>
-                        <th field="Weight" width="100">Weight
-                    </th>
-                        <th field="GenerateOn" width="200" formatter="getDate">时间
-                    </th>
-                         
-                    </tr>
-                </thead>
-            </table>
-                  </fieldset>
-        </div>
-    </div>
+                    <th field="CurrencyCode" width="100" formatter="GetAmount">
+                        @Html.Language("货币")
+                </th>
+                <th field="BuyerName" width="130" formatter="GetBuyer">
+                    @Html.Language("买家")
+            </th>
+            <th field="Country" width="80">
+                @Html.Language("国家")
+        </th>
+        <th field="LogisticMode" width="100">
+            @Html.Language("发货方式")
+    </th>
+    <th field="TrackCode" width="100">
+        @Html.Language("Code")
+</th>
+<th field="Weight" width="100">
+    @Html.Language("Weight")
+</th>
+<th field="GenerateOn" width="200" formatter="getDate">
+    @Html.Language("时间")
+</th>
+
+</tr>
+</thead>
+</table>
+</fieldset>
+</div>
+</div>
 
 
 
-        <div id="d_dlg"></div>
- 
+<div id="d_dlg"></div>
 
-        <div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
-            <table>
-                <tr>
-                    <td>
-                        <label>转发给回复人：</label>
-                    </td>
-                    <td>
-                        <input id="forname" required="true" style="width:150px"/>
-                    </td>
-                </tr>
-                <tr>-
-                    <td>
-                        <label>转发原因：</label></td>
-                    <td>
-                        <textarea id="forqu" style="resize:none" required="true"></textarea>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </body>
+
+<div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
+    <table>
+        <tr>
+            <td>
+                <label>@Html.Language("转发给回复人")：</label>
+            </td>
+            <td>
+                <input id="forname" required="true" style="width:150px" />
+            </td>
+        </tr>
+        <tr>
+            -
+            <td>
+                <label>@Html.Language("转发原因")：</label>
+            </td>
+            <td>
+                <textarea id="forqu" style="resize:none" required="true"></textarea>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
