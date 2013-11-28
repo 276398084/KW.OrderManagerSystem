@@ -128,12 +128,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <Compile Include="Common\Ali\AliMessage.cs" />
-    <Compile Include="Common\Statistics\KPIData.cs" />
-=======
     <Compile Include="Common\Language.cs" />
->>>>>>> kewei/master
+    <Compile Include="Common\Statistics\KPIData.cs" />
     <Compile Include="Common\Utils\AliUtil.cs" />
     <Compile Include="Common\Ali\AliOrderListType.cs" />
     <Compile Include="Common\AudioHelper.cs" />
@@ -206,6 +203,7 @@
     <Compile Include="Controllers\OrderAddresController.cs" />
     <Compile Include="Controllers\OrderAmountController.cs" />
     <Compile Include="Controllers\OrderBuyerController.cs" />
+    <Compile Include="Controllers\LanguageController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\OrderPackRecordController.cs" />
     <Compile Include="Controllers\OrderPeiRecordController.cs" />
@@ -281,8 +279,11 @@
     <Content Include="Content\images\tab_tool_mac.ico" />
     <Content Include="Content\imgs\bg.png" />
     <Content Include="OMSWebService.asmx" />
+    <Content Include="Scripts\easyUI\easyloader.js" />
     <Content Include="Scripts\easyUI\EasyUIUtil.js" />
     <Content Include="Scripts\easyUI\jquery.cookie.js" />
+    <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
+    <Content Include="Scripts\easyUI\jquery.min.js" />
     <Content Include="Scripts\easyUI\jquery.portal.js" />
     <Content Include="Scripts\easyUI\themes\metro-blue\accordion.css" />
     <Content Include="Scripts\easyUI\themes\metro-blue\calendar.css" />
@@ -663,7 +664,7 @@
     <Content Include="Scripts\js\common.js" />
     <Content Include="Scripts\easyUI\datagrid-detailview.js" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
-    <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
+    <Content Include="Scripts\easyUI\jquery.easyui.min_.js" />
     <Content Include="Scripts\easyUI\locale\easyui-lang-af.js" />
     <Content Include="Scripts\easyUI\locale\easyui-lang-bg.js" />
     <Content Include="Scripts\easyUI\locale\easyui-lang-ca.js" />
@@ -1228,6 +1229,7 @@
     <Content Include="Views\UserSetup\Index.cshtml" />
     <Content Include="Views\Order\OrderReturnList.cshtml" />
     <Content Include="Views\Order\ReturnScan.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\WarehouseStock\StockMove.cshtml" />
     <Content Include="Views\Statistics\KPICount.cshtml" />
     <Content Include="Views\SendPackageOrder\Index.cshtml" />
@@ -1249,6 +1251,11 @@
     <Content Include="XMLFile1.xml" />
     <None Include="Views\Order\PackMove.cshtml" />
     <Content Include="Views\Order\OrderUpload.cshtml" />
+=======
+    <Content Include="Views\Language\Index.cshtml" />
+    <Content Include="Views\Language\Create.cshtml" />
+    <Content Include="Views\Language\Edit.cshtml" />
+>>>>>>> kewei/master
     <None Include="Web References\cn.com.webxml.webservice\ForexRmbRateWebService.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

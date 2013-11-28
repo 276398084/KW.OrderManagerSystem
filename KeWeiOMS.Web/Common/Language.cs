@@ -46,13 +46,14 @@ namespace KeWeiOMS.Web
         public static string GetString(string language, string nativeText)
         {
             string nativeLanguage = "zh-Hans";
-            if (language.Equals("zh-CN", StringComparison.OrdinalIgnoreCase)) { language = nativeLanguage; }
-            if (nativeText == "ShowLanguageLocale123") { return language; }
-            if (string.IsNullOrWhiteSpace(language))
+           if (string.IsNullOrWhiteSpace(language))
             {
                 //没有指定显示语言的情况下
                 language = System.Web.HttpContext.Current.Request.UserLanguages.Length > 0 ? System.Web.HttpContext.Current.Request.UserLanguages[0] : nativeLanguage;
-            }
+            } 
+            if (language.Equals("zh-CN", StringComparison.OrdinalIgnoreCase)) { language = nativeLanguage; }
+            if (nativeText == "ShowLanguageLocale123") { return language; }
+            
             //System.Web.UI.Page page=System.Web.HttpContext.Current.CurrentHandler  as System.Web.UI.Page;
             //page.ClientScript.RegisterClientScriptBlock(page.GetType(), "language", "alert('sss')", true);
             if (string.IsNullOrWhiteSpace(nativeText)) { nativeText = string.Empty; } else { nativeText = nativeText.Trim(); }
