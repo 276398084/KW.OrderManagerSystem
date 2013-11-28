@@ -1,0 +1,101 @@
+﻿@{
+    ViewBag.Title = KeWeiOMS.Web.Language.GetString("界面语言");
+}
+<body class="easyui-layout">
+    <div region="center">
+        <table id="dg" fitcolumns="true" class="easyui-datagrid"
+               data-options="onLoadError:onLoadError,toolbar:'#toolbar',rownumbers:true,fitcolumns:true,singleSelect:true,pagination:true,collapsible:true,pageSize:40, pageList: [20, 40, 60, 80, 100],url:'@Url.Action("List", "Language")',method:'post'">
+            <thead>
+                <tr>
+                    <th data-options="field:'Id',width:40,sortable:true,align:'center'">@Html.Language("编号")</th>
+                    <th data-options="field:'Language',width:60,sortable:true,align:'center'">@Html.Language("语言")</th>
+                    <th data-options="field:'NativeLanguage',width:100,sortable:true">@Html.Language("母语")</th>
+                    <th data-options="field:'Text',width:200,sortable:true">@Html.Language("文本")</th>
+                    <th data-options="field:'Enable',width:40,sortable:true,align:'center'">@Html.Language("启用")</th>
+                    <th data-options="field:'Note',width:200,sortable:true">@Html.Language("备注")</th>
+                </tr>
+            </thead>
+        </table>
+
+        <div id="toolbar">
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">@Html.Language("添加")</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">@Html.Language("编辑")</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">@Html.Language("删除")</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+
+        </div>
+        <div id="mm" style="width: 120px">
+            <div data-options="name:'Language'">@Html.Language("语言")</div>
+            <div data-options="name:'NativeLanguage'">@Html.Language("母语")</div>
+            <div data-options="name:'Text'">@Html.Language("文本")</div>
+            <div data-options="name:'Note'">@Html.Language("备注")</div>
+        </div>
+    </div>
+    <div id="c_dlg"></div>
+    <div id="e_dlg"></div>
+    <script language="javascript" type="text/javascript">
+        function onLoadError() {
+            alert("@Html.Language("载入错误")");
+        }
+        //获取选中行
+        function getselectedRow() {
+            var row = $('#dg').datagrid('getSelected');
+            if (row != undefined) {
+                if (row.hasOwnProperty('Id')) {
+                    var id = row['Id'];
+                    return id;
+                }
+            }
+            $.messager.show({
+                title: '@Html.Language("提示")',
+                msg: '@Html.Language("请选择行")',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
+        }
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create", "Language")';
+            showdlg(url_str, 'c_dlg', ajaxAdd)
+        }
+        //编辑框
+        function e_dlg() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Edit", "Language")/' + id;
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
+        }
+        //异步新建提交
+        function ajaxAdd() {
+            formPost('c_form', '@Url.Action("Create", "Language")', 'c_dlg', 'dg');
+        }
+        //异步修改提交
+        function ajaxEdit() {
+            formPost('e_form', '@Url.Action("Edit", "Language")', 'e_dlg', 'dg');
+        }
+        //删除
+        function del() {
+            var id = getselectedRow();
+            if (id != undefined) {
+                var url = '@Url.Action("Delete", "Language")/' + id;
+                delData(url, 'dg');
+            }
+        }
+        //搜索
+        function doSearch() {
+            //debugger;
+            //search = $('#txtSearch').searchbox("getName") + "='" + $('#txtSearch').searchbox("getValue") + "'";
+            search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            //alert(search);
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+    </script>
+
+
+
+    ﻿
+</body>

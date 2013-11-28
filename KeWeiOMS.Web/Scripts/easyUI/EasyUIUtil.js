@@ -9,6 +9,7 @@
  * @param themeName
  *            主题名称
  */
+
 changeTheme = function (themeName) {
     //delCookie('Theme');
     //SetCookie('Theme', themeName);
@@ -33,7 +34,42 @@ setTheme = function (themeName) {
 
     $("#layout_north_pfMenu .menu-item").removeClass("accordion-expand");
     $("#layout_north_pfMenu .menu-item[l=" + themeName + "]").addClass("accordion-expand");
-}
+};
+changeLocale = function (lang) {
+    $.cookie('Language', lang);
+    //setLocale(lang);
+    location.reload();
+};
+setLocale = function (lang) {
+    if (lang == null) { lang = $.cookie('Language'); }
+    if (lang == null) { lang = "zh-Hans"; }
+
+    $("#layout_north_Language .menu-item").removeClass("accordion-expand");
+    $("#layout_north_Language .menu-item[l=" + lang + "]").addClass("accordion-expand");
+
+    //var $easyuiLocale = $('#easyuiLocale');
+    //var url = $easyuiLocale.attr('src');
+    //var href = url.substring(0, url.indexOf('locale')) + 'locale/easyui-lang-' + transformLocaleStr(lang) + '.js';
+    //$easyuiLocale.remove();
+   
+    //var href = '/Scripts/easyUI/locale/easyui-lang-' + transformLocaleStr(lang) + '.js';
+    ////$("<script><\/script>").attr({ src: href, type: 'text/javascript', id: 'easyuiLocale' }).appendTo($('head'));
+    ////document.write("<script src='" + href + "'><\/script>");
+};
+transformLocaleStr = function (lang) {
+    switch (lang) {
+        case "zh-Hans":
+            return "zh_cn";
+            break;
+        case "en-US":
+            return "en";
+            break;
+        default:
+            return "zh_cn";
+    }
+    return "zh_cn";
+};
+
 
 //function SetCookie(name,value)//两个参数，一个是cookie的名子，一个是值
 

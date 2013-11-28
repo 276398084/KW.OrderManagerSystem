@@ -805,14 +805,24 @@ namespace KeWeiOMS.Web
             }
 
         }
-        public static string OrdeerBy(string sort, string order)
+        public static string OrdeerBy(string sort, string order, string defaultSort)
         {
-            string orderby = " order by Id desc ";
+            string orderby = " order by " + defaultSort;
             if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
             {
                 orderby = " order by " + sort + " " + order;
             }
             return orderby;
+        }
+        public static string OrdeerBy(string sort, string order)
+        {
+            return OrdeerBy(sort, order, "Id desc");
+            //string orderby = " order by Id desc ";
+            //if (!string.IsNullOrEmpty(sort) && !string.IsNullOrEmpty(order))
+            //{
+            //    orderby = " order by " + sort + " " + order;
+            //}
+            //return orderby;
         }
         public static string SqlWhere(string search)
         {
@@ -875,7 +885,7 @@ and  op.sku=Products.SKU group by op.SKU)";
             session.CreateSQLQuery(sql).UniqueResult();
             session.Close();
         }
-    }
+     }
 
 
     /// <summary>

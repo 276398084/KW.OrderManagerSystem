@@ -286,13 +286,13 @@
             <thead>
                 <tr>
                     <th field="Id" width="60" checkbox="true"></th>
-                    <th field="MessageType" width="150" sortable="true">
+                    @*<th field="MessageType" width="150" sortable="true">
                         @Html.Language("消息类型")
-                    </th>
-                    <th field="Shop" width="140" sortable="true">
+                    </th>*@
+                    <th field="Shop" width="120" sortable="true">
                         @Html.Language("店铺")
                     </th>
-                    <th field="SenderID" width="140" sortable="true">
+                    <th field="SenderID" width="120" sortable="true">
                         @Html.Language("买家信息")
                     </th>
 
@@ -300,21 +300,21 @@
                         @Html.Language("消息主题")
                     </th>
 
-                    <th field="MessageStatus" width="50" sortable="true">
+                    <th field="MessageStatus" width="80" sortable="true">
                         @Html.Language("消息状态")
                     </th>
 
-                    <th field="CreationDate" width="160" formatter="getDate" sortable="true">
+                    <th field="CreationDate" width="140" formatter="getDate" sortable="true">
                         @Html.Language("创建")
                     </th>
                     <th field="ReplayBy" width="100" sortable="true">
                         @Html.Language("回复人")
                     </th>
-                    <th field="CreateOn" width="160" formatter="getDate" sortable="true">
+                    <th field="CreateOn" width="140" formatter="getDate" sortable="true">
                         @Html.Language("同步")
                     </th>
 
-                    <th field="ReplayOn" width="160" formatter="getDate" sortable="true">
+                    <th field="ReplayOn" width="140" formatter="getDate" sortable="true">
                         @Html.Language("回复信息")
                     </th>
 

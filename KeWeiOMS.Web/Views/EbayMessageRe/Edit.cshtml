@@ -5,12 +5,12 @@
     <script type="text/javascript">
 
     function operate(v, r, i) {
-        return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'de(" + v + ")\'>详细</a>"
+        return "<a href=\'javascript:void(0)\' class=\'easyui-linkbutton\' plain=\'true\' onclick=\'de(" + v + ")\'>@Html.Language("详细")</a>"
     }
     function de(value) {
         $.getJSON('@Url.Action("GetDetail", "EbayMessageRe")/' + value, function (json) {
             $("#r_dlg").dialog({
-                title: '详情',
+                title: '@Html.Language("详情")',
                 width: 500,
                 height: 300,
                 content: function () {
@@ -18,7 +18,7 @@
                 },
                
                 buttons: [{
-                    text: '关闭',
+                    text: '@Html.Language("关闭")',
                     handler: function () {
                         $("#r_dlg").dialog('close');
                     }
@@ -34,13 +34,13 @@
 	<tr>
 		<td>
             
-            @Html.LabelFor(model => model.MessageType, "消息类型:")
+            @Html.LabelFor(model => model.MessageType, KeWeiOMS.Web.Language.GetString("消息类型") + ":")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.MessageType, new { @id = "e_MessageType", @readonly = "readonly" })
 		</td>
          <td>
-            @Html.LabelFor(model => model.SenderID, "买家Id:")
+            @Html.LabelFor(model => model.SenderID, KeWeiOMS.Web.Language.GetString("买家Id") + ":")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.SenderID, new { @id = "e_SenderID", @readonly = "readonly" })
@@ -51,7 +51,7 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.Subject, "消息主题:")
+            @Html.LabelFor(model => model.Subject, KeWeiOMS.Web.Language.GetString("消息主题") + ":")
 		</td>
 		<td colspan="3">
             @Html.TextAreaFor(model => model.Subject, new { @id = "e_Subject", @style = "width:600px;height:40px;resize:none", @readonly = "readonly" })
@@ -60,7 +60,7 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.Body, "消息内容:")
+            @Html.LabelFor(model => model.Body, KeWeiOMS.Web.Language.GetString("消息内容") + ":")
 		</td>
 		<td colspan="3">
               <div style="height:300px;overflow-y:auto; width:600px;" id="r-div">
@@ -73,13 +73,13 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.MessageStatus, "消息状态:")
+            @Html.LabelFor(model => model.MessageStatus, KeWeiOMS.Web.Language.GetString("消息状态") + ":")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.MessageStatus, new { @id = "e_MessageStatus", @readonly = "readonly" })
 		</td>	
        	<td>
-            @Html.LabelFor(model => model.ItemId, "商品编号:")
+            @Html.LabelFor(model => model.ItemId, KeWeiOMS.Web.Language.GetString("商品编号") + ":")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.ItemId, new { @id = "e_ItemId", @readonly = "readonly" })
@@ -89,13 +89,13 @@
 
 	<tr>
 		<td>
-            @Html.LabelFor(model => model.CreationDate, "问题创建时间:")
+            @Html.LabelFor(model => model.CreationDate, KeWeiOMS.Web.Language.GetString("问题创建时间") + ":")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.CreationDate, new { @id = "e_CreationDate", @readonly = "readonly" })
 		</td>
         <td>
-            @Html.LabelFor(model => model.CreateOn, "同步时间:")
+            @Html.LabelFor(model => model.CreateOn, KeWeiOMS.Web.Language.GetString("同步时间") + ":")
 		</td>
 		<td>
             @Html.TextBoxFor(model => model.CreateOn, new { @id = "e_CreateOn", @readonly = "readonly" })
@@ -103,23 +103,22 @@
 	</tr>
 </table>
 </fieldset>
-    
 <fieldset>
-        <legend>回复信息</legend>
+        <legend>@Html.Language("回复信息")</legend>
         <table id="e_old"  class="easyui-datagrid" style="width:700px;height:100px"
             url='@Url.Action("GetOld", "EbayMessageRe")/@ViewData["messageid"]' >
             <thead>
             <tr>
-                <th field="Id" width="60" formatter="operate">操作
+                <th field="Id" width="60" formatter="operate">@Html.Language("操作")
                 </th>
 
-                <th field="BodyRe" width="370">内容
+                <th field="BodyRe" width="370">@Html.Language("内容")
                 </th>
 
-                <th field="ReplayBy" width="100">回复人
+                <th field="ReplayBy" width="100">@Html.Language("回复人")
                 </th>
 
-                <th field="ReplayOn" width="160" formatter="getDate">回复时间
+                <th field="ReplayOn" width="160" formatter="getDate">@Html.Language("回复时间")
                 </th>
             </tr>
                 </thead>

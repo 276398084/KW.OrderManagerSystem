@@ -13,12 +13,6 @@
                 }
             });
         });
-        // changeTheme(getCookie("easyuiThemeName"));
-        //$('#mainframe').layout('collapse', 'east');
-        var lang = $.cookie('Language');
-        //alert(lang);
-        showLanguage(lang);
-
     });
 
     function getCookie(name)//取cookies函数
@@ -189,20 +183,6 @@
             });
         }
     }
- 
-   
-    function changeLanguage(lang) {
-        $.cookie('Language', lang);
-        showLanguage(lang);
-        location.reload();
-    }
-    function showLanguage(lang) {
-        if (lang == null) {
-            lang = "zh-Hans";
-        } 
-        $("#layout_north_Language .menu-item").removeClass("accordion-expand");
-        $("#layout_north_Language .menu-item[l=" + lang + "]").addClass("accordion-expand");
-    }
 </script>
 <style type="text/css">
     a {
@@ -230,8 +210,8 @@
                 <a href="#" id="loginOut" class="easyui-menubutton" data-options="iconCls:'icon-back'">@Html.Language("安全退出")</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </div>
             <div id="layout_north_Language" style="width: 120px; display: none;">
-                <div l="zh-Hans" onclick="changeLanguage('zh-Hans');">简体中文</div>
-                <div l="en-US" onclick="changeLanguage('en-US');">English</div>
+                <div l="zh-Hans" onclick="changeLocale('zh-Hans');">简体中文</div>
+                <div l="en-US" onclick="changeLocale('en-US');">English</div>
             </div>
             <div id="layout_north_pfMenu" style="width: 120px; display: none;">
                 <div l="default" onclick="changeTheme('default');">default</div>

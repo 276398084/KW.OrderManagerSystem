@@ -71,7 +71,7 @@ namespace KeWeiOMS.Web
                 if (strAction == action || action.IndexOf(strAction) != -1)
                 {
                     if (account.Permissions.FindIndex(
-              p =>
+              p => p.Code != null &&
               p.Code.ToString().ToUpper() ==
               controller.Trim().ToUpper() + "." + action.Trim().ToUpper()) == -1)
                     {
