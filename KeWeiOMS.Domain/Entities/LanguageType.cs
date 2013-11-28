@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace KeWeiOMS.Domain
 {
@@ -33,24 +34,33 @@ namespace KeWeiOMS.Domain
         /// <summary>
         /// 语言
         /// </summary>
+        [Required]
+        [Display(Name = "语言")]
         public virtual String Language { get; set; }
         /// <summary>
         /// 母语
         /// </summary>
+        [Required]
+        [Display(Name = "母语")]
         public virtual String NativeLanguage { get; set; }
 
         /// <summary>
         /// 显示的文本
         /// </summary>
+        [Required]
+        [Display(Name = "文本")]
         public virtual String Text { get; set; }
         /// <summary>
         /// 是否启用
         /// </summary>
+        [Required]
+        [Display(Name = "是否启用")]
         public virtual bool Enable { get; set; }
 
         /// <summary>
         /// 注释
         /// </summary>
+        [Display(Name = "注释")]
         public virtual String Note { get; set; }
     }
 }
