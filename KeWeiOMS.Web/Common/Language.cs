@@ -13,7 +13,7 @@ namespace KeWeiOMS.Web
     /// <summary>
     /// 导航菜单构造器
     /// </summary>
-    public static class Language
+    public static class Language 
     {
         private static IList<LanguageType> languageList = null;
         public static bool ReLoadLanguage()
@@ -46,6 +46,8 @@ namespace KeWeiOMS.Web
         public static string GetString(string language, string nativeText)
         {
             string nativeLanguage = "zh-Hans";
+            if (language.Equals("zh-CN", StringComparison.OrdinalIgnoreCase)) { language = nativeLanguage; }
+            if (nativeText == "ShowLanguageLocale123") { return language; }
             if (string.IsNullOrWhiteSpace(language))
             {
                 //没有指定显示语言的情况下
