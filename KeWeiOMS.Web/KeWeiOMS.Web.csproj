@@ -274,7 +274,7 @@
     <Content Include="Scripts\easyUI\EasyUIUtil.js" />
     <Content Include="Scripts\easyUI\jquery.cookie.js" />
     <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
-    <Content Include="Scripts\easyUI\jquery.min.js" />
+    <Content Include="Scripts\easyUI\jquery.min_.js" />
     <Content Include="Scripts\easyUI\jquery.portal.js" />
     <Content Include="Scripts\easyUI\themes\metro-blue\accordion.css" />
     <Content Include="Scripts\easyUI\themes\metro-blue\calendar.css" />
@@ -651,6 +651,8 @@
     <Content Include="product\images\loginInputWrapbg.gif" />
     <Content Include="product\images\logo_login.png" />
     <Content Include="Scripts\CreateControl.js" />
+    <Content Include="Scripts\easyUI\jquery.min.js" />
+    <Content Include="Scripts\easyUI\jquery-1.10.2.min.js" />
     <Content Include="Scripts\js\common.js" />
     <Content Include="Scripts\easyUI\datagrid-detailview.js" />
     <Content Include="Scripts\easyUI\jquery-1.8.0.min.js" />
