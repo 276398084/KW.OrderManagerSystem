@@ -324,7 +324,7 @@ namespace KeWeiOMS.Web.Controllers
                         results = OrderHelper.ImportByAmazon(account, file, NSession);
                         break;
                     case PlatformEnum.DH:
-                        //results = OrderHelper.ImportByB2C(account, file, NSession);
+
                         break;
                     case PlatformEnum.Gmarket:
                         results = OrderHelper.ImportByGmarket(account, file, NSession);
