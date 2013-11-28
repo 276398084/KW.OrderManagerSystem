@@ -349,10 +349,10 @@ namespace KeWeiOMS.Web.Controllers
             {
                 int intColCount = 0;
                 var mydt = new DataTable("myTableName");
-
                 DataColumn mydc;
                 DataRow mydr;
                 int col = 0;
+
                 var csvReader = new CsvReader(f, Encoding.Default);
                 List<string[]> liststrs = csvReader.ReadAllRow();
                 string ids = "";

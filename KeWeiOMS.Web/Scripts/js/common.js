@@ -53,6 +53,7 @@ function getTrue(value) {
         return "否";
 }
 
+
 var checks = [["1", "是"], ["0", "否"]];
 var checksall = [["ALL", "ALL"], ["1", "是"], ["0", "否"]];
 var checkOrdersAll = [["ALL", "ALL"], ["0", "处理后24小时未配货"], ["1", "配货后12小时未包装"], ["2", "包装后12小时未发货"]];
@@ -60,11 +61,11 @@ var checkPurAll = [["ALL", "ALL"], ["0", "3天未发货"], ["1", "5天未到货"
 var orderDateType = [["CreateOn", "同步时间"], ["ScanningOn", "扫描时间"]];
 var checkSex = '[["男"],["女"]]';
 var checkPrint = [["ALL", "ALL"], ["1", "未打印"], ["2", "已打印"]];
-
 var Packer = 5;
 var Examiner = 7;
 var Pei = 8;
 var Purchaser = 9;
+
 
 function formPost(form, url, dlg, dg, t, r) {
 

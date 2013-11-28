@@ -1,6 +1,6 @@
 ﻿@model KeWeiOMS.Domain.EbayMessageReType
 @{
-    //Layout = null;
+    //Layout = null;啊啊啊啊啊啊啊啊啊啊啊啊啊
 }
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <script type="text/javascript">
@@ -40,8 +40,7 @@
         });
 
         $('#oldmail').datagrid({
-            url: '@Url.Action("GetOldMail", "EbayMessageRe")',
-            queryParams: { "id": "@ViewData["buyer"]" }
+            url: '@Url.Action("GetOldMail", "EbayMessageRe")/@ViewData["buyer"]'
 
         });
 
@@ -287,18 +286,18 @@
         $.ajax({
             type: 'post',
             url: "@Url.Action("EditProcessed", "EbayMessageRe")/",
-            data: "m=@ViewData["mid"]",
+            data: "Id=@ViewData["mid"]",
             success: function (result) {
                 alert("@Html.Language("标记成功")!");
                 window.close();
             }
         });
-    }
-    function forwarding() {
-        if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
-            $.ajax({
-                type: 'post',
-                url: "@Url.Action("Forward", "EbayMessage")/",
+        }
+        function forwarding() {
+            if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
+                $.ajax({
+                    type: 'post',
+                    url: "@Url.Action("Forward", "EbayMessage")/",
                 data: "ids= @ViewData["mid"]&t=" + $('#forname').combobox("getValue") + "&m=" + $('#forqu').attr("value"),
                 success: function (result) {
                     if (result) {
@@ -325,12 +324,10 @@
 </script>
 
 <body>
-    <div class="easyui-layout" style="width: 100%; height: 1500px;">
-        <div data-options="region:'north'" style="height: 400px">
-            <div style="background-color: lightgray">
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账号:&nbsp;@ViewData["buyer"] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>提问时间:&nbsp;@ViewData["creation"]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;店铺名称:&nbsp;@ViewData["Shop"]&nbsp; </p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>标题:&nbsp;@ViewData["sub"]</p>
-                </label>
+    <div class="easyui-layout" style="width:100%;height:1500px;">
+        <div data-options="region:'north'" style="height:400px">
+            <div style="background-color:lightgray">
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("账号"):&nbsp;@ViewData["buyer"] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("提问时间"):&nbsp;@ViewData["creation"]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("店铺名称"):&nbsp;@ViewData["Shop"]&nbsp; </p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("标题"):&nbsp;@ViewData["sub"]</p></label>
             </div>
             <div>
                 <table>
@@ -399,7 +396,7 @@
 
             <fieldset>
                 <legend>@Html.Language("往来邮件")</legend>
-                <table id="oldmail" class="easyui-datagrid" style="width: 1000px; height: 150px">
+                <table id="oldmail" class="easyui-datagrid" style="width: 1000px; height:150px">
                     <thead>
                         <tr>
                             <th data-options="field:'Id',width:40" style="display: none" formatter="olddetail"></th>
@@ -421,7 +418,7 @@
                         </th>
                         <th field="Status" width="150" formatter="GeStatus">
                             @Html.Language("订单状态")
-                            </th>
+                    </th>
                     <th field="CurrencyCode" width="100" formatter="GetAmount">
                         @Html.Language("货币")
                 </th>
@@ -444,7 +441,6 @@
     @Html.Language("时间")
 </th>
 
-                            </th>
 </tr>
 </thead>
 </table>
