@@ -281,6 +281,8 @@
     <Content Include="OMSWebService.asmx" />
     <Content Include="Scripts\easyUI\easyloader.js" />
     <Content Include="Scripts\easyUI\EasyUIUtil.js" />
+    <Content Include="Scripts\easyUI\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\easyUI\jquery-2.0.3.min.js" />
     <Content Include="Scripts\easyUI\jquery.cookie.js" />
     <Content Include="Scripts\easyUI\jquery.easyui.min.js" />
     <Content Include="Scripts\easyUI\jquery.min.js" />
