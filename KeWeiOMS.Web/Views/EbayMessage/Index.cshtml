@@ -324,8 +324,8 @@
         </table>
         <div id="toolbar">
             @Html.Language("账户")<input id="txtStore" type="text">
-            @Html.Language("开始时间")：<input type="text" id="txtStartDate" class="easyui-datebox" style="width: 100px" readonly="readonly" />&nbsp;
-            @Html.Language("结束时间")：<input type="text" id="txtEndDate" class="easyui-datebox" readonly="readonly" style="width: 100px" />&nbsp;&nbsp;
+            @Html.Language("开始时间")：<input type="text" id="txtStartDate" class="easyui-datebox" style="width: 100px"  />&nbsp;
+            @Html.Language("结束时间")：<input type="text" id="txtEndDate" class="easyui-datebox" style="width: 100px" />&nbsp;&nbsp;
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'@Html.Language("查询关键字")',searcher:doSearch,menu:'#mm'"></input>
             <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">@Html.Language("导出数据")</a>
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="toby();">@Html.Language("分配")</a>
