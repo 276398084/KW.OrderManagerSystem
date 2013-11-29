@@ -1051,6 +1051,7 @@ namespace KeWeiOMS.Web
             if (resultValue)
             {
                 order.IsAudit = 1;
+                //利润
                 SaveAmount(order, currencys, NSession);
 
                 //硬编码了。
@@ -1104,6 +1105,11 @@ namespace KeWeiOMS.Web
             foreach (var item in order.Products)
             {
                 item.IsQue = 0;
+                
+                //
+                //IsQue=0,配完货后的状态 IsQue=1 代表产品缺货。IsQue=2 产品停产，IsQue=3 产品占用
+                //
+                //
                 int unPeiCount = Convert.ToInt32(NSession.CreateSQLQuery("select isnull(count(Id),0) from SKUCode where SKU='" + item.SKU + "' and IsOut=0 ").UniqueResult());
                 int useCount = Convert.ToInt32(NSession.CreateSQLQuery("select isnull(sum(OP.Qty),0) from OrderProducts OP where OP.SKU='" + item.SKU + "' and OP.IsQue=3").UniqueResult());
                 if (item.Qty > 1)
