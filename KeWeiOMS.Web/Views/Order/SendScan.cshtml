@@ -6,7 +6,7 @@
     CreateReport("Report");
     Report.LoadFromURL("/Home/PrintGrf/8");
     function print(id) {
-        if ($('#ckBGD').attr("checked")) {
+        if ($('#ckBGD').prop("checked")) {
             Report.LoadDataFromURL("/Home/PrintOrder/" + id);
             Report.Print(true);
         }
@@ -52,7 +52,7 @@
         $('#ww').combobox("setValue", "1");
         $('#area').combobox('disable')
         $('#country').combobox('disable')
-        $('#b').attr('disabled', true);
+        $('#b').prop('disabled', true);
     });
 
     function getDataa(v, l, m) {
@@ -73,7 +73,7 @@
     }
 
     function changeck() {
-        if ($('#a').attr("checked")) {
+        if ($('#a').prop("checked")) {
             $('#b').removeAttr("checked");
             $('#country').combobox('enable')
             $('#area').combobox('disable')
@@ -83,7 +83,7 @@
     var ccc = "";
 
     function setccc() {
-        if ($('#b').attr("checked")) {
+        if ($('#b').prop("checked")) {
             jQuery.ajax({
                 url: "/LogisticsAreaCountry/GetCountryByCode/",
                 type: "post",
@@ -93,7 +93,7 @@
                 }
             });
         }
-        if ($('#a').attr("checked")) {
+        if ($('#a').prop("checked")) {
             jQuery.ajax({
                 url: "/Country/ListByC/",
                 type: "post",
@@ -106,7 +106,7 @@
         }
     }
     function changeck2() {
-        if ($('#b').attr("checked")) {
+        if ($('#b').prop("checked")) {
             $('#a').removeAttr("checked");
             $('#country').combobox('disable')
 
@@ -122,11 +122,11 @@
         }
     }
     function setarea() {
-        if ($('#ckQ').attr("checked")) {
-            $('#b').attr('disabled', false);
+        if ($('#ckQ').prop("checked")) {
+            $('#b').prop('disabled', false);
             $('#area').combobox('enable')
         } else {
-            $('#b').attr('disabled', true);
+            $('#b').prop('disabled', true);
             $('#area').combobox('disable')
         }
     }
@@ -269,7 +269,7 @@
     }
 
     function getOrder(str) {
-        if ($("#ckCheng").attr("checked")) {
+        if ($("#ckCheng").prop("checked")) {
             var tc = document.getElementById('tc');
             tc.ReadCheng();
             zl = tc.Value;
@@ -281,7 +281,7 @@
             success: function (msg) {
                 if (msg.IsSuccess) {
 
-                    if ($('#b').attr("checked") || $('#a').attr("checked")) {
+                    if ($('#b').prop("checked") || $('#a').prop("checked")) {
                         if (ccc.toLowerCase().indexOf(msg.Country.toLowerCase()) == -1) {
                             progress = 0;
                             ShowMessage("该订单国家为：" + msg.Country, "国家不再您选择的范围内", false);
@@ -289,7 +289,7 @@
                         }
                     }
 
-                    if ($("#ckQ").attr("checked")) {
+                    if ($("#ckQ").prop("checked")) {
                         var g = $('#ll').combogrid('grid');	// get datagrid object
                         var r = g.datagrid('getSelected');	// get the selected row
                         TrackCodeLength2 = msg.Code;
@@ -298,7 +298,7 @@
                     else {
                         TrackCodeLength = msg.Code;
                     }
-                    if ($("#ckCheng").attr("checked")) {
+                    if ($("#ckCheng").prop("checked")) {
                         progress = 2;
                         o = str;
                         ShowMessage(msg.Result, "请输入追踪码", true);
@@ -337,7 +337,7 @@
         }
         var l = $("#ll").combogrid("getValue");
         var s = $("#ww").combobox("getValue");
-        if (!$("#ckQ").attr("checked")) {
+        if (!$("#ckQ").prop("checked")) {
             l = "";
         }
 

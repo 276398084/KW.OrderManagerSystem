@@ -35,7 +35,8 @@ namespace KeWeiOMS.Web
         Ebay = 9999997,
         Amazon = 9999996,
         Gmarket = 9999994,
-        DH = 9999993
+        B2C = 9999993,
+        DH = 9999995
     }
 
     public enum ResourceCategoryEnum

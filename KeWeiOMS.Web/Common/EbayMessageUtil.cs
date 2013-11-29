@@ -39,7 +39,7 @@ namespace KeWeiOMS.Web
                     DateTime endDate = DateTime.Now.AddMinutes(1);
                     GetEmailByAPI(item, beginDate, endDate, NSession);
                 }
-                
+
             }
         }
 
@@ -78,9 +78,9 @@ namespace KeWeiOMS.Web
                     {
                         email.ItemId = mmet.Item.ItemID;
                         email.Title = mmet.Item.Title;
-                       
+
                     }
-                    email.Shop = mmet.Question.RecipientID[0];
+                    email.Shop = account.AccountName;
                     email.CreateOn = DateTime.Now;
                     email.ReplayOn = Convert.ToDateTime("2000-01-01");
                     if (HasExist(email.MessageId, NSession))

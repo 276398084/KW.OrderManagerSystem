@@ -426,7 +426,7 @@ namespace KeWeiOMS.Web.Controllers
                 case PlatformEnum.Ebay:
                     results = OrderHelper.APIByEbay(account, st, et, NSession);
                     break;
-                case PlatformEnum.DH:
+                case PlatformEnum.B2C:
                     results = OrderHelper.APIByB2C(account, st, et, NSession);
                     break;
                 case PlatformEnum.SMT:
