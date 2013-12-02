@@ -39,7 +39,21 @@ namespace KeWeiOMS.Web.Controllers
             ViewData["Shop"] = obj.Shop;
             return View();
         }
-
+        public HtmlString ReadMailBody(int id)
+        {
+            ViewData["mid"] = id;
+            EbayMessageType obj = ebay.GetById(id);
+            ViewData["sub"] = obj.Subject;
+            ViewData["bod"] = obj.Body;
+            ViewData["buyer"] = obj.SenderID;
+            ViewData["creation"] = obj.CreationDate;
+            ViewData["email"] = obj.SenderEmail;
+            ViewData["ItemId"] = obj.ItemId;
+            ViewData["Title"] = obj.Title;
+            ViewData["Shop"] = obj.Shop;
+            return new HtmlString(obj.Body);
+        }
+        
         public JsonResult EditProcessed(int Id)
         {
             EbayMessageType ebaymessage = ebay.GetById(Id);

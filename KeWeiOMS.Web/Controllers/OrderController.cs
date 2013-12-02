@@ -1121,10 +1121,17 @@ left join Products P on OP.SKU=P.SKU";
                     }
                     //如果 州名 为空，就用寄达国家（英文）代替
                     string 州名 = item["州名"] + "";
-                    if (州名 + "" == "")
+                    if (州名 + "" == "" || 州名 + "" == "-")
                     {
-                        item["州名"] = item["寄达国家（英文）"];
-                        州名 = item["州名"] + "";
+                        if (item["寄达国家（中文）"] + "" == "俄罗斯")
+                        {
+                            item["州名"] = 州名 = "Novosibirsk";
+                        }
+                        else
+                        {
+                            item["州名"] = item["寄达国家（英文）"];
+                            州名 = item["州名"] + "";
+                        }
                     }
                     if (州名.ToLower().Trim() == "russian federation" || 州名.ToLower() == "russia" || 州名.ToLower() == "rassia")
                     {
@@ -1144,6 +1151,18 @@ left join Products P on OP.SKU=P.SKU";
                         物品英文名称 = 物品英文名称.Remove(0, 50);
                     }
                     item["物品英文名称(不能超过50个字符）"] = 物品英文名称;
+                    //数量不能为0
+                    string 数量 = item["数量"] + "";
+                    if (数量 == "0")
+                    {
+                        item["数量"] = 1;
+                    }
+                    //单件重量最小10g
+                    string 单件重量 = (item["单件重量"] + "").Trim();
+                    if (单件重量.Length < 2)
+                    {
+                        item["单件重量"] = 10;
+                    }
                 }
             }
 

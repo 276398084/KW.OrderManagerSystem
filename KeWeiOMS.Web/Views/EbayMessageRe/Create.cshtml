@@ -337,11 +337,10 @@
                             &nbsp;&nbsp;<label>@Html.Language("邮件内容"):</label>
                         </td>
                         <td colspan="9" valign="top">
-                            <div style="height:300px;overflow-y:auto; width:880px;" id="r-div">
-
+                            <iframe style=" height: 300px; overflow-y: auto; width: 880px; border: 0px;" id="r-div" src="@Url.Action("ReadMailBody", "EbayMessageRe")/@ViewData["mid"]"></iframe>
+                            <!--<div style="height:300px;overflow-y:auto; width:880px;" id="r-div">
                                 @{WriteLiteral(ViewData["bod"]);}
-                            </div>
-
+                            </div>-->
                         </td>
                     </tr>
                 </table>
