@@ -1,6 +1,6 @@
 ﻿@model KeWeiOMS.Domain.EbayMessageReType
 @{
-    //Layout = null;啊啊啊啊啊啊啊啊啊啊啊啊啊
+    //Layout = null;
 }
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <script type="text/javascript">
@@ -10,7 +10,7 @@
             singleSelect: true,
             onClickRow: function (index, row) {
                 $.getJSON("/Email/getEmailTempDetail/" + row.Id, function (json) {
-                    $('#c_BodyRe').attr('value', json[0].Content);
+                    $('#c_BodyRe').prop('value', json[0].Content);
                 });
             }
         });
@@ -292,12 +292,12 @@
                 window.close();
             }
         });
-        }
-        function forwarding() {
-            if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
-                $.ajax({
-                    type: 'post',
-                    url: "@Url.Action("Forward", "EbayMessage")/",
+    }
+    function forwarding() {
+        if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
+            $.ajax({
+                type: 'post',
+                url: "@Url.Action("Forward", "EbayMessage")/",
                 data: "ids= @ViewData["mid"]&t=" + $('#forname').combobox("getValue") + "&m=" + $('#forqu').attr("value"),
                 success: function (result) {
                     if (result) {
@@ -337,11 +337,10 @@
                             &nbsp;&nbsp;<label>@Html.Language("邮件内容"):</label>
                         </td>
                         <td colspan="9" valign="top">
-                            <div style="height:300px;overflow-y:auto; width:880px;" id="r-div">
-
+                            <iframe style=" height: 300px; overflow-y: auto; width: 880px; border: 0px;" id="r-div" src="@Url.Action("ReadMailBody", "EbayMessageRe")/@ViewData["mid"]"></iframe>
+                            <!--<div style="height:300px;overflow-y:auto; width:880px;" id="r-div">
                                 @{WriteLiteral(ViewData["bod"]);}
-                            </div>
-
+                            </div>-->
                         </td>
                     </tr>
                 </table>
@@ -415,63 +414,57 @@
                         <tr>
                             <th field="OrderNo" width="100" formatter="GetOrder">
                                 @Html.Language("订单编号")
-                        </th>
-                        <th field="Status" width="150" formatter="GeStatus">
-                            @Html.Language("订单状态")
-                    </th>
-                    <th field="CurrencyCode" width="100" formatter="GetAmount">
-                        @Html.Language("货币")
-                </th>
-                <th field="BuyerName" width="130" formatter="GetBuyer">
-                    @Html.Language("买家")
-            </th>
-            <th field="Country" width="80">
-                @Html.Language("国家")
-        </th>
-        <th field="LogisticMode" width="100">
-            @Html.Language("发货方式")
-    </th>
-    <th field="TrackCode" width="100">
-        @Html.Language("Code")
-</th>
-<th field="Weight" width="100">
-    @Html.Language("Weight")
-</th>
-<th field="GenerateOn" width="200" formatter="getDate">
-    @Html.Language("时间")
-</th>
-
-</tr>
-</thead>
-</table>
-</fieldset>
-</div>
-</div>
-
-
-
-<div id="d_dlg"></div>
-
-
-<div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
-    <table>
-        <tr>
-            <td>
-                <label>@Html.Language("转发给回复人")：</label>
-            </td>
-            <td>
-                <input id="forname" required="true" style="width:150px" />
-            </td>
-        </tr>
-        <tr>
-            -
-            <td>
-                <label>@Html.Language("转发原因")：</label>
-            </td>
-            <td>
-                <textarea id="forqu" style="resize:none" required="true"></textarea>
-            </td>
-        </tr>
-    </table>
-</div>
+                            </th>
+                            <th field="Status" width="150" formatter="GeStatus">
+                                @Html.Language("订单状态")
+                            </th>
+                            <th field="CurrencyCode" width="100" formatter="GetAmount">
+                                @Html.Language("货币")
+                            </th>
+                            <th field="BuyerName" width="130" formatter="GetBuyer">
+                                @Html.Language("买家")
+                            </th>
+                            <th field="Country" width="80">
+                                @Html.Language("国家")
+                            </th>
+                            <th field="LogisticMode" width="100">
+                                @Html.Language("发货方式")
+                            </th>
+                            <th field="TrackCode" width="100">
+                                @Html.Language("Code")
+                            </th>
+                            <th field="Weight" width="100">
+                                @Html.Language("Weight")
+                            </th>
+                            <th field="GenerateOn" width="200" formatter="getDate">
+                                @Html.Language("时间")
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </fieldset>
+        </div>
+    </div>
+    <div id="d_dlg"></div>
+    <div id="dd" data-options="iconCls:'icon-save'" style="padding: 20px; width: 400px; height: 200px;">
+        <table>
+            <tr>
+                <td>
+                    <label>@Html.Language("转发给回复人")：</label>
+                </td>
+                <td>
+                    <input id="forname" required="true" style="width:150px" />
+                </td>
+            </tr>
+            <tr>
+                -
+                <td>
+                    <label>@Html.Language("转发原因")：</label>
+                </td>
+                <td>
+                    <textarea id="forqu" style="resize:none" required="true"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
 </body>

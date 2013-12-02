@@ -123,7 +123,9 @@
             search += "CreationDate_st&" + $('#txtStartDate').datebox("getValue") + "^CreationDate_et&" + $('#txtEndDate').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "$";
             //search += $('#uitree').tree("getParent", target).text + "~" + text + "~" + id;
             var node = $('#uitree').tree('getSelected');
-            search += node.id;
+            if(node!=null){
+                search += node.id;
+            }
             //alert(search);
             return search;
         }

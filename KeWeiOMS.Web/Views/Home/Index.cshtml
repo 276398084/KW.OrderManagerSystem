@@ -165,13 +165,14 @@
     function ajaxAdd() {
         if ($("#p_form").form('validate') != true)
             return;
-        if ($('#newpsd').attr("value") != $('#newpsd2').attr("value"))
+        if ($('#newpsd').prop("value") != $('#newpsd2').prop("value")) {
             alert("密码与确认密码不一致！");
+        }
         else {
             $.ajax({
                 url: '@Url.Action("Change", "User")/',
                 type: 'post',
-                data: "oldpsd=" + $('#oldpsd').attr("value") + "&newpsd=" + $('#newpsd').attr("value"),
+                data: "oldpsd=" + $('#oldpsd').prop("value") + "&newpsd=" + $('#newpsd').prop("value"),
                 success: function (result) {
                     if (result.IsSuccess) {
                         $('#p_dlg').dialog('close');
