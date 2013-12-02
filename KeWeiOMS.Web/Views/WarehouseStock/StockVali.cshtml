@@ -1,0 +1,187 @@
+﻿@{
+    ViewBag.Title = "到货检验并入库";
+}
+<script type="text/javascript">
+
+    if (document.all) {
+
+        document.write(' <OBJECT id="Player1"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/ring.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+        document.write(' <OBJECT id="Player2"');
+        document.write(' classid="clsid:6BF52A52-394A-11d3-B153-00C04F79FAA6"');
+        document.write(' width=0 height=0 > <param name="URL" value="/Content/Audio/security.wav" /> <param name="AutoStart" value="false" /> </OBJECT>');
+    }
+    else {
+
+        document.write(' <OBJECT id="Player1"');
+        document.write(' type="application/x-ms-wmp"');
+        document.write(' src= "/Content/Audio/ring.wav" width=0 height=0> </OBJECT>');
+        document.write(' <OBJECT id="Player2"');
+        document.write(' type="application/x-ms-wmp"');
+        document.write(' src= "/Content/Audio/security.wav" width=0 height=0> </OBJECT>');
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('#cc').combobox({
+            url: '/Warehouse/QList',
+            valueField: 'Id',
+            textField: 'WName',
+            required: true
+        });
+
+    });
+</script>
+<fieldset>
+    <legend>
+        <label>
+            到货检验并入库</label></legend>
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td colspan="4" align="left" valign="top" style="padding-top: 10px;">
+                <table cellspacing="0" cellpadding="1" bordercolor="#eeeeee" border="1" width="100%">
+                    <tbody>
+
+                        <tr>
+                            <td height="26" align="right"></td>
+                            <td>到货仓库:
+                                <input id="cc" type="text" />
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td height="25" width="22%">
+                                <h2>
+                                    <b>扫描扫描</b></h2>
+                            </td>
+                            <td width="">
+                                <input id="txt" onkeydown="return txt_keydown(event);" style="font-size: 50px; background-image: none; width: 511px" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="" colspan="2">
+                                <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描 SKUCode</span></font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <span id="spanInfo"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+    </table>
+</fieldset>
+<script>
+    var txt = document.getElementById("txt");
+    var spanStatus = document.getElementById("spanStatus");
+    var spanInfo = document.getElementById("spanInfo");
+    var progress = 0;
+    var oldstr = "";
+    function txt_keydown(e) {
+        var keynum;
+        if (window.event) //IE
+        {
+            keynum = e.keyCode;
+        }
+        else if (e.which) //Netscape/Firefox/Opera
+        {
+            keynum = e.which;
+        }
+        if (keynum == 13) {
+
+            if (txt.value == "") {
+                Reset();
+                return true;
+            }
+            if (progress == 0) {
+                GetData(txt.value);
+            }
+
+
+            txt.value = "";
+            return false;
+        }
+        return true;
+    }
+
+    function GetData(str) {
+        var p2 = $("#ee").combobox("getValue");
+        var wname2 = $("#ee").combobox("getText");
+        var p1 = $("#cc").combobox("getValue");
+        var wname1 = $("#cc").combobox("getText");
+
+        jQuery.ajax({
+            url: "/WarehouseStock/SKUVali/",
+            type: "post",
+            data: "o=" + str + "&w=" + p2,
+            success: function (msg) {
+                if (msg.IsSuccess) {
+                    ShowMessage(msg.Result, "等待扫描", true);
+                    Player2.controls.play();
+                } else {
+
+                    ShowMessage(msg.Result, "等待扫描", false);
+                    Player1.controls.play();
+                }
+                progress = 0;
+            }
+        });
+    }
+
+    function OutStock(str) {
+        var p2 = $("#ee").combobox("getValue");
+        var wname2 = $("#ee").combobox("getText");
+        var p1 = $("#cc").combobox("getValue");
+        var wname1 = $("#cc").combobox("getText");
+        if (oldstr == str) {
+            jQuery.ajax({
+                url: "/WarehouseStock/StockMove/",
+                type: "post",
+                data: "o=" + str + "&w=" + p2,
+                success: function (msg) {
+                    if (msg.IsSuccess) {
+                        progress = 0;
+                        oldstr = "";
+                        ShowMessage(msg.Result, "等待扫描", true);
+                        Player2.controls.play();
+                    } else {
+                        progress = 0;
+                        oldstr = "";
+                        Player1.controls.play();
+                        ShowMessage(msg.Result, "等待扫描", false);
+                    }
+                }
+            });
+        } else {
+            ShowMessage(null, "确认的的代码和上次不不一样!", false);
+        }
+    }
+
+    //重置
+    function Reset() {
+        skuCode = [];
+        progress = 0;
+        txt.value = "";
+        ShowMessage("", "等待扫描", false);
+    }
+
+    function ShowMessage(msgInfo, msgStatus, isOk) {
+        if (msgInfo != null) {
+            spanInfo.innerHTML = msgInfo;
+        }
+        if (msgStatus != null) {
+            spanStatus.innerHTML = msgStatus;
+        }
+        if (isOk) {
+            spanInfo.style.color = "Blue";
+        }
+        else {
+            spanInfo.style.color = "Red";
+        }
+    }
+
+</script>

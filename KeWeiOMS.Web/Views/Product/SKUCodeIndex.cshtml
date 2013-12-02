@@ -25,6 +25,14 @@
                 data: checksall,
                 width: 100
             });
+            $('#move').combobox({
+                valueField: 0,
+                textField: 1,
+                panelHeight: 'auto',
+                data: checksall,
+                width: 100
+            });
+            $('#move').combobox("setValue", "ALL");
             $('#Pei').combobox("setValue", "ALL");
             $('#Send').combobox("setValue", "ALL");
         });
@@ -68,6 +76,7 @@
                     search += "IsOut_es&0^";
                 }
             }
+
             var f = $('#Send').combobox("getValue");
             if (f != "ALL" && f != "") {
                 if (f == "1") {
@@ -76,6 +85,16 @@
                     search += "IsSend_es&0^";
                 }
             }
+
+            f = $('#move').combobox("getValue");
+            if (f != "ALL" && f != "") {
+                if (f == "1") {
+                    search += "IsReceive_es&1^";
+                } else {
+                    search += "IsReceive_es&0^";
+                }
+            }
+
             $("#dg").datagrid("load", {
                 search: search
             });
@@ -129,6 +148,10 @@
                     </th>
                     <th field="OrderNo" width="100" sortable="true">订单
                     </th>
+                    <th field="IsAudit" width="100" sortable="true">转移中
+                    </th>
+                    <th field="ReceiveOn" width="120" sortable="true">转移到货时间
+                    </th>
                     <th field="WName" width="100" sortable="true">仓库
                     </th>
                 </tr>
@@ -138,6 +161,7 @@
             <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
             配货：<input type="text" id="Pei" />
             发货：<input type="text" id="Send" />
+            转移：<input type="text" id="move" />
             <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
             <a href="javascript:void(0)" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="$('#r_dlg').dialog('open');">设置重置库存</a>
         </div>

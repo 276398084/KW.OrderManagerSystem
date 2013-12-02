@@ -37,6 +37,8 @@ namespace KeWeiOMS.Domain
             Map(x => x.SendOn);
             Map(x => x.IsNew);
             Map(x => x.IsScan);
+            Map(x => x.IsReceive);
+            Map(x => x.ReceiveOn).Length(30);
             Map(x => x.OrderNo).Length(20);
             Map(x => x.PeiOn).Length(30); ;
             Map(x => x.CreateOn).Length(30);
