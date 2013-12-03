@@ -338,7 +338,7 @@ left join ReturnAddress R On r.Id=" + r;
             SqlDataAdapter da = new SqlDataAdapter(command as SqlCommand);
             da.Fill(ds);
             ds.Tables[0].DefaultView.Sort = " OrderNo Asc";
-            if (t == "多物品订单")
+            if (t == "多物品订单"||m=="3")
                 ds.Tables[0].DefaultView.RowFilter = " GCount >1";
             else
             {

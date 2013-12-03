@@ -21,6 +21,19 @@
             }
         });
     }
+    function showPrintWindow2() {
+        $.ajax({
+            type: "POST",
+            url: "/Home/SetPrintData",
+            data: "m=3" + "&d=" + $("#txtData").val() + "&t=de&r=2",
+            success: function (msg) {
+                if (msg.IsSuccess != "") {
+                    $('#printdata').val(msg.Result);
+                    window.open('/Home/PrintDetail/3');
+                }
+            }
+        });
+    }
 </script>
 <input type="hidden" id="printdata" />
 <table>
@@ -33,6 +46,7 @@
         <td></td>
         <td>
             <input type="button" onclick="showPrintWindow()" value="Print" />
+            <input type="button" onclick="showPrintWindow2()" value="PrintA4" />
         </td>
     </tr>
 </table>

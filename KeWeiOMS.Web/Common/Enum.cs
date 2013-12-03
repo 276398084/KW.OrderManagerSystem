@@ -36,7 +36,7 @@ namespace KeWeiOMS.Web
         Amazon = 9999996,
         Gmarket = 9999994,
         B2C = 9999993,
-        DH = 9999995
+        LT = 9999995
     }
 
     public enum ResourceCategoryEnum

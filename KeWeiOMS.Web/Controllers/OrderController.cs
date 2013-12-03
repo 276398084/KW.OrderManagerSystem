@@ -147,7 +147,6 @@ namespace KeWeiOMS.Web.Controllers
 
         #region 订单处理
 
-
         public ActionResult EditLogisticsAllocation(string ids)
         {
             IList<LogisticsAllocationType> logisticsAllocations =
@@ -310,9 +309,9 @@ namespace KeWeiOMS.Web.Controllers
             {
                 string Platform = form["Platform"];
                 string Account = form["Account"];
-                var account = NSession.Get<AccountType>(Convert.ToInt32(Account));
+                AccountType account = NSession.Get<AccountType>(Convert.ToInt32(Account));
                 string file = form["hfile"];
-                var results = new List<ResultInfo>();
+                List<ResultInfo> results = new List<ResultInfo>();
                 switch ((PlatformEnum)Enum.Parse(typeof(PlatformEnum), Platform))
                 {
                     case PlatformEnum.SMT:
@@ -323,22 +322,23 @@ namespace KeWeiOMS.Web.Controllers
                     case PlatformEnum.Amazon:
                         results = OrderHelper.ImportByAmazon(account, file, NSession);
                         break;
-                    case PlatformEnum.DH:
-
+                    case PlatformEnum.B2C:
+                        results = OrderHelper.ImportByB2C(account, file, NSession);
                         break;
                     case PlatformEnum.Gmarket:
                         results = OrderHelper.ImportByGmarket(account, file, NSession);
                         break;
-
+                    case PlatformEnum.LT:
+                        break;
                     default:
                         break;
                 }
-                Session["Results"] = results;
-                return Json(new { IsSuccess = true, Info = true });
+                return Json(new { IsSuccess = true });
             }
             catch (Exception ex)
             {
-                return Json(new { IsSuccess = false, ErrorMsg = ex.Message, Info = true });
+                return Json(new { IsSuccess = false, ErrorMsg = ex.Message });
+
             }
         }
 
@@ -387,6 +387,7 @@ namespace KeWeiOMS.Web.Controllers
                     }
                 }
 
+
                 ids = ids.Trim(',');
                 ids = ids.Replace(",", "','");
                 List<OrderType> list =
@@ -434,7 +435,6 @@ namespace KeWeiOMS.Web.Controllers
                     break;
                 case PlatformEnum.Amazon:
                 case PlatformEnum.Gmarket:
-
                 default:
                     return Json(new { IsSuccess = false, ErrorMsg = "该平台没有同步功能！" });
             }
@@ -1459,10 +1459,7 @@ where O.Id in(" + ids + ")";
                     NSession.CreateSQLQuery(" update Orders set " + t + "='" + code + "' where Id=" + order.Id).UniqueResult();
                     LoggerUtil.GetOrderRecord(order, "订单修改！", "将订单的" + t + " 设置为" + code + "！", GetCurrentAccount(), NSession);
                 }
-
             }
-
-
             return Json(new { Result = "成功！" });
         }
 
@@ -1500,9 +1497,7 @@ where O.Id in(" + ids + ")";
                 case 3:
                     set = "Status='" + OrderStatusEnum.作废订单.ToString() + "', IsAudit=1,SellerMemo='" + c + "'";
                     type = "订单作废";
-
                     content = "将订单状态设置为作废订单";
-
                     break;
             }
             int count = NSession.CreateQuery(" Update OrderType set " + set + " where Id in(" + o + ")").ExecuteUpdate();
@@ -1541,7 +1536,6 @@ where O.Id in(" + ids + ")";
             IList<OrderType> orders = NSession.CreateQuery("from OrderType where OrderNo In ('" + o + "')").List<OrderType>();
             foreach (OrderType orderType in orders)
             {
-
                 SetQuestionOrder("作废订单-重置包裹入库", orderType);
                 NSession.CreateQuery("update OrderProductType set IsQue=0 where OId =" + orderType.Id).ExecuteUpdate();
                 orderType.IsOutOfStock = 0;
@@ -1551,14 +1545,10 @@ where O.Id in(" + ids + ")";
                 NSession.Update(orderType);
                 NSession.Flush();
                 LoggerUtil.GetOrderRecord(orderType, "订单作废！", "订单作废，订单的缺货状态删除！", CurrentUser, NSession);
-
                 LoggerUtil.GetOrderRecord(orderType, "订单作废", "订单作废:" + c, CurrentUser, NSession);
             }
-
             return Json(new { Result = "成功！" });
-
         }
-
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(string o)
@@ -1639,15 +1629,12 @@ where O.Id in(" + ids + ")";
                                 {
                                     desc += "   " + products[0].SKU + ":" + products[0].ProductAttribute;
                                 }
-
                             }
-
                         }
                         if (desc.Length > 0)
                         {
                             html = "<div><h3>订单中包含：" + desc + " 的产品</h3></div>" + html;
                         }
-
                         return Json(new { IsSuccess = true, Result = html, Code = length, Country = order.Country });
                     }
                     else
@@ -1833,8 +1820,6 @@ where O.Id in(" + ids + ")";
             //    }
             //}
 
-
-
             //EBayUtil.EbayUploadTrackCode(orderType.Account, orderType);
             //orderType.Freight = Convert.ToDouble(OrderHelper.GetFreight(orderType.Weight, orderType.LogisticMode, orderType.Country, NSession));
             //NSession.SaveOrUpdate(orderType);
@@ -1880,7 +1865,6 @@ where O.Id in(" + ids + ")";
             //}
             //return Json(new { IsS = 1 }, JsonRequestBehavior.AllowGet);
         }
-
 
         [HttpPost]
         public ActionResult UploadTrack(DateTime st, DateTime et)
@@ -2033,8 +2017,7 @@ where O.Id in(" + ids + ")";
                 OrderType order = orders[0];
                 if (order.Status == OrderStatusEnum.待拣货.ToString())
                 {
-                    LoggerUtil.GetOrderRecord(order, "缺货扫描", CurrentUser.Realname + "将订单添加到 添加到缺货订单中！", CurrentUser,
-                                              NSession);
+                    LoggerUtil.GetOrderRecord(order, "缺货扫描", CurrentUser.Realname + "将订单添加到 添加到缺货订单中！", CurrentUser, NSession);
                     order.IsOutOfStock = 1;
                     NSession.Update(order);
                     NSession.Flush();

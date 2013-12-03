@@ -103,7 +103,7 @@ namespace KeWeiOMS.Web
                             System.Text.RegularExpressions.Regex r4 = new System.Text.RegularExpressions.Regex(@"\(产品属性:(?<ppp>.*)\n", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r5 = new System.Text.RegularExpressions.Regex(@"\(产品数量:(?<quantity>\d+)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r3 = new System.Text.RegularExpressions.Regex(@"\(商家编码:(?<sku>.*)\)", System.Text.RegularExpressions.RegexOptions.None);
-                            //System.Text.RegularExpressions.Regex r6 = new System.Text.RegularExpressions.Regex(@"\(物流等级&买家选择物流:(?<wuliu>.+)\)", System.Text.RegularExpressions.RegexOptions.None);
+                            
                             System.Text.RegularExpressions.Match mc2 = r2.Match(Str);
                             System.Text.RegularExpressions.Match mc3 = r3.Match(Str);
                             System.Text.RegularExpressions.Match mc4 = r4.Match(Str);
@@ -279,7 +279,7 @@ namespace KeWeiOMS.Web
                         order.CurrencyCode = "USD";
                         order.Account = account.AccountName;
                         order.GenerateOn = DateTime.Now;
-                        order.Platform = PlatformEnum.DH.ToString();
+                        order.Platform = PlatformEnum.B2C.ToString();
 
                         order.AddressId = CreateAddress(item["收件人"].ToString(), item["街道"].ToString(), item["城市"].ToString(), item["省"].ToString(), item["国家"].ToString(), item["国家"].ToString(), item["电话"].ToString(), item["电话"].ToString(), item["邮箱"].ToString(), item["邮编"].ToString(), 0, NSession);
 
@@ -340,7 +340,7 @@ namespace KeWeiOMS.Web
                         order.TId = foo.GoodsDataWare.TxnId;
                         order.Account = account.AccountName;
                         order.GenerateOn = foo.GoodsDataWare.PaymentDate;
-                        order.Platform = PlatformEnum.DH.ToString();
+                        order.Platform = PlatformEnum.B2C.ToString();
                         order.LogisticMode = foo.GoodsDataWare.EMS;
                         order.AddressId = CreateAddress(foo.GoodsDataWare.AddressName, foo.GoodsDataWare.AddressStreet,
                                                         foo.GoodsDataWare.AddressCity, foo.GoodsDataWare.AddressState,

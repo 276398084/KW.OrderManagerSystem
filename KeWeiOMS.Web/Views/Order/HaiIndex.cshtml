@@ -183,6 +183,12 @@
 
         function GeStatus(v, r, i) {
             var html = v;
+            if (v == "已处理") {
+                html = "Processed";
+            }
+            if (v == "已发货") {
+                html = "Shipped";
+            }
             if (r.IsError == 1) {
                 html += "(问题订单)";
             }
@@ -571,13 +577,13 @@
         <div id="toolbar">
 
             <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="showPrint()">Print</a>
-            @* <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-redo'">Export</a>
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-redo'">Export</a>
             <div id="mm1" style="width: 150px;">
                 <div data-options="iconCls:'icon-redo'" onclick="exportZM();">中美导出</div>
                 <div data-options="iconCls:'icon-redo'" onclick="exportOrder();">订单导出</div>
                 <div data-options="iconCls:'icon-redo'" onclick="ExportExcel(0);">德国导出</div>
                 <div data-options="iconCls:'icon-redo'" onclick="alert('暂时不开放');">澳大利亚导出</div>
-            </div>*@
+            </div>
             <br />
             Platform:<input type="text" id="Platform" />
             Account:<input type="text" id="Account" />

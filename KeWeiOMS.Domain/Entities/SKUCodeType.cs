@@ -92,6 +92,16 @@ namespace KeWeiOMS.Domain
         /// </summary>
         public virtual string WName { get; set; }
 
+        /// <summary>
+        /// 发送中
+        /// </summary>
+        public virtual int IsReceive { get; set; }
+
+        /// <summary>
+        /// ReceiveOn
+        /// </summary>
+        public virtual string ReceiveOn { get; set; }
+
 
 
     }

@@ -40,6 +40,70 @@ namespace KeWeiOMS.Web.Controllers
                     skucodes[0].WId = w;
                     WarehouseType warehouse = NSession.Get<WarehouseType>(w);
                     skucodes[0].WName = warehouse.WName;
+                    skucodes[0].IsReceive = 1;
+                    skucodes[0].ReceiveOn = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                    NSession.Update(skucodes[0]);
+                    NSession.Flush();
+
+                    //到货检验后添加产品库存
+                    //IList<WarehouseStockType> warehouses = NSession.CreateQuery("From WarehouseStockType where SKU='" + skucodes[0].SKU
+                    //    + "'  and WId=" + skucodes[0].WId).List<WarehouseStockType>();
+
+                    ////在仓库中添加产品库存
+                    //if (warehouses.Count == 0)
+                    //{
+                    //    ProductType p = NSession.CreateQuery("From ProductType where SKU='" + skucodes[0].SKU
+                    //    + "'").List<ProductType>()[0];
+                    //    WarehouseStockType stock = new WarehouseStockType();
+                    //    stock.Pic = p.SPicUrl;
+                    //    stock.WId = skucodes[0].WId;
+                    //    stock.Warehouse = skucodes[0].WName;
+                    //    stock.PId = p.Id;
+                    //    stock.SKU = p.SKU;
+                    //    stock.Title = p.ProductName;
+                    //    stock.Qty = 0;
+                    //    stock.UpdateOn = DateTime.Now;
+                    //    NSession.SaveOrUpdate(stock);
+                    //    NSession.Flush();
+
+                    //}
+                    return Json(new { IsSuccess = true, Result = "条码：" + o + "  已经转移" });
+                }
+                else
+                    return Json(new { IsSuccess = false, Result = "条码已经出库，请检查该产品！" });
+
+            }
+            return Json(new { IsSuccess = false, Result = "没有找到这个条码！" });
+        }
+        [HttpPost]
+        public ActionResult GetSKU(string o)
+        {
+            IList<SKUCodeType> skucodes = NSession.CreateQuery("From SKUCodeType where Code='" + o + "'").List<SKUCodeType>();
+            if (skucodes.Count > 0)
+            {
+                if (skucodes[0].IsOut == 0)
+                    return Json(new { IsSuccess = true, SKU = skucodes[0].SKU, WId = skucodes[0].WId, WName = skucodes[0].WName });
+                else
+                    return Json(new { IsSuccess = false, Result = "条码已经出库，请检查该产品！" });
+
+            }
+            return Json(new { IsSuccess = false, Result = "没有找到这个条码！" });
+        }
+
+        [HttpPost]
+        public ActionResult SKUVali(string o, int w)
+        {
+            IList<SKUCodeType> skucodes = NSession.CreateQuery("From SKUCodeType where Code='" + o + "'").List<SKUCodeType>();
+            if (skucodes.Count > 0)
+            {
+
+                if (skucodes[0].IsOut == 0)
+                {
+                    skucodes[0].WId = w;
+                    WarehouseType warehouse = NSession.Get<WarehouseType>(w);
+                    skucodes[0].WName = warehouse.WName;
+                    skucodes[0].IsReceive = 0;
+                    skucodes[0].ReceiveOn = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                     NSession.Update(skucodes[0]);
                     NSession.Flush();
 
@@ -67,20 +131,6 @@ namespace KeWeiOMS.Web.Controllers
                     }
                     return Json(new { IsSuccess = true, Result = "条码：" + o + "  已经转移" });
                 }
-                else
-                    return Json(new { IsSuccess = false, Result = "条码已经出库，请检查该产品！" });
-
-            }
-            return Json(new { IsSuccess = false, Result = "没有找到这个条码！" });
-        }
-        [HttpPost]
-        public ActionResult GetSKU(string o)
-        {
-            IList<SKUCodeType> skucodes = NSession.CreateQuery("From SKUCodeType where Code='" + o + "'").List<SKUCodeType>();
-            if (skucodes.Count > 0)
-            {
-                if (skucodes[0].IsOut == 0)
-                    return Json(new { IsSuccess = true, SKU = skucodes[0].SKU, WId = skucodes[0].WId, WName = skucodes[0].WName });
                 else
                     return Json(new { IsSuccess = false, Result = "条码已经出库，请检查该产品！" });
 
