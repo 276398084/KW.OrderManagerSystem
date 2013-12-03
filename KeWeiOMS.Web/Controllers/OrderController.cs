@@ -1136,25 +1136,12 @@ left join Products P on OP.SKU=P.SKU";
                         //如果 州名 为俄文，就（英文）代替
                         if (!是否英文(州名) || !是否英文(城市名))
                         {
-                            item["城市名"] = item["州名"] = "Novosibirsk";
+                            item["城市名"] = item["州名"] = 州名 = "Novosibirsk";
                         }
-                        //string 州名 = item["州名"] + "";
-                        //if (州名 + "" == "" || 州名 + "" == "-")
-                        //{
-                        //    if (item["寄达国家（中文）"] + "" == "俄罗斯")
-                        //    {
-                        //        item["州名"] = 州名 = "Novosibirsk";
-                        //    }
-                        //    else
-                        //    {
-                        //        item["州名"] = item["寄达国家（英文）"];
-                        //        州名 = item["州名"] + "";
-                        //    }
-                        //}
-                        //if (州名.ToLower().Trim() == "russian federation" || 州名.ToLower() == "russia" || 州名.ToLower() == "rassia")
-                        //{
-                        //    item["州名"] = "Moscow";
-                        //}
+                        if (州名.ToLower().Trim() == "russian federation" || 州名.ToLower() == "russia" || 州名.ToLower() == "rassia")
+                        {
+                            item["州名"] = "Moscow";
+                        }
                     }
                 }
                 addressList = null;
