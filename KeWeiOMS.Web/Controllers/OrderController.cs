@@ -1112,6 +1112,14 @@ left join Products P on OP.SKU=P.SKU";
                             州名 = item["州名"] + "";
                     }
 
+                    //城市名为空，则用州名代替
+                    string 城市名 = item["城市名"] + "";
+                    if (string.IsNullOrEmpty(城市名))
+                    {
+                        item["城市名"] = item["州名"];
+                        城市名 = item["城市名"] + "";
+                    }
+
                     if (item["寄达国家（中文）"] + "" == "俄罗斯")
                     {
                         //如果发现非英文地址，就随机找一英文代替
@@ -1127,12 +1135,7 @@ left join Products P on OP.SKU=P.SKU";
                             item["收件人详细地址"] = tt[1];
                         }
 
-                        //城市名为空，则用州名代替
-                        string 城市名 = item["城市名"] + "";
-                        if (string.IsNullOrEmpty(城市名))
-                        {
-                            item["城市名"] = item["州名"];
-                        }
+                     
                         //如果 州名 为俄文，就（英文）代替
                         if (!是否英文(州名) || !是否英文(城市名))
                         {
