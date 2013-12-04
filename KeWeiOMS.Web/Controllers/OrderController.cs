@@ -1087,18 +1087,6 @@ left join Products P on OP.SKU=P.SKU";
                 string[] addressList = System.IO.File.ReadAllLines(this.Server.MapPath("\\Views\\Order\\address.txt"));
                 foreach (DataRow item in ds.Tables[0].Rows)
                 {
-                    //如果发现非英文地址，就随机找一英文代替
-                    string 收件人姓名 = item["收件人姓名"] + "";
-                    string 收件人详细地址 = item["收件人详细地址"] + "";
-                    if (!是否英文(收件人姓名) || !是否英文(收件人详细地址))
-                    {
-                    a001:
-                        string l = addressList[rd.Next(0, addressList.Length)];
-                        string[] tt = l.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
-                        if (tt.Length != 2) { goto a001; }
-                        item["收件人姓名"] = tt[0];
-                        item["收件人详细地址"] = tt[1];
-                    }
                     //收件人电话不能为空字符
                     string 收件人电话 = item["收件人电话"] + "";
                     收件人电话 = System.Text.RegularExpressions.Regex.Replace(收件人电话, @"\D", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
@@ -1114,28 +1102,46 @@ left join Products P on OP.SKU=P.SKU";
                     //胡启雄用拼音代替
                     item["寄件人姓名"] = "HuQiXun";
 
-                    string 城市名 = item["城市名"] + "";
-                    if (string.IsNullOrEmpty(城市名))
-                    {
-                        item["城市名"] = item["州名"];
-                    }
+                    
+
                     //如果 州名 为空，就用寄达国家（英文）代替
                     string 州名 = item["州名"] + "";
                     if (州名 + "" == "" || 州名 + "" == "-")
                     {
-                        if (item["寄达国家（中文）"] + "" == "俄罗斯")
-                        {
-                            item["州名"] = 州名 = "Novosibirsk";
-                        }
-                        else
-                        {
                             item["州名"] = item["寄达国家（英文）"];
                             州名 = item["州名"] + "";
-                        }
                     }
-                    if (州名.ToLower().Trim() == "russian federation" || 州名.ToLower() == "russia" || 州名.ToLower() == "rassia")
+
+                    if (item["寄达国家（中文）"] + "" == "俄罗斯")
                     {
-                        item["州名"] = "Moscow";
+                        //如果发现非英文地址，就随机找一英文代替
+                        string 收件人姓名 = item["收件人姓名"] + "";
+                        string 收件人详细地址 = item["收件人详细地址"] + "";
+                        if (!是否英文(收件人姓名) || !是否英文(收件人详细地址))
+                        {
+                        a001:
+                            string l = addressList[rd.Next(0, addressList.Length)];
+                            string[] tt = l.Split(new string[] { "\t" }, StringSplitOptions.RemoveEmptyEntries);
+                            if (tt.Length != 2) { goto a001; }
+                            item["收件人姓名"] = tt[0];
+                            item["收件人详细地址"] = tt[1];
+                        }
+
+                        //城市名为空，则用州名代替
+                        string 城市名 = item["城市名"] + "";
+                        if (string.IsNullOrEmpty(城市名))
+                        {
+                            item["城市名"] = item["州名"];
+                        }
+                        //如果 州名 为俄文，就（英文）代替
+                        if (!是否英文(州名) || !是否英文(城市名))
+                        {
+                            item["城市名"] = item["州名"] = 州名 = "Novosibirsk";
+                        }
+                        if (州名.ToLower().Trim() == "russian federation" || 州名.ToLower() == "russia" || 州名.ToLower() == "rassia")
+                        {
+                            item["州名"] = "Moscow";
+                        }
                     }
                 }
                 addressList = null;
