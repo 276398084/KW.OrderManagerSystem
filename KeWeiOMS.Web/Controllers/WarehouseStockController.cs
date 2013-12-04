@@ -29,6 +29,13 @@ namespace KeWeiOMS.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult StockVali()
+        {
+            return View();
+        }
+
+        
         [HttpPost]
         public ActionResult StockMove(string o, int w)
         {
@@ -65,7 +72,6 @@ namespace KeWeiOMS.Web.Controllers
                     //    stock.UpdateOn = DateTime.Now;
                     //    NSession.SaveOrUpdate(stock);
                     //    NSession.Flush();
-
                     //}
                     return Json(new { IsSuccess = true, Result = "条码：" + o + "  已经转移" });
                 }
@@ -85,7 +91,6 @@ namespace KeWeiOMS.Web.Controllers
                     return Json(new { IsSuccess = true, SKU = skucodes[0].SKU, WId = skucodes[0].WId, WName = skucodes[0].WName });
                 else
                     return Json(new { IsSuccess = false, Result = "条码已经出库，请检查该产品！" });
-
             }
             return Json(new { IsSuccess = false, Result = "没有找到这个条码！" });
         }
@@ -97,11 +102,10 @@ namespace KeWeiOMS.Web.Controllers
             if (skucodes.Count > 0)
             {
 
-                if (skucodes[0].IsOut == 0)
+                if (skucodes[0].WId==w)
                 {
-                    skucodes[0].WId = w;
-                    WarehouseType warehouse = NSession.Get<WarehouseType>(w);
-                    skucodes[0].WName = warehouse.WName;
+
+                  
                     skucodes[0].IsReceive = 0;
                     skucodes[0].ReceiveOn = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
                     NSession.Update(skucodes[0]);
@@ -132,7 +136,7 @@ namespace KeWeiOMS.Web.Controllers
                     return Json(new { IsSuccess = true, Result = "条码：" + o + "  已经转移" });
                 }
                 else
-                    return Json(new { IsSuccess = false, Result = "条码已经出库，请检查该产品！" });
+                    return Json(new { IsSuccess = false, Result = "仓库不符" });
 
             }
             return Json(new { IsSuccess = false, Result = "没有找到这个条码！" });

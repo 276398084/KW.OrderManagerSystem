@@ -292,12 +292,12 @@
                 window.close();
             }
         });
-    }
-    function forwarding() {
-        if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
-            $.ajax({
-                type: 'post',
-                url: "@Url.Action("Forward", "EbayMessage")/",
+        }
+        function forwarding() {
+            if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
+                $.ajax({
+                    type: 'post',
+                    url: "@Url.Action("Forward", "EbayMessage")/",
                 data: "ids= @ViewData["mid"]&t=" + $('#forname').combobox("getValue") + "&m=" + $('#forqu').attr("value"),
                 success: function (result) {
                     if (result) {
@@ -324,17 +324,18 @@
 </script>
 
 <body>
-    <div class="easyui-layout" style="width:100%;height:1500px;">
-        <div data-options="region:'north'" style="height:400px">
-            <div style="background-color:lightgray">
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("账号"):&nbsp;@ViewData["buyer"] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("提问时间"):&nbsp;@ViewData["creation"]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("店铺名称"):&nbsp;@ViewData["Shop"]&nbsp; </p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("标题"):&nbsp;@ViewData["sub"]</p></label>
+    <div class="easyui-layout" style="width: 100%; height: 1500px;">
+        <div data-options="region:'north'" style="height: 400px">
+            <div style="background-color: lightgray">
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("账号"):&nbsp;@ViewData["buyer"] &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("提问时间"):&nbsp;@ViewData["creation"]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@Html.Language("店铺名称"):&nbsp;@ViewData["Shop"]&nbsp; </p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>@Html.Language("标题"):&nbsp;@ViewData["sub"]</p>
+                </label>
             </div>
             <div>
                 <table>
 
                     <tr>
-                        <td valign="top">
-                            &nbsp;&nbsp;<label>@Html.Language("邮件内容"):</label>
+                        <td valign="top">&nbsp;&nbsp;<label>@Html.Language("邮件内容"):</label>
                         </td>
                         <td colspan="9" valign="top">
                             <iframe style=" height: 300px; overflow-y: auto; width: 880px; border: 0px;" id="r-div" src="@Url.Action("ReadMailBody", "EbayMessageRe")/@ViewData["mid"]"></iframe>
@@ -348,9 +349,9 @@
         </div>
 
 
-        <div data-options="region:'east',split:true" style="width:250px;">
+        <div data-options="region:'east',split:true" style="width: 250px;">
             <table id="dg" class="easyui-datagrid" style="width: 430px; height: 500px"
-                   singleselect="true" data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
+                singleselect="true" data-options="url:'/Email/getEmailTemp',fitColumns:true,nowrap:false">
                 <thead>
                     <tr>
                         <th data-options="field:'Id',hidden:true"></th>
@@ -395,7 +396,7 @@
 
             <fieldset>
                 <legend>@Html.Language("往来邮件")</legend>
-                <table id="oldmail" class="easyui-datagrid" style="width: 1000px; height:150px">
+                <table id="oldmail" class="easyui-datagrid" style="width: 1000px; height: 150px">
                     <thead>
                         <tr>
                             <th data-options="field:'Id',width:40" style="display: none" formatter="olddetail"></th>
@@ -439,6 +440,9 @@
                             <th field="GenerateOn" width="200" formatter="getDate">
                                 @Html.Language("时间")
                             </th>
+                            <th field="Account" width="200">
+                                @Html.Language("账户")
+                            </th>
                         </tr>
                     </thead>
                 </table>
@@ -453,7 +457,7 @@
                     <label>@Html.Language("转发给回复人")：</label>
                 </td>
                 <td>
-                    <input id="forname" required="true" style="width:150px" />
+                    <input id="forname" required="true" style="width: 150px" />
                 </td>
             </tr>
             <tr>
@@ -462,7 +466,7 @@
                     <label>@Html.Language("转发原因")：</label>
                 </td>
                 <td>
-                    <textarea id="forqu" style="resize:none" required="true"></textarea>
+                    <textarea id="forqu" style="resize: none" required="true"></textarea>
                 </td>
             </tr>
         </table>

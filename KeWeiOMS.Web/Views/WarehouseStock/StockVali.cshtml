@@ -109,21 +109,19 @@
     }
 
     function GetData(str) {
-        var p2 = $("#ee").combobox("getValue");
-        var wname2 = $("#ee").combobox("getText");
+        
         var p1 = $("#cc").combobox("getValue");
-        var wname1 = $("#cc").combobox("getText");
+        
 
         jQuery.ajax({
             url: "/WarehouseStock/SKUVali/",
             type: "post",
-            data: "o=" + str + "&w=" + p2,
+            data: "o=" + str + "&w=" + p1,
             success: function (msg) {
                 if (msg.IsSuccess) {
                     ShowMessage(msg.Result, "等待扫描", true);
                     Player2.controls.play();
                 } else {
-
                     ShowMessage(msg.Result, "等待扫描", false);
                     Player1.controls.play();
                 }
@@ -132,34 +130,7 @@
         });
     }
 
-    function OutStock(str) {
-        var p2 = $("#ee").combobox("getValue");
-        var wname2 = $("#ee").combobox("getText");
-        var p1 = $("#cc").combobox("getValue");
-        var wname1 = $("#cc").combobox("getText");
-        if (oldstr == str) {
-            jQuery.ajax({
-                url: "/WarehouseStock/StockMove/",
-                type: "post",
-                data: "o=" + str + "&w=" + p2,
-                success: function (msg) {
-                    if (msg.IsSuccess) {
-                        progress = 0;
-                        oldstr = "";
-                        ShowMessage(msg.Result, "等待扫描", true);
-                        Player2.controls.play();
-                    } else {
-                        progress = 0;
-                        oldstr = "";
-                        Player1.controls.play();
-                        ShowMessage(msg.Result, "等待扫描", false);
-                    }
-                }
-            });
-        } else {
-            ShowMessage(null, "确认的的代码和上次不不一样!", false);
-        }
-    }
+   
 
     //重置
     function Reset() {

@@ -56,6 +56,8 @@ namespace KeWeiOMS.Web.Controllers
             }
         }
 
+       
+
         [OutputCache(Location = OutputCacheLocation.None)]
         public ActionResult Edit(int id)
         {
@@ -80,6 +82,8 @@ namespace KeWeiOMS.Web.Controllers
             return Json(new { IsSuccess = true });
 
         }
+
+
 
         [HttpPost, ActionName("Delete")]
         public JsonResult DeleteConfirmed(int id)
@@ -110,6 +114,7 @@ namespace KeWeiOMS.Web.Controllers
             NSession.Delete(log);
             NSession.Flush();
         }
+
 
         public JsonResult GetDataByCode(string Id)
         {
