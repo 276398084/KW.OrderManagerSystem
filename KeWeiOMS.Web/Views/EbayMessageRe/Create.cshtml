@@ -5,7 +5,7 @@
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <script type="text/javascript">
     $(function () {
-        $('#c_MessageId').attr("value", '@ViewData["mid"]');
+        $('#c_MessageId').prop("value", '@ViewData["mid"]');
         $('#dg').datagrid({
             singleSelect: true,
             onClickRow: function (index, row) {
@@ -47,7 +47,7 @@
         $('#dd').dialog('close');
     });
     function send() {
-        if ($('#c_BodyRe').attr("value") == "") {
+        if ($('#c_BodyRe').prop("value") == "") {
             alert('@Html.Language("回复顶不能为空！")');
         }
         else {
@@ -138,7 +138,7 @@
         }
     }
     function onlySend() {
-        if ($('#c_BodyRe').attr("value") == "") {
+        if ($('#c_BodyRe').prop("value") == "") {
             alert("@Html.Language("回复顶不能为空")！");
         }
         else {
@@ -159,7 +159,7 @@
                                             var result = $.parseJSON(msg);
                                             if (result.IsSuccess) {
                                                 alert("@Html.Language("回复成功")！");
-                                                $('#c_BodyRe').attr("value", "")
+                                                $('#c_BodyRe').prop("value", "")
                                             }
                                             else {
                                                 alert("@Html.Language("保存失败")!");
@@ -179,7 +179,7 @@
                                     var result = $.parseJSON(msg);
                                     if (result.IsSuccess) {
                                         alert("@Html.Language("回复成功")！");
-                                        $('#c_BodyRe').attr("value", "")
+                                        $('#c_BodyRe').prop("value", "")
                                     }
                                     else {
                                         alert("@Html.Language("保存失败")!");
@@ -294,11 +294,11 @@
         });
         }
         function forwarding() {
-            if ($('#forname').combobox("getValue") != "" && $('#forqu').attr("value") != "") {
+            if ($('#forname').combobox("getValue") != "" && $('#forqu').prop("value") != "") {
                 $.ajax({
                     type: 'post',
                     url: "@Url.Action("Forward", "EbayMessage")/",
-                data: "ids= @ViewData["mid"]&t=" + $('#forname').combobox("getValue") + "&m=" + $('#forqu').attr("value"),
+                data: "ids= @ViewData["mid"]&t=" + $('#forname').combobox("getValue") + "&m=" + $('#forqu').prop("value"),
                 success: function (result) {
                     if (result) {
                         if (result.Msg != '0') {

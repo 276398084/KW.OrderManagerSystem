@@ -237,12 +237,12 @@
             }
         }
         $("tr[name='tr_" + sku.toUpperCase() + "']").each(function () {
-            var qty = parseInt($(this).attr("qty"));
-            var cqty = parseInt($(this).attr("cqty"));
-            var c = $(this).attr("code");
+            var qty = parseInt($(this).prop("qty"));
+            var cqty = parseInt($(this).prop("cqty"));
+            var c = $(this).prop("code");
             if (qty > cqty) {
                 cqty = parseInt(cqty) + 1;
-                $(this).attr("cqty", cqty);
+                $(this).prop("cqty", cqty);
                 skuCode.push(code);
                 $("#r_" + c).html(cqty);
                 // skuCode.add(code);
@@ -268,9 +268,9 @@
     function valiOrder() {
         iscon = true;
         $("[name^='tr_']").each(function () {
-            var a = $(this).attr("qty");
+            var a = $(this).prop("qty");
 
-            var b = $(this).attr("cqty");
+            var b = $(this).prop("cqty");
 
             if (a != b) {
                 iscon = false;

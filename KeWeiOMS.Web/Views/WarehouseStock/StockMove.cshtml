@@ -43,7 +43,9 @@
 <fieldset>
     <legend>
         <label>
-            库存转移扫描</label></legend>
+            库存转移扫描
+        </label>
+    </legend>
     <table width="100%" border="0" cellpadding="0" cellspacing="0">
         <tr>
             <td colspan="4" align="left" valign="top" style="padding-top: 10px;">
@@ -52,16 +54,19 @@
 
                         <tr>
                             <td height="26" align="right"></td>
-                            <td>原仓库:
+                            <td>
+                                原仓库:
                                 <input id="cc" type="text" />
                                 &nbsp;&nbsp;&nbsp;转移到&nbsp;&nbsp;&nbsp; 目标仓库:
-                                <input id="ee" type="text" /></td>
+                                <input id="ee" type="text" />
+                            </td>
                         </tr>
 
                         <tr>
                             <td height="25" width="22%">
                                 <h2>
-                                    <b>扫描扫描</b></h2>
+                                    <b>扫描扫描</b>
+                                </h2>
                             </td>
                             <td width="">
                                 <input id="txt" onkeydown="return txt_keydown(event);" style="font-size: 50px; background-image: none; width: 511px" />
@@ -170,6 +175,7 @@
                         Player1.controls.play();
                         ShowMessage(msg.Result, "等待扫描", false);
                     }
+                    progress = 0;
                 }
             });
         } else {
