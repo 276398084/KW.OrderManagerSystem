@@ -51,8 +51,7 @@
                     <tbody>
                         <tr>
                             <td width="" colspan="2">
-                                <font style="color: Red; font-size: 30px"><span id="sp
-                                    anStatus">等待扫描</span></font>
+                                <font style="color: Red; font-size: 30px"><span id="spanStatus">等待扫描</span></font>
                             </td>
                         </tr>
                         <tr>
@@ -237,12 +236,12 @@
             }
         }
         $("tr[name='tr_" + sku.toUpperCase() + "']").each(function () {
-            var qty = parseInt($(this).prop("qty"));
-            var cqty = parseInt($(this).prop("cqty"));
-            var c = $(this).prop("code");
+            var qty = parseInt($(this).attr("qty"));
+            var cqty = parseInt($(this).attr("cqty"));
+            var c = $(this).attr("code");
             if (qty > cqty) {
                 cqty = parseInt(cqty) + 1;
-                $(this).prop("cqty", cqty);
+                $(this).attr("cqty", cqty);
                 skuCode.push(code);
                 $("#r_" + c).html(cqty);
                 // skuCode.add(code);
@@ -251,14 +250,11 @@
                 valiOrder();
                 if (iscon) {
                     progress = 2;
-
                     ShowMessage(null, "所有产品扫描完成！请在一次扫描订单确认", true);
                 }
                 else {
-
                     ShowMessage(null, "产品 " + sku + " 数量加1,请继续扫描条码", true);
                 }
-
                 return false;
             }
         });
@@ -268,10 +264,8 @@
     function valiOrder() {
         iscon = true;
         $("[name^='tr_']").each(function () {
-            var a = $(this).prop("qty");
-
-            var b = $(this).prop("cqty");
-
+            var a = $(this).attr("qty");
+            var b = $(this).attr("cqty");
             if (a != b) {
                 iscon = false;
                 return false;

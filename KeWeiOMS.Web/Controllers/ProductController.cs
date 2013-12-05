@@ -831,23 +831,29 @@ select Name from a").List<object>();
 
         public ActionResult GetSKUByCode(string code)
         {
-            IList<SKUCodeType> list =
+            try
+            {
+                IList<SKUCodeType> list =
                  NSession.CreateQuery("from SKUCodeType where Code=:p").SetString("p", code).SetMaxResults(1).List
                      <SKUCodeType>();
-            if (list.Count > 0)
-            {
-                SKUCodeType sku = list[0];
-                if (sku.IsOut == 0)
+                if (list.Count > 0)
                 {
-                    return Json(new { IsSuccess = true, Result = sku.SKU.Trim() });
+                    SKUCodeType sku = list[0];
+                    if (sku.IsOut == 0)
+                    {
+                        return Json(new { IsSuccess = true, Result = sku.SKU.Trim() });
+                    }
+                    else
+                    {
+                        return Json(new { IsSuccess = false, Result = "当前产品已经出库过了！" });
+                    }
                 }
-                else
-                {
-                    return Json(new { IsSuccess = false, Result = "当前产品已经出库过了！" });
-                }
+                return Json(new { IsSuccess = false, Result = "没有找到这个产品！" });
             }
-            return Json(new { IsSuccess = false, Result = "没有找到这个产品！" });
-
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Result = "错误："+ex.Message });
+            }
         }
         public ActionResult Platform()
         {
