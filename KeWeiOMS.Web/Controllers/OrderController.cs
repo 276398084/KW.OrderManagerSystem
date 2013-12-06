@@ -1901,7 +1901,30 @@ where O.Id in(" + ids + ")";
 
         private void UploadTrackCode(OrderType o)
         {
-
+            if (o.Platform == PlatformEnum.B2C.ToString())
+            {
+                try
+                {
+                    using (
+                        var connection =
+                            new SqlConnection("server=97.74.123.157;database=FeiduGS;uid=sa;pwd=`1q2w3e4r"))
+                    {
+                        string sql = "update GS_Order set ems='" + o.TrackCode + "' , ShippingStauts=1 where OrderNo='" +
+                                     o.OrderExNo + "'";
+                        var sqlCommand = new SqlCommand(sql, connection);
+                        connection.Open();
+                        sqlCommand.ExecuteNonQuery();
+                        connection.Close();
+                        connection.Dispose();
+                        new WebClient().DownloadString("http://sendmail.gamesalor.com.cn/SendMailMessage.ashx?txnId=" +
+                                                       o.OrderExNo + "&ems=" + o.TrackCode + "&mail=" + o.BuyerEmail);
+                    }
+                }
+                catch (Exception)
+                {
+                    return;
+                }
+            }
 
             if (o.Platform == PlatformEnum.Ebay.ToString())
             {
