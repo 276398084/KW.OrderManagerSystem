@@ -1,7 +1,7 @@
 ﻿
 @model IEnumerable<KeWeiOMS.Domain.DisputeType>
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "纠纷列表 Index";
 }
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
@@ -112,8 +112,8 @@
         $("#cc2").datebox({
             parser: myparser
         });
-        $('#cc').datebox("setValue", getStartDate(7));
-        $('#cc2').datebox("setValue", getStartDate(-1));
+        //$('#cc').datebox("setValue", getStartDate(7));
+        //$('#cc2').datebox("setValue", getStartDate(-1));
         $('#reason').combobox({
             url: '@Url.Action("GetDataByCode", "Dictionary")/DisputeClass',
                     valueField: 'DicValue',
@@ -233,7 +233,7 @@
                 });
      }
      function getSearch() {
-         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^type&纠纷^";
+         var search = "CreateOn_st&" + $('#cc').datebox("getValue") + "^CreateOn_et&" + $('#cc2').datebox("getValue") + "^" + $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
          var r = $('#reason').combobox("getText");
          if (r != "ALL" && r != "") {
              search += "DisputeCategory&"+ r + "^";
