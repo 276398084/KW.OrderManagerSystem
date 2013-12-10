@@ -154,14 +154,14 @@ namespace KeWeiOMS.Web.Controllers
         {
             string orderby = Utilities.OrdeerBy(sort, order);
             string where = Utilities.SqlWhere(search);            
-            if (!string.IsNullOrEmpty(where))
-            { 
-                where +=" and DisputesType='"+type+"'";
-            }
-            else
-            {
-                where = " where DisputesType='" + type + "'";
-            }
+            //if (!string.IsNullOrEmpty(where))
+            //{ 
+            //    where +=" and DisputesType='"+type+"'";
+            //}
+            //else
+            //{
+            //    where = " where DisputesType='" + type + "'";
+            //}
             IList<DisputeType> objList = NSession.CreateQuery("from DisputeType " + where + orderby)
                 .SetFirstResult(rows * (page - 1))
                 .SetMaxResults(rows)

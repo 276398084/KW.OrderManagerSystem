@@ -1087,17 +1087,29 @@ left join Products P on OP.SKU=P.SKU";
                 string[] addressList = System.IO.File.ReadAllLines(this.Server.MapPath("\\Views\\Order\\address.txt"));
                 foreach (DataRow item in ds.Tables[0].Rows)
                 {
-                    //收件人电话不能为空字符
+                    //收件人电话不能为空字符  电话号码有要求：电话只能是11位数字，-  （）‘ 这些符号都不允许有
+                    //不是俄罗斯的国家位数不能少于8位，最少8位
                     string 收件人电话 = item["收件人电话"] + "";
                     收件人电话 = System.Text.RegularExpressions.Regex.Replace(收件人电话, @"\D", "", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
                     if (string.IsNullOrEmpty(收件人电话))
                     {
-                        for (int i = 0; i < 8; i++)
+                        for (int i = 0; i < 11; i++)
                         {
                             收件人电话 += rd.Next(0, 9);
                         }
-                        item["收件人电话"] = 收件人电话;
                     }
+                    if (item["寄达国家（中文）"] + "" == "俄罗斯" && 收件人电话.Length > 11)
+                    {
+                        收件人电话 = 收件人电话.Remove(11);
+                    }
+                     if (item["寄达国家（中文）"] + "" != "俄罗斯" && 收件人电话.Length <=8)
+                    {int ttt= 8 - 收件人电话.Length;
+                        for (int i = 0; i <=ttt; i++)
+                        {
+                            收件人电话 += rd.Next(0, 9);
+                        }
+                    }
+                    item["收件人电话"] = 收件人电话;
                     //item["收件人电话"] = 收件人电话;
                     //胡启雄用拼音代替
                     item["寄件人姓名"] = "HuQiXun";
