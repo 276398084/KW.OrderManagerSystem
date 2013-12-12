@@ -39,6 +39,21 @@ namespace KeWeiOMS.Web
         public static object obj3 = new object();
         public static object obj4 = new object();
 
+        public static string dbToStr(object o) {
+            return (o == System.DBNull.Value ? System.String.Empty : System.Convert.ToString(o));
+       }
+        public static int dbToInt16(object o) {
+            return (o == System.DBNull.Value ? 0 : System.Convert.ToInt16(o));
+        }
+        public static int dbToInt32(object o)
+        {
+            return (o == System.DBNull.Value ? 0 : System.Convert.ToInt32(o));
+        }
+        public static double dbToDouble(object o)
+        {
+            return (o == System.DBNull.Value ? 0 : System.Convert.ToDouble(o));
+        }
+
         public static string GetOrderNo(ISession NSession)
         {
             lock (obj1)
@@ -169,7 +184,6 @@ namespace KeWeiOMS.Web
         #region 缩略图生成
         public static void DrawImageRectRect(Image imageFrom, string newImgPath, int width, int height)
         {
-
             // 源图宽度及高度 
             int imageFromWidth = imageFrom.Width;
             int imageFromHeight = imageFrom.Height;
@@ -213,8 +227,9 @@ namespace KeWeiOMS.Web
                 //经测试 .jpg 格式缩略图大小与质量等最优 
                 bmp.Save(newImgPath, ImageFormat.Jpeg);
             }
-            catch
+            catch(Exception ex)
             {
+                throw ex;
             }
             finally
             {
@@ -227,16 +242,8 @@ namespace KeWeiOMS.Web
 
         public static void DrawImageRectRect(string rawImgPath, string newImgPath, int width, int height)
         {
-            try
-            {
                 System.Drawing.Image imageFrom = System.Drawing.Image.FromFile(rawImgPath);
                 DrawImageRectRect(imageFrom, newImgPath, width, height);
-            }
-            catch (Exception)
-            {
-
-            }
-
         }
         #endregion
 

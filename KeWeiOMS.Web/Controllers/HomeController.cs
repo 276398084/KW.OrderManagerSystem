@@ -225,7 +225,7 @@ namespace KeWeiOMS.Web.Controllers
                     SaveFile(fileData, out filePath, out fileName, out saveName);
                     filePath = Server.MapPath("~");
                     IList<ProductType> list = NSession.CreateQuery(" from ProductType where SKU='" + fileName + "' ").List<ProductType>();
-                    if (list.Count > 0)
+                    if (list.Count == 1)
                     {
                         list[0].PicUrl = Utilities.BPicPath + list[0].SKU + ".jpg";
                         list[0].SPicUrl = Utilities.SPicPath + list[0].SKU + ".png";
@@ -233,8 +233,12 @@ namespace KeWeiOMS.Web.Controllers
                         Utilities.DrawImageRectRect(saveName, filePath + list[0].SPicUrl, 64, 64);
                         NSession.SaveOrUpdate(list[0]);
                         NSession.Flush();
+                        return Json(new { Success = true, FileName = fileName, SaveName = filePath + saveName });
                     }
-                    return Json(new { Success = true, FileName = fileName, SaveName = filePath + saveName });
+                    else
+                    {
+                        return Json(new { Success = false, Message = "发现多个sku为 " + fileName + " 的产品，修改失败。" });
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -23,8 +23,10 @@ namespace KeWeiOMS.Web
     {
         public static DataTable GetDataTable(string fileName)
         {
-            string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileName + ";" +
-            "Extended Properties='Excel 8.0;IMEX=1'";
+            //string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + fileName + ";" +
+            //"Extended Properties='Excel 8.0;IMEX=1'";
+            string strConn = "Provider=Microsoft.ACE.OLEDB.12.0; Persist Security Info=False;Data Source=" + fileName + ";" +
+                "Extended Properties='Excel 8.0;HDR=Yes;IMEX=2'";
             DataSet ds = new DataSet();
             OleDbDataAdapter oada = new OleDbDataAdapter("select * from [Sheet1$]", strConn);
             oada.Fill(ds);
@@ -103,7 +105,7 @@ namespace KeWeiOMS.Web
                             System.Text.RegularExpressions.Regex r4 = new System.Text.RegularExpressions.Regex(@"\(产品属性:(?<ppp>.*)\n", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r5 = new System.Text.RegularExpressions.Regex(@"\(产品数量:(?<quantity>\d+)", System.Text.RegularExpressions.RegexOptions.None);
                             System.Text.RegularExpressions.Regex r3 = new System.Text.RegularExpressions.Regex(@"\(商家编码:(?<sku>.*)\)", System.Text.RegularExpressions.RegexOptions.None);
-                            
+
                             System.Text.RegularExpressions.Match mc2 = r2.Match(Str);
                             System.Text.RegularExpressions.Match mc3 = r3.Match(Str);
                             System.Text.RegularExpressions.Match mc4 = r4.Match(Str);
@@ -1105,7 +1107,7 @@ namespace KeWeiOMS.Web
             foreach (var item in order.Products)
             {
                 item.IsQue = 0;
-                
+
                 //
                 //IsQue=0,配完货后的状态 IsQue=1 代表产品缺货。IsQue=2 产品停产，IsQue=3 产品占用
                 //

@@ -161,27 +161,27 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
                     ProductType p = new ProductType { CreateOn = DateTime.Now };
-                    p.SKU = dt.Rows[i]["子SKU"].ToString().Trim();
+                    p.SKU = Utilities.dbToStr(dt.Rows[i]["子SKU"]);
                     if (IsExist(p.SKU))
                     {
                         continue;
                     }
-                    p.Status = dt.Rows[i]["销售状态"].ToString();
-                    p.ProductName = dt.Rows[i]["名称"].ToString();
-                    p.Category = dt.Rows[i]["分类"].ToString();
-                    p.Standard = dt.Rows[i]["规格"].ToString();
-                    p.Price = Convert.ToDouble(dt.Rows[i]["价格"]);
-                    p.Weight = Convert.ToInt16(dt.Rows[i]["重量"]);
-                    p.Long = Convert.ToInt16(dt.Rows[i]["长"]);
-                    p.Wide = Convert.ToInt16(dt.Rows[i]["宽"]);
-                    p.High = Convert.ToInt16(dt.Rows[i]["高"]);
-                    p.Location = dt.Rows[i]["库位号"].ToString();
-                    p.OldSKU = dt.Rows[i]["SKU"].ToString();
-                    p.HasBattery = Convert.ToInt32(dt.Rows[i]["电池"].ToString());
-                    p.IsElectronic = Convert.ToInt32(dt.Rows[i]["电子"].ToString());
-                    p.IsScan = Convert.ToInt32(dt.Rows[i]["配货扫描"].ToString());
-                    p.DayByStock = Convert.ToInt32(dt.Rows[i]["备货天数"].ToString());
-                    p.ProductAttribute = dt.Rows[i]["产品属性"].ToString();
+                    p.Status = Utilities.dbToStr(dt.Rows[i]["销售状态"]);
+                    p.ProductName = Utilities.dbToStr(dt.Rows[i]["名称"]);
+                    p.Category = Utilities.dbToStr(dt.Rows[i]["分类"]);
+                    p.Standard = Utilities.dbToStr(dt.Rows[i]["规格"]);
+                    p.Price = Utilities.dbToDouble(dt.Rows[i]["价格"]);
+                    p.Weight = Utilities.dbToInt16(dt.Rows[i]["重量"]);
+                    p.Long = Utilities.dbToInt16(dt.Rows[i]["长"]);
+                    p.Wide = Utilities.dbToInt16(dt.Rows[i]["宽"]);
+                    p.High = Utilities.dbToInt16(dt.Rows[i]["高"]);
+                    p.Location = Utilities.dbToStr(dt.Rows[i]["库位号"]);
+                    p.OldSKU = Utilities.dbToStr(dt.Rows[i]["SKU"]);
+                    p.HasBattery = Utilities.dbToInt32("0" + dt.Rows[i]["电池"]);
+                    p.IsElectronic = Utilities.dbToInt32("0" + dt.Rows[i]["电子"]);
+                    p.IsScan = Utilities.dbToInt32("0" + dt.Rows[i]["配货扫描"]);
+                    p.DayByStock = Utilities.dbToInt32("0" + dt.Rows[i]["备货天数"]);
+                    p.ProductAttribute = Utilities.dbToStr(dt.Rows[i]["产品属性"]);
                     p.Enabled = 1;
                     if (!HasExsit(p.SKU))
                     {
@@ -219,6 +219,7 @@ Or SKU in(select SKU from OrderProductType where OId In(select Id from OrderType
             }
         }
 
+ 
         private bool HasExsit(string p)
         {
             object obj = NSession.CreateQuery("select count(Id) from ProductType where SKU ='" + p + "' ").UniqueResult();

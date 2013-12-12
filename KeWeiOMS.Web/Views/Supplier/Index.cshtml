@@ -1,43 +1,43 @@
-﻿@model IEnumerable<KeWeiOMS.Domain.SupplierType>
+﻿@*@model IEnumerable<keweioms.domain.suppliertype>*@
 @{
     ViewBag.Title = "Index";
 }
 <script src="@Url.Content("~/Scripts/easyUI/datagrid-detailview.js")"></script>
 <body class="easyui-layout">
-<script language="javascript" type="text/javascript">
-    $(function () {
-        $('#dg').datagrid({
-            url: '@Url.Action("List","Supplier")',
-            nowrap: false,
-            toolbar: '#toolbar',
-            rownumbers: true,
-            fitColumns: true,
-            singleSelect: true,
-            pagination: true,
-            fit: true,
-            pageNumber: 1,
-            pageSize: 20,
-            pageList: [20, 40, 60, 80, 100],
-            view: detailview,
-            detailFormatter: function (index, row) {
-                return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
-            },
-            onExpandRow: function (index, row) {
-                $('#ddv-' + index).panel({
-                    border: false,
-                    cache: false,
-                    href: '@Url.Action("GetProduct", "SuppliersProduct")' + "/" + row.Id,
-                   onLoad: function () {
+    <script language="javascript" type="text/javascript">
+        $(function () {
+            $('#dg').datagrid({
+                url: '@Url.Action("List","Supplier")',
+                nowrap: false,
+                toolbar: '#toolbar',
+                rownumbers: true,
+                fitColumns: true,
+                singleSelect: true,
+                pagination: true,
+                fit: true,
+                pageNumber: 1,
+                pageSize: 20,
+                pageList: [20, 40, 60, 80, 100],
+                view: detailview,
+                detailFormatter: function (index, row) {
+                    return '<div id="ddv-' + index + '" style="padding:5px 0"></div>';
+                },
+                onExpandRow: function (index, row) {
+                    $('#ddv-' + index).panel({
+                        border: false,
+                        cache: false,
+                        href: '@Url.Action("GetProduct", "SuppliersProduct")' + "/" + row.Id,
+                        onLoad: function () {
                             $('#dg').datagrid('fixDetailRowHeight', index);
                         }
                     });
                     $('#dg').datagrid('fixDetailRowHeight', index);
                 }
+            });
         });
-    });
-    //新建
-    function c_dlg() {
-        var url_str = '@Url.Action("Create","Supplier")';
+        //新建
+        function c_dlg() {
+            var url_str = '@Url.Action("Create","Supplier")';
             showdlg(url_str, 'c_dlg', ajaxAdd)
         }
 
@@ -45,25 +45,25 @@
         function e_dlg() {
             var id = getselectedRow();
             var url = '@Url.Action("Edit","Supplier")/' + id;
-        if (id != undefined) {
-            showdlg(url, 'e_dlg', ajaxEdit)
+            if (id != undefined) {
+                showdlg(url, 'e_dlg', ajaxEdit)
+            }
         }
-    }
 
-    //异步新建提交
-    function ajaxAdd() {
-        if (endEditing()) {
-            $('#dg_zu').datagrid('acceptChanges');
-        }
-        $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
-        formPost('c_form', '@Url.Action("Create", "Supplier")', 'c_dlg', 'dg');
+        //异步新建提交
+        function ajaxAdd() {
+            if (endEditing()) {
+                $('#dg_zu').datagrid('acceptChanges');
+            }
+            $("#rows").val(JSON.stringify($('#dg_zu').datagrid("getRows")));
+            formPost('c_form', '@Url.Action("Create", "Supplier")', 'c_dlg', 'dg');
         }
         //异步修改提交
-    function ajaxEdit() {
-        if (endEditing1()) {
-            $('#dg_zu1').datagrid('acceptChanges');
-        }
-        $("#rows").val(JSON.stringify($('#dg_zu1').datagrid("getRows")));
+        function ajaxEdit() {
+            if (endEditing1()) {
+                $('#dg_zu1').datagrid('acceptChanges');
+            }
+            $("#rows").val(JSON.stringify($('#dg_zu1').datagrid("getRows")));
             formPost('e_form', '@Url.Action("Edit", "Supplier")', 'e_dlg', 'dg');
         }
         //删除
@@ -83,93 +83,98 @@
                     return id;
                 }
             }
-        $.messager.show({
-            title: '提示',
-            msg: '请选择行',
-            timeout: 3000,
-            showType: 'slide'
-        });
-        return (undefined);
-    }
-
-  function toExcel() {
-      search = getSearch();
-      $('#dg').datagrid('loading');
-      var postUrl = "/Order/ExportDown/1";
-      $.ajax({
-          url: '@Url.Action("ToExcel", "Supplier")/',
-            type: 'post',
-            data: 'search=' + encodeURIComponent(search),
-            success: function (result) {
-                $.messager.show({
-                    title: '提示',
-                    msg: result.ErrorMsg,
-                    timeout: 0,
-                    showType: 'slide'
-                });
-                location.href = postUrl;
-                $('#dg').datagrid('reload');
-            }
-        });
-    }
-
-    function doSearch() {
-        search = getSearch();
-        $("#dg").datagrid("load", {
-            search: search
-        });
-    }
-    function getSearch() {
-        var search = "";
-        var a = $('#txtSearch').searchbox("getName");
-        if (a == "SKU") {
-            search = "SKU_ds&" + $('#txtSearch').searchbox("getValue") + "^";
+            $.messager.show({
+                title: '提示',
+                msg: '请选择行',
+                timeout: 3000,
+                showType: 'slide'
+            });
+            return (undefined);
         }
-        else
-        search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
-        return search;
-    }
-</script>
-<div region="center">
-<table id="dg">  
-        <thead>  
-        <tr>
-            <th field="SuppliersName" width="100" sortable="true">
-                供应商
-            </th>
 
-            <th field="QQ" width="100" sortable="true">
-                QQ
-            </th>
+        function toExcel() {
+            search = getSearch();
+            $('#dg').datagrid('loading');
+            var postUrl = "/Order/ExportDown/1";
+            var id = getselectedRow();
+            if (!id) { id = 0; };
+            if (id!=0) {
+                search = 'id&' + id;
+            } 
+            $.ajax({
+                url: '@Url.Action("ToExcel", "Supplier")/',
+                type: 'post',
+                data: 'search=' + encodeURIComponent(search),// encodeURIComponent(search) + ' id&' + id,
+                success: function (result) {
+                    $.messager.show({
+                        title: '提示',
+                        msg: result.ErrorMsg,
+                        timeout: 0,
+                        showType: 'slide'
+                    });
+                    location.href = postUrl;
+                    $('#dg').datagrid('reload');
+                }
+            });
+        }
 
-            <th field="WW" width="100" sortable="true">
-                旺旺
-            </th>
+        function doSearch() {
+            search = getSearch();
+            $("#dg").datagrid("load", {
+                search: search
+            });
+        }
+        function getSearch() {
+            var search = "";
+            var a = $('#txtSearch').searchbox("getName");
+            if (a == "SKU") {
+                search = "SKU_ds&" + $('#txtSearch').searchbox("getValue") + "^";
+            }
+            else
+                search = $('#txtSearch').searchbox("getName") + "&" + $('#txtSearch').searchbox("getValue") + "^";
+            return search;
+        }
+    </script>
+    <div region="center">
+        <table id="dg">
+            <thead>
+                <tr>
+                    <th field="SuppliersName" width="100" sortable="true">
+                        供应商
+                    </th>
 
-            <th field="Phone" width="100" sortable="true">
-                电话
-            </th>
+                    <th field="QQ" width="100" sortable="true">
+                        QQ
+                    </th>
 
-            <th field="Tel" width="100" sortable="true">
-                手机
-            </th>
+                    <th field="WW" width="100" sortable="true">
+                        旺旺
+                    </th>
 
-            <th field="Web" width="100" sortable="true">
-                网址
-            </th>
+                    <th field="Phone" width="100" sortable="true">
+                        电话
+                    </th>
 
-            <th field="Memo" width="100" sortable="true">
-                备注
-            </th>
-    	</tr>
-		</thead>
-		</table>
+                    <th field="Tel" width="100" sortable="true">
+                        手机
+                    </th>
+
+                    <th field="Web" width="100" sortable="true">
+                        网址
+                    </th>
+
+                    <th field="Memo" width="100" sortable="true">
+                        备注
+                    </th>
+                </tr>
+            </thead>
+        </table>
         <div id="toolbar">
-        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="c_dlg();">新建</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>  
-        <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="del();">删除</a> 
-         <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
-        <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-add" plain="true" onclick="c_dlg();">新建</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-edit" plain="true" onclick="e_dlg()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-remove" plain="true" onclick="del();">删除</a>
+            <input id="txtSearch" class="easyui-searchbox" data-options="prompt:'查询关键字',searcher:doSearch,menu:'#mm'"></input>
+            <a href="#" class="easyui-linkbutton" iconcls="icon-print" plain="true" onclick="toExcel();">导出数据</a>
         </div>
         <div id="mm" style="width: 120px">
             <div data-options="name:'SuppliersName'">供应商</div>
@@ -180,11 +185,11 @@
             <div data-options="name:'Memo'">备注</div>
             <div data-options="name:'SKU'">SKU</div>
         </div>
-            <div id="mm1" style="width: 120px">
+        <div id="mm1" style="width: 120px">
             <div data-options="name:'SuppliersName'">SKU</div>
-            </div>
-    <div id="c_dlg"></div>
-    <div id="e_dlg"></div>
+        </div>
+        <div id="c_dlg"></div>
+        <div id="e_dlg"></div>
 
-</div>
+    </div>
 </body>

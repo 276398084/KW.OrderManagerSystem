@@ -3,8 +3,7 @@
     //Layout = null;
 }
 <style>
-    #fileQueue
-    {
+    #fileQueue {
         width: 400px;
         height: 300px;
         overflow: auto;
@@ -28,6 +27,9 @@
             'queueID': 'fileQueue',
             'onUploadSuccess': function (file, data, response) {
                 eval("data=" + data);
+                debugger;
+                if (data.Success) { $("#msg").html("上传成功！"); }
+                else { $("#msg").html("上传失败！原因:" + data.Message); }
             }
         });
     });
@@ -36,12 +38,12 @@
 
 </script>
 
-
-
 <fieldset>
     <legend>
         <label>
-            商品图片上传( 图片请以 商品编号 命名，如 1001.jpg )</label></legend>
+            商品图片上传( 图片请以 商品编号 命名，如 1001.jpg )
+        </label>
+    </legend>
     <div id="fileQueue"></div>
     <table border="0" cellpadding="0" cellspacing="0">
         <tr>
@@ -49,7 +51,8 @@
                 <table border="0" cellpadding="0" cellspacing="0">
                     <tr>
                         <td align="left" valign="top">
-                            <input type="file" name="up_file" id="up_file" /></td>
+                            <input type="file" name="up_file" id="up_file" />
+                        </td>
                     </tr>
                     <tr>
                         <td align="center" valign="top">(支持多选)</td>
@@ -62,14 +65,14 @@
                         <td height="8"></td>
                     </tr>
                     <tr>
-                        <td align="left" valign="top">&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" onclick="$('#up_file').uploadify('upload', '*');" value="上传" />&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" onclick="    $('#up_file').uploadify('cancel', '*');" value="取消上传" />
+                        <td align="left" valign="top">
+                            &nbsp;&nbsp;&nbsp;&nbsp;<input type="button" onclick="$('#up_file').uploadify('upload', '*');" value="上传" />&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" onclick="    $('#up_file').uploadify('cancel', '*');" value="取消上传" />
                         </td>
                     </tr>
                 </table>
             </td>
         </tr>
+        <tr><td><span id="msg"></span></td></tr>
     </table>
-
 </fieldset>
-
 
